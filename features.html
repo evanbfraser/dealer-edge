@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features | DealerEdge</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Explore</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html" class="nav-link--active">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="fp-hero" id="fp-hero">
+    <div class="fp-hero-orb fp-hero-orb--1"></div>
+    <div class="fp-hero-orb fp-hero-orb--2"></div>
+    <div class="section-container fp-hero-inner">
+      <span class="section-label" data-fade data-delay="0.05">Platform Features</span>
+      <h1 class="fp-hero-headline" data-fade data-delay="0.12">
+        Everything Your Dealership Needs.<br>
+        <span class="headline-accent">One Intelligent System.</span>
+      </h1>
+      <p class="fp-hero-sub" data-fade data-delay="0.2">
+        DealerEdge gives every department in your dealership an unfair advantage, from the first ad impression to the final sale and long after.
+      </p>
+    </div>
+    <div class="fp-hero-scroll">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Features Explorer -->
+  <section class="fp-explorer" id="fp-explorer">
+    <div class="fp-explorer-lead" data-fade>
+      <div class="fp-explorer-lead-left">
+        <p class="fp-explorer-lead-desc">Features across all departments, everything your dealership needs in one platform.</p>
+      </div>
+      <div class="fp-explorer-lead-cta">
+        <p class="fp-explorer-cta-label">Not sure where to start?</p>
+        <h3 class="fp-explorer-cta-headline">Ask how DealerEdge helps<br>your specific department.</h3>
+        <p class="fp-explorer-cta-body">Tell us which part of your dealership you want to improve and we'll walk you through exactly how it works.</p>
+        <a href="#" class="btn-primary js-dept-modal">Chat with us</a>
+      </div>
+    </div>
+    <div class="fp-explorer-inner">
+
+      <!-- Left: Department Nav (populated by JS) -->
+      <aside class="fp-dept-nav" id="fp-dept-nav" aria-label="Departments"></aside>
+
+      <!-- Right: Content Panels (populated by JS) -->
+      <div class="fp-content" id="fp-content"></div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-glow"></div>
+    <div class="section-container cta-inner">
+      <div class="cta-tag" data-fade>Ready to grow?</div>
+      <h2 class="cta-title" data-fade data-delay="0.1">Give your dealership<br>the edge it deserves.</h2>
+      <p class="cta-sub" data-fade data-delay="0.2">Join 500+ dealers already using DealerEdge to win more customers, close more deals, and grow faster.</p>
+      <div data-fade data-delay="0.3">
+        <a href="#" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">Built for dealers who move fast.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Contact Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="ms-dots" id="ms-dots">
+        <span class="ms-dot" data-dot="1"></span>
+        <span class="ms-dot" data-dot="2"></span>
+        <span class="ms-dot" data-dot="3"></span>
+      </div>
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">What's your name?</h2>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-1">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Great <span id="ms-name-display"></span>. Now let's grab your info.</h2>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="jane@dealership.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-2">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-3">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Do you want to schedule a time on our calendar to chat?</h2>
+        <div class="ms-choice-row">
+          <button class="ms-choice ms-choice--yes" id="ms-yes">Yes, let's book a time</button>
+          <button class="ms-choice ms-choice--no" id="ms-no">No, just reach out</button>
+        </div>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-4">
+        <span class="modal-eyebrow">Pick a Time</span>
+        <h2 class="ms-headline">Choose a date.</h2>
+        <div class="ms-calendar" id="ms-calendar"></div>
+        <div class="ms-times" id="ms-times"></div>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-5">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Chat Modal -->
+  <div class="modal-backdrop" id="dm-backdrop" aria-hidden="true">
+    <div class="modal modal--dept" id="dm-modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="dm-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Step 1: Department selection -->
+      <div class="ms-step" id="dm-step-1">
+        <span class="modal-eyebrow">Let's find your fit</span>
+        <h2 class="ms-headline">Which department are you looking to improve?</h2>
+        <div class="dm-dept-list" id="dm-dept-list"></div>
+      </div>
+
+      <!-- Step 2: Department insight -->
+      <div class="ms-step ms-step--hidden" id="dm-step-2">
+        <button class="dm-back-btn" id="dm-back">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <div class="dm-insight" id="dm-insight"></div>
+        <button class="btn-primary ms-next-btn" id="dm-next-2">
+          Chat about this
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Step 3: Chat -->
+      <div class="ms-step ms-step--hidden" id="dm-step-3">
+        <div class="dm-chat-window">
+          <div class="dm-chat-messages" id="dm-chat-messages"></div>
+          <div class="dm-chat-input-row">
+            <input type="text" id="dm-chat-input" placeholder="Type your response..." autocomplete="off">
+            <button class="dm-chat-send" id="dm-chat-send" aria-label="Send">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Name -->
+      <div class="ms-step ms-step--hidden" id="dm-step-4">
+        <span class="modal-eyebrow" id="dm-dept-eyebrow"></span>
+        <h2 class="ms-headline">What's your name?</h2>
+        <div class="form-group">
+          <input type="text" id="dm-name" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <button class="btn-primary ms-next-btn" id="dm-next-4">
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Step 5: Contact -->
+      <div class="ms-step ms-step--hidden" id="dm-step-5">
+        <span class="modal-eyebrow" id="dm-dept-eyebrow-2"></span>
+        <h2 class="ms-headline">Great <span id="dm-name-display"></span>. How should we reach you?</h2>
+        <div class="form-group">
+          <input type="email" id="dm-email" placeholder="jane@dealership.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="dm-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="dm-next-5">
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Step 6: Confirmation -->
+      <div class="ms-step ms-step--hidden" id="dm-step-6">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="dm-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="dm-done">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/features.js"></script>
+</body>
+</html>

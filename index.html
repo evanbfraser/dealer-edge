@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DealerEdge | The AI Growth Platform Built for Dealers</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Learn More</span>
+      <div class="cursor-label cursor-label--video">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span>Play Video</span>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <div class="hero-content" id="hero-content">
+        <span class="hero-eyebrow">AI-Powered Dealership Growth</span>
+        <h1 class="hero-headline">
+          The AI Growth Platform<br>
+          <span class="headline-accent">Built for Dealers</span>
+        </h1>
+        <p class="hero-sub">Marketing. Listings. Lead Response. Sales Automation. One intelligent system that works while you do.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary js-modal">Get Started Today</a>
+          <a href="features.html" class="btn-ghost">
+            See How It Works
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero-scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <canvas id="hero-canvas"></canvas>
+      <div class="hero-vignette"></div>
+      <div class="hero-gradient-bottom"></div>
+      <div class="hero-gradient-left"></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section" id="features">
+    <div class="section-container">
+      <div class="section-label">Platform Features</div>
+      <h2 class="section-title">Everything your dealership needs.<br><span class="dim">All in one place.</span></h2>
+      <div class="features-bento">
+
+        <div class="feature-card feature-card--large" data-animation="fade-up">
+          <div class="feature-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          </div>
+          <h3>AI-Powered Marketing</h3>
+          <p>Generate high-converting ads, social posts, and email campaigns tailored to your live inventory, automatically. No copywriter. No agency. No delay.</p>
+          <div class="feature-tag">Marketing Automation</div>
+        </div>
+
+        <div class="feature-card" data-animation="fade-up" data-delay="0.1">
+          <div class="feature-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h3>Smart Listings</h3>
+          <p>Publish polished listings to every platform in seconds. AI writes descriptions, optimizes photos, and handles pricing.</p>
+          <div class="feature-tag">Inventory</div>
+        </div>
+
+        <div class="feature-card" data-animation="fade-up" data-delay="0.2">
+          <div class="feature-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <h3>Instant Lead Response</h3>
+          <p>Never let a lead go cold. AI responds in seconds, qualifies buyers, and books appointments, 24/7, no staff required.</p>
+          <div class="feature-tag">Lead Response</div>
+        </div>
+
+        <div class="feature-card feature-card--wide" data-animation="fade-up" data-delay="0.15">
+          <div class="feature-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3>Sales Analytics &amp; Tracking</h3>
+          <p>Track every deal from first touch to close. Real-time dashboards show exactly what's working, by channel, salesperson, and vehicle type. Make smarter decisions, faster.</p>
+          <div class="feature-tag">Analytics</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Journey / Touchpoints -->
+  <section class="journey-section">
+    <div class="section-container">
+      <div class="section-label">Customer Journey</div>
+      <h2 class="section-title journey-title">Automation at Every<br><span class="dim">Customer Touchpoint</span></h2>
+      <p class="journey-intro">From the first search to the final sale, DealerEdge uses AI to engage, respond, and guide every customer interaction, ensuring no opportunity is missed and every lead moves forward.</p>
+
+      <div class="journey-timeline">
+        <div class="journey-line">
+          <div class="journey-line-fill"></div>
+        </div>
+
+        <!-- 01 Awareness, LEFT -->
+        <div class="journey-point journey-point--left">
+          <div class="journey-card" data-journey="Awareness">
+            <span class="journey-num">01</span>
+            <h3>Awareness</h3>
+            <p>DealerEdge drives visibility across search, listings, and digital channels, ensuring your dealership shows up when and where customers begin their journey.</p>
+          </div>
+          <div class="journey-node">
+            <div class="journey-dot"></div>
+          </div>
+          <div class="journey-spacer"></div>
+        </div>
+
+        <!-- 02 Consideration, RIGHT -->
+        <div class="journey-point journey-point--right">
+          <div class="journey-spacer"></div>
+          <div class="journey-node">
+            <div class="journey-dot"></div>
+          </div>
+          <div class="journey-card" data-journey="Consideration">
+            <span class="journey-num">02</span>
+            <h3>Consideration</h3>
+            <p>From website visits to incoming inquiries, DealerEdge responds in real time, answering questions, guiding decisions, and keeping potential buyers moving forward.</p>
+          </div>
+        </div>
+
+        <!-- 03 Purchase, LEFT -->
+        <div class="journey-point journey-point--left">
+          <div class="journey-card" data-journey="Purchase">
+            <span class="journey-num">03</span>
+            <h3>Purchase</h3>
+            <p>DealerEdge qualifies leads, schedules appointments, and equips your team with ready-to-close buyers, making the path to purchase faster and more efficient.</p>
+          </div>
+          <div class="journey-node">
+            <div class="journey-dot"></div>
+          </div>
+          <div class="journey-spacer"></div>
+        </div>
+
+        <!-- 04 Post-Purchase, RIGHT -->
+        <div class="journey-point journey-point--right">
+          <div class="journey-spacer"></div>
+          <div class="journey-node">
+            <div class="journey-dot"></div>
+          </div>
+          <div class="journey-card" data-journey="Post-Purchase">
+            <span class="journey-num">04</span>
+            <h3>Post-Purchase</h3>
+            <p>DealerEdge continues the conversation with automated follow-ups, helpful content, and timely communication that keeps customers engaged beyond the transaction.</p>
+          </div>
+        </div>
+
+        <!-- 05 Loyalty, LEFT -->
+        <div class="journey-point journey-point--left">
+          <div class="journey-card" data-journey="Loyalty">
+            <span class="journey-num">05</span>
+            <h3>Loyalty</h3>
+            <p>Through personalized outreach and ongoing engagement, DealerEdge strengthens relationships, turning one-time buyers into repeat customers and brand advocates.</p>
+          </div>
+          <div class="journey-node">
+            <div class="journey-dot"></div>
+          </div>
+          <div class="journey-spacer"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="video-section" id="video-section">
+    <div class="video-wrapper">
+      <div class="video-inner" id="video-inner">
+        <img src="assets/dealer-edge-video-homepage-2.jpg" alt="DealerEdge Video" class="video-thumb">
+        <div class="video-overlay-text" id="video-overlay-text">
+          <h2>This Is How Dealerships Sell Smarter</h2>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boat Section -->
+  <section class="boat-section" id="boat-section">
+    <div class="boat-sticky">
+      <div class="boat-left">
+        <div class="section-label">Our Purpose</div>
+        <div class="boat-headline-wrap">
+          <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
+          <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
+        </div>
+        <p class="boat-sub" id="boat-sub">Why wait on improving your sales. We can have this platform up and running for your dealership quickly.</p>
+        <button class="btn-primary boat-cta" id="boat-cta" onclick="document.getElementById('modal-backdrop').classList.add('is-open')">Get Started Today</button>
+      </div>
+      <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats-section" id="stats">
+    <div class="section-container">
+      <div class="stats-grid">
+        <div class="stat-item" data-animation="fade-up">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-count="500">0</span><span class="stat-suffix">+</span>
+          </div>
+          <span class="stat-label">Dealerships Served</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item" data-animation="fade-up" data-delay="0.1">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-count="200">0</span><span class="stat-suffix">%</span>
+          </div>
+          <span class="stat-label">Average Sales Increase</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item" data-animation="fade-up" data-delay="0.2">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-count="5">0</span><span class="stat-suffix">×</span>
+          </div>
+          <span class="stat-label">Faster Workflow</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item" data-animation="fade-up" data-delay="0.3">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-count="98">0</span><span class="stat-suffix">%</span>
+          </div>
+          <span class="stat-label">Customer Satisfaction</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <section class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-content" aria-hidden="true">
+        <span>Instant Lead Response</span><span class="marquee-dot">·</span>
+        <span>AI Sales Assistant</span><span class="marquee-dot">·</span>
+        <span>Smart Follow-Ups</span><span class="marquee-dot">·</span>
+        <span>Inventory Optimization</span><span class="marquee-dot">·</span>
+        <span>Automated Content Creation</span><span class="marquee-dot">·</span>
+        <span>Digital Ad Automation</span><span class="marquee-dot">·</span>
+        <span>High-Conversion Websites</span><span class="marquee-dot">·</span>
+        <span>Customer Journey Tracking</span><span class="marquee-dot">·</span>
+        <span>CRM Integration</span><span class="marquee-dot">·</span>
+        <span>Data-Driven Insights</span><span class="marquee-dot">·</span>
+        <span>Instant Lead Response</span><span class="marquee-dot">·</span>
+        <span>AI Sales Assistant</span><span class="marquee-dot">·</span>
+        <span>Smart Follow-Ups</span><span class="marquee-dot">·</span>
+        <span>Inventory Optimization</span><span class="marquee-dot">·</span>
+        <span>Automated Content Creation</span><span class="marquee-dot">·</span>
+        <span>Digital Ad Automation</span><span class="marquee-dot">·</span>
+        <span>High-Conversion Websites</span><span class="marquee-dot">·</span>
+        <span>Customer Journey Tracking</span><span class="marquee-dot">·</span>
+        <span>CRM Integration</span><span class="marquee-dot">·</span>
+        <span>Data-Driven Insights</span><span class="marquee-dot">·</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies -->
+  <section class="case-studies-section" id="case-studies">
+    <canvas id="ripple-canvas"></canvas>
+    <div class="cs-overlay">
+      <div class="cs-inner">
+
+        <!-- Left: headline + logo selector -->
+        <div class="cs-left">
+          <h2 class="cs-headline">Real Dealerships.<br>Real Results.</h2>
+          <p class="cs-intro">See how dealerships are using DealerEdge to capture more leads, respond faster, and convert more sales.</p>
+          <div class="cs-logo-grid">
+            <button class="cs-logo-btn cs-logo-btn--active" data-cs="0" aria-label="Dealer 1">
+              <img src="assets/dealer-logo-1.svg" alt="Dealer 1">
+            </button>
+            <button class="cs-logo-btn" data-cs="1" aria-label="Dealer 2">
+              <img src="assets/dealer-logo-2.svg" alt="Dealer 2">
+            </button>
+            <button class="cs-logo-btn" data-cs="2" aria-label="Dealer 3">
+              <img src="assets/dealer-logo-3.svg" alt="Dealer 3">
+            </button>
+            <button class="cs-logo-btn" data-cs="3" aria-label="Dealer 4">
+              <img src="assets/dealer-logo-4.svg" alt="Dealer 4">
+            </button>
+          </div>
+          <a href="case-studies.html" class="btn-primary cs-view-btn">View Results</a>
+        </div>
+
+        <!-- Right: active case study detail -->
+        <div class="cs-detail" id="cs-detail">
+          <div class="cs-detail-top">
+            <img class="cs-detail-logo" id="cs-detail-logo" src="assets/dealer-logo-1.svg" alt="">
+          </div>
+          <div class="cs-detail-stats" id="cs-detail-stats"></div>
+          <div class="cs-detail-divider"></div>
+          <blockquote class="cs-detail-quote" id="cs-detail-quote"></blockquote>
+          <div class="cs-detail-attribution" id="cs-detail-attribution"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <div class="cta-glow"></div>
+    <div class="section-container cta-inner">
+      <div class="cta-tag" data-animation="fade-up">Ready to grow?</div>
+      <h2 class="cta-title" data-animation="fade-up" data-delay="0.1">Give your dealership<br>the edge it deserves.</h2>
+      <p class="cta-sub" data-animation="fade-up" data-delay="0.2">Join 500+ dealers already using DealerEdge to win more customers, close more deals, and grow faster.</p>
+      <div data-animation="fade-up" data-delay="0.3">
+        <a href="#contact" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+
+    <!-- Game banner -->
+    <div class="footer-game-banner">
+      <div class="footer-game-banner-inner">
+        <div class="footer-game-text">
+          <span class="footer-game-eyebrow">Take a break</span>
+          <p class="footer-game-headline">Since DealerEdge is doing all the work, relax and enjoy.</p>
+        </div>
+        <button class="footer-game-btn" id="footer-play-game" onclick="window.openFishingGame && window.openFishingGame()">
+          Play Game
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polygon points="5,2 14,8 5,14" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main footer body -->
+    <div class="footer-body">
+      <div class="footer-inner">
+
+        <!-- Col 1: brand -->
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">Built for dealers who move fast.</p>
+        </div>
+
+        <!-- Col 2: nav -->
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+
+        <!-- Col 3: newsletter -->
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Copyright bar -->
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Journey Detail Modal -->
+  <div class="modal-backdrop modal-backdrop--wide" id="journey-modal-backdrop" aria-hidden="true">
+    <div class="modal modal--wide" id="journey-modal" role="dialog" aria-modal="true" aria-labelledby="journey-modal-title">
+
+      <!-- Awareness -->
+      <div class="jm-layout" data-journey-content="Awareness">
+        <div class="jm-image jm-image--diagram">
+          <svg class="jm-journey-diagram" viewBox="-36 -36 240 492" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Animated background dashes (horizontal) -->
+            <line class="jm-bg-dash"                 x1="4" y1="28"  x2="164" y2="28"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="56"  x2="164" y2="56"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="84"  x2="164" y2="84"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="112" x2="164" y2="112"/>
+            <line class="jm-bg-dash"                 x1="4" y1="144" x2="164" y2="144"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="174" x2="164" y2="174"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="210" x2="164" y2="210"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="246" x2="164" y2="246"/>
+            <line class="jm-bg-dash"                 x1="4" y1="279" x2="164" y2="279"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="318" x2="164" y2="318"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="357" x2="164" y2="357"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="396" x2="164" y2="396"/>
+            <!-- Fluid S-curve connector paths -->
+            <g class="jm-seg jm-seg--1">
+              <path d="M 34 60 C 34 81 134 81 134 102" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--2">
+              <path d="M 134 150 C 134 171 34 171 34 192" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--3">
+              <path d="M 34 240 C 34 261 134 261 134 282" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--4">
+              <path d="M 134 330 C 134 351 34 351 34 372" class="jm-seg-path"/>
+            </g>
+            <!-- Awareness — Megaphone (left col, top) -->
+            <g class="jm-diag-node" data-node="Awareness">
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,12) scale(0.3333)" fill="currentColor">
+                <path d="M99.59,40.67c.4-.31.91-.44,1.41-.37.51.07.95.33,1.26.73.63.83.47,2.03-.36,2.67l-3.88,2.95c-.33.26-.74.39-1.15.39-.09,0-.17,0-.26-.02-.51-.07-.95-.33-1.26-.73-.63-.83-.47-2.03.36-2.66l3.88-2.95ZM99.44,52.43c.36.61,1,.95,1.66.95.32,0,.65-.08.95-.26l8.44-4.87c.45-.26.76-.67.89-1.16.13-.49.06-1-.2-1.44-.25-.44-.66-.75-1.15-.89-.49-.13-1.01-.06-1.44.19l-8.45,4.88c-.9.53-1.22,1.69-.69,2.6ZM91.56,40.97c.49,0,.98-.19,1.35-.56h0s6.9-6.9,6.9-6.9c.36-.36.56-.84.56-1.35s-.2-.99-.56-1.35c-.74-.74-1.95-.74-2.69,0l-6.9,6.89c-.36.36-.56.84-.56,1.35s.2.99.56,1.35c.37.37.86.56,1.35.56ZM109.87,58.62c.97-.4,1.44-1.51,1.04-2.49-.41-.96-1.52-1.43-2.48-1.03l-4.52,1.85c-.97.4-1.43,1.51-1.03,2.48.19.47.56.84,1.02,1.03.24.1.49.15.74.15s.49-.05.72-.14l4.51-1.85ZM103.13,70.42c1.17,5.92.25,10.11-2.6,11.8-.74.45-1.6.7-2.53.74l-43.89,10.6,6.43,10.91c.87,1.48,1.1,3.32.62,5.06-.45,1.64-1.47,2.96-2.87,3.73-.99.58-2.11.89-3.24.89-.55,0-1.1-.07-1.64-.21-1.65-.43-3.02-1.46-3.87-2.91l-7.26-12.3c-5.08.75-10.41-1.78-13.06-6.26-3.66-6.16-1.64-14.15,4.52-17.81l4.86-2.89,31.95-35.57c.41-.62.98-1.17,1.65-1.57,2.85-1.69,6.97-.5,11.61,3.35,8.5,7.06,17.17,21.61,19.32,32.45ZM35.68,77.92c-4.35,2.59-5.79,8.25-3.2,12.61,1.23,2.05,3.39,3.63,5.79,4.24,1.63.41,4.14.57,6.83-1.03l3.5-2.08-3.92-6.59h0s-5.49-9.23-5.49-9.23l-3.51,2.08ZM46.01,97.56l6.8,11.54c.72,1.21,2.32,1.61,3.56.88,1.23-.73,1.63-2.33.9-3.57l-6.75-11.47-3.47,2.07c-.34.2-.68.39-1.03.56ZM82.13,71.74c-4.61-5.83-10.66-15.96-12.52-25.32-.21-1.06-.35-2.07-.43-3.01l-26.99,30.05,9.92,16.67,39.23-9.47c-3.66-2.39-6.99-6.1-9.22-8.92ZM76.9,56.02c1.9,4.08,4.39,8.26,7.07,11.87,1.94-2.2,2.36-5.36,1.04-8.03-1.51-3.04-4.85-4.6-8.1-3.85ZM91.35,75.95c2.43,2.02,4.59,3.18,6.06,3.25.43.02.88-.07,1.17-.24,1.33-.79,1.63-3.64.8-7.8-2.01-10.1-10.09-23.68-18.01-30.26-3.27-2.71-5.91-3.81-7.24-3.01-1.33.79-1.62,3.64-.8,7.8.41,2.06,1.1,4.34,2.04,6.79,5.11-1.5,10.64.89,13.03,5.69h0c2.11,4.24,1.25,9.41-2.06,12.74,1.66,1.97,3.34,3.66,5,5.04ZM118.33,62.91c-.13-.49-.44-.9-.88-1.16-.44-.26-.96-.33-1.45-.19l-9.42,2.52c-.49.13-.9.45-1.16.89-.26.44-.32.95-.19,1.45.23.85,1,1.41,1.84,1.41.16,0,.33-.02.49-.06l9.42-2.52c.49-.13.9-.45,1.15-.89.25-.44.32-.95.19-1.44Z"/>
+              </g>
+            </g>
+            <!-- Consideration — Magnifying Glass (right col) -->
+            <g class="jm-diag-node" data-node="Consideration">
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,102) scale(0.3333)" fill="currentColor">
+                <path d="M105.07,57.71l-2.8,2.8,9.6,9.6h-47.4l28.3-27.6v13.6h4v-20.4h-20.4v4h13.5l-31.1,30.4h-12.7c-1.1-5.64-6.57-9.31-12.21-8.21-5.64,1.1-9.31,6.57-8.21,12.21s6.57,9.31,12.21,8.21c4.15-.81,7.39-4.06,8.21-8.21h12.8l31.1,30.4h-13.5v4h20.4v-20.4h-4v13.6l-28.3-27.6h47.3l-9.6,9.6,2.8,2.8,14.4-14.4-14.4-14.4ZM35.87,78.51c-3.53,0-6.4-2.87-6.4-6.4,0-3.53,2.87-6.4,6.4-6.4s6.4,2.87,6.4,6.4-2.87,6.4-6.4,6.4h0Z"/>
+              </g>
+            </g>
+            <!-- Purchase — Credit Card (left col) -->
+            <g class="jm-diag-node" data-node="Purchase">
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,192) scale(0.3333)" fill="currentColor">
+                <path d="M37.65,85.76c0-1.18.96-2.15,2.15-2.15h25.33c1.18,0,2.15.96,2.15,2.15s-.96,2.15-2.15,2.15h-25.33c-1.18,0-2.15-.97-2.15-2.15ZM75.94,83.67c-.33-.39-.52-.89-.52-1.41v-42.76c-.09-2.9,1.02-5.77,3.05-7.86,2.03-2.09,4.87-3.29,7.78-3.29s5.75,1.2,7.78,3.29c2.03,2.1,3.14,4.97,3.05,7.88v42.75c0,.5-.17,1-.5,1.4l-8.68,10.13c-.4.48-1,.76-1.63.76s-1.24-.28-1.64-.76l-8.67-10.13ZM80.97,82.9l5.31,6.19,5.26-6.14-5.26-3.66-5.3,3.61ZM85.04,74.91c.37-.25.79-.38,1.22-.38s.85.13,1.22.38l5.29,3.69v-39.09c0-3.6-2.92-6.53-6.52-6.53s-6.52,2.93-6.52,6.53v39.02s5.32-3.62,5.32-3.62ZM39.76,79.81h.04s16.31,0,16.31,0c1.12-.09,1.99-1.03,1.99-2.15s-.88-2.07-2.03-2.16h-16.31c-1.12.09-1.99,1.03-1.99,2.16s.88,2.06,1.99,2.15ZM114.46,62.41c-1.73-1.72-4.02-2.67-6.45-2.67h-6.27c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15h6.25c2.66,0,4.82,2.17,4.82,4.82v37.89c0,2.65-2.17,4.81-4.82,4.82H35.99c-2.66,0-4.82-2.17-4.82-4.82v-37.86c0-2.65,2.17-4.82,4.82-4.82h33.4c1.19,0,2.15-.97,2.15-2.15s-.97-2.15-2.15-2.15h-33.4c-5,0-9.1,4.08-9.12,9.09v37.89c0,5.02,4.1,9.11,9.12,9.12h72.02c2.43,0,4.72-.95,6.45-2.67,1.7-1.7,2.68-4.05,2.68-6.46v-37.89c0-2.4-.98-4.76-2.68-6.46ZM39.8,104.13h62.87c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-62.87c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15ZM39.8,96.02h25.33c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-25.33c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15Z"/>
+              </g>
+            </g>
+            <!-- Post-Purchase — Chat + Check (right col) -->
+            <g class="jm-diag-node" data-node="Post-Purchase">
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,282) scale(0.3333)" fill="currentColor">
+                <path d="M50.05,79.51c0,1.11-.9,2-2.01,2.01h-15.54c-1.11,0-2-.9-2-2.01,0-1.11.89-2.01,2-2.02h15.54s0,0,0,0c1.11,0,2.01.91,2,2.02ZM130.29,44.5v26.3c0,5.11-4.1,9.31-9.17,9.31h-2.09v11.47c0,.47-.16.92-.46,1.28-.71.85-1.98.97-2.83.26l-15.45-13.01h-19.39v6.16c0,5.1-4.09,9.32-9.15,9.32h-28.03l-15.44,12.99c-.36.31-.82.47-1.29.48-1.11,0-2.01-.89-2.02-2v-11.46h-2.09c-5.06,0-9.15-4.21-9.15-9.32v-26.3c0-5.11,4.09-9.32,9.15-9.32h40.23v-6.15c0-5.1,4.1-9.32,9.16-9.32h48.86c5.06,0,9.17,4.21,9.17,9.32ZM76.88,59.97c0-3-2.27-5.29-5.13-5.29H22.88c-2.86,0-5.13,2.3-5.13,5.29v26.3c0,2.99,2.27,5.29,5.13,5.29h4.1c1.11,0,2.01.9,2.01,2.01v9.16l12.71-10.69c.36-.3.82-.47,1.29-.47h28.76c2.86,0,5.13-2.3,5.13-5.29v-26.3ZM126.27,44.5c0-2.99-2.29-5.29-5.15-5.29h-48.86c-2.86,0-5.14,2.3-5.14,5.29v6.15h4.63c5.06,0,9.15,4.21,9.15,9.32v16.12h20.13c.47,0,.93.17,1.29.47l12.69,10.68v-9.14s0-.01,0-.02c0-1.11.91-2.01,2.02-2h4.09c2.86,0,5.15-2.3,5.15-5.29v-26.3ZM62.12,63.83h-29.62c-1.11,0-2.01.91-2,2.02,0,1.11.9,2,2,2.01h29.6c1.11,0,2.01-.89,2.02-2h0c0-1.11-.89-2.02-2-2.02Z"/>
+              </g>
+            </g>
+            <!-- Loyalty — Crown (left col, bottom) -->
+            <g class="jm-diag-node" data-node="Loyalty">
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,372) scale(0.3333)" fill="currentColor">
+                <path d="M80.67,65.72c.82.82.82,2.14,0,2.89l-10.06,9.98c-.41.41-.91.58-1.48.58s-1.07-.25-1.48-.58l-4.21-4.21c-.82-.82-.82-2.14,0-2.89.82-.82,2.14-.82,2.89,0l2.72,2.8,8.58-8.49c.99-.91,2.23-.91,3.05-.08ZM109.36,75.29c1.15,1.57,1.57,3.46,1.15,5.36-.41,1.81-1.65,3.46-3.3,4.37l-2.06,1.15c-.91.49-1.4,1.57-1.24,2.64l.41,2.31c.33,1.81-.16,3.79-1.32,5.28-1.15,1.48-2.97,2.47-4.87,2.56l-2.39.16c-1.07.08-2.06.82-2.31,1.9l-.66,2.31c-.82,2.89-3.46,4.87-6.43,4.87-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.99-.41-2.23-.16-2.89.66l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31s-3.71-.82-4.95-2.23l-1.57-1.81c-.74-.82-1.9-1.07-2.89-.66l-2.23.91c-.82.41-1.73.58-2.64.58-2.97,0-5.61-1.98-6.43-4.78l-.66-2.31c-.25-1.07-1.24-1.73-2.31-1.81l-2.39-.08c-1.9-.08-3.63-.99-4.87-2.47-1.24-1.48-1.73-3.38-1.4-5.28l.41-2.31c.16-1.07-.33-2.14-1.32-2.64l-2.06-1.15c-1.65-.91-2.89-2.47-3.3-4.37-.41-1.81,0-3.79,1.07-5.36l1.4-1.98c.66-.91.66-2.06,0-2.97l-1.4-1.9c-1.15-1.57-1.57-3.46-1.15-5.36.41-1.81,1.65-3.46,3.3-4.37l2.06-1.15c.91-.49,1.4-1.57,1.24-2.64l-.41-2.31c-.33-1.81.16-3.79,1.32-5.28,1.15-1.48,2.97-2.47,4.87-2.56l2.39-.16c1.07-.08,2.06-.82,2.31-1.9l.66-2.31c.82-2.89,3.46-4.87,6.43-4.87.91,0,1.73.16,2.56.49l2.23.91c.99.41,2.23.16,2.89-.66l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31s3.71.82,4.95,2.23l1.57,1.81c.74.74,1.98,1.07,2.89.66l2.23-.91c.82-.41,1.73-.58,2.64-.58,2.97,0,5.53,1.9,6.43,4.87l.66,2.31c.25,1.07,1.24,1.73,2.31,1.81l2.39.08c1.9.08,3.63.99,4.87,2.47s1.73,3.38,1.4,5.28l-.41,2.31c-.16,1.07.33,2.14,1.32,2.64l2.23,1.07c1.65.91,2.89,2.47,3.3,4.37.41,1.81,0,3.79-1.07,5.36l-1.4,1.98c-.66.91-.66,2.06,0,2.97l1.24,1.9ZM106.23,77.68l-1.4-1.9c-1.73-2.31-1.73-5.44-.08-7.75l1.32-1.98c.41-.58.58-1.32.41-2.06s-.58-1.32-1.24-1.65l-2.06-1.15c-2.56-1.4-3.96-4.21-3.46-7.01l.41-2.31c.16-.66,0-1.4-.49-1.98-.49-.58-1.15-.91-1.9-.91l-2.39-.08c-2.89-.08-5.28-2.06-6.1-4.78l-.66-2.31c-.33-1.07-1.32-1.81-2.47-1.81h-.91l-2.23.91c-.82.41-1.73.58-2.64.58-1.9,0-3.71-.82-4.95-2.23l-1.57-1.81c-.49-.49-1.15-.82-1.9-.82s-1.4.33-1.9.91l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.33-.08-.66-.16-.99-.16-1.15,0-2.14.82-2.47,1.9l-.66,2.31c-.74,2.72-3.13,4.7-6.02,4.87l-2.39.16c-.74.08-1.32.41-1.81.99-.41.58-.66,1.32-.49,2.06l.49,2.39c.58,2.8-.82,5.61-3.3,7.01l-2.06,1.15c-.66.33-1.07.91-1.24,1.65-.16.74,0,1.48.41,2.06l1.4,1.9c1.73,2.31,1.73,5.44.08,7.75l-1.4,1.98c-.41.58-.58,1.32-.41,2.06s.58,1.32,1.24,1.65l2.06,1.15c2.56,1.4,3.96,4.21,3.46,7.01l-.41,2.31c-.16.66,0,1.4.49,1.98.49.58,1.15.91,1.9.91l2.31.08c2.89.08,5.28,2.06,6.1,4.78l.66,2.31c.33,1.07,1.32,1.81,2.47,1.81.33,0,.66,0,.99-.08l2.23-.91c.82-.41,1.73-.58,2.64-.58,1.9,0,3.71.82,4.95,2.23l1.57,1.81c.49.49,1.15.82,1.9.82s1.4-.33,1.9-.91l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31.91,0,1.73.16,2.56.49l2.23.91c.33.08.66.16.99.16,1.15,0,2.14-.82,2.47-1.9l.66-2.31c.74-2.72,3.13-4.7,6.02-4.87l2.39-.16c.74-.08,1.4-.41,1.81-.99.41-.58.66-1.32.49-2.06l-.41-2.31c-.58-2.8.82-5.61,3.3-7.01l2.06-1.15c.66-.33,1.07-.91,1.24-1.65.08-.74,0-1.4-.41-2.06ZM95.43,72.15c0,12.86-10.47,23.34-23.34,23.34s-23.34-10.47-23.34-23.34,10.47-23.34,23.34-23.34,23.34,10.47,23.34,23.34ZM91.3,72.15c0-10.64-8.58-19.21-19.21-19.21s-19.21,8.66-19.21,19.21,8.58,19.21,19.21,19.21,19.21-8.58,19.21-19.21Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="jm-right">
+          <div class="jm-content">
+            <button class="modal-close jm-close" id="journey-modal-close" aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <span class="modal-eyebrow">Customer Journey · Awareness</span>
+            <h2 class="jm-headline">Be Found First</h2>
+            <p class="jm-body">At the earliest stage, customers are searching, browsing, and discovering options. DealerEdge ensures your dealership dominates visibility across search engines, third-party marketplaces, and digital ads. AI-powered SEO/AIO content, optimized listings, and high-performing ad creative work together to attract high-intent buyers before they ever reach a competitor.</p>
+            <div class="jm-list">
+              <p class="jm-list-title">Brand Assets</p>
+              <ul>
+                <li>SEO-driven blog articles and landing pages</li>
+                <li>AI-generated ad creatives (display, social, video snippets)</li>
+                <li>High-ranking third-party listings (BoatTrader, RVTrader, etc.)</li>
+                <li>Keyword-optimized product pages</li>
+                <li>Brand-consistent imagery (studio-quality product visuals)</li>
+                <li>Short-form social content (reels, posts, teaser clips)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="jm-nav">
+            <div></div>
+            <button class="jm-nav-btn jm-nav-next" data-nav-to="Consideration">
+              <span>Consideration</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consideration -->
+      <div class="jm-layout" data-journey-content="Consideration" style="display:none">
+        <div class="jm-image jm-image--diagram">
+          <svg class="jm-journey-diagram" viewBox="-36 -36 240 492" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Animated background dashes (horizontal) -->
+            <line class="jm-bg-dash"                 x1="4" y1="28"  x2="164" y2="28"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="56"  x2="164" y2="56"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="84"  x2="164" y2="84"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="112" x2="164" y2="112"/>
+            <line class="jm-bg-dash"                 x1="4" y1="144" x2="164" y2="144"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="174" x2="164" y2="174"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="210" x2="164" y2="210"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="246" x2="164" y2="246"/>
+            <line class="jm-bg-dash"                 x1="4" y1="279" x2="164" y2="279"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="318" x2="164" y2="318"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="357" x2="164" y2="357"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="396" x2="164" y2="396"/>
+            <!-- Fluid S-curve connector paths -->
+            <g class="jm-seg jm-seg--1">
+              <path d="M 34 60 C 34 81 134 81 134 102" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--2">
+              <path d="M 134 150 C 134 171 34 171 34 192" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--3">
+              <path d="M 34 240 C 34 261 134 261 134 282" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--4">
+              <path d="M 134 330 C 134 351 34 351 34 372" class="jm-seg-path"/>
+            </g>
+            <!-- Awareness — Megaphone (left col, top) -->
+            <g class="jm-diag-node" data-node="Awareness">
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,12) scale(0.3333)" fill="currentColor">
+                <path d="M99.59,40.67c.4-.31.91-.44,1.41-.37.51.07.95.33,1.26.73.63.83.47,2.03-.36,2.67l-3.88,2.95c-.33.26-.74.39-1.15.39-.09,0-.17,0-.26-.02-.51-.07-.95-.33-1.26-.73-.63-.83-.47-2.03.36-2.66l3.88-2.95ZM99.44,52.43c.36.61,1,.95,1.66.95.32,0,.65-.08.95-.26l8.44-4.87c.45-.26.76-.67.89-1.16.13-.49.06-1-.2-1.44-.25-.44-.66-.75-1.15-.89-.49-.13-1.01-.06-1.44.19l-8.45,4.88c-.9.53-1.22,1.69-.69,2.6ZM91.56,40.97c.49,0,.98-.19,1.35-.56h0s6.9-6.9,6.9-6.9c.36-.36.56-.84.56-1.35s-.2-.99-.56-1.35c-.74-.74-1.95-.74-2.69,0l-6.9,6.89c-.36.36-.56.84-.56,1.35s.2.99.56,1.35c.37.37.86.56,1.35.56ZM109.87,58.62c.97-.4,1.44-1.51,1.04-2.49-.41-.96-1.52-1.43-2.48-1.03l-4.52,1.85c-.97.4-1.43,1.51-1.03,2.48.19.47.56.84,1.02,1.03.24.1.49.15.74.15s.49-.05.72-.14l4.51-1.85ZM103.13,70.42c1.17,5.92.25,10.11-2.6,11.8-.74.45-1.6.7-2.53.74l-43.89,10.6,6.43,10.91c.87,1.48,1.1,3.32.62,5.06-.45,1.64-1.47,2.96-2.87,3.73-.99.58-2.11.89-3.24.89-.55,0-1.1-.07-1.64-.21-1.65-.43-3.02-1.46-3.87-2.91l-7.26-12.3c-5.08.75-10.41-1.78-13.06-6.26-3.66-6.16-1.64-14.15,4.52-17.81l4.86-2.89,31.95-35.57c.41-.62.98-1.17,1.65-1.57,2.85-1.69,6.97-.5,11.61,3.35,8.5,7.06,17.17,21.61,19.32,32.45ZM35.68,77.92c-4.35,2.59-5.79,8.25-3.2,12.61,1.23,2.05,3.39,3.63,5.79,4.24,1.63.41,4.14.57,6.83-1.03l3.5-2.08-3.92-6.59h0s-5.49-9.23-5.49-9.23l-3.51,2.08ZM46.01,97.56l6.8,11.54c.72,1.21,2.32,1.61,3.56.88,1.23-.73,1.63-2.33.9-3.57l-6.75-11.47-3.47,2.07c-.34.2-.68.39-1.03.56ZM82.13,71.74c-4.61-5.83-10.66-15.96-12.52-25.32-.21-1.06-.35-2.07-.43-3.01l-26.99,30.05,9.92,16.67,39.23-9.47c-3.66-2.39-6.99-6.1-9.22-8.92ZM76.9,56.02c1.9,4.08,4.39,8.26,7.07,11.87,1.94-2.2,2.36-5.36,1.04-8.03-1.51-3.04-4.85-4.6-8.1-3.85ZM91.35,75.95c2.43,2.02,4.59,3.18,6.06,3.25.43.02.88-.07,1.17-.24,1.33-.79,1.63-3.64.8-7.8-2.01-10.1-10.09-23.68-18.01-30.26-3.27-2.71-5.91-3.81-7.24-3.01-1.33.79-1.62,3.64-.8,7.8.41,2.06,1.1,4.34,2.04,6.79,5.11-1.5,10.64.89,13.03,5.69h0c2.11,4.24,1.25,9.41-2.06,12.74,1.66,1.97,3.34,3.66,5,5.04ZM118.33,62.91c-.13-.49-.44-.9-.88-1.16-.44-.26-.96-.33-1.45-.19l-9.42,2.52c-.49.13-.9.45-1.16.89-.26.44-.32.95-.19,1.45.23.85,1,1.41,1.84,1.41.16,0,.33-.02.49-.06l9.42-2.52c.49-.13.9-.45,1.15-.89.25-.44.32-.95.19-1.44Z"/>
+              </g>
+            </g>
+            <!-- Consideration — Magnifying Glass (right col) -->
+            <g class="jm-diag-node" data-node="Consideration">
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,102) scale(0.3333)" fill="currentColor">
+                <path d="M105.07,57.71l-2.8,2.8,9.6,9.6h-47.4l28.3-27.6v13.6h4v-20.4h-20.4v4h13.5l-31.1,30.4h-12.7c-1.1-5.64-6.57-9.31-12.21-8.21-5.64,1.1-9.31,6.57-8.21,12.21s6.57,9.31,12.21,8.21c4.15-.81,7.39-4.06,8.21-8.21h12.8l31.1,30.4h-13.5v4h20.4v-20.4h-4v13.6l-28.3-27.6h47.3l-9.6,9.6,2.8,2.8,14.4-14.4-14.4-14.4ZM35.87,78.51c-3.53,0-6.4-2.87-6.4-6.4,0-3.53,2.87-6.4,6.4-6.4s6.4,2.87,6.4,6.4-2.87,6.4-6.4,6.4h0Z"/>
+              </g>
+            </g>
+            <!-- Purchase — Credit Card (left col) -->
+            <g class="jm-diag-node" data-node="Purchase">
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,192) scale(0.3333)" fill="currentColor">
+                <path d="M37.65,85.76c0-1.18.96-2.15,2.15-2.15h25.33c1.18,0,2.15.96,2.15,2.15s-.96,2.15-2.15,2.15h-25.33c-1.18,0-2.15-.97-2.15-2.15ZM75.94,83.67c-.33-.39-.52-.89-.52-1.41v-42.76c-.09-2.9,1.02-5.77,3.05-7.86,2.03-2.09,4.87-3.29,7.78-3.29s5.75,1.2,7.78,3.29c2.03,2.1,3.14,4.97,3.05,7.88v42.75c0,.5-.17,1-.5,1.4l-8.68,10.13c-.4.48-1,.76-1.63.76s-1.24-.28-1.64-.76l-8.67-10.13ZM80.97,82.9l5.31,6.19,5.26-6.14-5.26-3.66-5.3,3.61ZM85.04,74.91c.37-.25.79-.38,1.22-.38s.85.13,1.22.38l5.29,3.69v-39.09c0-3.6-2.92-6.53-6.52-6.53s-6.52,2.93-6.52,6.53v39.02s5.32-3.62,5.32-3.62ZM39.76,79.81h.04s16.31,0,16.31,0c1.12-.09,1.99-1.03,1.99-2.15s-.88-2.07-2.03-2.16h-16.31c-1.12.09-1.99,1.03-1.99,2.16s.88,2.06,1.99,2.15ZM114.46,62.41c-1.73-1.72-4.02-2.67-6.45-2.67h-6.27c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15h6.25c2.66,0,4.82,2.17,4.82,4.82v37.89c0,2.65-2.17,4.81-4.82,4.82H35.99c-2.66,0-4.82-2.17-4.82-4.82v-37.86c0-2.65,2.17-4.82,4.82-4.82h33.4c1.19,0,2.15-.97,2.15-2.15s-.97-2.15-2.15-2.15h-33.4c-5,0-9.1,4.08-9.12,9.09v37.89c0,5.02,4.1,9.11,9.12,9.12h72.02c2.43,0,4.72-.95,6.45-2.67,1.7-1.7,2.68-4.05,2.68-6.46v-37.89c0-2.4-.98-4.76-2.68-6.46ZM39.8,104.13h62.87c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-62.87c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15ZM39.8,96.02h25.33c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-25.33c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15Z"/>
+              </g>
+            </g>
+            <!-- Post-Purchase — Chat + Check (right col) -->
+            <g class="jm-diag-node" data-node="Post-Purchase">
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,282) scale(0.3333)" fill="currentColor">
+                <path d="M50.05,79.51c0,1.11-.9,2-2.01,2.01h-15.54c-1.11,0-2-.9-2-2.01,0-1.11.89-2.01,2-2.02h15.54s0,0,0,0c1.11,0,2.01.91,2,2.02ZM130.29,44.5v26.3c0,5.11-4.1,9.31-9.17,9.31h-2.09v11.47c0,.47-.16.92-.46,1.28-.71.85-1.98.97-2.83.26l-15.45-13.01h-19.39v6.16c0,5.1-4.09,9.32-9.15,9.32h-28.03l-15.44,12.99c-.36.31-.82.47-1.29.48-1.11,0-2.01-.89-2.02-2v-11.46h-2.09c-5.06,0-9.15-4.21-9.15-9.32v-26.3c0-5.11,4.09-9.32,9.15-9.32h40.23v-6.15c0-5.1,4.1-9.32,9.16-9.32h48.86c5.06,0,9.17,4.21,9.17,9.32ZM76.88,59.97c0-3-2.27-5.29-5.13-5.29H22.88c-2.86,0-5.13,2.3-5.13,5.29v26.3c0,2.99,2.27,5.29,5.13,5.29h4.1c1.11,0,2.01.9,2.01,2.01v9.16l12.71-10.69c.36-.3.82-.47,1.29-.47h28.76c2.86,0,5.13-2.3,5.13-5.29v-26.3ZM126.27,44.5c0-2.99-2.29-5.29-5.15-5.29h-48.86c-2.86,0-5.14,2.3-5.14,5.29v6.15h4.63c5.06,0,9.15,4.21,9.15,9.32v16.12h20.13c.47,0,.93.17,1.29.47l12.69,10.68v-9.14s0-.01,0-.02c0-1.11.91-2.01,2.02-2h4.09c2.86,0,5.15-2.3,5.15-5.29v-26.3ZM62.12,63.83h-29.62c-1.11,0-2.01.91-2,2.02,0,1.11.9,2,2,2.01h29.6c1.11,0,2.01-.89,2.02-2h0c0-1.11-.89-2.02-2-2.02Z"/>
+              </g>
+            </g>
+            <!-- Loyalty — Crown (left col, bottom) -->
+            <g class="jm-diag-node" data-node="Loyalty">
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,372) scale(0.3333)" fill="currentColor">
+                <path d="M80.67,65.72c.82.82.82,2.14,0,2.89l-10.06,9.98c-.41.41-.91.58-1.48.58s-1.07-.25-1.48-.58l-4.21-4.21c-.82-.82-.82-2.14,0-2.89.82-.82,2.14-.82,2.89,0l2.72,2.8,8.58-8.49c.99-.91,2.23-.91,3.05-.08ZM109.36,75.29c1.15,1.57,1.57,3.46,1.15,5.36-.41,1.81-1.65,3.46-3.3,4.37l-2.06,1.15c-.91.49-1.4,1.57-1.24,2.64l.41,2.31c.33,1.81-.16,3.79-1.32,5.28-1.15,1.48-2.97,2.47-4.87,2.56l-2.39.16c-1.07.08-2.06.82-2.31,1.9l-.66,2.31c-.82,2.89-3.46,4.87-6.43,4.87-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.99-.41-2.23-.16-2.89.66l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31s-3.71-.82-4.95-2.23l-1.57-1.81c-.74-.82-1.9-1.07-2.89-.66l-2.23.91c-.82.41-1.73.58-2.64.58-2.97,0-5.61-1.98-6.43-4.78l-.66-2.31c-.25-1.07-1.24-1.73-2.31-1.81l-2.39-.08c-1.9-.08-3.63-.99-4.87-2.47-1.24-1.48-1.73-3.38-1.4-5.28l.41-2.31c.16-1.07-.33-2.14-1.32-2.64l-2.06-1.15c-1.65-.91-2.89-2.47-3.3-4.37-.41-1.81,0-3.79,1.07-5.36l1.4-1.98c.66-.91.66-2.06,0-2.97l-1.4-1.9c-1.15-1.57-1.57-3.46-1.15-5.36.41-1.81,1.65-3.46,3.3-4.37l2.06-1.15c.91-.49,1.4-1.57,1.24-2.64l-.41-2.31c-.33-1.81.16-3.79,1.32-5.28,1.15-1.48,2.97-2.47,4.87-2.56l2.39-.16c1.07-.08,2.06-.82,2.31-1.9l.66-2.31c.82-2.89,3.46-4.87,6.43-4.87.91,0,1.73.16,2.56.49l2.23.91c.99.41,2.23.16,2.89-.66l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31s3.71.82,4.95,2.23l1.57,1.81c.74.74,1.98,1.07,2.89.66l2.23-.91c.82-.41,1.73-.58,2.64-.58,2.97,0,5.53,1.9,6.43,4.87l.66,2.31c.25,1.07,1.24,1.73,2.31,1.81l2.39.08c1.9.08,3.63.99,4.87,2.47s1.73,3.38,1.4,5.28l-.41,2.31c-.16,1.07.33,2.14,1.32,2.64l2.23,1.07c1.65.91,2.89,2.47,3.3,4.37.41,1.81,0,3.79-1.07,5.36l-1.4,1.98c-.66.91-.66,2.06,0,2.97l1.24,1.9ZM106.23,77.68l-1.4-1.9c-1.73-2.31-1.73-5.44-.08-7.75l1.32-1.98c.41-.58.58-1.32.41-2.06s-.58-1.32-1.24-1.65l-2.06-1.15c-2.56-1.4-3.96-4.21-3.46-7.01l.41-2.31c.16-.66,0-1.4-.49-1.98-.49-.58-1.15-.91-1.9-.91l-2.39-.08c-2.89-.08-5.28-2.06-6.1-4.78l-.66-2.31c-.33-1.07-1.32-1.81-2.47-1.81h-.91l-2.23.91c-.82.41-1.73.58-2.64.58-1.9,0-3.71-.82-4.95-2.23l-1.57-1.81c-.49-.49-1.15-.82-1.9-.82s-1.4.33-1.9.91l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.33-.08-.66-.16-.99-.16-1.15,0-2.14.82-2.47,1.9l-.66,2.31c-.74,2.72-3.13,4.7-6.02,4.87l-2.39.16c-.74.08-1.32.41-1.81.99-.41.58-.66,1.32-.49,2.06l.49,2.39c.58,2.8-.82,5.61-3.3,7.01l-2.06,1.15c-.66.33-1.07.91-1.24,1.65-.16.74,0,1.48.41,2.06l1.4,1.9c1.73,2.31,1.73,5.44.08,7.75l-1.4,1.98c-.41.58-.58,1.32-.41,2.06s.58,1.32,1.24,1.65l2.06,1.15c2.56,1.4,3.96,4.21,3.46,7.01l-.41,2.31c-.16.66,0,1.4.49,1.98.49.58,1.15.91,1.9.91l2.31.08c2.89.08,5.28,2.06,6.1,4.78l.66,2.31c.33,1.07,1.32,1.81,2.47,1.81.33,0,.66,0,.99-.08l2.23-.91c.82-.41,1.73-.58,2.64-.58,1.9,0,3.71.82,4.95,2.23l1.57,1.81c.49.49,1.15.82,1.9.82s1.4-.33,1.9-.91l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31.91,0,1.73.16,2.56.49l2.23.91c.33.08.66.16.99.16,1.15,0,2.14-.82,2.47-1.9l.66-2.31c.74-2.72,3.13-4.7,6.02-4.87l2.39-.16c.74-.08,1.4-.41,1.81-.99.41-.58.66-1.32.49-2.06l-.41-2.31c-.58-2.8.82-5.61,3.3-7.01l2.06-1.15c.66-.33,1.07-.91,1.24-1.65.08-.74,0-1.4-.41-2.06ZM95.43,72.15c0,12.86-10.47,23.34-23.34,23.34s-23.34-10.47-23.34-23.34,10.47-23.34,23.34-23.34,23.34,10.47,23.34,23.34ZM91.3,72.15c0-10.64-8.58-19.21-19.21-19.21s-19.21,8.66-19.21,19.21,8.58,19.21,19.21,19.21,19.21-8.58,19.21-19.21Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="jm-right">
+          <div class="jm-content">
+            <button class="modal-close jm-close" aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <span class="modal-eyebrow">Customer Journey · Consideration</span>
+            <h2 class="jm-headline">Engage Every Shopper Instantly</h2>
+            <p class="jm-body">Once a customer lands on your site or submits an inquiry, speed and clarity are everything. DealerEdge activates real-time engagement across chat, text, email, and phone, answering questions, surfacing inventory, and guiding users toward the right product. Every interaction is intelligent, personalized, and designed to keep momentum moving forward.</p>
+            <div class="jm-list">
+              <p class="jm-list-title">Brand Assets</p>
+              <ul>
+                <li>High-conversion website UI/UX (fast, modern, OEM-grade design)</li>
+                <li>AI chat interface trained on inventory and product knowledge</li>
+                <li>Automated email/text response templates (personalized messaging)</li>
+                <li>Interactive inventory pages with filters and saved favorites</li>
+                <li>FAQ libraries generated from real customer questions</li>
+                <li>Retargeting ads showing recently viewed products</li>
+              </ul>
+            </div>
+          </div>
+          <div class="jm-nav">
+            <button class="jm-nav-btn jm-nav-prev" data-nav-to="Awareness">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>Awareness</span>
+            </button>
+            <button class="jm-nav-btn jm-nav-next" data-nav-to="Purchase">
+              <span>Purchase</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase -->
+      <div class="jm-layout" data-journey-content="Purchase" style="display:none">
+        <div class="jm-image jm-image--diagram">
+          <svg class="jm-journey-diagram" viewBox="-36 -36 240 492" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Animated background dashes (horizontal) -->
+            <line class="jm-bg-dash"                 x1="4" y1="28"  x2="164" y2="28"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="56"  x2="164" y2="56"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="84"  x2="164" y2="84"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="112" x2="164" y2="112"/>
+            <line class="jm-bg-dash"                 x1="4" y1="144" x2="164" y2="144"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="174" x2="164" y2="174"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="210" x2="164" y2="210"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="246" x2="164" y2="246"/>
+            <line class="jm-bg-dash"                 x1="4" y1="279" x2="164" y2="279"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="318" x2="164" y2="318"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="357" x2="164" y2="357"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="396" x2="164" y2="396"/>
+            <!-- Fluid S-curve connector paths -->
+            <g class="jm-seg jm-seg--1">
+              <path d="M 34 60 C 34 81 134 81 134 102" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--2">
+              <path d="M 134 150 C 134 171 34 171 34 192" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--3">
+              <path d="M 34 240 C 34 261 134 261 134 282" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--4">
+              <path d="M 134 330 C 134 351 34 351 34 372" class="jm-seg-path"/>
+            </g>
+            <!-- Awareness — Megaphone (left col, top) -->
+            <g class="jm-diag-node" data-node="Awareness">
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,12) scale(0.3333)" fill="currentColor">
+                <path d="M99.59,40.67c.4-.31.91-.44,1.41-.37.51.07.95.33,1.26.73.63.83.47,2.03-.36,2.67l-3.88,2.95c-.33.26-.74.39-1.15.39-.09,0-.17,0-.26-.02-.51-.07-.95-.33-1.26-.73-.63-.83-.47-2.03.36-2.66l3.88-2.95ZM99.44,52.43c.36.61,1,.95,1.66.95.32,0,.65-.08.95-.26l8.44-4.87c.45-.26.76-.67.89-1.16.13-.49.06-1-.2-1.44-.25-.44-.66-.75-1.15-.89-.49-.13-1.01-.06-1.44.19l-8.45,4.88c-.9.53-1.22,1.69-.69,2.6ZM91.56,40.97c.49,0,.98-.19,1.35-.56h0s6.9-6.9,6.9-6.9c.36-.36.56-.84.56-1.35s-.2-.99-.56-1.35c-.74-.74-1.95-.74-2.69,0l-6.9,6.89c-.36.36-.56.84-.56,1.35s.2.99.56,1.35c.37.37.86.56,1.35.56ZM109.87,58.62c.97-.4,1.44-1.51,1.04-2.49-.41-.96-1.52-1.43-2.48-1.03l-4.52,1.85c-.97.4-1.43,1.51-1.03,2.48.19.47.56.84,1.02,1.03.24.1.49.15.74.15s.49-.05.72-.14l4.51-1.85ZM103.13,70.42c1.17,5.92.25,10.11-2.6,11.8-.74.45-1.6.7-2.53.74l-43.89,10.6,6.43,10.91c.87,1.48,1.1,3.32.62,5.06-.45,1.64-1.47,2.96-2.87,3.73-.99.58-2.11.89-3.24.89-.55,0-1.1-.07-1.64-.21-1.65-.43-3.02-1.46-3.87-2.91l-7.26-12.3c-5.08.75-10.41-1.78-13.06-6.26-3.66-6.16-1.64-14.15,4.52-17.81l4.86-2.89,31.95-35.57c.41-.62.98-1.17,1.65-1.57,2.85-1.69,6.97-.5,11.61,3.35,8.5,7.06,17.17,21.61,19.32,32.45ZM35.68,77.92c-4.35,2.59-5.79,8.25-3.2,12.61,1.23,2.05,3.39,3.63,5.79,4.24,1.63.41,4.14.57,6.83-1.03l3.5-2.08-3.92-6.59h0s-5.49-9.23-5.49-9.23l-3.51,2.08ZM46.01,97.56l6.8,11.54c.72,1.21,2.32,1.61,3.56.88,1.23-.73,1.63-2.33.9-3.57l-6.75-11.47-3.47,2.07c-.34.2-.68.39-1.03.56ZM82.13,71.74c-4.61-5.83-10.66-15.96-12.52-25.32-.21-1.06-.35-2.07-.43-3.01l-26.99,30.05,9.92,16.67,39.23-9.47c-3.66-2.39-6.99-6.1-9.22-8.92ZM76.9,56.02c1.9,4.08,4.39,8.26,7.07,11.87,1.94-2.2,2.36-5.36,1.04-8.03-1.51-3.04-4.85-4.6-8.1-3.85ZM91.35,75.95c2.43,2.02,4.59,3.18,6.06,3.25.43.02.88-.07,1.17-.24,1.33-.79,1.63-3.64.8-7.8-2.01-10.1-10.09-23.68-18.01-30.26-3.27-2.71-5.91-3.81-7.24-3.01-1.33.79-1.62,3.64-.8,7.8.41,2.06,1.1,4.34,2.04,6.79,5.11-1.5,10.64.89,13.03,5.69h0c2.11,4.24,1.25,9.41-2.06,12.74,1.66,1.97,3.34,3.66,5,5.04ZM118.33,62.91c-.13-.49-.44-.9-.88-1.16-.44-.26-.96-.33-1.45-.19l-9.42,2.52c-.49.13-.9.45-1.16.89-.26.44-.32.95-.19,1.45.23.85,1,1.41,1.84,1.41.16,0,.33-.02.49-.06l9.42-2.52c.49-.13.9-.45,1.15-.89.25-.44.32-.95.19-1.44Z"/>
+              </g>
+            </g>
+            <!-- Consideration — Magnifying Glass (right col) -->
+            <g class="jm-diag-node" data-node="Consideration">
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,102) scale(0.3333)" fill="currentColor">
+                <path d="M105.07,57.71l-2.8,2.8,9.6,9.6h-47.4l28.3-27.6v13.6h4v-20.4h-20.4v4h13.5l-31.1,30.4h-12.7c-1.1-5.64-6.57-9.31-12.21-8.21-5.64,1.1-9.31,6.57-8.21,12.21s6.57,9.31,12.21,8.21c4.15-.81,7.39-4.06,8.21-8.21h12.8l31.1,30.4h-13.5v4h20.4v-20.4h-4v13.6l-28.3-27.6h47.3l-9.6,9.6,2.8,2.8,14.4-14.4-14.4-14.4ZM35.87,78.51c-3.53,0-6.4-2.87-6.4-6.4,0-3.53,2.87-6.4,6.4-6.4s6.4,2.87,6.4,6.4-2.87,6.4-6.4,6.4h0Z"/>
+              </g>
+            </g>
+            <!-- Purchase — Credit Card (left col) -->
+            <g class="jm-diag-node" data-node="Purchase">
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,192) scale(0.3333)" fill="currentColor">
+                <path d="M37.65,85.76c0-1.18.96-2.15,2.15-2.15h25.33c1.18,0,2.15.96,2.15,2.15s-.96,2.15-2.15,2.15h-25.33c-1.18,0-2.15-.97-2.15-2.15ZM75.94,83.67c-.33-.39-.52-.89-.52-1.41v-42.76c-.09-2.9,1.02-5.77,3.05-7.86,2.03-2.09,4.87-3.29,7.78-3.29s5.75,1.2,7.78,3.29c2.03,2.1,3.14,4.97,3.05,7.88v42.75c0,.5-.17,1-.5,1.4l-8.68,10.13c-.4.48-1,.76-1.63.76s-1.24-.28-1.64-.76l-8.67-10.13ZM80.97,82.9l5.31,6.19,5.26-6.14-5.26-3.66-5.3,3.61ZM85.04,74.91c.37-.25.79-.38,1.22-.38s.85.13,1.22.38l5.29,3.69v-39.09c0-3.6-2.92-6.53-6.52-6.53s-6.52,2.93-6.52,6.53v39.02s5.32-3.62,5.32-3.62ZM39.76,79.81h.04s16.31,0,16.31,0c1.12-.09,1.99-1.03,1.99-2.15s-.88-2.07-2.03-2.16h-16.31c-1.12.09-1.99,1.03-1.99,2.16s.88,2.06,1.99,2.15ZM114.46,62.41c-1.73-1.72-4.02-2.67-6.45-2.67h-6.27c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15h6.25c2.66,0,4.82,2.17,4.82,4.82v37.89c0,2.65-2.17,4.81-4.82,4.82H35.99c-2.66,0-4.82-2.17-4.82-4.82v-37.86c0-2.65,2.17-4.82,4.82-4.82h33.4c1.19,0,2.15-.97,2.15-2.15s-.97-2.15-2.15-2.15h-33.4c-5,0-9.1,4.08-9.12,9.09v37.89c0,5.02,4.1,9.11,9.12,9.12h72.02c2.43,0,4.72-.95,6.45-2.67,1.7-1.7,2.68-4.05,2.68-6.46v-37.89c0-2.4-.98-4.76-2.68-6.46ZM39.8,104.13h62.87c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-62.87c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15ZM39.8,96.02h25.33c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-25.33c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15Z"/>
+              </g>
+            </g>
+            <!-- Post-Purchase — Chat + Check (right col) -->
+            <g class="jm-diag-node" data-node="Post-Purchase">
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,282) scale(0.3333)" fill="currentColor">
+                <path d="M50.05,79.51c0,1.11-.9,2-2.01,2.01h-15.54c-1.11,0-2-.9-2-2.01,0-1.11.89-2.01,2-2.02h15.54s0,0,0,0c1.11,0,2.01.91,2,2.02ZM130.29,44.5v26.3c0,5.11-4.1,9.31-9.17,9.31h-2.09v11.47c0,.47-.16.92-.46,1.28-.71.85-1.98.97-2.83.26l-15.45-13.01h-19.39v6.16c0,5.1-4.09,9.32-9.15,9.32h-28.03l-15.44,12.99c-.36.31-.82.47-1.29.48-1.11,0-2.01-.89-2.02-2v-11.46h-2.09c-5.06,0-9.15-4.21-9.15-9.32v-26.3c0-5.11,4.09-9.32,9.15-9.32h40.23v-6.15c0-5.1,4.1-9.32,9.16-9.32h48.86c5.06,0,9.17,4.21,9.17,9.32ZM76.88,59.97c0-3-2.27-5.29-5.13-5.29H22.88c-2.86,0-5.13,2.3-5.13,5.29v26.3c0,2.99,2.27,5.29,5.13,5.29h4.1c1.11,0,2.01.9,2.01,2.01v9.16l12.71-10.69c.36-.3.82-.47,1.29-.47h28.76c2.86,0,5.13-2.3,5.13-5.29v-26.3ZM126.27,44.5c0-2.99-2.29-5.29-5.15-5.29h-48.86c-2.86,0-5.14,2.3-5.14,5.29v6.15h4.63c5.06,0,9.15,4.21,9.15,9.32v16.12h20.13c.47,0,.93.17,1.29.47l12.69,10.68v-9.14s0-.01,0-.02c0-1.11.91-2.01,2.02-2h4.09c2.86,0,5.15-2.3,5.15-5.29v-26.3ZM62.12,63.83h-29.62c-1.11,0-2.01.91-2,2.02,0,1.11.9,2,2,2.01h29.6c1.11,0,2.01-.89,2.02-2h0c0-1.11-.89-2.02-2-2.02Z"/>
+              </g>
+            </g>
+            <!-- Loyalty — Crown (left col, bottom) -->
+            <g class="jm-diag-node" data-node="Loyalty">
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,372) scale(0.3333)" fill="currentColor">
+                <path d="M80.67,65.72c.82.82.82,2.14,0,2.89l-10.06,9.98c-.41.41-.91.58-1.48.58s-1.07-.25-1.48-.58l-4.21-4.21c-.82-.82-.82-2.14,0-2.89.82-.82,2.14-.82,2.89,0l2.72,2.8,8.58-8.49c.99-.91,2.23-.91,3.05-.08ZM109.36,75.29c1.15,1.57,1.57,3.46,1.15,5.36-.41,1.81-1.65,3.46-3.3,4.37l-2.06,1.15c-.91.49-1.4,1.57-1.24,2.64l.41,2.31c.33,1.81-.16,3.79-1.32,5.28-1.15,1.48-2.97,2.47-4.87,2.56l-2.39.16c-1.07.08-2.06.82-2.31,1.9l-.66,2.31c-.82,2.89-3.46,4.87-6.43,4.87-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.99-.41-2.23-.16-2.89.66l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31s-3.71-.82-4.95-2.23l-1.57-1.81c-.74-.82-1.9-1.07-2.89-.66l-2.23.91c-.82.41-1.73.58-2.64.58-2.97,0-5.61-1.98-6.43-4.78l-.66-2.31c-.25-1.07-1.24-1.73-2.31-1.81l-2.39-.08c-1.9-.08-3.63-.99-4.87-2.47-1.24-1.48-1.73-3.38-1.4-5.28l.41-2.31c.16-1.07-.33-2.14-1.32-2.64l-2.06-1.15c-1.65-.91-2.89-2.47-3.3-4.37-.41-1.81,0-3.79,1.07-5.36l1.4-1.98c.66-.91.66-2.06,0-2.97l-1.4-1.9c-1.15-1.57-1.57-3.46-1.15-5.36.41-1.81,1.65-3.46,3.3-4.37l2.06-1.15c.91-.49,1.4-1.57,1.24-2.64l-.41-2.31c-.33-1.81.16-3.79,1.32-5.28,1.15-1.48,2.97-2.47,4.87-2.56l2.39-.16c1.07-.08,2.06-.82,2.31-1.9l.66-2.31c.82-2.89,3.46-4.87,6.43-4.87.91,0,1.73.16,2.56.49l2.23.91c.99.41,2.23.16,2.89-.66l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31s3.71.82,4.95,2.23l1.57,1.81c.74.74,1.98,1.07,2.89.66l2.23-.91c.82-.41,1.73-.58,2.64-.58,2.97,0,5.53,1.9,6.43,4.87l.66,2.31c.25,1.07,1.24,1.73,2.31,1.81l2.39.08c1.9.08,3.63.99,4.87,2.47s1.73,3.38,1.4,5.28l-.41,2.31c-.16,1.07.33,2.14,1.32,2.64l2.23,1.07c1.65.91,2.89,2.47,3.3,4.37.41,1.81,0,3.79-1.07,5.36l-1.4,1.98c-.66.91-.66,2.06,0,2.97l1.24,1.9ZM106.23,77.68l-1.4-1.9c-1.73-2.31-1.73-5.44-.08-7.75l1.32-1.98c.41-.58.58-1.32.41-2.06s-.58-1.32-1.24-1.65l-2.06-1.15c-2.56-1.4-3.96-4.21-3.46-7.01l.41-2.31c.16-.66,0-1.4-.49-1.98-.49-.58-1.15-.91-1.9-.91l-2.39-.08c-2.89-.08-5.28-2.06-6.1-4.78l-.66-2.31c-.33-1.07-1.32-1.81-2.47-1.81h-.91l-2.23.91c-.82.41-1.73.58-2.64.58-1.9,0-3.71-.82-4.95-2.23l-1.57-1.81c-.49-.49-1.15-.82-1.9-.82s-1.4.33-1.9.91l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.33-.08-.66-.16-.99-.16-1.15,0-2.14.82-2.47,1.9l-.66,2.31c-.74,2.72-3.13,4.7-6.02,4.87l-2.39.16c-.74.08-1.32.41-1.81.99-.41.58-.66,1.32-.49,2.06l.49,2.39c.58,2.8-.82,5.61-3.3,7.01l-2.06,1.15c-.66.33-1.07.91-1.24,1.65-.16.74,0,1.48.41,2.06l1.4,1.9c1.73,2.31,1.73,5.44.08,7.75l-1.4,1.98c-.41.58-.58,1.32-.41,2.06s.58,1.32,1.24,1.65l2.06,1.15c2.56,1.4,3.96,4.21,3.46,7.01l-.41,2.31c-.16.66,0,1.4.49,1.98.49.58,1.15.91,1.9.91l2.31.08c2.89.08,5.28,2.06,6.1,4.78l.66,2.31c.33,1.07,1.32,1.81,2.47,1.81.33,0,.66,0,.99-.08l2.23-.91c.82-.41,1.73-.58,2.64-.58,1.9,0,3.71.82,4.95,2.23l1.57,1.81c.49.49,1.15.82,1.9.82s1.4-.33,1.9-.91l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31.91,0,1.73.16,2.56.49l2.23.91c.33.08.66.16.99.16,1.15,0,2.14-.82,2.47-1.9l.66-2.31c.74-2.72,3.13-4.7,6.02-4.87l2.39-.16c.74-.08,1.4-.41,1.81-.99.41-.58.66-1.32.49-2.06l-.41-2.31c-.58-2.8.82-5.61,3.3-7.01l2.06-1.15c.66-.33,1.07-.91,1.24-1.65.08-.74,0-1.4-.41-2.06ZM95.43,72.15c0,12.86-10.47,23.34-23.34,23.34s-23.34-10.47-23.34-23.34,10.47-23.34,23.34-23.34,23.34,10.47,23.34,23.34ZM91.3,72.15c0-10.64-8.58-19.21-19.21-19.21s-19.21,8.66-19.21,19.21,8.58,19.21,19.21,19.21,19.21-8.58,19.21-19.21Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="jm-right">
+          <div class="jm-content">
+            <button class="modal-close jm-close" aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <span class="modal-eyebrow">Customer Journey · Purchase</span>
+            <h2 class="jm-headline">Turn Interest Into Action</h2>
+            <p class="jm-body">At the decision stage, DealerEdge removes friction and accelerates conversion. AI qualifies leads, schedules appointments, and delivers rich customer insights to your sales team, so every interaction is informed and intentional. The result is a faster, smoother path from inquiry to signed deal.</p>
+            <div class="jm-list">
+              <p class="jm-list-title">Brand Assets</p>
+              <ul>
+                <li>Lead capture forms optimized for conversion</li>
+                <li>Appointment scheduling interfaces (test drives, demos)</li>
+                <li>CRM-integrated lead profiles with behavioral data</li>
+                <li>Personalized follow-up messaging (email/text sequences)</li>
+                <li>Sales enablement dashboards for reps</li>
+                <li>Conversion-focused landing pages (offers, promotions, incentives)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="jm-nav">
+            <button class="jm-nav-btn jm-nav-prev" data-nav-to="Consideration">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>Consideration</span>
+            </button>
+            <button class="jm-nav-btn jm-nav-next" data-nav-to="Post-Purchase">
+              <span>Post-Purchase</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post-Purchase -->
+      <div class="jm-layout" data-journey-content="Post-Purchase" style="display:none">
+        <div class="jm-image jm-image--diagram">
+          <svg class="jm-journey-diagram" viewBox="-36 -36 240 492" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Animated background dashes (horizontal) -->
+            <line class="jm-bg-dash"                 x1="4" y1="28"  x2="164" y2="28"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="56"  x2="164" y2="56"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="84"  x2="164" y2="84"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="112" x2="164" y2="112"/>
+            <line class="jm-bg-dash"                 x1="4" y1="144" x2="164" y2="144"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="174" x2="164" y2="174"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="210" x2="164" y2="210"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="246" x2="164" y2="246"/>
+            <line class="jm-bg-dash"                 x1="4" y1="279" x2="164" y2="279"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="318" x2="164" y2="318"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="357" x2="164" y2="357"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="396" x2="164" y2="396"/>
+            <!-- Fluid S-curve connector paths -->
+            <g class="jm-seg jm-seg--1">
+              <path d="M 34 60 C 34 81 134 81 134 102" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--2">
+              <path d="M 134 150 C 134 171 34 171 34 192" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--3">
+              <path d="M 34 240 C 34 261 134 261 134 282" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--4">
+              <path d="M 134 330 C 134 351 34 351 34 372" class="jm-seg-path"/>
+            </g>
+            <!-- Awareness — Megaphone (left col, top) -->
+            <g class="jm-diag-node" data-node="Awareness">
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,12) scale(0.3333)" fill="currentColor">
+                <path d="M99.59,40.67c.4-.31.91-.44,1.41-.37.51.07.95.33,1.26.73.63.83.47,2.03-.36,2.67l-3.88,2.95c-.33.26-.74.39-1.15.39-.09,0-.17,0-.26-.02-.51-.07-.95-.33-1.26-.73-.63-.83-.47-2.03.36-2.66l3.88-2.95ZM99.44,52.43c.36.61,1,.95,1.66.95.32,0,.65-.08.95-.26l8.44-4.87c.45-.26.76-.67.89-1.16.13-.49.06-1-.2-1.44-.25-.44-.66-.75-1.15-.89-.49-.13-1.01-.06-1.44.19l-8.45,4.88c-.9.53-1.22,1.69-.69,2.6ZM91.56,40.97c.49,0,.98-.19,1.35-.56h0s6.9-6.9,6.9-6.9c.36-.36.56-.84.56-1.35s-.2-.99-.56-1.35c-.74-.74-1.95-.74-2.69,0l-6.9,6.89c-.36.36-.56.84-.56,1.35s.2.99.56,1.35c.37.37.86.56,1.35.56ZM109.87,58.62c.97-.4,1.44-1.51,1.04-2.49-.41-.96-1.52-1.43-2.48-1.03l-4.52,1.85c-.97.4-1.43,1.51-1.03,2.48.19.47.56.84,1.02,1.03.24.1.49.15.74.15s.49-.05.72-.14l4.51-1.85ZM103.13,70.42c1.17,5.92.25,10.11-2.6,11.8-.74.45-1.6.7-2.53.74l-43.89,10.6,6.43,10.91c.87,1.48,1.1,3.32.62,5.06-.45,1.64-1.47,2.96-2.87,3.73-.99.58-2.11.89-3.24.89-.55,0-1.1-.07-1.64-.21-1.65-.43-3.02-1.46-3.87-2.91l-7.26-12.3c-5.08.75-10.41-1.78-13.06-6.26-3.66-6.16-1.64-14.15,4.52-17.81l4.86-2.89,31.95-35.57c.41-.62.98-1.17,1.65-1.57,2.85-1.69,6.97-.5,11.61,3.35,8.5,7.06,17.17,21.61,19.32,32.45ZM35.68,77.92c-4.35,2.59-5.79,8.25-3.2,12.61,1.23,2.05,3.39,3.63,5.79,4.24,1.63.41,4.14.57,6.83-1.03l3.5-2.08-3.92-6.59h0s-5.49-9.23-5.49-9.23l-3.51,2.08ZM46.01,97.56l6.8,11.54c.72,1.21,2.32,1.61,3.56.88,1.23-.73,1.63-2.33.9-3.57l-6.75-11.47-3.47,2.07c-.34.2-.68.39-1.03.56ZM82.13,71.74c-4.61-5.83-10.66-15.96-12.52-25.32-.21-1.06-.35-2.07-.43-3.01l-26.99,30.05,9.92,16.67,39.23-9.47c-3.66-2.39-6.99-6.1-9.22-8.92ZM76.9,56.02c1.9,4.08,4.39,8.26,7.07,11.87,1.94-2.2,2.36-5.36,1.04-8.03-1.51-3.04-4.85-4.6-8.1-3.85ZM91.35,75.95c2.43,2.02,4.59,3.18,6.06,3.25.43.02.88-.07,1.17-.24,1.33-.79,1.63-3.64.8-7.8-2.01-10.1-10.09-23.68-18.01-30.26-3.27-2.71-5.91-3.81-7.24-3.01-1.33.79-1.62,3.64-.8,7.8.41,2.06,1.1,4.34,2.04,6.79,5.11-1.5,10.64.89,13.03,5.69h0c2.11,4.24,1.25,9.41-2.06,12.74,1.66,1.97,3.34,3.66,5,5.04ZM118.33,62.91c-.13-.49-.44-.9-.88-1.16-.44-.26-.96-.33-1.45-.19l-9.42,2.52c-.49.13-.9.45-1.16.89-.26.44-.32.95-.19,1.45.23.85,1,1.41,1.84,1.41.16,0,.33-.02.49-.06l9.42-2.52c.49-.13.9-.45,1.15-.89.25-.44.32-.95.19-1.44Z"/>
+              </g>
+            </g>
+            <!-- Consideration — Magnifying Glass (right col) -->
+            <g class="jm-diag-node" data-node="Consideration">
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,102) scale(0.3333)" fill="currentColor">
+                <path d="M105.07,57.71l-2.8,2.8,9.6,9.6h-47.4l28.3-27.6v13.6h4v-20.4h-20.4v4h13.5l-31.1,30.4h-12.7c-1.1-5.64-6.57-9.31-12.21-8.21-5.64,1.1-9.31,6.57-8.21,12.21s6.57,9.31,12.21,8.21c4.15-.81,7.39-4.06,8.21-8.21h12.8l31.1,30.4h-13.5v4h20.4v-20.4h-4v13.6l-28.3-27.6h47.3l-9.6,9.6,2.8,2.8,14.4-14.4-14.4-14.4ZM35.87,78.51c-3.53,0-6.4-2.87-6.4-6.4,0-3.53,2.87-6.4,6.4-6.4s6.4,2.87,6.4,6.4-2.87,6.4-6.4,6.4h0Z"/>
+              </g>
+            </g>
+            <!-- Purchase — Credit Card (left col) -->
+            <g class="jm-diag-node" data-node="Purchase">
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,192) scale(0.3333)" fill="currentColor">
+                <path d="M37.65,85.76c0-1.18.96-2.15,2.15-2.15h25.33c1.18,0,2.15.96,2.15,2.15s-.96,2.15-2.15,2.15h-25.33c-1.18,0-2.15-.97-2.15-2.15ZM75.94,83.67c-.33-.39-.52-.89-.52-1.41v-42.76c-.09-2.9,1.02-5.77,3.05-7.86,2.03-2.09,4.87-3.29,7.78-3.29s5.75,1.2,7.78,3.29c2.03,2.1,3.14,4.97,3.05,7.88v42.75c0,.5-.17,1-.5,1.4l-8.68,10.13c-.4.48-1,.76-1.63.76s-1.24-.28-1.64-.76l-8.67-10.13ZM80.97,82.9l5.31,6.19,5.26-6.14-5.26-3.66-5.3,3.61ZM85.04,74.91c.37-.25.79-.38,1.22-.38s.85.13,1.22.38l5.29,3.69v-39.09c0-3.6-2.92-6.53-6.52-6.53s-6.52,2.93-6.52,6.53v39.02s5.32-3.62,5.32-3.62ZM39.76,79.81h.04s16.31,0,16.31,0c1.12-.09,1.99-1.03,1.99-2.15s-.88-2.07-2.03-2.16h-16.31c-1.12.09-1.99,1.03-1.99,2.16s.88,2.06,1.99,2.15ZM114.46,62.41c-1.73-1.72-4.02-2.67-6.45-2.67h-6.27c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15h6.25c2.66,0,4.82,2.17,4.82,4.82v37.89c0,2.65-2.17,4.81-4.82,4.82H35.99c-2.66,0-4.82-2.17-4.82-4.82v-37.86c0-2.65,2.17-4.82,4.82-4.82h33.4c1.19,0,2.15-.97,2.15-2.15s-.97-2.15-2.15-2.15h-33.4c-5,0-9.1,4.08-9.12,9.09v37.89c0,5.02,4.1,9.11,9.12,9.12h72.02c2.43,0,4.72-.95,6.45-2.67,1.7-1.7,2.68-4.05,2.68-6.46v-37.89c0-2.4-.98-4.76-2.68-6.46ZM39.8,104.13h62.87c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-62.87c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15ZM39.8,96.02h25.33c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-25.33c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15Z"/>
+              </g>
+            </g>
+            <!-- Post-Purchase — Chat + Check (right col) -->
+            <g class="jm-diag-node" data-node="Post-Purchase">
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,282) scale(0.3333)" fill="currentColor">
+                <path d="M50.05,79.51c0,1.11-.9,2-2.01,2.01h-15.54c-1.11,0-2-.9-2-2.01,0-1.11.89-2.01,2-2.02h15.54s0,0,0,0c1.11,0,2.01.91,2,2.02ZM130.29,44.5v26.3c0,5.11-4.1,9.31-9.17,9.31h-2.09v11.47c0,.47-.16.92-.46,1.28-.71.85-1.98.97-2.83.26l-15.45-13.01h-19.39v6.16c0,5.1-4.09,9.32-9.15,9.32h-28.03l-15.44,12.99c-.36.31-.82.47-1.29.48-1.11,0-2.01-.89-2.02-2v-11.46h-2.09c-5.06,0-9.15-4.21-9.15-9.32v-26.3c0-5.11,4.09-9.32,9.15-9.32h40.23v-6.15c0-5.1,4.1-9.32,9.16-9.32h48.86c5.06,0,9.17,4.21,9.17,9.32ZM76.88,59.97c0-3-2.27-5.29-5.13-5.29H22.88c-2.86,0-5.13,2.3-5.13,5.29v26.3c0,2.99,2.27,5.29,5.13,5.29h4.1c1.11,0,2.01.9,2.01,2.01v9.16l12.71-10.69c.36-.3.82-.47,1.29-.47h28.76c2.86,0,5.13-2.3,5.13-5.29v-26.3ZM126.27,44.5c0-2.99-2.29-5.29-5.15-5.29h-48.86c-2.86,0-5.14,2.3-5.14,5.29v6.15h4.63c5.06,0,9.15,4.21,9.15,9.32v16.12h20.13c.47,0,.93.17,1.29.47l12.69,10.68v-9.14s0-.01,0-.02c0-1.11.91-2.01,2.02-2h4.09c2.86,0,5.15-2.3,5.15-5.29v-26.3ZM62.12,63.83h-29.62c-1.11,0-2.01.91-2,2.02,0,1.11.9,2,2,2.01h29.6c1.11,0,2.01-.89,2.02-2h0c0-1.11-.89-2.02-2-2.02Z"/>
+              </g>
+            </g>
+            <!-- Loyalty — Crown (left col, bottom) -->
+            <g class="jm-diag-node" data-node="Loyalty">
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,372) scale(0.3333)" fill="currentColor">
+                <path d="M80.67,65.72c.82.82.82,2.14,0,2.89l-10.06,9.98c-.41.41-.91.58-1.48.58s-1.07-.25-1.48-.58l-4.21-4.21c-.82-.82-.82-2.14,0-2.89.82-.82,2.14-.82,2.89,0l2.72,2.8,8.58-8.49c.99-.91,2.23-.91,3.05-.08ZM109.36,75.29c1.15,1.57,1.57,3.46,1.15,5.36-.41,1.81-1.65,3.46-3.3,4.37l-2.06,1.15c-.91.49-1.4,1.57-1.24,2.64l.41,2.31c.33,1.81-.16,3.79-1.32,5.28-1.15,1.48-2.97,2.47-4.87,2.56l-2.39.16c-1.07.08-2.06.82-2.31,1.9l-.66,2.31c-.82,2.89-3.46,4.87-6.43,4.87-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.99-.41-2.23-.16-2.89.66l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31s-3.71-.82-4.95-2.23l-1.57-1.81c-.74-.82-1.9-1.07-2.89-.66l-2.23.91c-.82.41-1.73.58-2.64.58-2.97,0-5.61-1.98-6.43-4.78l-.66-2.31c-.25-1.07-1.24-1.73-2.31-1.81l-2.39-.08c-1.9-.08-3.63-.99-4.87-2.47-1.24-1.48-1.73-3.38-1.4-5.28l.41-2.31c.16-1.07-.33-2.14-1.32-2.64l-2.06-1.15c-1.65-.91-2.89-2.47-3.3-4.37-.41-1.81,0-3.79,1.07-5.36l1.4-1.98c.66-.91.66-2.06,0-2.97l-1.4-1.9c-1.15-1.57-1.57-3.46-1.15-5.36.41-1.81,1.65-3.46,3.3-4.37l2.06-1.15c.91-.49,1.4-1.57,1.24-2.64l-.41-2.31c-.33-1.81.16-3.79,1.32-5.28,1.15-1.48,2.97-2.47,4.87-2.56l2.39-.16c1.07-.08,2.06-.82,2.31-1.9l.66-2.31c.82-2.89,3.46-4.87,6.43-4.87.91,0,1.73.16,2.56.49l2.23.91c.99.41,2.23.16,2.89-.66l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31s3.71.82,4.95,2.23l1.57,1.81c.74.74,1.98,1.07,2.89.66l2.23-.91c.82-.41,1.73-.58,2.64-.58,2.97,0,5.53,1.9,6.43,4.87l.66,2.31c.25,1.07,1.24,1.73,2.31,1.81l2.39.08c1.9.08,3.63.99,4.87,2.47s1.73,3.38,1.4,5.28l-.41,2.31c-.16,1.07.33,2.14,1.32,2.64l2.23,1.07c1.65.91,2.89,2.47,3.3,4.37.41,1.81,0,3.79-1.07,5.36l-1.4,1.98c-.66.91-.66,2.06,0,2.97l1.24,1.9ZM106.23,77.68l-1.4-1.9c-1.73-2.31-1.73-5.44-.08-7.75l1.32-1.98c.41-.58.58-1.32.41-2.06s-.58-1.32-1.24-1.65l-2.06-1.15c-2.56-1.4-3.96-4.21-3.46-7.01l.41-2.31c.16-.66,0-1.4-.49-1.98-.49-.58-1.15-.91-1.9-.91l-2.39-.08c-2.89-.08-5.28-2.06-6.1-4.78l-.66-2.31c-.33-1.07-1.32-1.81-2.47-1.81h-.91l-2.23.91c-.82.41-1.73.58-2.64.58-1.9,0-3.71-.82-4.95-2.23l-1.57-1.81c-.49-.49-1.15-.82-1.9-.82s-1.4.33-1.9.91l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.33-.08-.66-.16-.99-.16-1.15,0-2.14.82-2.47,1.9l-.66,2.31c-.74,2.72-3.13,4.7-6.02,4.87l-2.39.16c-.74.08-1.32.41-1.81.99-.41.58-.66,1.32-.49,2.06l.49,2.39c.58,2.8-.82,5.61-3.3,7.01l-2.06,1.15c-.66.33-1.07.91-1.24,1.65-.16.74,0,1.48.41,2.06l1.4,1.9c1.73,2.31,1.73,5.44.08,7.75l-1.4,1.98c-.41.58-.58,1.32-.41,2.06s.58,1.32,1.24,1.65l2.06,1.15c2.56,1.4,3.96,4.21,3.46,7.01l-.41,2.31c-.16.66,0,1.4.49,1.98.49.58,1.15.91,1.9.91l2.31.08c2.89.08,5.28,2.06,6.1,4.78l.66,2.31c.33,1.07,1.32,1.81,2.47,1.81.33,0,.66,0,.99-.08l2.23-.91c.82-.41,1.73-.58,2.64-.58,1.9,0,3.71.82,4.95,2.23l1.57,1.81c.49.49,1.15.82,1.9.82s1.4-.33,1.9-.91l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31.91,0,1.73.16,2.56.49l2.23.91c.33.08.66.16.99.16,1.15,0,2.14-.82,2.47-1.9l.66-2.31c.74-2.72,3.13-4.7,6.02-4.87l2.39-.16c.74-.08,1.4-.41,1.81-.99.41-.58.66-1.32.49-2.06l-.41-2.31c-.58-2.8.82-5.61,3.3-7.01l2.06-1.15c.66-.33,1.07-.91,1.24-1.65.08-.74,0-1.4-.41-2.06ZM95.43,72.15c0,12.86-10.47,23.34-23.34,23.34s-23.34-10.47-23.34-23.34,10.47-23.34,23.34-23.34,23.34,10.47,23.34,23.34ZM91.3,72.15c0-10.64-8.58-19.21-19.21-19.21s-19.21,8.66-19.21,19.21,8.58,19.21,19.21,19.21,19.21-8.58,19.21-19.21Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="jm-right">
+          <div class="jm-content">
+            <button class="modal-close jm-close" aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <span class="modal-eyebrow">Customer Journey · Post-Purchase</span>
+            <h2 class="jm-headline">Stay Connected After the Sale</h2>
+            <p class="jm-body">The relationship doesn't end at purchase, it evolves. DealerEdge continues engagement through automated follow-ups, service reminders, and relevant content that adds value. Customers feel supported, informed, and connected to your dealership long after they leave the lot.</p>
+            <div class="jm-list">
+              <p class="jm-list-title">Brand Assets</p>
+              <ul>
+                <li>Automated email nurture campaigns (service reminders, tips, upgrades)</li>
+                <li>Post-purchase onboarding content (videos, guides, FAQs)</li>
+                <li>Service scheduling interfaces</li>
+                <li>Personalized check-in messages from "AI Sales Captain"</li>
+                <li>Educational blog content and ownership resources</li>
+                <li>Social engagement (community posts, feature highlights)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="jm-nav">
+            <button class="jm-nav-btn jm-nav-prev" data-nav-to="Purchase">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>Purchase</span>
+            </button>
+            <button class="jm-nav-btn jm-nav-next" data-nav-to="Loyalty">
+              <span>Loyalty</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loyalty -->
+      <div class="jm-layout" data-journey-content="Loyalty" style="display:none">
+        <div class="jm-image jm-image--diagram">
+          <svg class="jm-journey-diagram" viewBox="-36 -36 240 492" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Animated background dashes (horizontal) -->
+            <line class="jm-bg-dash"                 x1="4" y1="28"  x2="164" y2="28"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="56"  x2="164" y2="56"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="84"  x2="164" y2="84"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="112" x2="164" y2="112"/>
+            <line class="jm-bg-dash"                 x1="4" y1="144" x2="164" y2="144"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="174" x2="164" y2="174"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="210" x2="164" y2="210"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="246" x2="164" y2="246"/>
+            <line class="jm-bg-dash"                 x1="4" y1="279" x2="164" y2="279"/>
+            <line class="jm-bg-dash jm-bg-dash--d1"  x1="4" y1="318" x2="164" y2="318"/>
+            <line class="jm-bg-dash jm-bg-dash--d2"  x1="4" y1="357" x2="164" y2="357"/>
+            <line class="jm-bg-dash jm-bg-dash--d3"  x1="4" y1="396" x2="164" y2="396"/>
+            <!-- Fluid S-curve connector paths -->
+            <g class="jm-seg jm-seg--1">
+              <path d="M 34 60 C 34 81 134 81 134 102" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--2">
+              <path d="M 134 150 C 134 171 34 171 34 192" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--3">
+              <path d="M 34 240 C 34 261 134 261 134 282" class="jm-seg-path"/>
+            </g>
+            <g class="jm-seg jm-seg--4">
+              <path d="M 134 330 C 134 351 34 351 34 372" class="jm-seg-path"/>
+            </g>
+            <!-- Awareness — Megaphone (left col, top) -->
+            <g class="jm-diag-node" data-node="Awareness">
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="12" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,12) scale(0.3333)" fill="currentColor">
+                <path d="M99.59,40.67c.4-.31.91-.44,1.41-.37.51.07.95.33,1.26.73.63.83.47,2.03-.36,2.67l-3.88,2.95c-.33.26-.74.39-1.15.39-.09,0-.17,0-.26-.02-.51-.07-.95-.33-1.26-.73-.63-.83-.47-2.03.36-2.66l3.88-2.95ZM99.44,52.43c.36.61,1,.95,1.66.95.32,0,.65-.08.95-.26l8.44-4.87c.45-.26.76-.67.89-1.16.13-.49.06-1-.2-1.44-.25-.44-.66-.75-1.15-.89-.49-.13-1.01-.06-1.44.19l-8.45,4.88c-.9.53-1.22,1.69-.69,2.6ZM91.56,40.97c.49,0,.98-.19,1.35-.56h0s6.9-6.9,6.9-6.9c.36-.36.56-.84.56-1.35s-.2-.99-.56-1.35c-.74-.74-1.95-.74-2.69,0l-6.9,6.89c-.36.36-.56.84-.56,1.35s.2.99.56,1.35c.37.37.86.56,1.35.56ZM109.87,58.62c.97-.4,1.44-1.51,1.04-2.49-.41-.96-1.52-1.43-2.48-1.03l-4.52,1.85c-.97.4-1.43,1.51-1.03,2.48.19.47.56.84,1.02,1.03.24.1.49.15.74.15s.49-.05.72-.14l4.51-1.85ZM103.13,70.42c1.17,5.92.25,10.11-2.6,11.8-.74.45-1.6.7-2.53.74l-43.89,10.6,6.43,10.91c.87,1.48,1.1,3.32.62,5.06-.45,1.64-1.47,2.96-2.87,3.73-.99.58-2.11.89-3.24.89-.55,0-1.1-.07-1.64-.21-1.65-.43-3.02-1.46-3.87-2.91l-7.26-12.3c-5.08.75-10.41-1.78-13.06-6.26-3.66-6.16-1.64-14.15,4.52-17.81l4.86-2.89,31.95-35.57c.41-.62.98-1.17,1.65-1.57,2.85-1.69,6.97-.5,11.61,3.35,8.5,7.06,17.17,21.61,19.32,32.45ZM35.68,77.92c-4.35,2.59-5.79,8.25-3.2,12.61,1.23,2.05,3.39,3.63,5.79,4.24,1.63.41,4.14.57,6.83-1.03l3.5-2.08-3.92-6.59h0s-5.49-9.23-5.49-9.23l-3.51,2.08ZM46.01,97.56l6.8,11.54c.72,1.21,2.32,1.61,3.56.88,1.23-.73,1.63-2.33.9-3.57l-6.75-11.47-3.47,2.07c-.34.2-.68.39-1.03.56ZM82.13,71.74c-4.61-5.83-10.66-15.96-12.52-25.32-.21-1.06-.35-2.07-.43-3.01l-26.99,30.05,9.92,16.67,39.23-9.47c-3.66-2.39-6.99-6.1-9.22-8.92ZM76.9,56.02c1.9,4.08,4.39,8.26,7.07,11.87,1.94-2.2,2.36-5.36,1.04-8.03-1.51-3.04-4.85-4.6-8.1-3.85ZM91.35,75.95c2.43,2.02,4.59,3.18,6.06,3.25.43.02.88-.07,1.17-.24,1.33-.79,1.63-3.64.8-7.8-2.01-10.1-10.09-23.68-18.01-30.26-3.27-2.71-5.91-3.81-7.24-3.01-1.33.79-1.62,3.64-.8,7.8.41,2.06,1.1,4.34,2.04,6.79,5.11-1.5,10.64.89,13.03,5.69h0c2.11,4.24,1.25,9.41-2.06,12.74,1.66,1.97,3.34,3.66,5,5.04ZM118.33,62.91c-.13-.49-.44-.9-.88-1.16-.44-.26-.96-.33-1.45-.19l-9.42,2.52c-.49.13-.9.45-1.16.89-.26.44-.32.95-.19,1.45.23.85,1,1.41,1.84,1.41.16,0,.33-.02.49-.06l9.42-2.52c.49-.13.9-.45,1.15-.89.25-.44.32-.95.19-1.44Z"/>
+              </g>
+            </g>
+            <!-- Consideration — Magnifying Glass (right col) -->
+            <g class="jm-diag-node" data-node="Consideration">
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="102" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,102) scale(0.3333)" fill="currentColor">
+                <path d="M105.07,57.71l-2.8,2.8,9.6,9.6h-47.4l28.3-27.6v13.6h4v-20.4h-20.4v4h13.5l-31.1,30.4h-12.7c-1.1-5.64-6.57-9.31-12.21-8.21-5.64,1.1-9.31,6.57-8.21,12.21s6.57,9.31,12.21,8.21c4.15-.81,7.39-4.06,8.21-8.21h12.8l31.1,30.4h-13.5v4h20.4v-20.4h-4v13.6l-28.3-27.6h47.3l-9.6,9.6,2.8,2.8,14.4-14.4-14.4-14.4ZM35.87,78.51c-3.53,0-6.4-2.87-6.4-6.4,0-3.53,2.87-6.4,6.4-6.4s6.4,2.87,6.4,6.4-2.87,6.4-6.4,6.4h0Z"/>
+              </g>
+            </g>
+            <!-- Purchase — Credit Card (left col) -->
+            <g class="jm-diag-node" data-node="Purchase">
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="192" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,192) scale(0.3333)" fill="currentColor">
+                <path d="M37.65,85.76c0-1.18.96-2.15,2.15-2.15h25.33c1.18,0,2.15.96,2.15,2.15s-.96,2.15-2.15,2.15h-25.33c-1.18,0-2.15-.97-2.15-2.15ZM75.94,83.67c-.33-.39-.52-.89-.52-1.41v-42.76c-.09-2.9,1.02-5.77,3.05-7.86,2.03-2.09,4.87-3.29,7.78-3.29s5.75,1.2,7.78,3.29c2.03,2.1,3.14,4.97,3.05,7.88v42.75c0,.5-.17,1-.5,1.4l-8.68,10.13c-.4.48-1,.76-1.63.76s-1.24-.28-1.64-.76l-8.67-10.13ZM80.97,82.9l5.31,6.19,5.26-6.14-5.26-3.66-5.3,3.61ZM85.04,74.91c.37-.25.79-.38,1.22-.38s.85.13,1.22.38l5.29,3.69v-39.09c0-3.6-2.92-6.53-6.52-6.53s-6.52,2.93-6.52,6.53v39.02s5.32-3.62,5.32-3.62ZM39.76,79.81h.04s16.31,0,16.31,0c1.12-.09,1.99-1.03,1.99-2.15s-.88-2.07-2.03-2.16h-16.31c-1.12.09-1.99,1.03-1.99,2.16s.88,2.06,1.99,2.15ZM114.46,62.41c-1.73-1.72-4.02-2.67-6.45-2.67h-6.27c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15h6.25c2.66,0,4.82,2.17,4.82,4.82v37.89c0,2.65-2.17,4.81-4.82,4.82H35.99c-2.66,0-4.82-2.17-4.82-4.82v-37.86c0-2.65,2.17-4.82,4.82-4.82h33.4c1.19,0,2.15-.97,2.15-2.15s-.97-2.15-2.15-2.15h-33.4c-5,0-9.1,4.08-9.12,9.09v37.89c0,5.02,4.1,9.11,9.12,9.12h72.02c2.43,0,4.72-.95,6.45-2.67,1.7-1.7,2.68-4.05,2.68-6.46v-37.89c0-2.4-.98-4.76-2.68-6.46ZM39.8,104.13h62.87c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-62.87c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15ZM39.8,96.02h25.33c1.18,0,2.15-.96,2.15-2.15s-.96-2.15-2.15-2.15h-25.33c-1.18,0-2.15.97-2.15,2.15s.96,2.15,2.15,2.15Z"/>
+              </g>
+            </g>
+            <!-- Post-Purchase — Chat + Check (right col) -->
+            <g class="jm-diag-node" data-node="Post-Purchase">
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="110" y="282" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(110,282) scale(0.3333)" fill="currentColor">
+                <path d="M50.05,79.51c0,1.11-.9,2-2.01,2.01h-15.54c-1.11,0-2-.9-2-2.01,0-1.11.89-2.01,2-2.02h15.54s0,0,0,0c1.11,0,2.01.91,2,2.02ZM130.29,44.5v26.3c0,5.11-4.1,9.31-9.17,9.31h-2.09v11.47c0,.47-.16.92-.46,1.28-.71.85-1.98.97-2.83.26l-15.45-13.01h-19.39v6.16c0,5.1-4.09,9.32-9.15,9.32h-28.03l-15.44,12.99c-.36.31-.82.47-1.29.48-1.11,0-2.01-.89-2.02-2v-11.46h-2.09c-5.06,0-9.15-4.21-9.15-9.32v-26.3c0-5.11,4.09-9.32,9.15-9.32h40.23v-6.15c0-5.1,4.1-9.32,9.16-9.32h48.86c5.06,0,9.17,4.21,9.17,9.32ZM76.88,59.97c0-3-2.27-5.29-5.13-5.29H22.88c-2.86,0-5.13,2.3-5.13,5.29v26.3c0,2.99,2.27,5.29,5.13,5.29h4.1c1.11,0,2.01.9,2.01,2.01v9.16l12.71-10.69c.36-.3.82-.47,1.29-.47h28.76c2.86,0,5.13-2.3,5.13-5.29v-26.3ZM126.27,44.5c0-2.99-2.29-5.29-5.15-5.29h-48.86c-2.86,0-5.14,2.3-5.14,5.29v6.15h4.63c5.06,0,9.15,4.21,9.15,9.32v16.12h20.13c.47,0,.93.17,1.29.47l12.69,10.68v-9.14s0-.01,0-.02c0-1.11.91-2.01,2.02-2h4.09c2.86,0,5.15-2.3,5.15-5.29v-26.3ZM62.12,63.83h-29.62c-1.11,0-2.01.91-2,2.02,0,1.11.9,2,2,2.01h29.6c1.11,0,2.01-.89,2.02-2h0c0-1.11-.89-2.02-2-2.02Z"/>
+              </g>
+            </g>
+            <!-- Loyalty — Crown (left col, bottom) -->
+            <g class="jm-diag-node" data-node="Loyalty">
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-ring"/>
+              <rect x="10" y="372" width="48" height="48" rx="10" class="jm-diag-rect"/>
+              <g transform="translate(10,372) scale(0.3333)" fill="currentColor">
+                <path d="M80.67,65.72c.82.82.82,2.14,0,2.89l-10.06,9.98c-.41.41-.91.58-1.48.58s-1.07-.25-1.48-.58l-4.21-4.21c-.82-.82-.82-2.14,0-2.89.82-.82,2.14-.82,2.89,0l2.72,2.8,8.58-8.49c.99-.91,2.23-.91,3.05-.08ZM109.36,75.29c1.15,1.57,1.57,3.46,1.15,5.36-.41,1.81-1.65,3.46-3.3,4.37l-2.06,1.15c-.91.49-1.4,1.57-1.24,2.64l.41,2.31c.33,1.81-.16,3.79-1.32,5.28-1.15,1.48-2.97,2.47-4.87,2.56l-2.39.16c-1.07.08-2.06.82-2.31,1.9l-.66,2.31c-.82,2.89-3.46,4.87-6.43,4.87-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.99-.41-2.23-.16-2.89.66l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31s-3.71-.82-4.95-2.23l-1.57-1.81c-.74-.82-1.9-1.07-2.89-.66l-2.23.91c-.82.41-1.73.58-2.64.58-2.97,0-5.61-1.98-6.43-4.78l-.66-2.31c-.25-1.07-1.24-1.73-2.31-1.81l-2.39-.08c-1.9-.08-3.63-.99-4.87-2.47-1.24-1.48-1.73-3.38-1.4-5.28l.41-2.31c.16-1.07-.33-2.14-1.32-2.64l-2.06-1.15c-1.65-.91-2.89-2.47-3.3-4.37-.41-1.81,0-3.79,1.07-5.36l1.4-1.98c.66-.91.66-2.06,0-2.97l-1.4-1.9c-1.15-1.57-1.57-3.46-1.15-5.36.41-1.81,1.65-3.46,3.3-4.37l2.06-1.15c.91-.49,1.4-1.57,1.24-2.64l-.41-2.31c-.33-1.81.16-3.79,1.32-5.28,1.15-1.48,2.97-2.47,4.87-2.56l2.39-.16c1.07-.08,2.06-.82,2.31-1.9l.66-2.31c.82-2.89,3.46-4.87,6.43-4.87.91,0,1.73.16,2.56.49l2.23.91c.99.41,2.23.16,2.89-.66l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31s3.71.82,4.95,2.23l1.57,1.81c.74.74,1.98,1.07,2.89.66l2.23-.91c.82-.41,1.73-.58,2.64-.58,2.97,0,5.53,1.9,6.43,4.87l.66,2.31c.25,1.07,1.24,1.73,2.31,1.81l2.39.08c1.9.08,3.63.99,4.87,2.47s1.73,3.38,1.4,5.28l-.41,2.31c-.16,1.07.33,2.14,1.32,2.64l2.23,1.07c1.65.91,2.89,2.47,3.3,4.37.41,1.81,0,3.79-1.07,5.36l-1.4,1.98c-.66.91-.66,2.06,0,2.97l1.24,1.9ZM106.23,77.68l-1.4-1.9c-1.73-2.31-1.73-5.44-.08-7.75l1.32-1.98c.41-.58.58-1.32.41-2.06s-.58-1.32-1.24-1.65l-2.06-1.15c-2.56-1.4-3.96-4.21-3.46-7.01l.41-2.31c.16-.66,0-1.4-.49-1.98-.49-.58-1.15-.91-1.9-.91l-2.39-.08c-2.89-.08-5.28-2.06-6.1-4.78l-.66-2.31c-.33-1.07-1.32-1.81-2.47-1.81h-.91l-2.23.91c-.82.41-1.73.58-2.64.58-1.9,0-3.71-.82-4.95-2.23l-1.57-1.81c-.49-.49-1.15-.82-1.9-.82s-1.4.33-1.9.91l-1.57,1.81c-1.24,1.48-3.13,2.31-5.03,2.31-.91,0-1.73-.16-2.56-.49l-2.23-.91c-.33-.08-.66-.16-.99-.16-1.15,0-2.14.82-2.47,1.9l-.66,2.31c-.74,2.72-3.13,4.7-6.02,4.87l-2.39.16c-.74.08-1.32.41-1.81.99-.41.58-.66,1.32-.49,2.06l.49,2.39c.58,2.8-.82,5.61-3.3,7.01l-2.06,1.15c-.66.33-1.07.91-1.24,1.65-.16.74,0,1.48.41,2.06l1.4,1.9c1.73,2.31,1.73,5.44.08,7.75l-1.4,1.98c-.41.58-.58,1.32-.41,2.06s.58,1.32,1.24,1.65l2.06,1.15c2.56,1.4,3.96,4.21,3.46,7.01l-.41,2.31c-.16.66,0,1.4.49,1.98.49.58,1.15.91,1.9.91l2.31.08c2.89.08,5.28,2.06,6.1,4.78l.66,2.31c.33,1.07,1.32,1.81,2.47,1.81.33,0,.66,0,.99-.08l2.23-.91c.82-.41,1.73-.58,2.64-.58,1.9,0,3.71.82,4.95,2.23l1.57,1.81c.49.49,1.15.82,1.9.82s1.4-.33,1.9-.91l1.57-1.81c1.24-1.48,3.13-2.31,5.03-2.31.91,0,1.73.16,2.56.49l2.23.91c.33.08.66.16.99.16,1.15,0,2.14-.82,2.47-1.9l.66-2.31c.74-2.72,3.13-4.7,6.02-4.87l2.39-.16c.74-.08,1.4-.41,1.81-.99.41-.58.66-1.32.49-2.06l-.41-2.31c-.58-2.8.82-5.61,3.3-7.01l2.06-1.15c.66-.33,1.07-.91,1.24-1.65.08-.74,0-1.4-.41-2.06ZM95.43,72.15c0,12.86-10.47,23.34-23.34,23.34s-23.34-10.47-23.34-23.34,10.47-23.34,23.34-23.34,23.34,10.47,23.34,23.34ZM91.3,72.15c0-10.64-8.58-19.21-19.21-19.21s-19.21,8.66-19.21,19.21,8.58,19.21,19.21,19.21,19.21-8.58,19.21-19.21Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="jm-right">
+          <div class="jm-content">
+            <button class="modal-close jm-close" aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <span class="modal-eyebrow">Customer Journey · Loyalty</span>
+            <h2 class="jm-headline">Build Customers for Life</h2>
+            <p class="jm-body">DealerEdge transforms satisfied buyers into repeat customers and advocates. By leveraging behavioral data and ongoing engagement, the platform delivers timely, relevant outreach, whether it's trade-in opportunities, new inventory alerts, or exclusive offers, keeping your dealership top of mind.</p>
+            <div class="jm-list">
+              <p class="jm-list-title">Brand Assets</p>
+              <ul>
+                <li>Loyalty campaigns (exclusive offers, VIP programs)</li>
+                <li>Trade-in and upgrade messaging flows</li>
+                <li>Personalized inventory alerts based on behavior</li>
+                <li>Referral program assets (emails, landing pages, incentives)</li>
+                <li>Community-driven social content (customer stories, UGC)</li>
+                <li>Review and testimonial generation (Google, Dealer sites)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="jm-nav">
+            <button class="jm-nav-btn jm-nav-prev" data-nav-to="Post-Purchase">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>Post-Purchase</span>
+            </button>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Progress dots -->
+      <div class="ms-dots" id="ms-dots">
+        <span class="ms-dot" data-dot="1"></span>
+        <span class="ms-dot" data-dot="2"></span>
+        <span class="ms-dot" data-dot="3"></span>
+      </div>
+
+      <!-- Step 1: Name -->
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">What's your name?</h2>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-1">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+
+      <!-- Step 2: Contact info -->
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Great <span id="ms-name-display"></span>. Now let's grab your info.</h2>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="jane@dealership.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-2">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+
+      <!-- Step 3: Schedule? -->
+      <div class="ms-step ms-step--hidden" id="ms-step-3">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Do you want to schedule a time on our calendar to chat?</h2>
+        <div class="ms-choice-row">
+          <button class="ms-choice ms-choice--yes" id="ms-yes">Yes, let's book a time</button>
+          <button class="ms-choice ms-choice--no" id="ms-no">No, just reach out</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Calendar -->
+      <div class="ms-step ms-step--hidden" id="ms-step-4">
+        <span class="modal-eyebrow">Pick a Time</span>
+        <h2 class="ms-headline">Choose a date.</h2>
+        <div class="ms-calendar" id="ms-calendar"></div>
+        <div class="ms-times" id="ms-times"></div>
+      </div>
+
+      <!-- Step 5: Confirmation -->
+      <div class="ms-step ms-step--hidden" id="ms-step-5">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Chatbot -->
+  <div class="chatbot-widget" id="chatbot-widget">
+    <div class="chatbot-window" id="chatbot-window">
+      <div class="chatbot-header">
+        <h3 class="chatbot-headline">Talk to me.<br>How can I help?</h3>
+        <button class="chatbot-close" id="chatbot-close" aria-label="Close chat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="chatbot-messages" id="chatbot-messages"></div>
+      <div class="chatbot-input-area">
+        <input type="text" id="chatbot-input" placeholder="Message…" autocomplete="off">
+        <button id="chatbot-send" aria-label="Send">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <button class="chatbot-trigger" id="chatbot-trigger" aria-label="Open chat">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    </button>
+  </div>
+
+  <!-- Fishing Game Overlay -->
+  <div id="fishing-game" class="fishing-game fishing-game--hidden">
+
+    <!-- Intro countdown overlay -->
+    <div class="fishing-intro" id="fishing-intro">
+      <div class="fishing-intro-words">
+        <div class="fishing-word" id="fishing-word-0">How Many</div>
+        <div class="fishing-word" id="fishing-word-1">New Customers</div>
+        <div class="fishing-word" id="fishing-word-2">Can You Catch?</div>
+      </div>
+    </div>
+
+    <!-- HUD: glassmorphism panels -->
+    <div class="game-hud">
+      <div class="game-hud-score">
+        <div class="game-hud-label">New Customers</div>
+        <div class="score-display">
+          <div class="score-digit-wrap" id="game-score-wrap">
+            <span class="score-digit-prev" id="score-prev">0</span>
+            <span class="score-digit-curr" id="score-curr">0</span>
+          </div>
+        </div>
+        <div class="score-progress-bar">
+          <div class="score-progress-fill" id="score-progress-fill"></div>
+        </div>
+        <div class="score-milestone-label" id="score-milestone"></div>
+      </div>
+      <div class="game-hud-timer">
+        <svg class="timer-ring" viewBox="0 0 80 80">
+          <circle class="timer-ring-bg" cx="40" cy="40" r="34"/>
+          <circle class="timer-ring-fill" id="timer-ring-fill" cx="40" cy="40" r="34"/>
+        </svg>
+        <div class="timer-number" id="timer-number">60</div>
+      </div>
+      <div id="game-combo" style="min-width:130px;"></div>
+    </div>
+
+    <!-- Close button top-right -->
+    <button class="fishing-close" id="fishing-close">✕ Close</button>
+
+    <!-- Ripple canvas (below fish, above background) -->
+    <!-- Fishing line from top of screen to hook -->
+    <div class="fishing-line" id="fishing-line"></div>
+
+    <!-- Hook cursor -->
+    <div class="fishing-hook" id="fishing-hook">
+      <svg width="28" height="56" viewBox="0 0 28 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="14" y1="0" x2="14" y2="26" stroke="#c8c8c8" stroke-width="2"/>
+        <path d="M14,26 L14,42 Q14,54 5,54 Q0,54 0,48 Q0,42 5,42" stroke="#aaa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="1" y1="48" x2="7" y2="43" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Fish container (fish injected by JS) -->
+    <div class="fishing-fish-layer" id="fishing-fish-layer"></div>
+
+    <!-- Floating catch text container -->
+    <div id="catch-floats" style="position:absolute;inset:0;pointer-events:none;z-index:15;overflow:hidden;"></div>
+
+    <!-- Screen edge flash -->
+    <div class="game-catch-flash" id="game-catch-flash"></div>
+
+    <!-- Benefit popup -->
+    <div class="fishing-popup" id="fishing-popup">
+      <span class="fishing-popup-badge">DEALER EDGE</span>
+      <p id="fishing-popup-text"></p>
+    </div>
+
+    <!-- End screen -->
+    <div class="game-end-screen" id="game-end-screen">
+      <div class="game-end-panel">
+        <div class="game-end-eyebrow">Time's Up</div>
+        <div class="game-end-score" id="end-score">0</div>
+        <div class="game-end-label">New Customers Landed</div>
+        <div class="game-end-stats">
+          <div class="game-stat"><span id="end-best-combo">—</span><label>Best Combo</label></div>
+          <div class="game-stat"><span id="end-catch-rate">0/min</span><label>Catch Rate</label></div>
+        </div>
+        <button class="game-end-cta" id="game-end-cta">Give Your Dealership the Edge</button>
+        <button class="game-end-restart" id="game-end-restart">Play Again</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

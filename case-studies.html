@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results | DealerEdge</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Read Case<br>Study</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html" class="nav-link--active">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="csp-hero">
+    <div class="csp-hero-bg" style="background-image: url('assets/dealer-edge-case-studies-background.jpg')"></div>
+    <div class="csp-hero-overlay"></div>
+    <div class="csp-hero-inner">
+
+      <h1 class="csp-hero-headline" data-fade data-delay="0.1">
+        Real Dealerships.<br>Real Results.
+      </h1>
+      <p class="csp-hero-sub" data-fade data-delay="0.18">
+        See how powersport dealerships across the country are using DealerEdge to capture more leads, respond faster, and close more sales.
+      </p>
+      <div class="csp-hero-stats" data-fade data-delay="0.26">
+        <div class="csp-hero-stat">
+          <span class="csp-hero-stat-value">183%</span>
+          <span class="csp-hero-stat-label">Avg. Sales Increase</span>
+        </div>
+        <div class="csp-hero-stat-divider"></div>
+        <div class="csp-hero-stat">
+          <span class="csp-hero-stat-value">3.6×</span>
+          <span class="csp-hero-stat-label">Avg. Lead Growth</span>
+        </div>
+        <div class="csp-hero-stat-divider"></div>
+        <div class="csp-hero-stat">
+          <span class="csp-hero-stat-value">+44%</span>
+          <span class="csp-hero-stat-label">Avg. Conversion Rate</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Case Study Grid -->
+  <main class="csp-main">
+    <div class="csp-grid-wrap">
+
+      <div class="csp-grid">
+
+        <!-- Card 1 -->
+        <article class="csp-card" data-cs-id="1" data-fade data-delay="0.05">
+          <div class="csp-card-img-wrap">
+            <img src="assets/case-study-image-1.jpg" alt="" class="csp-card-img">
+            <div class="csp-card-logo-badge">
+              <img src="assets/dealer-logo-1.svg" alt="Dealer 1">
+            </div>
+          </div>
+          <div class="csp-card-body">
+            <div class="csp-card-stats">
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+150%</span>
+                <span class="csp-card-stat-label">Sales</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">3×</span>
+                <span class="csp-card-stat-label">Leads</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+40%</span>
+                <span class="csp-card-stat-label">Conversion</span>
+              </div>
+            </div>
+            <h2 class="csp-card-headline">How Galati Yacht Sales tripled their qualified leads in 90 days</h2>
+            <p class="csp-card-excerpt">After struggling with slow lead response times, Galati Yacht Sales turned to DealerEdge's AI system, and saw immediate results across every metric.</p>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="csp-card" data-cs-id="2" data-fade data-delay="0.12">
+          <div class="csp-card-img-wrap">
+            <img src="assets/case-study-image-2.jpg" alt="" class="csp-card-img">
+            <div class="csp-card-logo-badge">
+              <img src="assets/dealer-logo-2.svg" alt="Dealer 2">
+            </div>
+          </div>
+          <div class="csp-card-body">
+            <div class="csp-card-stats">
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+170%</span>
+                <span class="csp-card-stat-label">Sales</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">4×</span>
+                <span class="csp-card-stat-label">Leads</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+49%</span>
+                <span class="csp-card-stat-label">Conversion</span>
+              </div>
+            </div>
+            <h2 class="csp-card-headline">Marine Elite's 170% sales increase through AI-powered follow-up</h2>
+            <p class="csp-card-excerpt">Marine Elite replaced their entire manual follow-up process with DealerEdge automation, within 60 days, their pipeline had never looked better.</p>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="csp-card" data-cs-id="3" data-fade data-delay="0.05">
+          <div class="csp-card-img-wrap">
+            <img src="assets/case-study-image-3.jpg" alt="" class="csp-card-img">
+            <div class="csp-card-logo-badge">
+              <img src="assets/dealer-logo-3.svg" alt="Dealer 3">
+            </div>
+          </div>
+          <div class="csp-card-body">
+            <div class="csp-card-stats">
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+220%</span>
+                <span class="csp-card-stat-label">Sales</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">2.5×</span>
+                <span class="csp-card-stat-label">Leads</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+33%</span>
+                <span class="csp-card-stat-label">Conversion</span>
+              </div>
+            </div>
+            <h2 class="csp-card-headline">LMC Marine Center's journey to 220% revenue growth in one quarter</h2>
+            <p class="csp-card-excerpt">Operating multiple locations, LMC Marine Center needed a system that could scale. DealerEdge gave them centralized AI and individual dealership insights.</p>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="csp-card" data-cs-id="4" data-fade data-delay="0.12">
+          <div class="csp-card-img-wrap">
+            <img src="assets/case-study-image-4.jpg" alt="" class="csp-card-img">
+            <div class="csp-card-logo-badge">
+              <img src="assets/dealer-logo-4.svg" alt="Dealer 4">
+            </div>
+          </div>
+          <div class="csp-card-body">
+            <div class="csp-card-stats">
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+195%</span>
+                <span class="csp-card-stat-label">Sales</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">5×</span>
+                <span class="csp-card-stat-label">Leads</span>
+              </div>
+              <div class="csp-card-stat">
+                <span class="csp-card-stat-value">+55%</span>
+                <span class="csp-card-stat-label">Conversion</span>
+              </div>
+            </div>
+            <h2 class="csp-card-headline">How Ventura Marine achieved 5× lead volume without adding headcount</h2>
+            <p class="csp-card-excerpt">Ventura Marine was drowning in unworked leads. DealerEdge's AI response system turned every inquiry into a qualified opportunity, automatically.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- CTA strip -->
+      <div class="csp-cta-strip" data-fade>
+        <div class="csp-cta-strip-inner">
+          <div>
+            <p class="csp-cta-label">Ready to write your own case study?</p>
+            <p class="csp-cta-sub">Join the dealerships seeing real results with DealerEdge.</p>
+          </div>
+          <a href="#" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">Built for dealers who move fast.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Contact Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="ms-dots" id="ms-dots">
+        <span class="ms-dot" data-dot="1"></span>
+        <span class="ms-dot" data-dot="2"></span>
+        <span class="ms-dot" data-dot="3"></span>
+      </div>
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">What's your name?</h2>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-1">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Great <span id="ms-name-display"></span>. Now let's grab your info.</h2>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="jane@dealership.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-2">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-3">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Do you want to schedule a time on our calendar to chat?</h2>
+        <div class="ms-choice-row">
+          <button class="ms-choice ms-choice--yes" id="ms-yes">Yes, let's book a time</button>
+          <button class="ms-choice ms-choice--no" id="ms-no">No, just reach out</button>
+        </div>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-4">
+        <span class="modal-eyebrow">Pick a Time</span>
+        <h2 class="ms-headline">Choose a date.</h2>
+        <div class="ms-calendar" id="ms-calendar"></div>
+        <div class="ms-times" id="ms-times"></div>
+      </div>
+      <div class="ms-step ms-step--hidden" id="ms-step-5">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/case-studies.js"></script>
+</body>
+</html>

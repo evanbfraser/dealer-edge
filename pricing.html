@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing | DealerEdge</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Learn More</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="pricing.html" class="nav-link--active">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="pricing-hero">
+    <div class="pricing-hero-glow"></div>
+    <div class="section-container pricing-hero-inner">
+      <span class="section-label" data-animation="fade-up">Pricing</span>
+      <h1 class="pricing-hero-headline" data-animation="fade-up" data-delay="0.08">
+        One platform.<br><span class="headline-accent">Everything included.</span>
+      </h1>
+      <p class="pricing-hero-sub" data-animation="fade-up" data-delay="0.16">No modules to buy separately. No surprise fees. Everything you need to grow your dealership is in one plan.</p>
+    </div>
+  </header>
+
+  <!-- What's Included -->
+  <section class="pricing-includes-section">
+    <div class="section-container">
+      <div class="pricing-includes-header" data-animation="fade-up">
+        <span class="section-label">What's Included</span>
+        <h2 class="section-title">Everything your dealership needs<br><span class="dim">to win.</span></h2>
+      </div>
+
+      <div class="pricing-features-grid">
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.0">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">AI Lead Response</h3>
+            <p class="pf-desc">24/7 instant responses to every inbound lead via chat, text, and email, before your competition even wakes up.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.05">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Intelligent Listing Management</h3>
+            <p class="pf-desc">AI-optimized listings across BoatTrader, RVTrader, and your own site, kept current and conversion-ready at all times.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.1">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">AI Ad Creative</h3>
+            <p class="pf-desc">High-performing digital ads, display, social, and video, generated and optimized by AI, matched to your brand.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.0">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">SEO & AIO Content</h3>
+            <p class="pf-desc">Keyword-optimized blog articles, landing pages, and product descriptions that rank on Google and AI-powered search engines.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.05">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Customer Journey Automation</h3>
+            <p class="pf-desc">Automated touchpoints from first click to loyal customer, awareness, consideration, purchase, and beyond.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.1">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Appointment Scheduling</h3>
+            <p class="pf-desc">AI qualifies leads and books appointments directly into your calendar, so your team shows up to close, not chase.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.0">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Email & SMS Campaigns</h3>
+            <p class="pf-desc">Personalized nurture sequences, service reminders, and re-engagement campaigns, sent at exactly the right moment.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.05">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Social Media Management</h3>
+            <p class="pf-desc">Consistent, on-brand posts across Facebook, Instagram, and TikTok, planned, written, and scheduled by AI.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.1">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Performance Analytics</h3>
+            <p class="pf-desc">Monthly reports with clear ROI breakdowns, leads generated, deals influenced, and revenue attributed to the platform.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.0">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">Dedicated Account Manager</h3>
+            <p class="pf-desc">A real human expert who knows your dealership, monitors your results, and is always available when you need them.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.05">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">CRM Integration</h3>
+            <p class="pf-desc">Seamless two-way sync with your existing CRM so leads, notes, and activity flow automatically, no double entry, ever.</p>
+          </div>
+        </div>
+
+        <div class="pricing-feature-card" data-animation="fade-up" data-delay="0.1">
+          <div class="pf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="pf-text">
+            <h3 class="pf-title">AI Sales Captain Widget</h3>
+            <p class="pf-desc">Your branded AI assistant lives on your website, answering questions, capturing leads, and guiding visitors toward a sale.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Card -->
+  <section class="pricing-card-section">
+    <div class="pricing-card-glow"></div>
+    <div class="section-container">
+
+      <div class="pricing-card-header" data-animation="fade-up">
+        <span class="section-label">Investment</span>
+        <h2 class="section-title">Transparent pricing.<br><span class="dim">No surprises.</span></h2>
+      </div>
+
+      <!-- Billing toggle -->
+      <div class="pricing-toggle-wrap" data-animation="fade-up" data-delay="0.08">
+        <div class="pricing-toggle" id="pricing-toggle">
+          <button class="pricing-toggle-btn is-active" data-period="monthly">Monthly</button>
+          <button class="pricing-toggle-btn" data-period="quarterly">Quarterly</button>
+          <button class="pricing-toggle-btn" data-period="yearly">Yearly</button>
+          <div class="pricing-toggle-pill" id="pricing-toggle-pill"></div>
+        </div>
+        <span class="pricing-save-badge" id="pricing-save-badge"></span>
+      </div>
+
+      <!-- The card -->
+      <div class="pricing-plan-card" data-animation="fade-up" data-delay="0.14">
+        <div class="pricing-plan-left">
+          <span class="pricing-plan-name">DealerEdge Platform</span>
+          <div class="pricing-price-row">
+            <span class="pricing-price" id="pricing-price">$1,497</span>
+            <span class="pricing-per">/mo</span>
+          </div>
+          <p class="pricing-billed-note" id="pricing-billed-note">Billed month-to-month. Cancel anytime.</p>
+          <a href="#" class="btn-primary btn-primary--large pricing-cta js-modal">
+            Get Started Today
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <p class="pricing-guarantee">30-day results guarantee or your money back.</p>
+        </div>
+
+        <div class="pricing-plan-divider"></div>
+
+        <div class="pricing-plan-right">
+          <p class="pricing-checklist-label">Everything in the platform</p>
+          <ul class="pricing-checklist">
+            <li><span class="pricing-check">✓</span> AI Lead Response (24/7)</li>
+            <li><span class="pricing-check">✓</span> Intelligent Listing Management</li>
+            <li><span class="pricing-check">✓</span> AI Ad Creative Generation</li>
+            <li><span class="pricing-check">✓</span> SEO & AIO Content</li>
+            <li><span class="pricing-check">✓</span> Customer Journey Automation</li>
+            <li><span class="pricing-check">✓</span> Appointment Scheduling</li>
+            <li><span class="pricing-check">✓</span> Email & SMS Campaigns</li>
+            <li><span class="pricing-check">✓</span> Social Media Management</li>
+            <li><span class="pricing-check">✓</span> Monthly Performance Analytics</li>
+            <li><span class="pricing-check">✓</span> Dedicated Account Manager</li>
+            <li><span class="pricing-check">✓</span> CRM Integration</li>
+            <li><span class="pricing-check">✓</span> AI Sales Captain Widget</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Billing breakdown -->
+      <div class="pricing-breakdown" data-animation="fade-up" data-delay="0.2">
+        <div class="pricing-breakdown-row" id="pb-monthly">
+          <div class="pb-label">
+            <span class="pb-period">Monthly</span>
+            <span class="pb-desc">Billed month-to-month</span>
+          </div>
+          <div class="pb-right">
+            <span class="pb-price">$1,497<span class="pb-unit">/mo</span></span>
+          </div>
+        </div>
+        <div class="pricing-breakdown-row" id="pb-quarterly">
+          <div class="pb-label">
+            <span class="pb-period">Quarterly</span>
+            <span class="pb-desc">Billed $4,041 every 3 months</span>
+          </div>
+          <div class="pb-right">
+            <span class="pb-price">$1,347<span class="pb-unit">/mo</span></span>
+            <span class="pb-savings">Save $450/yr</span>
+          </div>
+        </div>
+        <div class="pricing-breakdown-row" id="pb-yearly">
+          <div class="pb-label">
+            <span class="pb-period">Yearly</span>
+            <span class="pb-desc">Billed $14,964 once per year</span>
+          </div>
+          <div class="pb-right">
+            <span class="pb-price">$1,247<span class="pb-unit">/mo</span></span>
+            <span class="pb-savings">Save $3,000/yr</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ strip -->
+  <section class="pricing-faq-section">
+    <div class="section-container">
+      <div class="pricing-faq-grid" data-animation="fade-up">
+
+        <div class="pricing-faq-item">
+          <h4>Is there a setup fee?</h4>
+          <p>No. Onboarding, platform configuration, and brand setup are all included at no extra cost.</p>
+        </div>
+
+        <div class="pricing-faq-item">
+          <h4>How long does setup take?</h4>
+          <p>Most dealerships are fully live within 7 business days of signing. Your account manager handles the heavy lifting.</p>
+        </div>
+
+        <div class="pricing-faq-item">
+          <h4>Can I cancel anytime?</h4>
+          <p>Yes on the monthly plan. Quarterly and yearly plans are billed upfront, but we stand behind our results.</p>
+        </div>
+
+        <div class="pricing-faq-item">
+          <h4>What if I don't see results?</h4>
+          <p>We offer a 30-day results guarantee. If you're not seeing measurable impact, we'll make it right.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-glow"></div>
+    <div class="section-container cta-inner">
+      <div class="cta-tag" data-animation="fade-up">Ready to grow?</div>
+      <h2 class="cta-title" data-animation="fade-up" data-delay="0.1">Give your dealership<br>the edge it deserves.</h2>
+      <p class="cta-sub" data-animation="fade-up" data-delay="0.2">Join 500+ dealers already using DealerEdge to win more customers, close more deals, and grow faster.</p>
+      <div data-animation="fade-up" data-delay="0.3">
+        <a href="#" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">Built for dealers who move fast.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Contact Modal (shared with homepage) -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-dots" id="ms-dots">
+        <span class="ms-dot" data-dot="1"></span>
+        <span class="ms-dot" data-dot="2"></span>
+        <span class="ms-dot" data-dot="3"></span>
+      </div>
+
+      <!-- Step 1: Name -->
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">What's your name?</h2>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-1">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+
+      <!-- Step 2: Contact info -->
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Great <span id="ms-name-display"></span>. Now let's grab your info.</h2>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="jane@dealership.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-next-2">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </div>
+
+      <!-- Step 3: Schedule? -->
+      <div class="ms-step ms-step--hidden" id="ms-step-3">
+        <span class="modal-eyebrow">Get Started</span>
+        <h2 class="ms-headline">Do you want to schedule a time on our calendar to chat?</h2>
+        <div class="ms-choice-row">
+          <button class="ms-choice ms-choice--yes" id="ms-yes">Yes, let's book a time</button>
+          <button class="ms-choice ms-choice--no" id="ms-no">No, just reach out</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Calendar -->
+      <div class="ms-step ms-step--hidden" id="ms-step-4">
+        <span class="modal-eyebrow">Pick a Time</span>
+        <h2 class="ms-headline">Choose a date.</h2>
+        <div class="ms-calendar" id="ms-calendar"></div>
+        <div class="ms-times" id="ms-times"></div>
+      </div>
+
+      <!-- Step 5: Confirmation -->
+      <div class="ms-step ms-step--hidden" id="ms-step-5">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+  <!-- Pricing toggle (page-specific) -->
+  <script>
+    (function () {
+      const PRICING = {
+        monthly:   { price: '$1,497', note: 'Billed month-to-month. Cancel anytime.', save: '' },
+        quarterly: { price: '$1,347', note: 'Billed $4,041 every 3 months.',           save: 'Save 10%' },
+        yearly:    { price: '$1,247', note: 'Billed $14,964 once per year.',            save: 'Save 17%' },
+      };
+
+      const toggleBtns = document.querySelectorAll('.pricing-toggle-btn');
+      const pill        = document.getElementById('pricing-toggle-pill');
+      const priceEl     = document.getElementById('pricing-price');
+      const noteEl      = document.getElementById('pricing-billed-note');
+      const badgeEl     = document.getElementById('pricing-save-badge');
+      const rows        = {
+        monthly:   document.getElementById('pb-monthly'),
+        quarterly: document.getElementById('pb-quarterly'),
+        yearly:    document.getElementById('pb-yearly'),
+      };
+
+      function setPeriod(period) {
+        const activeBtn  = document.querySelector(`.pricing-toggle-btn[data-period="${period}"]`);
+        const toggleWrap = document.getElementById('pricing-toggle');
+        const wrapRect   = toggleWrap.getBoundingClientRect();
+        const btnRect    = activeBtn.getBoundingClientRect();
+        pill.style.width = btnRect.width + 'px';
+        pill.style.left  = (btnRect.left - wrapRect.left) + 'px';
+
+        toggleBtns.forEach(b => b.classList.toggle('is-active', b.dataset.period === period));
+
+        const data = PRICING[period];
+        priceEl.textContent = data.price;
+        noteEl.textContent  = data.note;
+        badgeEl.textContent = data.save;
+        badgeEl.style.opacity = data.save ? '1' : '0';
+
+        Object.entries(rows).forEach(([key, row]) => {
+          row.classList.toggle('is-active', key === period);
+        });
+      }
+
+      toggleBtns.forEach(btn => btn.addEventListener('click', () => setPeriod(btn.dataset.period)));
+      window.addEventListener('load', () => setPeriod('monthly'));
+    }());
+  </script>
+
+</body>
+</html>
