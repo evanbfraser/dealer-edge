@@ -389,17 +389,67 @@
   }
 
   /* ─────────────────────────────────────────────────────────────
-     ACT 4  —  cycle the dashboard tabs to feel alive
+     ACT 4 BEAT 5  —  Live ROI calculator
+     Inputs: leads/mo, current close rate, margin per deal
+     Outputs: today vs with-DealerEdge deals + revenue + annual lift
+     Math anchor: Pied Piper ILE Study — dealers improving response
+     score (<40 → >80) sell 50% more units from the same leads.
      ───────────────────────────────────────────────────────────── */
-  const tabs = document.querySelectorAll('.s-dash-tab');
-  let tabIdx = 0;
-  if (tabs.length) {
-    setInterval(() => {
-      tabs.forEach((t) => t.classList.remove('is-active'));
-      tabIdx = (tabIdx + 1) % tabs.length;
-      tabs[tabIdx].classList.add('is-active');
-    }, 3400);
+  const fmt = (n) =>
+    Math.round(n).toLocaleString('en-US');
+  const fmt1 = (n) => (Math.round(n * 10) / 10).toLocaleString('en-US');
+
+  function paintRange(input) {
+    const v = ((input.value - input.min) / (input.max - input.min)) * 100;
+    input.style.background = `linear-gradient(90deg, var(--good) 0%, var(--good) ${v}%, var(--line) ${v}%, var(--line) 100%)`;
   }
+
+  function updateROI() {
+    const leadsEl = document.getElementById('roi-leads');
+    const closeEl = document.getElementById('roi-close');
+    const marginEl = document.getElementById('roi-margin');
+    if (!leadsEl || !closeEl || !marginEl) return;
+
+    const leads = +leadsEl.value;
+    const closeRate = +closeEl.value; // %
+    const margin = +marginEl.value;
+
+    // Conservative close-rate lift: 1.5x (50% more from same leads)
+    const liftMultiplier = 1.5;
+    const closeRateWith = Math.min(100, closeRate * liftMultiplier);
+
+    const dealsNow = leads * (closeRate / 100);
+    const dealsWith = leads * (closeRateWith / 100);
+    const revNow = dealsNow * margin;
+    const revWith = dealsWith * margin;
+    const annualLift = (revWith - revNow) * 12;
+
+    // value labels
+    document.getElementById('roi-leads-val').textContent = leads;
+    document.getElementById('roi-close-val').textContent = closeRate;
+    document.getElementById('roi-margin-val').textContent = fmt(margin);
+
+    // result cells
+    document.getElementById('roi-now-deals').textContent = fmt1(dealsNow);
+    document.getElementById('roi-de-deals').textContent = fmt1(dealsWith);
+    document.getElementById('roi-now-rev').textContent = fmt(revNow);
+    document.getElementById('roi-de-rev').textContent = fmt(revWith);
+    document.getElementById('roi-lift').textContent = fmt(annualLift);
+
+    // range fill
+    paintRange(leadsEl);
+    paintRange(closeEl);
+    paintRange(marginEl);
+  }
+
+  ['roi-leads', 'roi-close', 'roi-margin'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', updateROI);
+    }
+  });
+  // initial paint
+  updateROI();
 
   /* ─────────────────────────────────────────────────────────────
      NAVBAR — same scroll-hide behavior as rest of site

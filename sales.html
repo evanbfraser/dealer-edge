@@ -503,92 +503,346 @@
   </section>
 
   <!-- ──────────────────────────────────────────────────────────────
-       ACT 4  —  What the dealer sees.
-       Compact dashboard panel that animates on intersect.
+       PIVOT 2 — into the sales-team-side story
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-dashboard-section" id="act4">
-    <div class="s-dashboard-inner">
-      <div class="s-dashboard-copy">
-        <span class="section-label" data-fade>What the dealer sees</span>
-        <h2 class="s-dashboard-headline" data-fade data-delay="0.1">
-          You wake up Monday.<br>
-          <span class="s-headline-accent">The pipeline filled itself.</span>
-        </h2>
-        <p class="s-dashboard-sub" data-fade data-delay="0.2">
-          Every overnight conversation, every booking, every hot-lead alert lives in one dashboard. The team comes in Monday and works the list — instead of building it.
-        </p>
-        <ul class="s-dashboard-bullets">
-          <li data-fade data-delay="0.3"><span class="s-bullet-dot"></span>Every text, call, and chat from the weekend, with transcripts</li>
-          <li data-fade data-delay="0.35"><span class="s-bullet-dot"></span>Hot leads escalated, ranked, and assigned</li>
-          <li data-fade data-delay="0.4"><span class="s-bullet-dot"></span>Showings booked directly on the right rep's calendar</li>
-          <li data-fade data-delay="0.45"><span class="s-bullet-dot"></span>Every AI action logged and reversible</li>
-        </ul>
+  <section class="s-pivot s-pivot--alt">
+    <div class="s-pivot-inner">
+      <div class="s-pivot-line"></div>
+      <h2 class="s-pivot-headline" data-fade>
+        That was the half nobody else shows you.<br>
+        <span class="s-headline-accent">Now look at what your team actually does.</span>
+      </h2>
+      <p class="s-pivot-sub" data-fade data-delay="0.1">
+        Every other "AI for dealers" pitch stops at the buyer-side reply.<br>
+        The real win is what stops happening on the inside of your dealership.
+      </p>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 4  —  What the dealer (sales team) actually does now.
+       Six scroll-pinned beats: validation → ingestion → enrichment →
+       concierge routing → ROI calculator → philosophy close.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-act s-act--with s-act--team" id="act4">
+    <div class="s-act-watermark s-act-watermark--with">SALES&nbsp;TEAM&nbsp;&middot;&nbsp;ON DEALEREDGE</div>
+
+    <div class="s-act-inner">
+      <!-- Left copy -->
+      <div class="s-act-copy">
+        <div class="s-act-copy-sticky">
+          <span class="s-act-tag s-act-tag--good">What the team actually does now</span>
+          <h2 class="s-act-headline">
+            The bullshit, off your desk.<br>
+            <span class="s-act-headline-accent">The customer, back in front of you.</span>
+          </h2>
+
+          <div class="s-act-beats">
+            <div class="s-act-beat" data-beat="1">
+              <span class="s-act-beat-num">01</span>
+              <p><strong>Garbage in, never gets in.</strong> Eight forms came in overnight. Five never reach a rep — invalid email, dead phone, throwaway domain, form-fill bot. Your sales team doesn't waste a minute on leads that aren't leads.</p>
+            </div>
+            <div class="s-act-beat" data-beat="2">
+              <span class="s-act-beat-num">02</span>
+              <p><strong>One funnel for every source.</strong> Your site, Aimbase, BoatTrader, Facebook, manufacturer pass-throughs. All ingested, all validated, all routed through one AI layer. The "where did this come from?" question dies.</p>
+            </div>
+            <div class="s-act-beat" data-beat="3">
+              <span class="s-act-beat-num">03</span>
+              <p><strong>Forensic enrichment — real person, real budget.</strong> Not just a name and a phone. Employer, role, neighborhood, household profile, prior visits, favorited boats — and a single judgment line: <em>capable of this purchase</em>. From public sources. Legally.</p>
+            </div>
+            <div class="s-act-beat" data-beat="4">
+              <span class="s-act-beat-num">04</span>
+              <p><strong>AI Sales Concierge pre-qualifies and routes.</strong> 60-second response in your brand voice, trained on your inventory and your OEM's product data. Asks the qualifying questions. Then routes to the rep who actually sells the boat — Bob doesn't get Wakesetter leads, Mike does. Booked on Mike's calendar. Automatically.</p>
+            </div>
+            <div class="s-act-beat" data-beat="5">
+              <span class="s-act-beat-num">05</span>
+              <p><strong>The math.</strong> Same monthly leads. Better filtering. Faster response. Smarter routing. What that does to your close rate — and your bottom line — isn't a guess. Try the numbers.</p>
+            </div>
+            <div class="s-act-beat" data-beat="6">
+              <span class="s-act-beat-num">06</span>
+              <p><strong>Your salespeople are people-people.</strong> That's why they're salespeople. We took the admin work off their desk so they can do the only thing that actually closes deals — be present with the customer. Next: deal flow, licensing, registration. We're not done.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="s-dashboard-stage" data-fade data-delay="0.2">
-        <div class="s-dash s-dash--big">
-          <div class="s-dash-header">
-            <span class="s-dash-title">Sales Captain · Live</span>
-            <span class="s-dash-sub">
-              <span class="s-dash-live-dot"></span>
-              247 conversations active
-            </span>
-          </div>
+      <!-- Right media stage -->
+      <div class="s-act-stage">
+        <div class="s-act-stage-sticky">
 
-          <div class="s-dash-tabs">
-            <span class="s-dash-tab is-active">Hot leads (3)</span>
-            <span class="s-dash-tab">Booked (12)</span>
-            <span class="s-dash-tab">Active threads (89)</span>
-            <span class="s-dash-tab">Needs review (2)</span>
-          </div>
-
-          <div class="s-dash-leadlist">
-            <div class="s-dash-leadrow s-dash-leadrow--hot">
-              <div class="s-dash-leadrow-left">
-                <span class="s-dash-leadrow-score">94</span>
-                <div class="s-dash-leadrow-meta">
-                  <span class="s-dash-leadrow-name">John Castillo</span>
-                  <span class="s-dash-leadrow-sub">2022 Malibu Wakesetter · showing booked Sat 10 AM</span>
+          <!-- Beat 1: lead validation — 8 leads in, 5 get killed -->
+          <div class="s-beat s-beat--1 is-active" data-beat="1">
+            <div class="s-validator">
+              <div class="s-validator-header">
+                <span class="s-validator-title">Inbound · last 12 hours</span>
+                <span class="s-validator-sub">8 raw → <strong>3 real</strong></span>
+              </div>
+              <div class="s-validator-rows">
+                <div class="s-vrow is-good">
+                  <div class="s-vrow-name">John Castillo</div>
+                  <div class="s-vrow-meta">j.castillo@gmail.com · +1 (615) 555-0142</div>
+                  <div class="s-vrow-tag s-vrow-tag--ok">VALID</div>
+                </div>
+                <div class="s-vrow is-bad">
+                  <div class="s-vrow-name">qwerty asdf</div>
+                  <div class="s-vrow-meta">qwerty@mailinator.com · +1 (000) 000-0000</div>
+                  <div class="s-vrow-tag s-vrow-tag--reject">DISPOSABLE EMAIL · FAKE PHONE</div>
+                </div>
+                <div class="s-vrow is-bad">
+                  <div class="s-vrow-name">test test</div>
+                  <div class="s-vrow-meta">test@test.com · +1 (555) 555-5555</div>
+                  <div class="s-vrow-tag s-vrow-tag--reject">FORM-FILL BOT</div>
+                </div>
+                <div class="s-vrow is-good">
+                  <div class="s-vrow-name">Sarah Bennett</div>
+                  <div class="s-vrow-meta">sarah.b@outlook.com · +1 (404) 555-0188</div>
+                  <div class="s-vrow-tag s-vrow-tag--ok">VALID</div>
+                </div>
+                <div class="s-vrow is-bad">
+                  <div class="s-vrow-name">aaaa bbbb</div>
+                  <div class="s-vrow-meta">aaaaa@bbbb.cc · +1 (333) 333-3333</div>
+                  <div class="s-vrow-tag s-vrow-tag--reject">PHONE INVALID · BOUNCED</div>
+                </div>
+                <div class="s-vrow is-bad">
+                  <div class="s-vrow-name">competitor sales</div>
+                  <div class="s-vrow-meta">spy@rivaldealer.net · +1 (615) 555-1100</div>
+                  <div class="s-vrow-tag s-vrow-tag--reject">COMPETITOR SCRAPE</div>
+                </div>
+                <div class="s-vrow is-good">
+                  <div class="s-vrow-name">Tom Whittaker</div>
+                  <div class="s-vrow-meta">twhit@me.com · +1 (615) 555-0309</div>
+                  <div class="s-vrow-tag s-vrow-tag--ok">VALID</div>
+                </div>
+                <div class="s-vrow is-bad">
+                  <div class="s-vrow-name">[no name]</div>
+                  <div class="s-vrow-meta">contact@dealerlist.io · —</div>
+                  <div class="s-vrow-tag s-vrow-tag--reject">DUPLICATE · 47 OTHER DEALERS</div>
                 </div>
               </div>
-              <span class="s-dash-leadrow-tag s-dash-leadrow-tag--hot">HOT</span>
-            </div>
-            <div class="s-dash-leadrow">
-              <div class="s-dash-leadrow-left">
-                <span class="s-dash-leadrow-score">82</span>
-                <div class="s-dash-leadrow-meta">
-                  <span class="s-dash-leadrow-name">Sarah Bennett</span>
-                  <span class="s-dash-leadrow-sub">Pontoon · 2 follow-ups scheduled</span>
-                </div>
+              <div class="s-validator-footer">
+                <span class="s-validator-stat"><strong>5</strong> killed before they hit a rep</span>
+                <span class="s-validator-stat"><strong>~4 hrs/week</strong> of filtering, returned to your team</span>
               </div>
-              <span class="s-dash-leadrow-tag">WARM</span>
             </div>
-            <div class="s-dash-leadrow">
-              <div class="s-dash-leadrow-left">
-                <span class="s-dash-leadrow-score">76</span>
-                <div class="s-dash-leadrow-meta">
-                  <span class="s-dash-leadrow-name">Tom Whittaker</span>
-                  <span class="s-dash-leadrow-sub">Wake boat · returned 3 times this week</span>
-                </div>
-              </div>
-              <span class="s-dash-leadrow-tag">WARM</span>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Garbage in. Never gets in.</span>
             </div>
           </div>
 
-          <div class="s-dash-bottom">
-            <div class="s-dash-mini-stat">
-              <span class="s-dash-mini-num">47<span class="s-dash-mini-unit">s</span></span>
-              <span class="s-dash-mini-cap">avg response time this week</span>
+          <!-- Beat 2: multi-source ingestion incl Aimbase -->
+          <div class="s-beat s-beat--2" data-beat="2">
+            <div class="s-sources">
+              <div class="s-sources-col s-sources-col--in">
+                <div class="s-src-tile s-src-tile--site">
+                  <span class="s-src-name">Your dealer site</span>
+                  <span class="s-src-meta">forms · chat · phone</span>
+                </div>
+                <div class="s-src-tile s-src-tile--aimbase">
+                  <span class="s-src-name">Aimbase</span>
+                  <span class="s-src-meta">OEM lead pass-through</span>
+                </div>
+                <div class="s-src-tile s-src-tile--bt">
+                  <span class="s-src-name">BoatTrader</span>
+                  <span class="s-src-meta">marketplace inquiries</span>
+                </div>
+                <div class="s-src-tile s-src-tile--fb">
+                  <span class="s-src-name">Meta · Google · YouTube</span>
+                  <span class="s-src-meta">ad leads</span>
+                </div>
+                <div class="s-src-tile s-src-tile--oem">
+                  <span class="s-src-name">Manufacturer site</span>
+                  <span class="s-src-meta">find-a-dealer leads</span>
+                </div>
+              </div>
+              <div class="s-sources-arrows">
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+              </div>
+              <div class="s-sources-funnel">
+                <div class="s-src-funnel-node">
+                  <div class="s-src-funnel-title">AI Lead Validator + Enricher</div>
+                  <div class="s-src-funnel-sub">one funnel · one source of truth</div>
+                </div>
+                <div class="s-src-funnel-out">
+                  → Routed, scored, scheduled
+                </div>
+              </div>
             </div>
-            <div class="s-dash-mini-stat">
-              <span class="s-dash-mini-num">0</span>
-              <span class="s-dash-mini-cap">leads waiting &gt; 5 min</span>
-            </div>
-            <div class="s-dash-mini-stat">
-              <span class="s-dash-mini-num">22<span class="s-dash-mini-unit">hr</span></span>
-              <span class="s-dash-mini-cap">rep admin time saved</span>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Every source. One funnel. One source of truth.</span>
             </div>
           </div>
+
+          <!-- Beat 3: forensic enrichment with the judgment line -->
+          <div class="s-beat s-beat--3" data-beat="3">
+            <div class="s-forensic">
+              <div class="s-forensic-header">
+                <span class="s-forensic-title">John Castillo</span>
+                <span class="s-forensic-sub">Forensic profile · auto-built from public sources</span>
+              </div>
+              <div class="s-forensic-grid">
+                <div class="s-fact"><span class="s-fact-k">Employer</span><span class="s-fact-v">Senior Engineer · Vivint Smart Home</span></div>
+                <div class="s-fact"><span class="s-fact-k">Tenure</span><span class="s-fact-v">7 years · est. comp $185K–$220K</span></div>
+                <div class="s-fact"><span class="s-fact-k">Location</span><span class="s-fact-v">Franklin, TN · single-family · 6 BR</span></div>
+                <div class="s-fact"><span class="s-fact-k">Household</span><span class="s-fact-v">Married, 2 kids · boat club member</span></div>
+                <div class="s-fact"><span class="s-fact-k">Site behavior</span><span class="s-fact-v">3 prior visits · viewed 7 wake boats · favorited 2</span></div>
+                <div class="s-fact"><span class="s-fact-k">Prior search</span><span class="s-fact-v">"wakesurf boats under $180K" · 2 weeks ago</span></div>
+              </div>
+              <div class="s-forensic-judge">
+                <div class="s-judge-label">CAPABILITY ASSESSMENT</div>
+                <div class="s-judge-line">
+                  Capable of a <strong>$162,900</strong> purchase
+                  <span class="s-judge-tick">✓</span>
+                </div>
+                <div class="s-judge-sub">Sources: LinkedIn, county records, prior-session behavior, public real estate</div>
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Not just a name. A judgment.</span>
+            </div>
+          </div>
+
+          <!-- Beat 4: AI concierge + rep specialty routing -->
+          <div class="s-beat s-beat--4" data-beat="4">
+            <div class="s-routing">
+              <div class="s-routing-lead">
+                <div class="s-routing-lead-name">John Castillo</div>
+                <div class="s-routing-lead-meta">2022 Malibu Wakesetter · pre-qualified</div>
+                <div class="s-routing-lead-tag">Looking for: WAKE BOAT</div>
+              </div>
+              <div class="s-routing-flow">
+                <div class="s-routing-arrow s-routing-arrow--up"></div>
+                <div class="s-routing-router">AI routing</div>
+                <div class="s-routing-arrow s-routing-arrow--down"></div>
+              </div>
+              <div class="s-routing-reps">
+                <div class="s-rep">
+                  <div class="s-rep-avatar">B</div>
+                  <div class="s-rep-name">Bob</div>
+                  <div class="s-rep-spec">Pontoons · Yamaha</div>
+                  <div class="s-rep-status s-rep-status--skip">SKIP</div>
+                </div>
+                <div class="s-rep is-target">
+                  <div class="s-rep-avatar">M</div>
+                  <div class="s-rep-name">Mike</div>
+                  <div class="s-rep-spec">Wake boats · Malibu · Axis</div>
+                  <div class="s-rep-status s-rep-status--match">MATCH</div>
+                </div>
+                <div class="s-rep">
+                  <div class="s-rep-avatar">S</div>
+                  <div class="s-rep-name">Sarah</div>
+                  <div class="s-rep-spec">Center consoles · Regulator</div>
+                  <div class="s-rep-status s-rep-status--skip">SKIP</div>
+                </div>
+              </div>
+              <div class="s-routing-result">
+                <span class="s-routing-result-icon">📅</span>
+                <span class="s-routing-result-text">Showing booked on <strong>Mike's</strong> calendar · Sat 10 AM · invite sent to John</span>
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">The right rep. The right boat. The right calendar slot.</span>
+            </div>
+          </div>
+
+          <!-- Beat 5: ROI calculator (interactive) -->
+          <div class="s-beat s-beat--5" data-beat="5">
+            <div class="s-roi" id="roi-calc">
+              <div class="s-roi-header">
+                <span class="s-roi-title">What this does to your bottom line</span>
+                <span class="s-roi-sub">Tune the inputs — math updates live</span>
+              </div>
+
+              <div class="s-roi-inputs">
+                <div class="s-roi-input">
+                  <label>Leads / month</label>
+                  <div class="s-roi-control">
+                    <input type="range" id="roi-leads" min="20" max="400" step="10" value="80">
+                    <span class="s-roi-val" id="roi-leads-val">80</span>
+                  </div>
+                </div>
+                <div class="s-roi-input">
+                  <label>Current close rate</label>
+                  <div class="s-roi-control">
+                    <input type="range" id="roi-close" min="1" max="20" step="0.5" value="6">
+                    <span class="s-roi-val"><span id="roi-close-val">6</span>%</span>
+                  </div>
+                </div>
+                <div class="s-roi-input">
+                  <label>Avg margin per deal</label>
+                  <div class="s-roi-control">
+                    <input type="range" id="roi-margin" min="2000" max="40000" step="500" value="14000">
+                    <span class="s-roi-val">$<span id="roi-margin-val">14,000</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="s-roi-grid">
+                <div class="s-roi-col">
+                  <div class="s-roi-col-label">Today</div>
+                  <div class="s-roi-deals"><span id="roi-now-deals">4.8</span> deals / mo</div>
+                  <div class="s-roi-rev">$<span id="roi-now-rev">67,200</span></div>
+                  <div class="s-roi-rev-cap">margin / month</div>
+                </div>
+                <div class="s-roi-arrow">→</div>
+                <div class="s-roi-col s-roi-col--with">
+                  <div class="s-roi-col-label">With DealerEdge</div>
+                  <div class="s-roi-deals"><span id="roi-de-deals">7.2</span> deals / mo</div>
+                  <div class="s-roi-rev">$<span id="roi-de-rev">100,800</span></div>
+                  <div class="s-roi-rev-cap">margin / month</div>
+                </div>
+              </div>
+
+              <div class="s-roi-lift">
+                <div class="s-roi-lift-label">Annual margin lift</div>
+                <div class="s-roi-lift-num">+$<span id="roi-lift">403,200</span></div>
+                <div class="s-roi-lift-cap">From same leads. Faster response. Smarter routing. Killer Proof Chain math (Pied Piper ILE: dealers improving response score &lt;40 → &gt;80 sell 50% more units from the same leads).</div>
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Same leads. 50% more boats. Same team.</span>
+            </div>
+          </div>
+
+          <!-- Beat 6: philosophy close + foreshadow -->
+          <div class="s-beat s-beat--6" data-beat="6">
+            <div class="s-closer">
+              <div class="s-closer-quote">
+                "Your salespeople are people-people. That's why you hired them. We took the bullshit off their desk so they can be that."
+              </div>
+              <div class="s-closer-stats">
+                <div class="s-closer-stat">
+                  <span class="s-closer-num">22<span class="s-closer-unit">hrs</span></span>
+                  <span class="s-closer-cap">admin time returned to each rep, per week</span>
+                </div>
+                <div class="s-closer-stat">
+                  <span class="s-closer-num">+30<span class="s-closer-unit">%</span></span>
+                  <span class="s-closer-cap">deals closed per rep per month</span>
+                </div>
+                <div class="s-closer-stat">
+                  <span class="s-closer-num">0</span>
+                  <span class="s-closer-cap">leads waiting more than 90 seconds</span>
+                </div>
+              </div>
+              <div class="s-closer-next">
+                <span class="s-closer-next-tag">Coming</span>
+                <span class="s-closer-next-text">Deal flow. Licensing. Registration. Service. The whole back office. We're not done.</span>
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Let salespeople sell. AI runs the rest.</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
