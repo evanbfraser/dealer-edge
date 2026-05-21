@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales | DealerEdge — The AI Sales Captain that never sleeps</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/sales.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Scroll</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="sales.html" class="nav-link--active" style="position:relative;">Sales <sup style="font-size:0.55em;color:#ee3a39;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       HERO  —  The killer-proof-chain stat, in their face
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-hero" id="s-hero">
+    <div class="s-hero-grid"></div>
+    <div class="s-hero-glow s-hero-glow--1"></div>
+    <div class="s-hero-glow s-hero-glow--2"></div>
+
+    <div class="s-hero-inner">
+      <span class="section-label s-hero-eyebrow" data-fade>Pillar · Sales</span>
+
+      <h1 class="s-hero-headline" data-fade data-delay="0.1">
+        <span class="s-hero-stat">78%</span>
+        of buyers go with whoever<br>
+        <span class="s-headline-strike">answers first.</span>
+        <span class="s-headline-accent">answers.</span>
+      </h1>
+
+      <p class="s-hero-sub" data-fade data-delay="0.3">
+        Below is the story of one buyer at 11:17 PM Saturday.<br>
+        Two versions of the same Saturday night.<br>
+        Then you'll be the buyer.
+      </p>
+
+      <div class="s-hero-pulse" data-fade data-delay="0.6">
+        <div class="s-pulse-dot"></div>
+        <span>scroll</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       PROOF CHAIN BAND — the four-stat cascade
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-proof-chain">
+    <div class="s-proof-chain-inner">
+      <div class="s-proof-stat" data-fade>
+        <span class="s-proof-num">78%</span>
+        <span class="s-proof-cap">of dealer sites fail Core Web Vitals — buyers bounce before becoming leads</span>
+      </div>
+      <div class="s-proof-arrow" data-fade data-delay="0.08">→</div>
+      <div class="s-proof-stat" data-fade data-delay="0.16">
+        <span class="s-proof-num">57%</span>
+        <span class="s-proof-cap">of dealers never respond to an inquiry in 24 hours</span>
+      </div>
+      <div class="s-proof-arrow" data-fade data-delay="0.24">→</div>
+      <div class="s-proof-stat" data-fade data-delay="0.32">
+        <span class="s-proof-num">80%</span>
+        <span class="s-proof-cap">of callers who reach voicemail hang up and call your competitor</span>
+      </div>
+      <div class="s-proof-arrow" data-fade data-delay="0.40">→</div>
+      <div class="s-proof-stat s-proof-stat--punch" data-fade data-delay="0.48">
+        <span class="s-proof-num">19%</span>
+        <span class="s-proof-cap">of boat dealers ever schedule an appointment from a web lead</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 1  —  WITHOUT DealerEdge
+       Scroll-pinned. Left copy, right stage. The stage animates
+       through 4 beats as you scroll: form submit → silence →
+       Monday morning → buyer is gone.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-act s-act--without" id="act1">
+    <div class="s-act-watermark">WITHOUT&nbsp;&middot;&nbsp;DEALEREDGE</div>
+
+    <div class="s-act-inner">
+      <!-- Left: copy that progresses with scroll -->
+      <div class="s-act-copy">
+        <div class="s-act-copy-sticky">
+          <span class="s-act-tag s-act-tag--bad">The old way</span>
+          <h2 class="s-act-headline">
+            Saturday, 11:17 PM.<br>
+            <span class="s-act-headline-faded">Your dealership is closed.</span>
+          </h2>
+
+          <div class="s-act-beats">
+            <div class="s-act-beat" data-beat="1">
+              <span class="s-act-beat-num">01</span>
+              <p>A buyer fills out a form on your site about a 2022 Malibu Wakesetter. They've been on the listing for 9 minutes.</p>
+            </div>
+            <div class="s-act-beat" data-beat="2">
+              <span class="s-act-beat-num">02</span>
+              <p>An auto-reply lands in their inbox. "A representative will contact you Monday." They open it. They close it.</p>
+            </div>
+            <div class="s-act-beat" data-beat="3">
+              <span class="s-act-beat-num">03</span>
+              <p>By Sunday morning they've contacted three other dealers. One of them got back. They're already in a Saturday-afternoon conversation about financing.</p>
+            </div>
+            <div class="s-act-beat" data-beat="4">
+              <span class="s-act-beat-num">04</span>
+              <p>Monday at 9:14 AM your sales manager opens the inbox. The lead is there. So are six others. They call. The buyer is at a competitor's showroom.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: media stage — animates per beat -->
+      <div class="s-act-stage">
+        <div class="s-act-stage-sticky">
+
+          <!-- Beat 1: buyer on the listing page -->
+          <div class="s-beat s-beat--1 is-active" data-beat="1">
+            <div class="s-browser">
+              <div class="s-browser-bar">
+                <span class="s-browser-dot"></span>
+                <span class="s-browser-dot"></span>
+                <span class="s-browser-dot"></span>
+                <span class="s-browser-url">yourdealership.com/inventory/2022-malibu-wakesetter</span>
+              </div>
+              <div class="s-browser-body s-browser-body--listing">
+                <div class="s-listing-img"></div>
+                <div class="s-listing-meta">
+                  <span class="s-listing-title">2022 Malibu Wakesetter 23 LSV</span>
+                  <span class="s-listing-price">$162,900</span>
+                  <div class="s-listing-form">
+                    <span class="s-form-label">Request more info</span>
+                    <div class="s-form-row"><span class="s-form-input s-form-input--typed"></span></div>
+                    <div class="s-form-row"><span class="s-form-input s-form-input--typed"></span></div>
+                    <div class="s-form-submit">Submit inquiry</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="s-beat-cap">
+              <span class="s-cap-dot"></span>
+              <span class="s-cap-text">11:17 PM — form submitted</span>
+            </div>
+          </div>
+
+          <!-- Beat 2: silence / auto-reply only -->
+          <div class="s-beat s-beat--2" data-beat="2">
+            <div class="s-mailbox">
+              <div class="s-mailbox-header">Buyer's inbox</div>
+              <div class="s-mailbox-msg">
+                <div class="s-mailbox-msg-from">yourdealership.com</div>
+                <div class="s-mailbox-msg-subj">Thanks for your inquiry</div>
+                <div class="s-mailbox-msg-prev">A representative will contact you Monday morning…</div>
+                <span class="s-mailbox-msg-time">11:17 PM</span>
+              </div>
+              <div class="s-mailbox-empty">No further messages.</div>
+            </div>
+            <div class="s-beat-cap">
+              <span class="s-cap-dot"></span>
+              <span class="s-cap-text">11:18 PM through 9:13 AM — silence</span>
+            </div>
+          </div>
+
+          <!-- Beat 3: competitors get the deal -->
+          <div class="s-beat s-beat--3" data-beat="3">
+            <div class="s-rivals">
+              <div class="s-rival">
+                <div class="s-rival-name">North Lake Marine</div>
+                <div class="s-rival-status s-rival-status--won">REPLIED · 41 min</div>
+                <div class="s-rival-msg">"Hey John — I'm Mike, GM at North Lake. The Wakesetter you looked at, I just texted my owner about it. Want to chat in the morning?"</div>
+              </div>
+              <div class="s-rival">
+                <div class="s-rival-name">Crosswind Watersports</div>
+                <div class="s-rival-status s-rival-status--won">REPLIED · 1 hr</div>
+                <div class="s-rival-msg">"Saw your inquiry. We have two on the lot. Showings Sunday from 10 AM."</div>
+              </div>
+              <div class="s-rival">
+                <div class="s-rival-name s-rival-name--you">Your dealership</div>
+                <div class="s-rival-status s-rival-status--silent">— · still nothing</div>
+                <div class="s-rival-msg s-rival-msg--silent">…</div>
+              </div>
+            </div>
+            <div class="s-beat-cap">
+              <span class="s-cap-dot"></span>
+              <span class="s-cap-text">Sunday morning — they replied. You didn't.</span>
+            </div>
+          </div>
+
+          <!-- Beat 4: too late -->
+          <div class="s-beat s-beat--4" data-beat="4">
+            <div class="s-crm">
+              <div class="s-crm-header">Sales Manager · Lead Inbox</div>
+              <div class="s-crm-time">Monday, 9:14 AM</div>
+              <div class="s-crm-leads">
+                <div class="s-crm-lead is-target">
+                  <span class="s-crm-lead-name">John Castillo</span>
+                  <span class="s-crm-lead-meta">2022 Malibu Wakesetter · Saturday 11:17 PM</span>
+                  <span class="s-crm-lead-age">59 hours old</span>
+                </div>
+                <div class="s-crm-lead"><span class="s-crm-lead-name">Sarah B.</span><span class="s-crm-lead-meta">Pontoon · 32 hrs</span></div>
+                <div class="s-crm-lead"><span class="s-crm-lead-name">Tom W.</span><span class="s-crm-lead-meta">Wake boat · 28 hrs</span></div>
+                <div class="s-crm-lead"><span class="s-crm-lead-name">Adam P.</span><span class="s-crm-lead-meta">Center console · 17 hrs</span></div>
+                <div class="s-crm-lead"><span class="s-crm-lead-name">Maria L.</span><span class="s-crm-lead-meta">Used ski boat · 12 hrs</span></div>
+              </div>
+              <div class="s-crm-toast">
+                Called John at 9:42 AM. He bought from North Lake on Sunday.
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--bad">
+              <span class="s-cap-dot s-cap-dot--bad"></span>
+              <span class="s-cap-text">Boat gone. $14,000 in margin gone.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       PIVOT — the moment between the two stories
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-pivot">
+    <div class="s-pivot-inner">
+      <div class="s-pivot-line"></div>
+      <h2 class="s-pivot-headline" data-fade>
+        Now run the same Saturday night.<br>
+        <span class="s-headline-accent">With the AI Sales Captain on the lot.</span>
+      </h2>
+      <p class="s-pivot-sub" data-fade data-delay="0.1">
+        Same buyer. Same boat. Same 11:17 PM.<br>
+        Different ending.
+      </p>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 2  —  WITH DealerEdge
+       Mirror of Act 1. Same buyer, same time. AI intercepts in
+       90 seconds, qualifies, books the showing, alerts the rep.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-act s-act--with" id="act2">
+    <div class="s-act-watermark s-act-watermark--with">WITH&nbsp;&middot;&nbsp;DEALEREDGE</div>
+
+    <div class="s-act-inner">
+      <!-- Left -->
+      <div class="s-act-copy">
+        <div class="s-act-copy-sticky">
+          <span class="s-act-tag s-act-tag--good">The new way</span>
+          <h2 class="s-act-headline">
+            Saturday, 11:17 PM.<br>
+            <span class="s-act-headline-accent">The AI Sales Captain is on duty.</span>
+          </h2>
+
+          <div class="s-act-beats">
+            <div class="s-act-beat" data-beat="1">
+              <span class="s-act-beat-num">01</span>
+              <p>Same form submission. Within 47 seconds, John gets a text in your dealership's brand voice — referencing the exact boat he was looking at.</p>
+            </div>
+            <div class="s-act-beat" data-beat="2">
+              <span class="s-act-beat-num">02</span>
+              <p>The AI asks the three qualifying questions your best rep would ask. John answers from his couch. The AI knows your inventory, knows your hours, knows financing options.</p>
+            </div>
+            <div class="s-act-beat" data-beat="3">
+              <span class="s-act-beat-num">03</span>
+              <p>By 11:31 PM there's a confirmed showing on your sales manager's calendar for Saturday at 10 AM. Lead profile attached: name, employer, household profile, three prior visits, two boats favorited.</p>
+            </div>
+            <div class="s-act-beat" data-beat="4">
+              <span class="s-act-beat-num">04</span>
+              <p>Monday morning, your sales manager opens the dashboard. A pre-qualified buyer is walking in Saturday already half-sold. Total rep time: 0 minutes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div class="s-act-stage">
+        <div class="s-act-stage-sticky">
+
+          <!-- Beat 1: same form, AI engages -->
+          <div class="s-beat s-beat--1 is-active" data-beat="1">
+            <div class="s-stack">
+              <div class="s-stack-item s-stack-item--browser">
+                <div class="s-browser-bar">
+                  <span class="s-browser-dot"></span>
+                  <span class="s-browser-dot"></span>
+                  <span class="s-browser-dot"></span>
+                  <span class="s-browser-url">yourdealership.com/inventory/2022-malibu-wakesetter</span>
+                </div>
+                <div class="s-browser-body s-browser-body--listing">
+                  <div class="s-listing-img"></div>
+                  <div class="s-listing-meta">
+                    <span class="s-listing-title">2022 Malibu Wakesetter 23 LSV</span>
+                    <span class="s-listing-price">$162,900</span>
+                    <div class="s-listing-form is-submitted">
+                      <span class="s-form-label">Inquiry sent ✓</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-stack-arrow">
+                <span class="s-stack-arrow-line"></span>
+                <span class="s-stack-arrow-label">DealerEdge intercepts · 47 sec</span>
+              </div>
+              <div class="s-stack-item s-stack-item--phone-tease">
+                <div class="s-phone-bubble s-phone-bubble--in">
+                  <span class="s-phone-bubble-from">Your dealership</span>
+                  <span class="s-phone-bubble-msg">Hey John — saw you were checking out the 2022 Wakesetter. I'm Riley from the dealership's overnight desk. Want me to pull a few specs for you?</span>
+                  <span class="s-phone-bubble-time">11:18 PM</span>
+                </div>
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">90 seconds. AI on the lot.</span>
+            </div>
+          </div>
+
+          <!-- Beat 2: live qualified conversation -->
+          <div class="s-beat s-beat--2" data-beat="2">
+            <div class="s-convo">
+              <div class="s-convo-header">SMS · John Castillo · +1 (615) 555-0142</div>
+              <div class="s-convo-body" id="act2-convo">
+                <!-- Populated by JS for the typing animation -->
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Qualified. In your voice. While John's in bed.</span>
+            </div>
+          </div>
+
+          <!-- Beat 3: showing booked, lead enriched -->
+          <div class="s-beat s-beat--3" data-beat="3">
+            <div class="s-card-stack">
+              <div class="s-cal-card">
+                <div class="s-cal-header">
+                  <span class="s-cal-mo">SAT</span>
+                  <span class="s-cal-day">15</span>
+                </div>
+                <div class="s-cal-body">
+                  <div class="s-cal-event">
+                    <span class="s-cal-time">10:00 AM</span>
+                    <span class="s-cal-title">Showing — John Castillo</span>
+                    <span class="s-cal-sub">2022 Malibu Wakesetter · pre-qualified</span>
+                  </div>
+                </div>
+                <div class="s-cal-stamp">Booked Sat 11:31 PM via AI</div>
+              </div>
+              <div class="s-profile-card">
+                <div class="s-profile-row"><span class="s-profile-k">Name</span><span class="s-profile-v">John Castillo</span></div>
+                <div class="s-profile-row"><span class="s-profile-k">Employer</span><span class="s-profile-v">Sr. Eng · Vivint Smart Home</span></div>
+                <div class="s-profile-row"><span class="s-profile-k">Household</span><span class="s-profile-v">Married, 2 kids · likely budget $140K-$200K</span></div>
+                <div class="s-profile-row"><span class="s-profile-k">Site visits</span><span class="s-profile-v">3 prior · viewed 7 wake boats</span></div>
+                <div class="s-profile-row"><span class="s-profile-k">Favorited</span><span class="s-profile-v">Wakesetter 23 LSV · Wakesetter 21 LX</span></div>
+                <div class="s-profile-row s-profile-row--hot"><span class="s-profile-k">Score</span><span class="s-profile-v">94 · Hot lead</span></div>
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Showing booked. Profile auto-enriched. Hot.</span>
+            </div>
+          </div>
+
+          <!-- Beat 4: Monday morning dashboard -->
+          <div class="s-beat s-beat--4" data-beat="4">
+            <div class="s-dash">
+              <div class="s-dash-header">
+                <span class="s-dash-title">Monday morning · 7:02 AM</span>
+                <span class="s-dash-sub">DealerEdge Overview</span>
+              </div>
+              <div class="s-dash-grid">
+                <div class="s-dash-cell">
+                  <span class="s-dash-num">6</span>
+                  <span class="s-dash-cap">New leads<br>overnight</span>
+                </div>
+                <div class="s-dash-cell">
+                  <span class="s-dash-num">2</span>
+                  <span class="s-dash-cap">Showings<br>booked</span>
+                </div>
+                <div class="s-dash-cell s-dash-cell--hot">
+                  <span class="s-dash-num">1</span>
+                  <span class="s-dash-cap">Hot-lead<br>alert</span>
+                </div>
+                <div class="s-dash-cell">
+                  <span class="s-dash-num">3</span>
+                  <span class="s-dash-cap">AI actions<br>approved</span>
+                </div>
+              </div>
+              <div class="s-dash-toast s-dash-toast--good">
+                Saturday 10 AM — John Castillo, pre-qualified, walking in. Rep time so far: 0 min.
+              </div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Pre-qualified buyer walks in Saturday. Boat sold.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 3  —  Now you try it.
+       Fake-for-now scripted SMS conversation in a phone frame.
+       User types a number (we don't actually send), hits 'text me',
+       and the phone above plays out a real-time AI conversation
+       so they can see what their buyer would experience.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-try" id="act3">
+    <div class="s-try-inner">
+      <span class="section-label" data-fade>Now you try it</span>
+      <h2 class="s-try-headline" data-fade data-delay="0.1">
+        Be the buyer.<br>
+        <span class="s-headline-accent">Text our AI like you're shopping for a Wakesetter.</span>
+      </h2>
+      <p class="s-try-sub" data-fade data-delay="0.2">
+        Type your number. Tap <em>text me</em>. The AI Sales Captain will reach out and walk you through the same conversation a real buyer of your dealership would have. No human in the loop. (Prototype: the messages below simulate the real exchange.)
+      </p>
+
+      <div class="s-try-stage" data-fade data-delay="0.3">
+
+        <!-- Left: phone frame with iMessage-style thread -->
+        <div class="s-phone">
+          <div class="s-phone-notch"></div>
+          <div class="s-phone-screen">
+            <div class="s-phone-header">
+              <div class="s-phone-avatar">DE</div>
+              <div class="s-phone-header-meta">
+                <span class="s-phone-header-name">DealerEdge AI</span>
+                <span class="s-phone-header-sub">Sales Captain · +1 (615) 555-0142</span>
+              </div>
+            </div>
+            <div class="s-phone-thread" id="phone-thread">
+              <div class="s-phone-empty">
+                <span>Enter a number and tap Text me</span>
+                <span class="s-phone-empty-sub">to see the conversation play out</span>
+              </div>
+            </div>
+          </div>
+          <div class="s-phone-home"></div>
+        </div>
+
+        <!-- Right: input + script controls -->
+        <div class="s-try-side">
+          <div class="s-try-input-card">
+            <label class="s-try-label">Your number</label>
+            <div class="s-try-input-row">
+              <input type="tel" id="try-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+              <button class="btn-primary" id="try-send">Text me</button>
+            </div>
+            <p class="s-try-fineprint">Prototype mode. We won't send a real text from this page yet. Below is the conversation an actual buyer would have.</p>
+          </div>
+
+          <div class="s-try-script-card">
+            <div class="s-try-script-header">
+              <span class="s-try-script-eyebrow">What's happening behind the scenes</span>
+            </div>
+            <div class="s-try-script-list" id="try-script">
+              <!-- Populated by JS as the conversation plays -->
+            </div>
+          </div>
+
+          <div class="s-try-row">
+            <button class="s-try-reset" id="try-reset">↻ Reset conversation</button>
+            <span class="s-try-status" id="try-status">Idle</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 4  —  What the dealer sees.
+       Compact dashboard panel that animates on intersect.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-dashboard-section" id="act4">
+    <div class="s-dashboard-inner">
+      <div class="s-dashboard-copy">
+        <span class="section-label" data-fade>What the dealer sees</span>
+        <h2 class="s-dashboard-headline" data-fade data-delay="0.1">
+          You wake up Monday.<br>
+          <span class="s-headline-accent">The pipeline filled itself.</span>
+        </h2>
+        <p class="s-dashboard-sub" data-fade data-delay="0.2">
+          Every overnight conversation, every booking, every hot-lead alert lives in one dashboard. The team comes in Monday and works the list — instead of building it.
+        </p>
+        <ul class="s-dashboard-bullets">
+          <li data-fade data-delay="0.3"><span class="s-bullet-dot"></span>Every text, call, and chat from the weekend, with transcripts</li>
+          <li data-fade data-delay="0.35"><span class="s-bullet-dot"></span>Hot leads escalated, ranked, and assigned</li>
+          <li data-fade data-delay="0.4"><span class="s-bullet-dot"></span>Showings booked directly on the right rep's calendar</li>
+          <li data-fade data-delay="0.45"><span class="s-bullet-dot"></span>Every AI action logged and reversible</li>
+        </ul>
+      </div>
+
+      <div class="s-dashboard-stage" data-fade data-delay="0.2">
+        <div class="s-dash s-dash--big">
+          <div class="s-dash-header">
+            <span class="s-dash-title">Sales Captain · Live</span>
+            <span class="s-dash-sub">
+              <span class="s-dash-live-dot"></span>
+              247 conversations active
+            </span>
+          </div>
+
+          <div class="s-dash-tabs">
+            <span class="s-dash-tab is-active">Hot leads (3)</span>
+            <span class="s-dash-tab">Booked (12)</span>
+            <span class="s-dash-tab">Active threads (89)</span>
+            <span class="s-dash-tab">Needs review (2)</span>
+          </div>
+
+          <div class="s-dash-leadlist">
+            <div class="s-dash-leadrow s-dash-leadrow--hot">
+              <div class="s-dash-leadrow-left">
+                <span class="s-dash-leadrow-score">94</span>
+                <div class="s-dash-leadrow-meta">
+                  <span class="s-dash-leadrow-name">John Castillo</span>
+                  <span class="s-dash-leadrow-sub">2022 Malibu Wakesetter · showing booked Sat 10 AM</span>
+                </div>
+              </div>
+              <span class="s-dash-leadrow-tag s-dash-leadrow-tag--hot">HOT</span>
+            </div>
+            <div class="s-dash-leadrow">
+              <div class="s-dash-leadrow-left">
+                <span class="s-dash-leadrow-score">82</span>
+                <div class="s-dash-leadrow-meta">
+                  <span class="s-dash-leadrow-name">Sarah Bennett</span>
+                  <span class="s-dash-leadrow-sub">Pontoon · 2 follow-ups scheduled</span>
+                </div>
+              </div>
+              <span class="s-dash-leadrow-tag">WARM</span>
+            </div>
+            <div class="s-dash-leadrow">
+              <div class="s-dash-leadrow-left">
+                <span class="s-dash-leadrow-score">76</span>
+                <div class="s-dash-leadrow-meta">
+                  <span class="s-dash-leadrow-name">Tom Whittaker</span>
+                  <span class="s-dash-leadrow-sub">Wake boat · returned 3 times this week</span>
+                </div>
+              </div>
+              <span class="s-dash-leadrow-tag">WARM</span>
+            </div>
+          </div>
+
+          <div class="s-dash-bottom">
+            <div class="s-dash-mini-stat">
+              <span class="s-dash-mini-num">47<span class="s-dash-mini-unit">s</span></span>
+              <span class="s-dash-mini-cap">avg response time this week</span>
+            </div>
+            <div class="s-dash-mini-stat">
+              <span class="s-dash-mini-num">0</span>
+              <span class="s-dash-mini-cap">leads waiting &gt; 5 min</span>
+            </div>
+            <div class="s-dash-mini-stat">
+              <span class="s-dash-mini-num">22<span class="s-dash-mini-unit">hr</span></span>
+              <span class="s-dash-mini-cap">rep admin time saved</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       CTA
+       ────────────────────────────────────────────────────────────── -->
+  <section class="cta-section" id="contact">
+    <div class="cta-glow"></div>
+    <div class="section-container cta-inner">
+      <div class="cta-tag" data-fade>The Offer</div>
+      <h2 class="cta-title" data-fade data-delay="0.1">
+        Tell us what you spend on your current vendors.<br>
+        <span class="headline-accent">We replace all of them.</span>
+      </h2>
+      <p class="cta-sub" data-fade data-delay="0.2">
+        You pay <strong>$0</strong> until we beat your current results by 20%. When we do, pricing activates at the tier you chose before we started. There's no scenario where you lose money.
+      </p>
+      <div data-fade data-delay="0.3">
+        <a href="#" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/sales.js"></script>
+</body>
+</html>
