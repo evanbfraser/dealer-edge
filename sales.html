@@ -133,7 +133,7 @@
             </div>
             <div class="s-act-beat" data-beat="4">
               <span class="s-act-beat-num">04</span>
-              <p>Monday at 9:14 AM your sales manager opens the inbox. The lead is there. So are six others. They call. The buyer is at a competitor's showroom.</p>
+              <p>Monday at 9:42 AM your sales manager finally dials. John picks up. "Oh hey — I went with North Lake actually. Sorry about that." 59 hours after the inquiry, you never even got a shot at the deal.</p>
             </div>
           </div>
         </div>
@@ -144,7 +144,7 @@
         <div class="s-act-stage-sticky">
 
           <!-- Beat 1: buyer on the listing page -->
-          <div class="s-beat s-beat--1 is-active" data-beat="1">
+          <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="act1-beat1">
             <div class="s-browser">
               <div class="s-browser-bar">
                 <span class="s-browser-dot"></span>
@@ -153,91 +153,112 @@
                 <span class="s-browser-url">yourdealership.com/inventory/2022-malibu-wakesetter</span>
               </div>
               <div class="s-browser-body s-browser-body--listing">
-                <div class="s-listing-img"></div>
+                <div class="s-listing-img s-listing-img--photo">
+                  <img src="assets/2022-malibu-wakesetter.png" alt="2022 Malibu Wakesetter 23 LSV" loading="lazy">
+                </div>
                 <div class="s-listing-meta">
                   <span class="s-listing-title">2022 Malibu Wakesetter 23 LSV</span>
                   <span class="s-listing-price">$162,900</span>
-                  <div class="s-listing-form">
+                  <div class="s-listing-form" data-form>
                     <span class="s-form-label">Request more info</span>
-                    <div class="s-form-row"><span class="s-form-input s-form-input--typed"></span></div>
-                    <div class="s-form-row"><span class="s-form-input s-form-input--typed"></span></div>
-                    <div class="s-form-submit">Submit inquiry</div>
+                    <label class="s-form-field" data-field="name">
+                      <span class="s-form-field-label">Your name</span>
+                      <span class="s-form-field-input">
+                        <span class="s-form-field-text" data-typed></span>
+                        <span class="s-form-caret"></span>
+                      </span>
+                    </label>
+                    <label class="s-form-field" data-field="email">
+                      <span class="s-form-field-label">Email</span>
+                      <span class="s-form-field-input">
+                        <span class="s-form-field-text" data-typed></span>
+                        <span class="s-form-caret"></span>
+                      </span>
+                    </label>
+                    <button type="button" class="s-form-submit-btn" data-submit-btn>Submit inquiry</button>
+                    <div class="s-form-confirm" data-confirm>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Thanks — a rep will reach out Monday.</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="s-beat-cap">
               <span class="s-cap-dot"></span>
-              <span class="s-cap-text">11:17 PM — form submitted</span>
+              <span class="s-cap-text">11:17 PM Saturday · form submitted</span>
             </div>
           </div>
 
-          <!-- Beat 2: silence / auto-reply only -->
-          <div class="s-beat s-beat--2" data-beat="2">
-            <div class="s-mailbox">
-              <div class="s-mailbox-header">Buyer's inbox</div>
-              <div class="s-mailbox-msg">
-                <div class="s-mailbox-msg-from">yourdealership.com</div>
-                <div class="s-mailbox-msg-subj">Thanks for your inquiry</div>
-                <div class="s-mailbox-msg-prev">A representative will contact you Monday morning…</div>
-                <span class="s-mailbox-msg-time">11:17 PM</span>
+          <!-- Beat 2: auto-reply lands, gets buried, silence from us -->
+          <div class="s-beat s-beat--2" data-beat="2" data-anim="act1-beat2">
+            <div class="s-inbox">
+              <div class="s-inbox-header">
+                <span class="s-inbox-title">John's inbox</span>
+                <span class="s-inbox-count" data-inbox-count>0 unread</span>
               </div>
-              <div class="s-mailbox-empty">No further messages.</div>
-            </div>
-            <div class="s-beat-cap">
-              <span class="s-cap-dot"></span>
-              <span class="s-cap-text">11:18 PM through 9:13 AM — silence</span>
-            </div>
-          </div>
-
-          <!-- Beat 3: competitors get the deal -->
-          <div class="s-beat s-beat--3" data-beat="3">
-            <div class="s-rivals">
-              <div class="s-rival">
-                <div class="s-rival-name">North Lake Marine</div>
-                <div class="s-rival-status s-rival-status--won">REPLIED · 41 min</div>
-                <div class="s-rival-msg">"Hey John — I'm Mike, GM at North Lake. The Wakesetter you looked at, I just texted my owner about it. Want to chat in the morning?"</div>
+              <div class="s-inbox-list" data-inbox-list>
+                <!-- JS populates these in sequence -->
               </div>
-              <div class="s-rival">
-                <div class="s-rival-name">Crosswind Watersports</div>
-                <div class="s-rival-status s-rival-status--won">REPLIED · 1 hr</div>
-                <div class="s-rival-msg">"Saw your inquiry. We have two on the lot. Showings Sunday from 10 AM."</div>
-              </div>
-              <div class="s-rival">
-                <div class="s-rival-name s-rival-name--you">Your dealership</div>
-                <div class="s-rival-status s-rival-status--silent">— · still nothing</div>
-                <div class="s-rival-msg s-rival-msg--silent">…</div>
+              <div class="s-inbox-silence" data-inbox-silence>
+                <span class="s-inbox-silence-dot"></span>
+                <span>Nothing further from your dealership.</span>
               </div>
             </div>
             <div class="s-beat-cap">
               <span class="s-cap-dot"></span>
-              <span class="s-cap-text">Sunday morning — they replied. You didn't.</span>
+              <span class="s-cap-text">Your auto-reply, buried by 9 AM</span>
             </div>
           </div>
 
-          <!-- Beat 4: too late -->
-          <div class="s-beat s-beat--4" data-beat="4">
-            <div class="s-crm">
-              <div class="s-crm-header">Sales Manager · Lead Inbox</div>
-              <div class="s-crm-time">Monday, 9:14 AM</div>
-              <div class="s-crm-leads">
-                <div class="s-crm-lead is-target">
-                  <span class="s-crm-lead-name">John Castillo</span>
-                  <span class="s-crm-lead-meta">2022 Malibu Wakesetter · Saturday 11:17 PM</span>
-                  <span class="s-crm-lead-age">59 hours old</span>
+          <!-- Beat 3: timeline — competitors active overnight, you silent -->
+          <div class="s-beat s-beat--3" data-beat="3" data-anim="act1-beat3">
+            <div class="s-timeline">
+              <div class="s-timeline-header">
+                <span class="s-timeline-title">John's inbox · timeline</span>
+                <span class="s-timeline-sub">Sat 11:17 PM → Mon 9:14 AM</span>
+              </div>
+              <div class="s-timeline-track">
+                <div class="s-timeline-line"></div>
+                <div class="s-timeline-events" data-timeline-events>
+                  <!-- JS populates each timestamped event -->
                 </div>
-                <div class="s-crm-lead"><span class="s-crm-lead-name">Sarah B.</span><span class="s-crm-lead-meta">Pontoon · 32 hrs</span></div>
-                <div class="s-crm-lead"><span class="s-crm-lead-name">Tom W.</span><span class="s-crm-lead-meta">Wake boat · 28 hrs</span></div>
-                <div class="s-crm-lead"><span class="s-crm-lead-name">Adam P.</span><span class="s-crm-lead-meta">Center console · 17 hrs</span></div>
-                <div class="s-crm-lead"><span class="s-crm-lead-name">Maria L.</span><span class="s-crm-lead-meta">Used ski boat · 12 hrs</span></div>
               </div>
-              <div class="s-crm-toast">
-                Called John at 9:42 AM. He bought from North Lake on Sunday.
+            </div>
+            <div class="s-beat-cap">
+              <span class="s-cap-dot"></span>
+              <span class="s-cap-text">They reached out. You didn't.</span>
+            </div>
+          </div>
+
+          <!-- Beat 4: the call. Lead 59 hrs old. Buyer rejects. -->
+          <div class="s-beat s-beat--4" data-beat="4" data-anim="act1-beat4">
+            <div class="s-lost">
+              <div class="s-lost-header">
+                <div class="s-lost-header-left">
+                  <span class="s-lost-call-label">Outgoing call</span>
+                  <span class="s-lost-call-to">+1 (615) 555-0142 · John Castillo</span>
+                </div>
+                <div class="s-lost-header-right">
+                  <span class="s-lost-age" data-age>59h 25m</span>
+                  <span class="s-lost-age-cap">since inquiry</span>
+                </div>
+              </div>
+              <div class="s-lost-convo" data-lost-convo>
+                <!-- JS populates the call exchange -->
+              </div>
+              <div class="s-lost-stamp" data-lost-stamp>
+                <div class="s-lost-stamp-line"></div>
+                <div class="s-lost-stamp-text">
+                  <span class="s-lost-stamp-kicker">DEAL · LOST</span>
+                  <span class="s-lost-stamp-amt">$162,900 boat · ~$14,000 margin · never had a shot</span>
+                </div>
+                <div class="s-lost-stamp-line"></div>
               </div>
             </div>
             <div class="s-beat-cap s-beat-cap--bad">
               <span class="s-cap-dot s-cap-dot--bad"></span>
-              <span class="s-cap-text">Boat gone. $14,000 in margin gone.</span>
+              <span class="s-cap-text">59 hours late. Already with a competitor.</span>
             </div>
           </div>
 
@@ -292,11 +313,11 @@
             </div>
             <div class="s-act-beat" data-beat="3">
               <span class="s-act-beat-num">03</span>
-              <p>By 11:31 PM there's a confirmed showing on your sales manager's calendar for Saturday at 10 AM. Lead profile attached: name, employer, household profile, three prior visits, two boats favorited.</p>
+              <p>By 11:31 PM there's a confirmed showing on your sales manager's calendar for <strong>Tuesday at 10 AM</strong>. Lead profile attached: name, employer, household profile, three prior visits, two boats favorited.</p>
             </div>
             <div class="s-act-beat" data-beat="4">
               <span class="s-act-beat-num">04</span>
-              <p>Monday morning, your sales manager opens the dashboard. A pre-qualified buyer is walking in Saturday already half-sold. Total rep time: 0 minutes.</p>
+              <p>Monday morning, your sales manager opens the dashboard. A pre-qualified buyer is walking in Tuesday already half-sold. Total rep time: 0 minutes.</p>
             </div>
           </div>
         </div>
@@ -306,10 +327,10 @@
       <div class="s-act-stage">
         <div class="s-act-stage-sticky">
 
-          <!-- Beat 1: same form, AI engages -->
-          <div class="s-beat s-beat--1 is-active" data-beat="1">
+          <!-- Beat 1: same form, AI engages — sequential reveal -->
+          <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="act2-beat1">
             <div class="s-stack">
-              <div class="s-stack-item s-stack-item--browser">
+              <div class="s-stack-item s-stack-item--browser" data-stack-step="1">
                 <div class="s-browser-bar">
                   <span class="s-browser-dot"></span>
                   <span class="s-browser-dot"></span>
@@ -317,7 +338,9 @@
                   <span class="s-browser-url">yourdealership.com/inventory/2022-malibu-wakesetter</span>
                 </div>
                 <div class="s-browser-body s-browser-body--listing">
-                  <div class="s-listing-img"></div>
+                  <div class="s-listing-img s-listing-img--photo s-listing-img--mini">
+                    <img src="assets/2022-malibu-wakesetter.png" alt="" loading="lazy">
+                  </div>
                   <div class="s-listing-meta">
                     <span class="s-listing-title">2022 Malibu Wakesetter 23 LSV</span>
                     <span class="s-listing-price">$162,900</span>
@@ -327,11 +350,11 @@
                   </div>
                 </div>
               </div>
-              <div class="s-stack-arrow">
+              <div class="s-stack-arrow" data-stack-step="2">
                 <span class="s-stack-arrow-line"></span>
                 <span class="s-stack-arrow-label">DealerEdge intercepts · 47 sec</span>
               </div>
-              <div class="s-stack-item s-stack-item--phone-tease">
+              <div class="s-stack-item s-stack-item--phone-tease" data-stack-step="3">
                 <div class="s-phone-bubble s-phone-bubble--in">
                   <span class="s-phone-bubble-from">Your dealership</span>
                   <span class="s-phone-bubble-msg">Hey John — saw you were checking out the 2022 Wakesetter. I'm Riley from the dealership's overnight desk. Want me to pull a few specs for you?</span>
@@ -341,12 +364,12 @@
             </div>
             <div class="s-beat-cap s-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
-              <span class="s-cap-text">90 seconds. AI on the lot.</span>
+              <span class="s-cap-text">Speed to Lead &lt;90s · Boost conversions by 300%</span>
             </div>
           </div>
 
           <!-- Beat 2: live qualified conversation -->
-          <div class="s-beat s-beat--2" data-beat="2">
+          <div class="s-beat s-beat--2" data-beat="2" data-anim="act2-beat2">
             <div class="s-convo">
               <div class="s-convo-header">SMS · John Castillo · +1 (615) 555-0142</div>
               <div class="s-convo-body" id="act2-convo">
@@ -359,13 +382,13 @@
             </div>
           </div>
 
-          <!-- Beat 3: showing booked, lead enriched -->
-          <div class="s-beat s-beat--3" data-beat="3">
+          <!-- Beat 3: showing booked, lead enriched — sequential reveal -->
+          <div class="s-beat s-beat--3" data-beat="3" data-anim="act2-beat3">
             <div class="s-card-stack">
-              <div class="s-cal-card">
+              <div class="s-cal-card" data-reveal-step="1">
                 <div class="s-cal-header">
-                  <span class="s-cal-mo">SAT</span>
-                  <span class="s-cal-day">15</span>
+                  <span class="s-cal-mo">TUE</span>
+                  <span class="s-cal-day">11</span>
                 </div>
                 <div class="s-cal-body">
                   <div class="s-cal-event">
@@ -376,13 +399,13 @@
                 </div>
                 <div class="s-cal-stamp">Booked Sat 11:31 PM via AI</div>
               </div>
-              <div class="s-profile-card">
-                <div class="s-profile-row"><span class="s-profile-k">Name</span><span class="s-profile-v">John Castillo</span></div>
-                <div class="s-profile-row"><span class="s-profile-k">Employer</span><span class="s-profile-v">Sr. Eng · Vivint Smart Home</span></div>
-                <div class="s-profile-row"><span class="s-profile-k">Household</span><span class="s-profile-v">Married, 2 kids · likely budget $140K-$200K</span></div>
-                <div class="s-profile-row"><span class="s-profile-k">Site visits</span><span class="s-profile-v">3 prior · viewed 7 wake boats</span></div>
-                <div class="s-profile-row"><span class="s-profile-k">Favorited</span><span class="s-profile-v">Wakesetter 23 LSV · Wakesetter 21 LX</span></div>
-                <div class="s-profile-row s-profile-row--hot"><span class="s-profile-k">Score</span><span class="s-profile-v">94 · Hot lead</span></div>
+              <div class="s-profile-card" data-reveal-step="2">
+                <div class="s-profile-row" data-row="1"><span class="s-profile-k">Name</span><span class="s-profile-v">John Castillo</span></div>
+                <div class="s-profile-row" data-row="2"><span class="s-profile-k">Employer</span><span class="s-profile-v">Sr. Eng · Vivint Smart Home</span></div>
+                <div class="s-profile-row" data-row="3"><span class="s-profile-k">Household</span><span class="s-profile-v">Married, 2 kids · likely budget $140K-$200K</span></div>
+                <div class="s-profile-row" data-row="4"><span class="s-profile-k">Site visits</span><span class="s-profile-v">3 prior · viewed 7 wake boats</span></div>
+                <div class="s-profile-row" data-row="5"><span class="s-profile-k">Favorited</span><span class="s-profile-v">Wakesetter 23 LSV · Wakesetter 21 LX</span></div>
+                <div class="s-profile-row s-profile-row--hot" data-row="6"><span class="s-profile-k">Score</span><span class="s-profile-v">94 · Hot lead</span></div>
               </div>
             </div>
             <div class="s-beat-cap s-beat-cap--good">
@@ -391,38 +414,51 @@
             </div>
           </div>
 
-          <!-- Beat 4: Monday morning dashboard -->
-          <div class="s-beat s-beat--4" data-beat="4">
-            <div class="s-dash">
+          <!-- Beat 4: Monday morning dashboard — cycles through 4 tabs -->
+          <div class="s-beat s-beat--4" data-beat="4" data-anim="act2-beat4">
+            <div class="s-dash s-dash--mini">
               <div class="s-dash-header">
-                <span class="s-dash-title">Monday morning · 7:02 AM</span>
-                <span class="s-dash-sub">DealerEdge Overview</span>
+                <span class="s-dash-title">Monday · 7:02 AM</span>
+                <span class="s-dash-sub">
+                  <span class="s-dash-live-dot"></span>
+                  DealerEdge Overview
+                </span>
               </div>
-              <div class="s-dash-grid">
-                <div class="s-dash-cell">
-                  <span class="s-dash-num">6</span>
-                  <span class="s-dash-cap">New leads<br>overnight</span>
+              <div class="s-dash-tabs" data-dash-tabs>
+                <span class="s-dash-tab is-active" data-tab="new">New leads · 6</span>
+                <span class="s-dash-tab" data-tab="showings">Showings · 2</span>
+                <span class="s-dash-tab" data-tab="hot">Hot · 1</span>
+                <span class="s-dash-tab" data-tab="actions">AI actions · 3</span>
+              </div>
+              <div class="s-dash-panels" data-dash-panels>
+                <div class="s-dash-panel is-active" data-panel="new">
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">John Castillo</span><span class="s-dash-panel-meta">Wakesetter · 11:17 PM Sat</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Maria L.</span><span class="s-dash-panel-meta">Pontoon · 12:42 AM Sun</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Adam P.</span><span class="s-dash-panel-meta">Center console · 2:14 AM Sun</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Tom W.</span><span class="s-dash-panel-meta">Wake boat · 8:51 AM Sun</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Sarah B.</span><span class="s-dash-panel-meta">Pontoon · 3:28 PM Sun</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Pat R.</span><span class="s-dash-panel-meta">Used ski boat · 10:11 PM Sun</span></div>
                 </div>
-                <div class="s-dash-cell">
-                  <span class="s-dash-num">2</span>
-                  <span class="s-dash-cap">Showings<br>booked</span>
+                <div class="s-dash-panel" data-panel="showings">
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">John Castillo · Tue 10:00 AM</span><span class="s-dash-panel-meta">Mike · Wakesetter 23 LSV</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Maria L. · Wed 1:30 PM</span><span class="s-dash-panel-meta">Sarah · Pontoon SLT</span></div>
                 </div>
-                <div class="s-dash-cell s-dash-cell--hot">
-                  <span class="s-dash-num">1</span>
-                  <span class="s-dash-cap">Hot-lead<br>alert</span>
+                <div class="s-dash-panel" data-panel="hot">
+                  <div class="s-dash-panel-row s-dash-panel-row--hot"><span class="s-dash-panel-name">John Castillo · 94</span><span class="s-dash-panel-meta">Wakesetter · showing Tue 10 AM</span></div>
                 </div>
-                <div class="s-dash-cell">
-                  <span class="s-dash-num">3</span>
-                  <span class="s-dash-cap">AI actions<br>approved</span>
+                <div class="s-dash-panel" data-panel="actions">
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Drafted 5-touch nurture</span><span class="s-dash-panel-meta">Sarah B. · pending review</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Sent intro reply</span><span class="s-dash-panel-meta">Adam P. · approved auto</span></div>
+                  <div class="s-dash-panel-row"><span class="s-dash-panel-name">Booked showing</span><span class="s-dash-panel-meta">John C. · Tue 10:00 AM</span></div>
                 </div>
               </div>
               <div class="s-dash-toast s-dash-toast--good">
-                Saturday 10 AM — John Castillo, pre-qualified, walking in. Rep time so far: 0 min.
+                Tuesday 10 AM — John Castillo, pre-qualified, walking in. Rep time so far: 0 min.
               </div>
             </div>
             <div class="s-beat-cap s-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
-              <span class="s-cap-text">Pre-qualified buyer walks in Saturday. Boat sold.</span>
+              <span class="s-cap-text">Pre-qualified buyer walks in Tuesday. Boat sold.</span>
             </div>
           </div>
 

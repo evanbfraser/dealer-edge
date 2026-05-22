@@ -84,9 +84,18 @@
   }
 
   /* ─────────────────────────────────────────────────────────────
-     ACT 1 + ACT 2  —  scroll-pinned beat sequence
-     Pin the inner section, advance through 4 beats as user scrolls.
+     ACT 1 + ACT 2 + ACT 4  —  scroll-pinned beat sequence + per-beat anim
+     Pin the inner section, advance through N beats as user scrolls.
+     Each beat with [data-anim] fires its choreographed animation when
+     it becomes active — so left text + right visual stay in lockstep
+     with scroll position.
      ───────────────────────────────────────────────────────────── */
+
+  // Dispatch map populated lazily so function declarations are hoisted by the
+  // time the closure here runs. (Keeping it as a let avoids TDZ on first
+  // setActiveBeat call which fires during the acts.forEach loop below.)
+  let BEAT_ANIMS = {};
+
   const acts = document.querySelectorAll('.s-act');
 
   acts.forEach((act) => {
@@ -97,37 +106,351 @@
 
     if (!inner || !beats.length) return;
 
-    // Only pin on larger screens — on mobile we stack everything naturally
-    if (window.innerWidth < 1100) return;
+    // Track an animation token per beat so a re-entry cancels the prior run
+    const animTokens = new Array(totalBeats).fill(0);
 
     function setActiveBeat(idx) {
       beats.forEach((b, i) => b.classList.toggle('is-active', i === idx));
       beatCopies.forEach((b, i) => b.classList.toggle('is-active', i === idx));
 
-      // Trigger Act 2 beat 2 conversation when it becomes active
-      if (act.id === 'act2' && idx === 1) {
-        playAct2Convo();
+      // Fire the per-beat animation (if registered) when this beat activates
+      const beatEl = beats[idx];
+      if (!beatEl) return;
+      animTokens[idx] += 1;
+      const token = animTokens[idx];
+      const key = beatEl.dataset.anim;
+      const fn = BEAT_ANIMS[key];
+      if (typeof fn === 'function') {
+        // tiny defer so opacity transition gets a frame to settle first
+        setTimeout(() => {
+          if (animTokens[idx] === token) fn(beatEl, () => animTokens[idx] === token);
+        }, 220);
       }
     }
 
-    ScrollTrigger.create({
-      trigger: act,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: false,
-      onUpdate: (self) => {
-        // self.progress goes 0 → 1 across the full act
-        const p = self.progress;
-        const idx = Math.min(totalBeats - 1, Math.floor(p * totalBeats));
-        if (act._currentBeat !== idx) {
-          act._currentBeat = idx;
-          setActiveBeat(idx);
+    // Only scroll-pin on larger screens — on mobile we stack naturally
+    if (window.innerWidth >= 1100) {
+      ScrollTrigger.create({
+        trigger: act,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: false,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const idx = Math.min(totalBeats - 1, Math.floor(p * totalBeats));
+          if (act._currentBeat !== idx) {
+            act._currentBeat = idx;
+            setActiveBeat(idx);
+          }
+        },
+      });
+    } else {
+      // On mobile, observe each beat individually and fire its animation
+      // when scrolled into view (so all of them eventually play)
+      beats.forEach((beat, i) => {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              beat.classList.add('is-active');
+              if (beatCopies[i]) beatCopies[i].classList.add('is-active');
+              animTokens[i] += 1;
+              const token = animTokens[i];
+              const key = beat.dataset.anim;
+              const fn = BEAT_ANIMS[key];
+              if (typeof fn === 'function') {
+                fn(beat, () => animTokens[i] === token);
+              }
+              obs.unobserve(beat);
+            }
+          });
+        }, { threshold: 0.35 });
+        obs.observe(beat);
+      });
+    }
+
+    // initial state — set beat 0 active and run its anim
+    setActiveBeat(0);
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     PER-BEAT ANIMATION HELPERS
+     Each function receives (beatEl, stillCurrent) where stillCurrent
+     is a predicate — call it before each step to bail if a newer
+     activation has superseded this run.
+     ───────────────────────────────────────────────────────────── */
+  function tick(stillCurrent, fn) {
+    if (typeof stillCurrent === 'function' && !stillCurrent()) return;
+    fn();
+  }
+
+  function typeInto(targetEl, text, perChar, done) {
+    let i = 0;
+    function step() {
+      if (i > text.length) { if (done) done(); return; }
+      targetEl.textContent = text.slice(0, i);
+      i += 1;
+      setTimeout(step, perChar);
+    }
+    step();
+  }
+
+  /* ----- ACT 1 BEAT 1 — animated form fill + submit + confirm ----- */
+  function playAct1Beat1(beatEl, stillCurrent) {
+    const form = beatEl.querySelector('[data-form]');
+    if (!form) return;
+    const nameField = form.querySelector('[data-field="name"]');
+    const emailField = form.querySelector('[data-field="email"]');
+    const nameTyped = nameField && nameField.querySelector('[data-typed]');
+    const emailTyped = emailField && emailField.querySelector('[data-typed]');
+    const submitBtn = form.querySelector('[data-submit-btn]');
+
+    // reset
+    form.classList.remove('is-confirmed');
+    [nameField, emailField].forEach((f) => f && f.classList.remove('is-focused'));
+    if (nameTyped) nameTyped.textContent = '';
+    if (emailTyped) emailTyped.textContent = '';
+    if (submitBtn) submitBtn.classList.remove('is-pressed');
+
+    // Beat 1 timeline:
+    //  - 300ms: focus name, start typing
+    //  - 1300ms: focus email, start typing
+    //  - 2900ms: press submit
+    //  - 3300ms: confirmation in
+    setTimeout(() => tick(stillCurrent, () => {
+      if (nameField) nameField.classList.add('is-focused');
+      if (nameTyped) typeInto(nameTyped, 'John Castillo', 55);
+    }), 300);
+
+    setTimeout(() => tick(stillCurrent, () => {
+      if (nameField) nameField.classList.remove('is-focused');
+      if (emailField) emailField.classList.add('is-focused');
+      if (emailTyped) typeInto(emailTyped, 'j.castillo@gmail.com', 50);
+    }), 1500);
+
+    setTimeout(() => tick(stillCurrent, () => {
+      if (emailField) emailField.classList.remove('is-focused');
+      if (submitBtn) submitBtn.classList.add('is-pressed');
+    }), 2900);
+
+    setTimeout(() => tick(stillCurrent, () => {
+      form.classList.add('is-confirmed');
+    }), 3300);
+  }
+
+  /* ----- ACT 1 BEAT 2 — auto-reply lands, then competitor blasts bury it ----- */
+  const act1Beat2Messages = [
+    { ours: true,  from: 'Your Dealership',          subj: "Thanks for your inquiry — we'll be in touch Monday", time: 'Sat 11:17 PM' },
+    { ours: false, from: 'Lakeside Realty (newsletter)', subj: 'Weekend Open Houses you might love',              time: 'Sat 11:34 PM' },
+    { ours: false, from: 'Wakeboarder Magazine',     subj: 'New: 2026 Wake Boat Buyer Guide is here',            time: 'Sun 6:14 AM' },
+    { ours: false, from: 'North Lake Marine',        subj: 'Hey John — Mike from North Lake about the Wakesetter…', time: 'Sun 7:02 AM' },
+    { ours: false, from: 'Boat Trader Alerts',       subj: '3 new wake boats matching your saved search',        time: 'Sun 8:30 AM' },
+    { ours: false, from: 'Crosswind Watersports',    subj: 'Showings open Sunday from 10 AM — wakesetters in stock', time: 'Sun 8:47 AM' },
+    { ours: false, from: 'Premier Marine',           subj: 'We have the same Wakesetter in Pearl White — call me?', time: 'Sun 9:18 AM' },
+  ];
+
+  function playAct1Beat2(beatEl, stillCurrent) {
+    const list = beatEl.querySelector('[data-inbox-list]');
+    const count = beatEl.querySelector('[data-inbox-count]');
+    const silence = beatEl.querySelector('[data-inbox-silence]');
+    if (!list) return;
+
+    // reset
+    list.innerHTML = '';
+    if (silence) silence.classList.remove('is-in');
+    if (count) count.textContent = '0 unread';
+
+    let unread = 0;
+    act1Beat2Messages.forEach((m, i) => {
+      setTimeout(() => tick(stillCurrent, () => {
+        const row = document.createElement('div');
+        row.className = 's-inbox-msg' + (m.ours ? ' s-inbox-msg--ours' : '');
+        row.innerHTML = `
+          <div class="s-inbox-msg-main">
+            <div class="s-inbox-from">${m.from}</div>
+            <div class="s-inbox-subj">${m.subj}</div>
+          </div>
+          <div class="s-inbox-time">${m.time}</div>`;
+        // insert newest at top
+        list.prepend(row);
+        requestAnimationFrame(() => row.classList.add('is-in'));
+        unread += 1;
+        if (count) count.textContent = `${unread} unread`;
+        // bury the original auto-reply once 3+ messages stack on top
+        if (i >= 3) {
+          const ours = list.querySelector('.s-inbox-msg--ours');
+          if (ours) ours.classList.add('is-buried');
         }
-      },
+      }), 250 + i * 450);
     });
 
-    // initial state
-    setActiveBeat(0);
+    // silence indicator appears at the end
+    setTimeout(() => tick(stillCurrent, () => {
+      if (silence) silence.classList.add('is-in');
+    }), 250 + act1Beat2Messages.length * 450 + 200);
+  }
+
+  /* ----- ACT 1 BEAT 3 — timeline of competitor messages ----- */
+  const act1Beat3Events = [
+    { ours: true,  time: '11:17 PM Sat', from: 'Your dealership (auto)',  msg: '"A representative will contact you Monday morning."' },
+    { ours: false, time: '11:58 PM Sat', from: 'North Lake Marine',       msg: '"Hey John — Mike, GM at North Lake. Saw you were looking at the Wakesetter. I\'m up — want me to pull a few specs?"' },
+    { ours: false, time: '6:42 AM Sun',  from: 'Crosswind Watersports',   msg: '"Saw your inquiry. We have two on the lot. Showings open Sunday from 10 AM."' },
+    { ours: false, time: '9:18 AM Sun',  from: 'Premier Marine',          msg: '"Hi John — we\'ve got the same Wakesetter in Pearl White. Can I call you this morning?"' },
+    { ours: false, time: '11:04 AM Sun', from: 'North Lake Marine',       msg: '"Good news — manager just approved a price we think you\'ll like. Free to chat?"' },
+  ];
+
+  function playAct1Beat3(beatEl, stillCurrent) {
+    const list = beatEl.querySelector('[data-timeline-events]');
+    if (!list) return;
+
+    // reset
+    list.innerHTML = '';
+
+    act1Beat3Events.forEach((e, i) => {
+      setTimeout(() => tick(stillCurrent, () => {
+        const ev = document.createElement('div');
+        ev.className = 's-tl-event' + (e.ours ? ' s-tl-event--ours' : '');
+        ev.innerHTML = `
+          <span class="s-tl-time">${e.time}</span>
+          <span class="s-tl-from">${e.from}</span>
+          <span class="s-tl-msg">${e.msg}</span>`;
+        list.appendChild(ev);
+        requestAnimationFrame(() => ev.classList.add('is-in'));
+        // bury the auto-reply once 2+ rivals have replied
+        if (i >= 3) {
+          const ours = list.querySelector('.s-tl-event--ours');
+          if (ours) ours.classList.add('is-buried');
+        }
+      }), 250 + i * 600);
+    });
+  }
+
+  /* ----- ACT 1 BEAT 4 — the call. Buyer already with competitor. ----- */
+  const act1Beat4Convo = [
+    { role: 'us',   text: '"Hi John, this is Steve from Lakeshore Marine returning your inquiry on the 2022 Wakesetter…"' },
+    { role: 'them', text: '"Oh hey… yeah, I actually went with North Lake on Sunday. Sorry about that — they reached out Saturday night."' },
+    { role: 'us silent', text: '. . .' },
+  ];
+
+  function playAct1Beat4(beatEl, stillCurrent) {
+    const convo = beatEl.querySelector('[data-lost-convo]');
+    const stamp = beatEl.querySelector('[data-lost-stamp]');
+    const ageEl = beatEl.querySelector('[data-age]');
+    if (!convo) return;
+
+    // reset
+    convo.innerHTML = '';
+    if (stamp) stamp.classList.remove('is-in');
+
+    // animate the age counter ticking up from 0 to 59h 25m over ~1.6s
+    if (ageEl) {
+      const startedAt = performance.now();
+      const totalMs = 1600;
+      const target = 59 * 60 + 25; // minutes
+      function tickAge() {
+        if (!stillCurrent()) return;
+        const t = Math.min(1, (performance.now() - startedAt) / totalMs);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const mins = Math.round(target * eased);
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        ageEl.textContent = `${h}h ${String(m).padStart(2, '0')}m`;
+        if (t < 1) requestAnimationFrame(tickAge);
+      }
+      requestAnimationFrame(tickAge);
+    }
+
+    // bubbles
+    act1Beat4Convo.forEach((b, i) => {
+      setTimeout(() => tick(stillCurrent, () => {
+        const div = document.createElement('div');
+        const classes = b.role.split(' ').map((c) => 's-lost-bubble--' + c).join(' ');
+        div.className = 's-lost-bubble ' + classes;
+        div.textContent = b.text;
+        convo.appendChild(div);
+        requestAnimationFrame(() => div.classList.add('is-in'));
+      }), 1800 + i * 1500);
+    });
+
+    // stamp
+    setTimeout(() => tick(stillCurrent, () => {
+      if (stamp) stamp.classList.add('is-in');
+    }), 1800 + act1Beat4Convo.length * 1500 + 300);
+  }
+
+  /* ----- ACT 2 BEAT 1 — sequential stack reveal ----- */
+  function playAct2Beat1(beatEl, stillCurrent) {
+    const steps = beatEl.querySelectorAll('[data-stack-step]');
+    if (!steps.length) return;
+    steps.forEach((s) => s.classList.remove('is-in'));
+    steps.forEach((step, i) => {
+      setTimeout(() => tick(stillCurrent, () => step.classList.add('is-in')), 250 + i * 700);
+    });
+  }
+
+  /* ----- ACT 2 BEAT 2 — SMS conversation (existing playAct2Convo) ----- */
+  function playAct2Beat2() {
+    // delegate to existing implementation
+    act2Played = false; // allow replay on re-entry
+    playAct2Convo();
+  }
+
+  /* ----- ACT 2 BEAT 3 — appointment first, then profile rows ----- */
+  function playAct2Beat3(beatEl, stillCurrent) {
+    const cards = beatEl.querySelectorAll('[data-reveal-step]');
+    const rows = beatEl.querySelectorAll('[data-row]');
+    cards.forEach((c) => c.classList.remove('is-in'));
+    rows.forEach((r) => r.classList.remove('is-in'));
+
+    // card 1 (calendar)
+    setTimeout(() => tick(stillCurrent, () => cards[0] && cards[0].classList.add('is-in')), 200);
+    // card 2 (profile shell)
+    setTimeout(() => tick(stillCurrent, () => cards[1] && cards[1].classList.add('is-in')), 800);
+    // rows cascade
+    rows.forEach((row, i) => {
+      setTimeout(() => tick(stillCurrent, () => row.classList.add('is-in')), 1100 + i * 180);
+    });
+  }
+
+  /* ----- ACT 2 BEAT 4 — auto-cycle through dashboard tabs ----- */
+  function playAct2Beat4(beatEl, stillCurrent) {
+    const tabs = beatEl.querySelectorAll('[data-dash-tabs] .s-dash-tab');
+    const panels = beatEl.querySelectorAll('[data-dash-panels] .s-dash-panel');
+    if (!tabs.length || !panels.length) return;
+    let idx = 0;
+    function showTab(i) {
+      if (!stillCurrent()) return;
+      tabs.forEach((t, j) => t.classList.toggle('is-active', i === j));
+      panels.forEach((p, j) => p.classList.toggle('is-active', i === j));
+    }
+    showTab(0);
+    function loop() {
+      if (!stillCurrent()) return;
+      idx = (idx + 1) % tabs.length;
+      showTab(idx);
+      setTimeout(loop, 2400);
+    }
+    setTimeout(loop, 2400);
+  }
+
+  /* ----- DISPATCH MAP (populate the let declared above) ----- */
+  BEAT_ANIMS = {
+    'act1-beat1': playAct1Beat1,
+    'act1-beat2': playAct1Beat2,
+    'act1-beat3': playAct1Beat3,
+    'act1-beat4': playAct1Beat4,
+    'act2-beat1': playAct2Beat1,
+    'act2-beat2': playAct2Beat2,
+    'act2-beat3': playAct2Beat3,
+    'act2-beat4': playAct2Beat4,
+  };
+
+  // Now that BEAT_ANIMS is populated, fire whatever beat is currently active
+  // (the initial setActiveBeat(0) call already added is-active, this triggers
+  // its animation on first paint without waiting for the user to scroll)
+  document.querySelectorAll('.s-beat.is-active').forEach((beat) => {
+    const key = beat.dataset.anim;
+    const fn = BEAT_ANIMS[key];
+    if (typeof fn === 'function') fn(beat, () => true);
   });
 
   /* ─────────────────────────────────────────────────────────────
@@ -140,9 +463,9 @@
     { role: 'out', text: "Yeah, what's the engine package on it?" },
     { role: 'in',  text: "It's the Indmar Raptor 575. 0-30 in about 4.2 sec. Towing 3,400 lbs with the ballast loaded." },
     { role: 'out', text: "Nice. Is it still available? And do you have a similar one in white?" },
-    { role: 'in',  text: "Yes — still on the lot. I have a 23 LSV in Pearl White and a 21 LX. Both same engine package. Want me to book you a Saturday morning showing?" },
-    { role: 'out', text: "Sure. 10 AM Saturday?" },
-    { role: 'in',  text: "Booked. 10 AM Saturday — both boats ready, Mike will meet you. Sending a calendar invite to john.c@gmail.com. Sleep well." },
+    { role: 'in',  text: "Yes — still on the lot. I have a 23 LSV in Pearl White and a 21 LX. Both same engine package. Want me to book you a showing Tuesday morning?" },
+    { role: 'out', text: "Sure. 10 AM Tuesday?" },
+    { role: 'in',  text: "Booked. 10 AM Tuesday — both boats ready, Mike will meet you. Sending a calendar invite to john.c@gmail.com. Sleep well." },
   ];
 
   function playAct2Convo() {
@@ -194,7 +517,7 @@
     "What's the engine package?",
     "Is it still available? Do you have it in white?",
     "What's your best price out the door?",
-    "Could I see it Saturday morning?",
+    "Could I see it Tuesday morning?",
     "Do you offer financing?",
     "What's included in the warranty?",
   ];
@@ -216,8 +539,8 @@
     "It's running the Indmar Raptor 575 — 0-30 in about 4.2 seconds. Towing 3,400 lbs with the ballast loaded. Pretty quick boat.",
     "Yes, still on the lot. I actually have one in Pearl White and another in Carbon Black. Both same engine package. Which one's pulling at you?",
     "Sticker is $162,900, but the manager has some room on it. Want me to text you what we could do out the door with tax & title?",
-    "Absolutely. Want me to book you a Saturday morning showing? Mike (our GM) is in from 9 to noon.",
-    "Booked — Saturday 10 AM. I'm sending you a calendar invite now. Mike will text you Friday afternoon to confirm. Sleep well.",
+    "Absolutely. Want me to book you a showing Tuesday morning? Mike (our GM) is in from 9 to noon.",
+    "Booked — Tuesday 10 AM. I'm sending you a calendar invite now. Mike will text you Monday afternoon to confirm. Sleep well.",
   ];
 
   let demoState = {
