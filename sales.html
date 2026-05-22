@@ -581,11 +581,11 @@
           <div class="s-act-beats">
             <div class="s-act-beat" data-beat="1">
               <span class="s-act-beat-num">01</span>
-              <p><strong>Garbage in, never gets in.</strong> Eight forms came in overnight. Five never reach a rep — invalid email, dead phone, throwaway domain, form-fill bot. Your sales team doesn't waste a minute on leads that aren't leads.</p>
+              <p><strong>One funnel for every source.</strong> Your site, Aimbase, BoatTrader, Facebook, manufacturer pass-throughs. All ingested, all routed through one AI layer. The "where did this come from?" question dies.</p>
             </div>
             <div class="s-act-beat" data-beat="2">
               <span class="s-act-beat-num">02</span>
-              <p><strong>One funnel for every source.</strong> Your site, Aimbase, BoatTrader, Facebook, manufacturer pass-throughs. All ingested, all validated, all routed through one AI layer. The "where did this come from?" question dies.</p>
+              <p><strong>Garbage in, never gets in.</strong> Eight forms came in overnight from those sources. Five never reach a rep — invalid email, dead phone, throwaway domain, form-fill bot. Your sales team doesn't waste a minute on leads that aren't leads.</p>
             </div>
             <div class="s-act-beat" data-beat="3">
               <span class="s-act-beat-num">03</span>
@@ -611,9 +611,80 @@
       <div class="s-act-stage">
         <div class="s-act-stage-sticky">
 
-          <!-- Beat 1: lead validation — 8 leads in, 5 get killed -->
-          <div class="s-beat s-beat--1 is-active" data-beat="1">
-            <div class="s-validator">
+          <!-- Beat 1: multi-source ingestion incl Aimbase (NEW ORDER) -->
+          <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="act4-beat1">
+            <div class="s-sources">
+              <div class="s-sources-col s-sources-col--in">
+                <div class="s-src-tile s-src-tile--site" data-src="site">
+                  <span class="s-src-name">Your dealer site</span>
+                  <span class="s-src-meta">forms · chat · phone</span>
+                </div>
+                <div class="s-src-tile s-src-tile--aimbase" data-src="aimbase">
+                  <span class="s-src-name">Aimbase</span>
+                  <span class="s-src-meta">OEM lead pass-through</span>
+                </div>
+                <div class="s-src-tile s-src-tile--bt" data-src="bt">
+                  <span class="s-src-name">BoatTrader</span>
+                  <span class="s-src-meta">marketplace inquiries</span>
+                </div>
+                <div class="s-src-tile s-src-tile--fb" data-src="fb">
+                  <span class="s-src-name">Meta · Google · YouTube</span>
+                  <span class="s-src-meta">ad leads</span>
+                </div>
+                <div class="s-src-tile s-src-tile--oem" data-src="oem">
+                  <span class="s-src-name">Manufacturer site</span>
+                  <span class="s-src-meta">find-a-dealer leads</span>
+                </div>
+              </div>
+              <div class="s-sources-arrows">
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+                <div class="s-src-arrow"></div>
+              </div>
+              <div class="s-sources-funnel">
+                <div class="s-src-funnel-node" data-funnel-node>
+                  <div class="s-src-funnel-title">AI Lead Validator + Enricher</div>
+                  <div class="s-src-funnel-sub">one funnel · one source of truth</div>
+                </div>
+                <div class="s-sources-out">
+                  <div class="s-sources-trash" data-funnel-trash>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                    <span class="s-sources-trash-label">TRASH</span>
+                  </div>
+                  <div class="s-sources-team" data-funnel-team>
+                    <span class="s-sources-team-label">SALES TEAM</span>
+                    <div class="s-sources-team-avatars">
+                      <span class="s-sources-team-av">B</span>
+                      <span class="s-sources-team-av">M</span>
+                      <span class="s-sources-team-av">S</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-sources-particles" data-funnel-particles></div>
+            </div>
+            <div class="s-beat-cap s-beat-cap--good">
+              <span class="s-cap-dot s-cap-dot--good"></span>
+              <span class="s-cap-text">Every source. One funnel. One source of truth.</span>
+            </div>
+          </div>
+
+          <!-- Beat 2: lead validation — 8 leads in, 5 get killed (NEW ORDER) -->
+          <div class="s-beat s-beat--2" data-beat="2" data-anim="act4-beat2">
+            <div class="s-bounce-scene" data-bounce-scene>
+              <div class="s-bs-feed" data-bs-feed></div>
+              <div class="s-bs-shield" data-bs-shield>
+                <span class="s-bs-shield-label">AI Validator</span>
+              </div>
+              <div class="s-bs-rep" data-bs-rep>
+                <div class="s-bs-rep-avatar">M</div>
+                <div class="s-bs-rep-name">Mike</div>
+                <div class="s-bs-rep-caption" data-bs-caption>Reading leads…</div>
+              </div>
+            </div>
+            <div class="s-validator" data-validator>
               <div class="s-validator-header">
                 <span class="s-validator-title">Inbound · last 12 hours</span>
                 <span class="s-validator-sub">8 raw → <strong>3 real</strong></span>
@@ -671,70 +742,22 @@
             </div>
           </div>
 
-          <!-- Beat 2: multi-source ingestion incl Aimbase -->
-          <div class="s-beat s-beat--2" data-beat="2">
-            <div class="s-sources">
-              <div class="s-sources-col s-sources-col--in">
-                <div class="s-src-tile s-src-tile--site">
-                  <span class="s-src-name">Your dealer site</span>
-                  <span class="s-src-meta">forms · chat · phone</span>
-                </div>
-                <div class="s-src-tile s-src-tile--aimbase">
-                  <span class="s-src-name">Aimbase</span>
-                  <span class="s-src-meta">OEM lead pass-through</span>
-                </div>
-                <div class="s-src-tile s-src-tile--bt">
-                  <span class="s-src-name">BoatTrader</span>
-                  <span class="s-src-meta">marketplace inquiries</span>
-                </div>
-                <div class="s-src-tile s-src-tile--fb">
-                  <span class="s-src-name">Meta · Google · YouTube</span>
-                  <span class="s-src-meta">ad leads</span>
-                </div>
-                <div class="s-src-tile s-src-tile--oem">
-                  <span class="s-src-name">Manufacturer site</span>
-                  <span class="s-src-meta">find-a-dealer leads</span>
-                </div>
-              </div>
-              <div class="s-sources-arrows">
-                <div class="s-src-arrow"></div>
-                <div class="s-src-arrow"></div>
-                <div class="s-src-arrow"></div>
-                <div class="s-src-arrow"></div>
-                <div class="s-src-arrow"></div>
-              </div>
-              <div class="s-sources-funnel">
-                <div class="s-src-funnel-node">
-                  <div class="s-src-funnel-title">AI Lead Validator + Enricher</div>
-                  <div class="s-src-funnel-sub">one funnel · one source of truth</div>
-                </div>
-                <div class="s-src-funnel-out">
-                  → Routed, scored, scheduled
-                </div>
-              </div>
-            </div>
-            <div class="s-beat-cap s-beat-cap--good">
-              <span class="s-cap-dot s-cap-dot--good"></span>
-              <span class="s-cap-text">Every source. One funnel. One source of truth.</span>
-            </div>
-          </div>
-
           <!-- Beat 3: forensic enrichment with the judgment line -->
-          <div class="s-beat s-beat--3" data-beat="3">
+          <div class="s-beat s-beat--3" data-beat="3" data-anim="act4-beat3">
             <div class="s-forensic">
-              <div class="s-forensic-header">
+              <div class="s-forensic-header" data-fr-reveal>
                 <span class="s-forensic-title">John Castillo</span>
                 <span class="s-forensic-sub">Forensic profile · auto-built from public sources</span>
               </div>
               <div class="s-forensic-grid">
-                <div class="s-fact"><span class="s-fact-k">Employer</span><span class="s-fact-v">Senior Engineer · Vivint Smart Home</span></div>
-                <div class="s-fact"><span class="s-fact-k">Tenure</span><span class="s-fact-v">7 years · est. comp $185K–$220K</span></div>
-                <div class="s-fact"><span class="s-fact-k">Location</span><span class="s-fact-v">Franklin, TN · single-family · 6 BR</span></div>
-                <div class="s-fact"><span class="s-fact-k">Household</span><span class="s-fact-v">Married, 2 kids · boat club member</span></div>
-                <div class="s-fact"><span class="s-fact-k">Site behavior</span><span class="s-fact-v">3 prior visits · viewed 7 wake boats · favorited 2</span></div>
-                <div class="s-fact"><span class="s-fact-k">Prior search</span><span class="s-fact-v">"wakesurf boats under $180K" · 2 weeks ago</span></div>
+                <div class="s-fact" data-row="1"><span class="s-fact-k">Employer</span><span class="s-fact-v">Senior Engineer · Vivint Smart Home</span></div>
+                <div class="s-fact" data-row="2"><span class="s-fact-k">Tenure</span><span class="s-fact-v">7 years · est. comp $185K–$220K</span></div>
+                <div class="s-fact" data-row="3"><span class="s-fact-k">Location</span><span class="s-fact-v">Franklin, TN · single-family · 6 BR</span></div>
+                <div class="s-fact" data-row="4"><span class="s-fact-k">Household</span><span class="s-fact-v">Married, 2 kids · boat club member</span></div>
+                <div class="s-fact" data-row="5"><span class="s-fact-k">Site behavior</span><span class="s-fact-v">3 prior visits · viewed 7 wake boats · favorited 2</span></div>
+                <div class="s-fact" data-row="6"><span class="s-fact-k">Prior search</span><span class="s-fact-v">"wakesurf boats under $180K" · 2 weeks ago</span></div>
               </div>
-              <div class="s-forensic-judge">
+              <div class="s-forensic-judge" data-fr-judge>
                 <div class="s-judge-label">CAPABILITY ASSESSMENT</div>
                 <div class="s-judge-line">
                   Capable of a <strong>$162,900</strong> purchase
@@ -750,41 +773,42 @@
           </div>
 
           <!-- Beat 4: AI concierge + rep specialty routing -->
-          <div class="s-beat s-beat--4" data-beat="4">
+          <div class="s-beat s-beat--4" data-beat="4" data-anim="act4-beat4">
             <div class="s-routing">
-              <div class="s-routing-lead">
+              <div class="s-routing-lead" data-routing-lead>
                 <div class="s-routing-lead-name">John Castillo</div>
                 <div class="s-routing-lead-meta">2022 Malibu Wakesetter · pre-qualified</div>
                 <div class="s-routing-lead-tag">Looking for: WAKE BOAT</div>
               </div>
               <div class="s-routing-flow">
                 <div class="s-routing-arrow s-routing-arrow--up"></div>
-                <div class="s-routing-router">AI routing</div>
+                <div class="s-routing-router" data-routing-router>AI routing</div>
                 <div class="s-routing-arrow s-routing-arrow--down"></div>
               </div>
-              <div class="s-routing-reps">
-                <div class="s-rep">
+              <div class="s-routing-reps" data-routing-reps>
+                <div class="s-rep" data-rep="bob">
                   <div class="s-rep-avatar">B</div>
                   <div class="s-rep-name">Bob</div>
                   <div class="s-rep-spec">Pontoons · Yamaha</div>
                   <div class="s-rep-status s-rep-status--skip">SKIP</div>
                 </div>
-                <div class="s-rep is-target">
+                <div class="s-rep" data-rep="mike">
                   <div class="s-rep-avatar">M</div>
                   <div class="s-rep-name">Mike</div>
                   <div class="s-rep-spec">Wake boats · Malibu · Axis</div>
                   <div class="s-rep-status s-rep-status--match">MATCH</div>
                 </div>
-                <div class="s-rep">
+                <div class="s-rep" data-rep="sarah">
                   <div class="s-rep-avatar">S</div>
                   <div class="s-rep-name">Sarah</div>
                   <div class="s-rep-spec">Center consoles · Regulator</div>
                   <div class="s-rep-status s-rep-status--skip">SKIP</div>
                 </div>
               </div>
-              <div class="s-routing-result">
+              <div class="s-routing-tag" data-routing-tag>WAKE BOAT</div>
+              <div class="s-routing-result" data-routing-result>
                 <span class="s-routing-result-icon">📅</span>
-                <span class="s-routing-result-text">Showing booked on <strong>Mike's</strong> calendar · Sat 10 AM · invite sent to John</span>
+                <span class="s-routing-result-text">Showing booked on <strong>Mike's</strong> calendar · Tue 10 AM · invite sent to John</span>
               </div>
             </div>
             <div class="s-beat-cap s-beat-cap--good">
@@ -794,12 +818,14 @@
           </div>
 
           <!-- Beat 5: ROI calculator (interactive) -->
-          <div class="s-beat s-beat--5" data-beat="5">
+          <div class="s-beat s-beat--5" data-beat="5" data-anim="act4-beat5">
             <div class="s-roi" id="roi-calc">
               <div class="s-roi-header">
                 <span class="s-roi-title">What this does to your bottom line</span>
                 <span class="s-roi-sub">Tune the inputs — math updates live</span>
               </div>
+
+              <div class="s-roi-hint" data-roi-hint>Drag to explore →</div>
 
               <div class="s-roi-inputs">
                 <div class="s-roi-input">
@@ -846,6 +872,10 @@
                 <div class="s-roi-lift-num">+$<span id="roi-lift">403,200</span></div>
                 <div class="s-roi-lift-cap">From same leads. Faster response. Smarter routing. Killer Proof Chain math (Pied Piper ILE: dealers improving response score &lt;40 → &gt;80 sell 50% more units from the same leads).</div>
               </div>
+
+              <div class="s-roi-cursor" data-roi-cursor aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round"><path d="M5.5 3.5l11.7 9.2-5.6 0.9 3.5 6.6-2.7 1.5-3.5-6.6-3.4 4z"/></svg>
+              </div>
             </div>
             <div class="s-beat-cap s-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
@@ -854,28 +884,35 @@
           </div>
 
           <!-- Beat 6: philosophy close + foreshadow -->
-          <div class="s-beat s-beat--6" data-beat="6">
+          <div class="s-beat s-beat--6" data-beat="6" data-anim="act4-beat6">
             <div class="s-closer">
-              <div class="s-closer-quote">
+              <div class="s-closer-quote s-closer-reveal" data-cl-reveal>
                 "Your salespeople are people-people. That's why you hired them. We took the bullshit off their desk so they can be that."
               </div>
               <div class="s-closer-stats">
-                <div class="s-closer-stat">
-                  <span class="s-closer-num">22<span class="s-closer-unit">hrs</span></span>
+                <div class="s-closer-stat s-closer-reveal" data-cl-reveal>
+                  <span class="s-closer-num"><span data-counter="22" data-counter-prefix="">0</span><span class="s-closer-unit">hrs</span></span>
                   <span class="s-closer-cap">admin time returned to each rep, per week</span>
                 </div>
-                <div class="s-closer-stat">
-                  <span class="s-closer-num">+30<span class="s-closer-unit">%</span></span>
+                <div class="s-closer-stat s-closer-reveal" data-cl-reveal>
+                  <span class="s-closer-num"><span data-counter="30" data-counter-prefix="+">+0</span><span class="s-closer-unit">%</span></span>
                   <span class="s-closer-cap">deals closed per rep per month</span>
                 </div>
-                <div class="s-closer-stat">
-                  <span class="s-closer-num">0</span>
+                <div class="s-closer-stat s-closer-reveal" data-cl-reveal>
+                  <span class="s-closer-num" data-counter-zero>0</span>
                   <span class="s-closer-cap">leads waiting more than 90 seconds</span>
                 </div>
               </div>
-              <div class="s-closer-next">
+              <div class="s-closer-next s-closer-reveal" data-cl-reveal>
                 <span class="s-closer-next-tag">Coming</span>
-                <span class="s-closer-next-text">Deal flow. Licensing. Registration. Service. The whole back office. We're not done.</span>
+                <span class="s-closer-next-text">
+                  <span class="s-closer-roadmap" data-roadmap-item="1">Deal flow.</span>
+                  <span class="s-closer-roadmap" data-roadmap-item="2">Licensing.</span>
+                  <span class="s-closer-roadmap" data-roadmap-item="3">Registration.</span>
+                  <span class="s-closer-roadmap" data-roadmap-item="4">Service.</span>
+                  <span class="s-closer-roadmap" data-roadmap-item="5">The whole back office.</span>
+                  <span class="s-closer-roadmap s-closer-roadmap--final" data-roadmap-item="6">We're not done.</span>
+                </span>
               </div>
             </div>
             <div class="s-beat-cap s-beat-cap--good">

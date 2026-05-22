@@ -2996,6 +2996,517 @@
 }
 
 /* ─── responsive ────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   ACT 4 BEAT 1  —  One Funnel  —  particle motion, trash, team
+   ═══════════════════════════════════════════════════════════════ */
+
+.s-sources {
+  position: relative;
+}
+
+.s-sources-funnel {
+  position: relative;
+}
+
+.s-sources-out {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.s-sources-trash {
+  padding: 14px 14px;
+  background: rgba(238, 58, 57, 0.05);
+  border: 1px dashed rgba(238, 58, 57, 0.4);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--accent);
+  min-width: 78px;
+}
+.s-sources-trash-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.s-sources-team {
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.08), rgba(74, 222, 128, 0.02));
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.s-sources-team-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--good);
+  font-weight: 600;
+}
+.s-sources-team-avatars {
+  display: flex;
+  gap: -4px;
+}
+.s-sources-team-av {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--good), #22c55e);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #050505;
+  margin-left: -6px;
+}
+.s-sources-team-av:first-child { margin-left: 0; }
+
+.s-sources-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 4;
+}
+
+.s-lead-dot {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.s-lead-dot--good {
+  background: var(--good);
+  box-shadow: 0 0 8px var(--good-glow);
+}
+.s-lead-dot--spam {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Brief pulse on the funnel node when a lead passes through */
+.s-src-funnel-node.is-pulse {
+  animation: s-funnel-pulse 0.45s ease-out;
+}
+@keyframes s-funnel-pulse {
+  0%   { box-shadow: 0 0 40px rgba(74, 222, 128, 0.1); }
+  50%  { box-shadow: 0 0 60px rgba(74, 222, 128, 0.35); }
+  100% { box-shadow: 0 0 40px rgba(74, 222, 128, 0.1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACT 4 BEAT 2  —  Garbage In  —  rep-getting-pelted illustration
+   ═══════════════════════════════════════════════════════════════ */
+
+.s-bounce-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 5;
+}
+.s-bounce-scene.is-faded {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.s-bs-feed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.s-bs-lead {
+  position: absolute;
+  padding: 8px 11px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--text-mid);
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  will-change: transform, opacity;
+  top: 50%;
+  left: -200px;
+}
+.s-bs-lead-x {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.s-bs-lead.is-rejected .s-bs-lead-x {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.s-bs-rep {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 2;
+}
+.s-bs-rep.is-tired {
+  opacity: 0.55;
+  transform: scale(0.96);
+}
+.s-bs-rep.is-shake {
+  animation: s-bs-shake 0.25s ease-in-out;
+}
+@keyframes s-bs-shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-5px); }
+  75%      { transform: translateX(5px); }
+}
+
+.s-bs-rep-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--good), #22c55e);
+  color: #000;
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.12), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.s-bs-rep-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+}
+.s-bs-rep-caption {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  min-height: 14px;
+  transition: color 0.3s ease;
+}
+.s-bs-rep.is-tired .s-bs-rep-caption {
+  color: var(--accent);
+}
+
+.s-bs-shield {
+  position: absolute;
+  top: 50%;
+  left: 55%;
+  transform: translate(-50%, -50%) scaleY(0);
+  transform-origin: center;
+  width: 6px;
+  height: 220px;
+  background: linear-gradient(180deg, rgba(74, 222, 128, 0), var(--good) 30%, var(--good) 70%, rgba(74, 222, 128, 0));
+  border-radius: 100px;
+  box-shadow: 0 0 28px var(--good-glow);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  z-index: 1;
+}
+.s-bs-shield.is-up {
+  opacity: 1;
+  transform: translate(-50%, -50%) scaleY(1);
+}
+.s-bs-shield-label {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--good);
+  white-space: nowrap;
+  padding: 3px 8px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 100px;
+}
+
+/* validator slides in as the bounce scene fades out */
+.s-validator[data-validator] {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-validator[data-validator].is-revealed {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACT 4 BEAT 3  —  Forensic Enrichment  —  sequential reveal
+   ═══════════════════════════════════════════════════════════════ */
+
+.s-forensic [data-fr-reveal],
+.s-forensic [data-fr-judge] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-forensic [data-fr-reveal].is-in,
+.s-forensic [data-fr-judge].is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.s-forensic [data-fr-judge].is-pulse {
+  animation: s-fr-judge-pulse 0.6s ease-out;
+}
+@keyframes s-fr-judge-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+  40%  { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0.15); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+.s-forensic-grid .s-fact[data-row] {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.s-forensic-grid .s-fact[data-row].is-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACT 4 BEAT 4  —  Routing simulation
+   ═══════════════════════════════════════════════════════════════ */
+
+.s-routing { position: relative; }
+
+/* hide the static MATCH status until the JS lights it up */
+.s-routing [data-routing-reps] .s-rep .s-rep-status {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.s-routing [data-routing-reps] .s-rep.is-considered-skip .s-rep-status,
+.s-routing [data-routing-reps] .s-rep.is-matched .s-rep-status {
+  opacity: 1;
+}
+
+/* lead card animates in then drops into the router */
+.s-routing [data-routing-lead] {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-routing [data-routing-lead].is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.s-routing [data-routing-lead].is-dropping {
+  opacity: 0.2;
+  transform: translateY(60px) scale(0.6);
+}
+
+/* router pulses when lead enters */
+.s-routing [data-routing-router].is-pulse {
+  animation: s-router-pulse 0.6s ease-out;
+}
+@keyframes s-router-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+  40%  { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* floating WAKE BOAT tag that travels between reps */
+.s-routing-tag {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  padding: 5px 10px;
+  background: var(--bad-dim);
+  border: 1px solid rgba(238, 58, 57, 0.5);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95), background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+.s-routing-tag.is-on {
+  opacity: 1;
+}
+.s-routing-tag.is-match {
+  background: var(--good-dim);
+  border-color: rgba(74, 222, 128, 0.6);
+  color: var(--good);
+}
+
+/* rep states the JS toggles */
+.s-routing [data-routing-reps] .s-rep {
+  transition: opacity 0.35s ease, transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+}
+.s-routing [data-routing-reps] .s-rep.is-considered-skip {
+  opacity: 0.5;
+  filter: grayscale(40%);
+}
+.s-routing [data-routing-reps] .s-rep.is-matched {
+  opacity: 1;
+  border-color: rgba(74, 222, 128, 0.7);
+  background: rgba(74, 222, 128, 0.07);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1), 0 14px 32px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px);
+}
+.s-routing [data-routing-reps] .s-rep.is-matched .s-rep-avatar {
+  background: linear-gradient(135deg, var(--good), #22c55e);
+  color: #000;
+}
+
+/* hide static MATCH/SKIP until lit */
+.s-routing [data-routing-reps] .s-rep:not(.is-matched):not(.is-considered-skip) { opacity: 1; }
+
+/* result slides up at the end */
+.s-routing [data-routing-result] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-routing [data-routing-result].is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACT 4 BEAT 5  —  ROI cursor demo + hint
+   ═══════════════════════════════════════════════════════════════ */
+
+.s-roi { position: relative; }
+
+.s-roi-hint {
+  position: absolute;
+  top: 14px;
+  right: 22px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--good);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  z-index: 6;
+}
+.s-roi-hint.is-on {
+  opacity: 1;
+  transform: translateY(0);
+  animation: s-roi-hint-pulse 1.8s ease-in-out infinite;
+}
+@keyframes s-roi-hint-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+
+.s-roi-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+  z-index: 7;
+  transition: opacity 0.3s ease, transform 0.12s ease;
+}
+.s-roi-cursor.is-on { opacity: 1; }
+.s-roi-cursor.is-pressed {
+  transform: translate(-50%, -50%) scale(0.78);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACT 4 BEAT 6  —  Philosophy close  —  sequential reveal + counters
+   ═══════════════════════════════════════════════════════════════ */
+
+.s-closer-reveal {
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-closer-reveal.is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.s-closer-stat.s-closer-reveal.is-pulse {
+  animation: s-closer-pulse 0.45s ease-out;
+}
+@keyframes s-closer-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+.s-closer-roadmap {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.35s ease, transform 0.35s ease, color 0.5s ease;
+  margin-right: 4px;
+}
+.s-closer-roadmap.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.s-closer-roadmap--final.is-in {
+  color: var(--good);
+  animation: s-final-pulse 0.6s ease-out 0.2s;
+}
+@keyframes s-final-pulse {
+  0%   { text-shadow: 0 0 0 rgba(74, 222, 128, 0); }
+  50%  { text-shadow: 0 0 12px rgba(74, 222, 128, 0.6); }
+  100% { text-shadow: 0 0 0 rgba(74, 222, 128, 0); }
+}
+
 @media (max-width: 1100px) {
   .s-act-inner {
     grid-template-columns: 1fr;
@@ -3028,6 +3539,9 @@
     gap: 14px;
   }
   .s-src-arrow { transform: rotate(90deg); }
+  .s-sources-out { grid-template-columns: 1fr; }
+  .s-bounce-scene { display: none; }
+  .s-validator[data-validator] { opacity: 1; }
   .s-forensic-grid { grid-template-columns: 1fr; }
   .s-routing-reps { grid-template-columns: 1fr; }
   .s-roi-input { grid-template-columns: 1fr; gap: 8px; }

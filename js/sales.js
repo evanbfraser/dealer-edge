@@ -459,6 +459,444 @@
     setTimeout(loop, 2400);
   }
 
+  /* ═════════════════════════════════════════════════════════════
+     ACT 4 ANIMATIONS (the sales-team-side beats)
+     ═════════════════════════════════════════════════════════════ */
+
+  /* ----- ACT 4 BEAT 1 — Lead particles funnelling into validator ----- */
+  // We spawn small dots from each source tile, fly them to the validator
+  // node, briefly hold, then route ~30% to trash and ~70% to sales team.
+  function playAct4Beat1OneFunnel(beatEl, stillCurrent) {
+    const particles = beatEl.querySelector('[data-funnel-particles]');
+    const funnelNode = beatEl.querySelector('[data-funnel-node]');
+    const trash = beatEl.querySelector('[data-funnel-trash]');
+    const team = beatEl.querySelector('[data-funnel-team]');
+    const sources = beatEl.querySelectorAll('[data-src]');
+    if (!particles || !funnelNode || !trash || !team || !sources.length) return;
+
+    function centerOf(el) {
+      const cr = particles.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      return { x: r.left - cr.left + r.width / 2, y: r.top - cr.top + r.height / 2 };
+    }
+
+    function spawnOne() {
+      if (!stillCurrent()) return;
+      const src = sources[Math.floor(Math.random() * sources.length)];
+      const from = centerOf(src);
+      const to = centerOf(funnelNode);
+      const isSpam = Math.random() < 0.3;
+      const dot = document.createElement('div');
+      dot.className = 's-lead-dot';
+      dot.style.left = from.x + 'px';
+      dot.style.top = from.y + 'px';
+      particles.appendChild(dot);
+
+      // Leg 1: source → validator (~750ms)
+      const dx1 = to.x - from.x;
+      const dy1 = to.y - from.y;
+      dot.style.transition = 'transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease';
+      requestAnimationFrame(() => {
+        dot.style.transform = `translate(${dx1}px, ${dy1}px)`;
+      });
+
+      setTimeout(() => {
+        if (!stillCurrent()) { dot.remove(); return; }
+        funnelNode.classList.add('is-pulse');
+        setTimeout(() => funnelNode.classList.remove('is-pulse'), 450);
+
+        // Leg 2: validator → trash or team
+        const dest = isSpam ? trash : team;
+        const toD = centerOf(dest);
+        const dx2 = toD.x - from.x;
+        const dy2 = toD.y - from.y;
+        dot.classList.add(isSpam ? 's-lead-dot--spam' : 's-lead-dot--good');
+        dot.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease 0.4s';
+        dot.style.transform = `translate(${dx2}px, ${dy2}px)`;
+        setTimeout(() => {
+          dot.style.opacity = '0';
+        }, 350);
+        setTimeout(() => dot.remove(), 1100);
+      }, 800);
+    }
+
+    // staggered initial salvo, then steady cadence
+    [0, 240, 520, 820, 1140].forEach((d) => setTimeout(() => tick(stillCurrent, spawnOne), d));
+    const interval = setInterval(() => {
+      if (!stillCurrent()) { clearInterval(interval); return; }
+      spawnOne();
+    }, 650);
+  }
+
+  /* ----- ACT 4 BEAT 2 — Rep getting pelted, then AI shield, then validator ----- */
+  const act4Beat2JunkLeads = [
+    { x: 'X', label: 'qwerty@mailinator.com' },
+    { x: 'X', label: '+1 (555) 555-5555' },
+    { x: 'X', label: '[BOT] form-fill' },
+    { x: 'X', label: 'spy@rivaldealer.net' },
+    { x: 'X', label: 'aaaaa@bbbb.cc' },
+    { x: 'X', label: 'disposable email' },
+  ];
+  // After the shield goes up, a couple of valid leads pass through cleanly
+  const act4Beat2ValidLeads = [
+    { label: 'John Castillo' },
+    { label: 'Sarah Bennett' },
+    { label: 'Tom Whittaker' },
+  ];
+
+  function playAct4Beat2Garbage(beatEl, stillCurrent) {
+    const scene = beatEl.querySelector('[data-bounce-scene]');
+    const feed = beatEl.querySelector('[data-bs-feed]');
+    const shield = beatEl.querySelector('[data-bs-shield]');
+    const rep = beatEl.querySelector('[data-bs-rep]');
+    const caption = beatEl.querySelector('[data-bs-caption]');
+    const validator = beatEl.querySelector('[data-validator]');
+    if (!scene || !feed || !shield || !rep || !validator) return;
+
+    // reset
+    scene.classList.remove('is-faded');
+    shield.classList.remove('is-up');
+    rep.classList.remove('is-tired', 'is-shake');
+    validator.classList.remove('is-revealed');
+    feed.innerHTML = '';
+    if (caption) caption.textContent = 'Reading leads…';
+
+    const sceneRect = scene.getBoundingClientRect();
+    // Rep is centered; figure out its center via getBoundingClientRect
+    function shootLead(text, opts) {
+      if (!stillCurrent()) return;
+      const lead = document.createElement('div');
+      lead.className = 's-bs-lead';
+      lead.innerHTML = `<span>${text}</span><span class="s-bs-lead-x">${opts.x || ''}</span>`;
+      feed.appendChild(lead);
+
+      // start position: left edge, random vertical jitter
+      const startY = (Math.random() * 0.4 + 0.3) * sceneRect.height;
+      lead.style.top = startY + 'px';
+      lead.style.left = '-220px';
+      lead.style.transform = 'translateX(0)';
+      lead.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.3s ease';
+
+      // fly to the rep (center)
+      requestAnimationFrame(() => {
+        const targetX = sceneRect.width * 0.52 + 220 - 32;
+        lead.style.transform = `translateX(${targetX}px)`;
+      });
+
+      if (opts.bounce) {
+        // Mid-flight, hit happens. Rep shakes, lead X'd, lead bounces away.
+        setTimeout(() => {
+          if (!stillCurrent()) { lead.remove(); return; }
+          rep.classList.add('is-shake');
+          setTimeout(() => rep.classList.remove('is-shake'), 250);
+          lead.classList.add('is-rejected');
+          // bounce off down-right, fading
+          const bounceX = sceneRect.width * 0.52 + 220 + 200;
+          const bounceY = startY + 140;
+          lead.style.transition = 'transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease 0.15s';
+          lead.style.transform = `translate(${bounceX}px, ${bounceY - startY}px) rotate(20deg)`;
+          setTimeout(() => { lead.style.opacity = '0'; }, 200);
+          setTimeout(() => lead.remove(), 900);
+        }, opts.bounceAt || 450);
+      } else {
+        // valid lead: passes through to rep, lands gently
+        setTimeout(() => {
+          if (!stillCurrent()) { lead.remove(); return; }
+          lead.style.transition = 'transform 0.4s ease-out, opacity 0.6s ease 0.3s';
+          lead.style.opacity = '0';
+          setTimeout(() => lead.remove(), 900);
+        }, 600);
+      }
+    }
+
+    // ─── PHASE 1: rep gets pelted ───────────────────────────────
+    act4Beat2JunkLeads.forEach((lead, i) => {
+      setTimeout(() => shootLead(lead.label, { x: lead.x, bounce: true, bounceAt: 450 }), 300 + i * 380);
+    });
+    // mid-phase: rep starts to tire
+    setTimeout(() => tick(stillCurrent, () => {
+      rep.classList.add('is-tired');
+      if (caption) caption.textContent = '80% garbage. Reps give up.';
+    }), 300 + 4 * 380);
+
+    // ─── PHASE 2: AI shield slides in ───────────────────────────
+    const shieldAt = 300 + act4Beat2JunkLeads.length * 380 + 400;
+    setTimeout(() => tick(stillCurrent, () => {
+      shield.classList.add('is-up');
+      rep.classList.remove('is-tired');
+      if (caption) caption.textContent = 'AI intercepts. Rep gets the good stuff.';
+    }), shieldAt);
+
+    // ─── PHASE 3: clean leads flow through ──────────────────────
+    const cleanStart = shieldAt + 900;
+    act4Beat2ValidLeads.forEach((lead, i) => {
+      setTimeout(() => shootLead(lead.label, { bounce: false }), cleanStart + i * 380);
+    });
+
+    // ─── PHASE 4: fade scene, reveal validator UI ───────────────
+    const fadeAt = cleanStart + act4Beat2ValidLeads.length * 380 + 600;
+    setTimeout(() => tick(stillCurrent, () => {
+      scene.classList.add('is-faded');
+      validator.classList.add('is-revealed');
+    }), fadeAt);
+  }
+
+  /* ----- ACT 4 BEAT 3 — Forensic enrichment, sequential reveal ----- */
+  function playAct4Beat3Forensic(beatEl, stillCurrent) {
+    const header = beatEl.querySelector('[data-fr-reveal]');
+    const judge = beatEl.querySelector('[data-fr-judge]');
+    const rows = beatEl.querySelectorAll('[data-row]');
+
+    // reset
+    if (header) header.classList.remove('is-in');
+    if (judge) judge.classList.remove('is-in', 'is-pulse');
+    rows.forEach((r) => r.classList.remove('is-in'));
+
+    setTimeout(() => tick(stillCurrent, () => { if (header) header.classList.add('is-in'); }), 150);
+    rows.forEach((r, i) => {
+      setTimeout(() => tick(stillCurrent, () => r.classList.add('is-in')), 400 + i * 120);
+    });
+    const judgeAt = 400 + rows.length * 120 + 200;
+    setTimeout(() => tick(stillCurrent, () => {
+      if (judge) {
+        judge.classList.add('is-in');
+        setTimeout(() => judge.classList.add('is-pulse'), 250);
+      }
+    }), judgeAt);
+  }
+
+  /* ----- ACT 4 BEAT 4 — Routing simulation ----- */
+  function playAct4Beat4Routing(beatEl, stillCurrent) {
+    const lead = beatEl.querySelector('[data-routing-lead]');
+    const router = beatEl.querySelector('[data-routing-router]');
+    const reps = beatEl.querySelectorAll('[data-rep]');
+    const tag = beatEl.querySelector('[data-routing-tag]');
+    const result = beatEl.querySelector('[data-routing-result]');
+    if (!lead || !router || !reps.length || !tag || !result) return;
+
+    // reset
+    lead.classList.remove('is-in', 'is-dropping');
+    router.classList.remove('is-pulse');
+    reps.forEach((r) => r.classList.remove('is-considered-skip', 'is-matched'));
+    tag.classList.remove('is-on', 'is-match');
+    tag.style.transform = 'translate(-50%, -50%) scale(0)';
+    result.classList.remove('is-in');
+
+    // 1. lead card fades in
+    setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-in')), 200);
+
+    // 2. lead card drops into router
+    setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-dropping')), 900);
+
+    // 3. router pulses
+    setTimeout(() => tick(stillCurrent, () => {
+      router.classList.add('is-pulse');
+      setTimeout(() => router.classList.remove('is-pulse'), 600);
+    }), 1300);
+
+    // 4. tag emerges & visits each rep in sequence
+    const routerRect = router.getBoundingClientRect();
+    const beatRect = beatEl.querySelector('.s-routing').getBoundingClientRect();
+    function showTagOver(repEl, isMatch) {
+      const repRect = repEl.getBoundingClientRect();
+      const cx = repRect.left - beatRect.left + repRect.width / 2;
+      const cy = repRect.top - beatRect.top + 24;
+      tag.style.left = cx + 'px';
+      tag.style.top = cy + 'px';
+      tag.style.transform = 'translate(-50%, -50%) scale(1)';
+      tag.classList.add('is-on');
+      tag.classList.toggle('is-match', isMatch);
+    }
+
+    setTimeout(() => tick(stillCurrent, () => {
+      // initial position: above router
+      const rx = router.getBoundingClientRect();
+      tag.style.left = (rx.left - beatRect.left + rx.width / 2) + 'px';
+      tag.style.top = (rx.top - beatRect.top - 22) + 'px';
+      tag.style.transform = 'translate(-50%, -50%) scale(1)';
+      tag.classList.add('is-on');
+    }), 1600);
+
+    // Bob
+    setTimeout(() => tick(stillCurrent, () => {
+      showTagOver(reps[0], false);
+      reps[0].classList.add('is-considered-skip');
+    }), 2000);
+    // Mike
+    setTimeout(() => tick(stillCurrent, () => {
+      showTagOver(reps[1], true);
+      reps[1].classList.add('is-matched');
+    }), 2500);
+    // Sarah
+    setTimeout(() => tick(stillCurrent, () => {
+      showTagOver(reps[2], false);
+      tag.classList.remove('is-match');
+      reps[2].classList.add('is-considered-skip');
+    }), 3000);
+    // Back to Mike (settle)
+    setTimeout(() => tick(stillCurrent, () => {
+      showTagOver(reps[1], true);
+    }), 3500);
+
+    // 5. result slides up
+    setTimeout(() => tick(stillCurrent, () => {
+      tag.classList.remove('is-on');
+      result.classList.add('is-in');
+    }), 4100);
+  }
+
+  /* ----- ACT 4 BEAT 5 — ROI cursor demo + hint ----- */
+  function playAct4Beat5RoiDemo(beatEl, stillCurrent) {
+    const hint = beatEl.querySelector('[data-roi-hint]');
+    const cursor = beatEl.querySelector('[data-roi-cursor]');
+    const leadsSlider = beatEl.querySelector('#roi-leads');
+    const closeSlider = beatEl.querySelector('#roi-close');
+    const roi = beatEl.querySelector('.s-roi');
+    if (!hint || !cursor || !leadsSlider || !closeSlider || !roi) return;
+
+    // reset
+    hint.classList.remove('is-on');
+    cursor.classList.remove('is-on', 'is-pressed');
+
+    function getRoiOffset(el) {
+      const rr = roi.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      return { x: er.left - rr.left, y: er.top - rr.top, w: er.width, h: er.height };
+    }
+    function moveCursorTo(x, y, duration) {
+      cursor.style.transition = `left ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), top ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.12s ease`;
+      cursor.style.left = x + 'px';
+      cursor.style.top = y + 'px';
+    }
+    function dragSliderTo(slider, targetValue, durationMs) {
+      const start = +slider.value;
+      const startedAt = performance.now();
+      function step() {
+        if (!stillCurrent()) return;
+        const t = Math.min(1, (performance.now() - startedAt) / durationMs);
+        const eased = 1 - Math.pow(1 - t, 3);
+        slider.value = String(start + (targetValue - start) * eased);
+        slider.dispatchEvent(new Event('input', { bubbles: true }));
+        // keep cursor pinned to the thumb position
+        const sliderOff = getRoiOffset(slider);
+        const ratio = (+slider.value - +slider.min) / (+slider.max - +slider.min);
+        cursor.style.left = (sliderOff.x + ratio * sliderOff.w) + 'px';
+        cursor.style.top = (sliderOff.y + sliderOff.h / 2) + 'px';
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // show hint
+    setTimeout(() => tick(stillCurrent, () => hint.classList.add('is-on')), 200);
+
+    // cursor appears off-screen-ish, then moves to the leads slider thumb
+    setTimeout(() => tick(stillCurrent, () => {
+      const off = getRoiOffset(leadsSlider);
+      cursor.style.left = (off.x - 30) + 'px';
+      cursor.style.top = (off.y + off.h / 2 + 30) + 'px';
+      cursor.classList.add('is-on');
+      // glide to leads thumb (starting position based on current value)
+      const ratio = (+leadsSlider.value - +leadsSlider.min) / (+leadsSlider.max - +leadsSlider.min);
+      setTimeout(() => moveCursorTo(off.x + ratio * off.w, off.y + off.h / 2, 700), 50);
+    }), 900);
+
+    // press + drag leads 80 → 160
+    setTimeout(() => tick(stillCurrent, () => {
+      cursor.classList.add('is-pressed');
+      dragSliderTo(leadsSlider, 160, 1400);
+    }), 1700);
+
+    setTimeout(() => tick(stillCurrent, () => cursor.classList.remove('is-pressed')), 3200);
+
+    // glide to close-rate slider
+    setTimeout(() => tick(stillCurrent, () => {
+      const off = getRoiOffset(closeSlider);
+      const ratio = (+closeSlider.value - +closeSlider.min) / (+closeSlider.max - +closeSlider.min);
+      moveCursorTo(off.x + ratio * off.w, off.y + off.h / 2, 700);
+    }), 3500);
+
+    // press + drag close 6 → 9
+    setTimeout(() => tick(stillCurrent, () => {
+      cursor.classList.add('is-pressed');
+      dragSliderTo(closeSlider, 9, 1200);
+    }), 4300);
+
+    setTimeout(() => tick(stillCurrent, () => cursor.classList.remove('is-pressed')), 5600);
+
+    // fade cursor + hint
+    setTimeout(() => tick(stillCurrent, () => {
+      cursor.classList.remove('is-on');
+    }), 6000);
+    setTimeout(() => tick(stillCurrent, () => {
+      hint.classList.remove('is-on');
+    }), 7000);
+  }
+
+  /* ----- ACT 4 BEAT 6 — Philosophy: reveal + counter + roadmap ----- */
+  function playAct4Beat6Philosophy(beatEl, stillCurrent) {
+    const reveals = beatEl.querySelectorAll('[data-cl-reveal]');
+    const counters = beatEl.querySelectorAll('[data-counter]');
+    const roadmapItems = beatEl.querySelectorAll('[data-roadmap-item]');
+    const zeroEl = beatEl.querySelector('[data-counter-zero]');
+    const stats = beatEl.querySelectorAll('.s-closer-stat');
+
+    // reset
+    reveals.forEach((r) => r.classList.remove('is-in', 'is-pulse'));
+    roadmapItems.forEach((r) => r.classList.remove('is-in'));
+    counters.forEach((c) => {
+      const prefix = c.getAttribute('data-counter-prefix') || '';
+      c.textContent = prefix + '0';
+    });
+
+    function countUp(el, target, durationMs) {
+      const prefix = el.getAttribute('data-counter-prefix') || '';
+      const startedAt = performance.now();
+      function step() {
+        if (!stillCurrent()) return;
+        const t = Math.min(1, (performance.now() - startedAt) / durationMs);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const n = Math.round(target * eased);
+        el.textContent = prefix + n;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // reveal[0] = quote, reveal[1..3] = three stat cards, reveal[4] = foreshadow
+    if (reveals[0]) setTimeout(() => tick(stillCurrent, () => reveals[0].classList.add('is-in')), 200);
+
+    // stat cards stagger; each kicks off its counter
+    [1, 2, 3].forEach((idx, i) => {
+      const baseDelay = 800 + i * 280;
+      const r = reveals[idx];
+      if (!r) return;
+      setTimeout(() => tick(stillCurrent, () => {
+        r.classList.add('is-in');
+        // kick off the counter for this stat (if it has one)
+        const counter = r.querySelector('[data-counter]');
+        if (counter) {
+          const target = parseInt(counter.getAttribute('data-counter') || '0', 10);
+          countUp(counter, target, 1100);
+        }
+        // pulse for the zero stat
+        if (idx === 3 && zeroEl) {
+          r.classList.add('is-pulse');
+          setTimeout(() => r.classList.remove('is-pulse'), 450);
+        }
+      }), baseDelay);
+    });
+
+    // foreshadow card
+    const foreshadowAt = 800 + 3 * 280 + 700;
+    if (reveals[4]) setTimeout(() => tick(stillCurrent, () => reveals[4].classList.add('is-in')), foreshadowAt);
+
+    // roadmap items reveal sequentially
+    roadmapItems.forEach((item, i) => {
+      setTimeout(() => tick(stillCurrent, () => item.classList.add('is-in')), foreshadowAt + 350 + i * 250);
+    });
+  }
+
   /* ----- DISPATCH MAP (populate the let declared above) ----- */
   BEAT_ANIMS = {
     'act1-beat1': playAct1Beat1,
@@ -469,6 +907,12 @@
     'act2-beat2': playAct2Beat2,
     'act2-beat3': playAct2Beat3,
     'act2-beat4': playAct2Beat4,
+    'act4-beat1': playAct4Beat1OneFunnel,
+    'act4-beat2': playAct4Beat2Garbage,
+    'act4-beat3': playAct4Beat3Forensic,
+    'act4-beat4': playAct4Beat4Routing,
+    'act4-beat5': playAct4Beat5RoiDemo,
+    'act4-beat6': playAct4Beat6Philosophy,
   };
 
   // First-paint animation firing is handled per-act by the IntersectionObserver
