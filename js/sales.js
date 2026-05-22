@@ -108,12 +108,16 @@
 
     // Track an animation token per beat so a re-entry cancels the prior run
     const animTokens = new Array(totalBeats).fill(0);
+    // Has this act been scrolled into view yet? Gates animation firing so
+    // off-screen acts don't pre-play their stories before the user arrives.
+    let actEntered = false;
 
-    function setActiveBeat(idx) {
+    function setActiveBeatClass(idx) {
       beats.forEach((b, i) => b.classList.toggle('is-active', i === idx));
       beatCopies.forEach((b, i) => b.classList.toggle('is-active', i === idx));
+    }
 
-      // Fire the per-beat animation (if registered) when this beat activates
+    function fireBeatAnim(idx) {
       const beatEl = beats[idx];
       if (!beatEl) return;
       animTokens[idx] += 1;
@@ -127,6 +131,26 @@
         }, 220);
       }
     }
+
+    // Full activation: class toggle + fire animation (only if entered)
+    function setActiveBeat(idx) {
+      setActiveBeatClass(idx);
+      if (actEntered) fireBeatAnim(idx);
+    }
+
+    // IntersectionObserver flips actEntered the first time the act becomes
+    // visible. Then we fire whatever beat is currently active.
+    const enterObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !actEntered) {
+          actEntered = true;
+          const currentIdx = act._currentBeat ?? 0;
+          fireBeatAnim(currentIdx);
+          enterObs.unobserve(act);
+        }
+      });
+    }, { threshold: 0.08 });
+    enterObs.observe(act);
 
     // Only scroll-pin on larger screens — on mobile we stack naturally
     if (window.innerWidth >= 1100) {
@@ -168,8 +192,11 @@
       });
     }
 
-    // initial state — set beat 0 active and run its anim
-    setActiveBeat(0);
+    // Init: only toggle the class. Animation will fire when the act
+    // enters the viewport via ScrollTrigger.onUpdate (desktop) or
+    // IntersectionObserver (mobile), guaranteeing each beat starts
+    // in its "before" state until the user actually arrives.
+    setActiveBeatClass(0);
   });
 
   /* ─────────────────────────────────────────────────────────────
@@ -444,14 +471,9 @@
     'act2-beat4': playAct2Beat4,
   };
 
-  // Now that BEAT_ANIMS is populated, fire whatever beat is currently active
-  // (the initial setActiveBeat(0) call already added is-active, this triggers
-  // its animation on first paint without waiting for the user to scroll)
-  document.querySelectorAll('.s-beat.is-active').forEach((beat) => {
-    const key = beat.dataset.anim;
-    const fn = BEAT_ANIMS[key];
-    if (typeof fn === 'function') fn(beat, () => true);
-  });
+  // First-paint animation firing is handled per-act by the IntersectionObserver
+  // inside the acts.forEach loop above. Act 1 fires immediately (in viewport
+  // on load), Act 2 / Act 4 fire when the user scrolls them into view.
 
   /* ─────────────────────────────────────────────────────────────
      ACT 2 BEAT 2  —  scripted SMS conversation in the convo panel
