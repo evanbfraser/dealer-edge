@@ -296,11 +296,16 @@
     engine.positionIterations = 4;
     engine.velocityIterations = 3;
     engine.constraintIterations = 2;
-    // Sleeping lets Matter.js skip simulation work for bodies that
-    // have come to rest. Combined with the queueFreeze sweep below,
-    // this means the cascade's hundreds of settled trash balls cost
-    // essentially zero CPU once they've stopped moving.
-    engine.enableSleeping = true;
+    // IMPORTANT: do NOT enable engine.enableSleeping here.
+    // The cascade starts with engine.gravity.scale = 0, so the initial
+    // wave has zero velocity and Matter.js's sleeping system puts
+    // every ball to sleep within ~1 second (default sleepThreshold
+    // is 60 frames of low motion). Sleeping bodies are explicitly
+    // skipped by Body.update — INCLUDING gravity application. So when
+    // enterBeat(2) flips gravity to FULL_GRAVITY, sleeping balls
+    // never receive the new force and stay frozen at the top forever.
+    // We rely on the explicit queueFreeze sweep (below) instead —
+    // it freezes counted balls via Body.setStatic which is safer.
     const world = engine.world;
 
     function sizeCanvas() {
@@ -481,7 +486,6 @@
             friction: 0.01,
             frictionAir: 0.018,
             density: 0.0025,
-            sleepThreshold: 30,
             label: 'ball',
             render: { fillStyle: STAGE_COLORS[0] },
           });
@@ -586,6 +590,19 @@
         // Release the initial wave by engaging gravity. Balls are
         // already dynamic; setting gravity.scale starts the cascade.
         engine.gravity.scale = FULL_GRAVITY;
+        // Defensive belt-and-suspenders for the gravity release:
+        //  (a) wake any ball that somehow ended up sleeping (e.g.
+        //      if engine.enableSleeping was toggled at runtime),
+        //  (b) give each ball a tiny downward velocity so the
+        //      cascade reads as a "drop" rather than a gradual
+        //      acceleration from rest.
+        const Sleeping = M.Sleeping;
+        for (let i = 0; i < balls.length; i += 1) {
+          const b = balls[i];
+          if (b.fixed) continue;
+          if (b.isSleeping && Sleeping) Sleeping.set(b, false);
+          Body.setVelocity(b, { x: 0, y: 0.6 });
+        }
         revealTally(2);
       }
       if (beat >= 3 && previous < 3) { openGate(0); revealTally(3); }
