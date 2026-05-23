@@ -274,8 +274,21 @@
     const M = window.Matter;
     const { Engine, Render, Runner, Bodies, Body, Events, Composite } = M;
 
+    // Gravity starts at ZERO so the initial wave can hover at the top
+    // of the canvas as dynamic-but-still bodies during Beat 01. On
+    // Beat 02 we flip gravity to FULL_GRAVITY and balls start falling.
+    //
+    // (We intentionally do NOT spawn the initial wave with isStatic:true
+    // and then call Body.setStatic(b, false) on release. Matter.js has a
+    // known quirk: setStatic(false) only restores mass/inertia from
+    // _original — which is only populated by a *prior* setStatic(true)
+    // call. Bodies born static have no _original snapshot, so the
+    // "release" is a no-op and the wave stays frozen at the top forever.
+    // That bug is why the broken cascade silently failed while the
+    // Beat 06 green wave — born dynamic — worked.)
+    const FULL_GRAVITY = 0.0010;
     const engine = Engine.create({
-      gravity: { x: 0, y: 1, scale: 0.0010 },   // slightly slower fall so the cascade reads
+      gravity: { x: 0, y: 1, scale: 0 },
     });
     // Defaults are positionIterations: 6, velocityIterations: 4.
     // For 500 balls with the gated-cascade structure these can drop
@@ -283,6 +296,11 @@
     engine.positionIterations = 4;
     engine.velocityIterations = 3;
     engine.constraintIterations = 2;
+    // Sleeping lets Matter.js skip simulation work for bodies that
+    // have come to rest. Combined with the queueFreeze sweep below,
+    // this means the cascade's hundreds of settled trash balls cost
+    // essentially zero CPU once they've stopped moving.
+    engine.enableSleeping = true;
     const world = engine.world;
 
     function sizeCanvas() {
@@ -445,14 +463,25 @@
       let placed = 0;
       for (let r = 0; r < rows && placed < count; r += 1) {
         for (let c = 0; c < cols && placed < count; c += 1) {
-          const x = xPad + colSpacing * (c + 0.5) + (Math.random() - 0.5) * 1.5;
-          const y = yTop + r * rowSpacing + (Math.random() - 0.5) * 0.6;
+          // Jitter kept tiny so the spawn grid is guaranteed to be
+          // non-overlapping (cellSize 9 - 2*BALL_R 8 = 1px slack; we
+          // jitter ±0.2 to stay safely inside that 1px envelope).
+          // Overlapping spawns trigger Matter.js collision resolution
+          // that pushes balls outward, creating a "popcorn" effect
+          // before gravity even engages.
+          const x = xPad + colSpacing * (c + 0.5) + (Math.random() - 0.5) * 0.4;
+          const y = yTop + r * rowSpacing + (Math.random() - 0.5) * 0.4;
+          // ALL balls spawn dynamic. The initial wave is held in place
+          // by engine.gravity.scale = 0 until Beat 02 (see enterBeat
+          // for the release). The fix-wave spawns when gravity is
+          // already at FULL_GRAVITY so it drops immediately.
           const b = Bodies.circle(x, y, BALL_R, {
-            isStatic: !tagFixed,         // initial wave starts STATIC; fix wave drops immediately
+            isStatic: false,
             restitution: 0.4,
             friction: 0.01,
             frictionAir: 0.018,
             density: 0.0025,
+            sleepThreshold: 30,
             label: 'ball',
             render: { fillStyle: STAGE_COLORS[0] },
           });
@@ -554,10 +583,9 @@
 
       // Forward-only physics state advancement (idempotent)
       if (beat >= 2 && previous < 2) {
-        // Release the initial wave
-        balls.forEach((b) => {
-          if (b.isStatic && !b.fixed) Body.setStatic(b, false);
-        });
+        // Release the initial wave by engaging gravity. Balls are
+        // already dynamic; setting gravity.scale starts the cascade.
+        engine.gravity.scale = FULL_GRAVITY;
         revealTally(2);
       }
       if (beat >= 3 && previous < 3) { openGate(0); revealTally(3); }
