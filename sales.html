@@ -43,55 +43,110 @@
   </nav>
 
   <!-- ──────────────────────────────────────────────────────────────
-       HERO CASCADE  —  Physics-driven Killer Proof Chain.
-       Scroll-pinned 200vh. 1,000 buyer-balls drop, hit 3 filters,
-       19 survive into the BOOKED container. Live counters on right.
+       HERO  —  the killer-proof-chain stat, in their face.
+       Static (no pin). Parallax-style: it scrolls off normally as
+       the next section (stats cascade) pins.
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-hero-cascade" id="s-hero">
+  <section class="s-hero" id="s-hero">
     <div class="s-hero-grid"></div>
     <div class="s-hero-glow s-hero-glow--1"></div>
     <div class="s-hero-glow s-hero-glow--2"></div>
 
-    <div class="s-cascade-pin">
-      <div class="s-cascade-inner">
+    <div class="s-hero-inner">
+      <span class="section-label s-hero-eyebrow" data-fade>Pillar · Sales</span>
 
-        <!-- Left column: progressive captions -->
-        <div class="s-cascade-copy">
-          <span class="section-label s-hero-eyebrow" data-fade>Pillar · Sales</span>
+      <h1 class="s-hero-headline" data-fade data-delay="0.1">
+        <span class="s-hero-stat">78%</span>
+        of buyers go with whoever<br>
+        <span class="s-headline-strike">answers first.</span>
+        <span class="s-headline-accent">answers.</span>
+      </h1>
 
-          <h1 class="s-cascade-headline" data-fade data-delay="0.1">
-            1,000 buyers arrive at your dealership this month.<br>
-            <span class="s-headline-accent">This is where they go.</span>
-          </h1>
+      <p class="s-hero-sub" data-fade data-delay="0.3">
+        Below is the story of one buyer at 11:17 PM Saturday.<br>
+        Two versions of the same Saturday night.<br>
+        Then you'll be the buyer.
+      </p>
 
-          <p class="s-cascade-sub" data-fade data-delay="0.25">
-            The four friction points your competitors haven't fixed. Compounded over a real funnel — the math is brutal.
-          </p>
+      <div class="s-hero-pulse" data-fade data-delay="0.6">
+        <div class="s-pulse-dot"></div>
+        <span>scroll</span>
+      </div>
+    </div>
+  </section>
 
-          <div class="s-cascade-beats">
-            <div class="s-cascade-beat" data-cbeat="1">
-              <span class="s-cb-num">78<span class="s-cb-pct">%</span></span>
-              <span class="s-cb-cap">of dealer sites fail Core Web Vitals — buyers bounce before becoming leads</span>
-            </div>
-            <div class="s-cascade-beat" data-cbeat="2">
-              <span class="s-cb-num">57<span class="s-cb-pct">%</span></span>
-              <span class="s-cb-cap">of dealers never respond to an inquiry in 24 hours</span>
-            </div>
-            <div class="s-cascade-beat" data-cbeat="3">
-              <span class="s-cb-num">80<span class="s-cb-pct">%</span></span>
-              <span class="s-cb-cap">of callers hit voicemail and dial a competitor instead</span>
-            </div>
-            <div class="s-cascade-beat s-cascade-beat--punch" data-cbeat="4">
-              <span class="s-cb-num">19</span>
-              <span class="s-cb-cap"><strong>of every 1,000 buyers</strong> ever booked a showing. <strong>The other 981 walked.</strong></span>
-            </div>
-          </div>
-        </div>
+  <!-- ──────────────────────────────────────────────────────────────
+       STATS SECTION  —  6-beat scroll-pinned physics cascade.
+       Each scroll release opens the next filter's gate. Balls pile
+       above each closed gate, drop through on advance, leaving red
+       trash piles behind as visual proof of every loss. Beat 06 is
+       the reverse cascade: filters turn green, piles dissolve, a
+       second wave of 1,000 balls mostly survives.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-stats-section" id="stats" data-stats-section>
+    <div class="s-stats-bg-grid"></div>
+    <div class="s-stats-bg-glow s-stats-bg-glow--1"></div>
+    <div class="s-stats-bg-glow s-stats-bg-glow--2"></div>
 
-        <!-- Right column: physics canvas + live counters -->
-        <div class="s-cascade-stage">
+    <div class="s-stats-pin">
+      <div class="s-stats-inner">
+
+        <!-- Left column: 6 stacked beat captions, clickable for scroll-jump -->
+        <aside class="s-cascade-copy" data-cascade-copy>
+          <span class="section-label s-stats-eyebrow">The funnel · today</span>
+          <h2 class="s-stats-section-title">Watch 1,000 buyers walk the friction</h2>
+
+          <ol class="s-cascade-beats" role="list">
+            <li>
+              <button class="s-cascade-beat" data-cbeat="1" data-jump-to-beat="1" type="button" aria-label="Jump to beat 1: 1,000 buyers arrive">
+                <span class="s-cascade-eyebrow">Beat 01</span>
+                <h3>1,000 buyers arrive at your lot this month.</h3>
+                <p>Every white dot is one person ready to spend $40k+ on a boat.</p>
+              </button>
+            </li>
+            <li>
+              <button class="s-cascade-beat" data-cbeat="2" data-jump-to-beat="2" type="button" aria-label="Jump to beat 2: 78% bounce on CWV">
+                <span class="s-cascade-eyebrow">Beat 02</span>
+                <h3>78% bounce on your site before they ever see a boat.</h3>
+                <p>Slow Core Web Vitals. Bad mobile. The first gate holds — most never make it through.</p>
+              </button>
+            </li>
+            <li>
+              <button class="s-cascade-beat" data-cbeat="3" data-jump-to-beat="3" type="button" aria-label="Jump to beat 3: 57% never get a response">
+                <span class="s-cascade-eyebrow">Beat 03</span>
+                <h3>57% of the survivors never get a response in 24 hours.</h3>
+                <p>Your inbox is buried by Monday. The second gate holds.</p>
+              </button>
+            </li>
+            <li>
+              <button class="s-cascade-beat" data-cbeat="4" data-jump-to-beat="4" type="button" aria-label="Jump to beat 4: 80% hit voicemail">
+                <span class="s-cascade-eyebrow">Beat 04</span>
+                <h3>80% of the rest hit voicemail and never call back.</h3>
+                <p>Rep on the lot. Buyer on hold. The last gate holds.</p>
+              </button>
+            </li>
+            <li>
+              <button class="s-cascade-beat" data-cbeat="5" data-jump-to-beat="5" type="button" aria-label="Jump to beat 5: 19 of 1,000 booked">
+                <span class="s-cascade-eyebrow">Beat 05</span>
+                <h3>19 of every 1,000 ever book a showing.</h3>
+                <p>The other 981 walked. You never even knew they were here.</p>
+              </button>
+            </li>
+            <li>
+              <button class="s-cascade-beat s-cascade-beat--fix" data-cbeat="6" data-jump-to-beat="6" type="button" aria-label="Jump to beat 6: DealerEdge dissolves every gate">
+                <span class="s-cascade-eyebrow">Beat 06</span>
+                <h3>DealerEdge dissolves every gate. Watch.</h3>
+                <p>Same buyers. Same funnel. AI on every step. ~812 booked.</p>
+              </button>
+            </li>
+          </ol>
+        </aside>
+
+        <!-- Right column: canvas + tally column + final compare block -->
+        <div class="s-cascade-stage" data-cascade-stage>
           <div class="s-cascade-canvas-wrap" data-canvas-wrap>
             <canvas id="cascade-canvas" data-cascade-canvas></canvas>
+
             <!-- Stage labels positioned over the canvas -->
             <div class="s-cascade-stage-label s-cascade-stage-label--1" data-stage-label="1"><span>CORE WEB VITALS</span></div>
             <div class="s-cascade-stage-label s-cascade-stage-label--2" data-stage-label="2"><span>RESPONSE IN 24H</span></div>
@@ -99,28 +154,58 @@
             <div class="s-cascade-stage-label s-cascade-stage-label--4" data-stage-label="4"><span>SHOWINGS BOOKED</span></div>
           </div>
 
-          <div class="s-cascade-counters">
-            <div class="s-cc-stat">
-              <span class="s-cc-num" data-cc="arrived">0</span>
-              <span class="s-cc-lab">Buyers arrived</span>
+          <!-- Per-beat tally column (top-right). Rows reveal one at a time. -->
+          <ol class="s-tally" data-tally aria-live="polite" role="list">
+            <li class="s-tally-row" data-tally-row="2">
+              <span class="s-tally-pct">78%</span>
+              <span class="s-tally-meta">
+                <span class="s-tally-label">CWV bounce</span>
+                <span class="s-tally-num"><span data-tally-num="2">0</span> <em>lost</em></span>
+              </span>
+            </li>
+            <li class="s-tally-row" data-tally-row="3">
+              <span class="s-tally-pct">57%</span>
+              <span class="s-tally-meta">
+                <span class="s-tally-label">No response in 24h</span>
+                <span class="s-tally-num"><span data-tally-num="3">0</span> <em>lost</em></span>
+              </span>
+            </li>
+            <li class="s-tally-row" data-tally-row="4">
+              <span class="s-tally-pct">80%</span>
+              <span class="s-tally-meta">
+                <span class="s-tally-label">Voicemail wall</span>
+                <span class="s-tally-num"><span data-tally-num="4">0</span> <em>lost</em></span>
+              </span>
+            </li>
+            <li class="s-tally-row s-tally-row--final" data-tally-row="5">
+              <span class="s-tally-pct">19</span>
+              <span class="s-tally-meta">
+                <span class="s-tally-label">Booked a showing</span>
+                <span class="s-tally-num"><span data-tally-num="5">0</span> <em>of 1,000</em></span>
+              </span>
+            </li>
+          </ol>
+
+          <!-- Beat 06 compare overlay (hidden until beat 6) -->
+          <div class="s-compare" data-compare hidden>
+            <div class="s-compare-row">
+              <div class="s-compare-col s-compare-before">
+                <span class="s-compare-eyebrow">Without DealerEdge</span>
+                <span class="s-compare-num">19</span>
+                <span class="s-compare-sub">of 1,000 booked</span>
+              </div>
+              <div class="s-compare-arrow" aria-hidden="true">→</div>
+              <div class="s-compare-col s-compare-after">
+                <span class="s-compare-eyebrow">With DealerEdge</span>
+                <span class="s-compare-num"><span data-compare-after>0</span></span>
+                <span class="s-compare-sub">of 1,000 booked</span>
+              </div>
             </div>
-            <div class="s-cc-stat s-cc-stat--bad">
-              <span class="s-cc-num" data-cc="lost">0</span>
-              <span class="s-cc-lab">Lost at every gate</span>
-            </div>
-            <div class="s-cc-stat s-cc-stat--good">
-              <span class="s-cc-num" data-cc="booked">0</span>
-              <span class="s-cc-lab">Booked a showing</span>
-            </div>
+            <p class="s-compare-cap">Same buyers. Same funnel. AI never sleeps and the gates dissolve.</p>
           </div>
         </div>
 
       </div>
-    </div>
-
-    <div class="s-hero-pulse s-cascade-pulse" data-fade data-delay="0.6">
-      <div class="s-pulse-dot"></div>
-      <span>scroll to watch</span>
     </div>
   </section>
 

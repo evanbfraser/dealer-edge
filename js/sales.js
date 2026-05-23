@@ -75,92 +75,168 @@
   );
   faders.forEach((el) => faderObs.observe(el));
 
+  /* ─────────────────────────────────────────────────────────────
+     HERO  —  strike-through headline reveal (animation runs once)
+     ───────────────────────────────────────────────────────────── */
+  const heroHeadline = document.querySelector('.s-hero-headline');
+  if (heroHeadline) {
+    setTimeout(() => heroHeadline.classList.add('is-revealed'), 1200);
+  }
+
   /* ═════════════════════════════════════════════════════════════
-     HERO CASCADE  —  Physics-driven Killer Proof Chain
-     A scroll-pinned 200vh section with a matter.js simulation:
-     1,000 buyer-balls drop from the top, hit 3 filter walls
-     (CWV / 24h response / voicemail) and 19 of them survive to
-     a BOOKED container. Counters tick up in real time. Beat
-     captions on the left activate as the user scrolls through
-     the pin. Skipped entirely on mobile (canvas physics is a
-     desktop experience); mobile shows a static counter version.
+     STATS SECTION  —  6-beat scroll-pinned physics cascade
+     Each scroll release opens the next filter's gate. Balls pile
+     above the closed gates and drop through on advance. Red
+     "trash" piles accumulate as visual proof of every loss. Beat
+     06 is the reverse cascade: filters turn green, piles dissolve,
+     a second 1,000-ball wave drops through wide green gates,
+     and ~812 land in the BOOKED zone.
      ═════════════════════════════════════════════════════════════ */
 
-  const cascadeSection = document.querySelector('.s-hero-cascade');
-  if (cascadeSection) initHeroCascade(cascadeSection);
+  const statsSection = document.querySelector('[data-stats-section]');
+  if (statsSection) initStatsSection(statsSection);
 
-  function initHeroCascade(section) {
+  function initStatsSection(section) {
     const canvasWrap = section.querySelector('[data-canvas-wrap]');
     const canvasEl = section.querySelector('[data-cascade-canvas]');
     const stageLabels = section.querySelectorAll('[data-stage-label]');
-    const beatCopies = section.querySelectorAll('[data-cbeat]');
-    const counters = {
-      arrived: section.querySelector('[data-cc="arrived"]'),
-      lost:    section.querySelector('[data-cc="lost"]'),
-      booked:  section.querySelector('[data-cc="booked"]'),
+    const beatButtons = section.querySelectorAll('[data-cbeat]');
+    const compareEl = section.querySelector('[data-compare]');
+    const compareAfterEl = section.querySelector('[data-compare-after]');
+    const tallyNums = {
+      2: section.querySelector('[data-tally-num="2"]'),
+      3: section.querySelector('[data-tally-num="3"]'),
+      4: section.querySelector('[data-tally-num="4"]'),
+      5: section.querySelector('[data-tally-num="5"]'),
     };
 
     // ─── State ─────────────────────────────────────────────────
-    const TARGET_TOTAL = 1000;      // Total buyers to spawn
-    const RATES = {                  // pass-through rates per filter
-      f1: 0.22,                      // 78% block on CWV → 22% survive
-      f2: 0.43,                      // 57% no response → 43% survive
-      f3: 0.20,                      // 80% voicemail walk → 20% survive
-    };
-    const counts = { arrived: 0, lost: 0, booked: 0 };
+    const TOTAL_BEATS = 6;
+    const TARGET_TOTAL = 1000;
+    const BROKEN_RATES = { f1: 0.22, f2: 0.43, f3: 0.20 };   // narrow gaps
+    const FIXED_RATES  = { f1: 0.94, f2: 0.91, f3: 0.92 };   // wide gaps (~786 booked)
+    const FILTER_Y = [0.32, 0.52, 0.72];
+    const BOOKED_Y = 0.93;
+    const BALL_R = 4;
+    const STAGE_COLORS = ['rgba(255,255,255,0.92)', '#fbbf24', '#fb923c', '#86efac', '#4ade80'];
+    const REJECT_COLOR = '#ee3a39';
+    const tallyCounts = { 2: 0, 3: 0, 4: 0, 5: 0 };
+    const fixCounts = { booked: 0 };
+    let currentBeat = 0;
+    let beat6Fired = false;
 
-    function setCounter(key, value) {
-      counts[key] = value;
-      if (counters[key]) counters[key].textContent = value.toLocaleString('en-US');
-    }
-    function bump(key, delta = 1) {
-      setCounter(key, counts[key] + delta);
-    }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSmallViewport = window.innerWidth < 1100;
 
-    // ─── Mobile fallback: simulate the math without canvas ───
-    if (window.innerWidth < 1100 || !window.Matter) {
-      // Just activate all 4 beat captions, animate the counters
-      beatCopies.forEach((b) => b.classList.add('is-active'));
-      stageLabels.forEach((l) => l.classList.add('is-active'));
-      // Use IntersectionObserver to start counters when in view
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            obs.disconnect();
-            animateCountersStatic();
-          }
-        });
-      }, { threshold: 0.3 });
-      obs.observe(section);
-      return;
+    // ─── helpers shared with fallback ─────────────────────────
+    function setActiveBeatVisual(beat) {
+      beatButtons.forEach((btn) => {
+        const n = +btn.dataset.cbeat;
+        btn.setAttribute('data-active', String(n === beat));
+        btn.setAttribute('data-completed', String(n < beat));
+      });
+      stageLabels.forEach((label) => {
+        const n = +label.dataset.stageLabel;
+        // stage label N "is-active" once we're past its beat (n+1)
+        label.classList.toggle('is-active', n <= Math.max(0, beat - 1));
+      });
     }
 
-    function animateCountersStatic() {
-      const finalBooked = Math.round(TARGET_TOTAL * RATES.f1 * RATES.f2 * RATES.f3);
-      const finalLost = TARGET_TOTAL - finalBooked;
-      const start = performance.now();
-      const dur = 2200;
+    function revealTally(row) {
+      const el = section.querySelector(`[data-tally-row="${row}"]`);
+      if (el) el.setAttribute('data-tally-active', 'true');
+    }
+
+    function setTallyNum(row, value) {
+      tallyCounts[row] = value;
+      if (tallyNums[row]) tallyNums[row].textContent = Math.round(value).toLocaleString('en-US');
+    }
+
+    function animateTallyTo(row, target, durMs = 900) {
+      const start = tallyCounts[row];
+      const t0 = performance.now();
       function step() {
-        const t = Math.min(1, (performance.now() - start) / dur);
-        const eased = 1 - Math.pow(1 - t, 3);
-        setCounter('arrived', Math.round(TARGET_TOTAL * eased));
-        setCounter('lost',    Math.round(finalLost   * eased));
-        setCounter('booked',  Math.round(finalBooked * eased));
+        const t = Math.min(1, (performance.now() - t0) / durMs);
+        const eased = 1 - Math.pow(1 - t, 4);
+        setTallyNum(row, start + (target - start) * eased);
         if (t < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
     }
 
+    function showCompareOverlay(targetCount) {
+      if (!compareEl) return;
+      compareEl.removeAttribute('hidden');
+      requestAnimationFrame(() => compareEl.setAttribute('data-compare-active', 'true'));
+      // Animate the "with DealerEdge" counter
+      let v = 0;
+      const start = performance.now();
+      const dur = 1400;
+      function step() {
+        const t = Math.min(1, (performance.now() - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 4);
+        v = Math.round(targetCount * eased);
+        if (compareAfterEl) compareAfterEl.textContent = v.toLocaleString('en-US');
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // ─── Wire up scroll-jump nav (works for desktop + fallback) ───
+    beatButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const beat = +btn.dataset.jumpToBeat;
+        jumpToBeat(beat);
+      });
+    });
+
+    function jumpToBeat(beat) {
+      const rect = section.getBoundingClientRect();
+      const sectionTop = window.scrollY + rect.top;
+      const totalScroll = Math.max(1, rect.height - window.innerHeight);
+      const target = sectionTop + ((beat - 1) / TOTAL_BEATS) * totalScroll + 6;
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
+        lenis.scrollTo(target, { duration: 0.9 });
+      } else {
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
+    }
+
+    // ─── Mobile / reduced-motion fallback ────────────────────
+    if (isSmallViewport || !window.Matter || prefersReducedMotion) {
+      initStatsSectionFallback();
+      return;
+    }
+
+    function initStatsSectionFallback() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            obs.disconnect();
+            setActiveBeatVisual(5);
+            [2, 3, 4, 5].forEach((row) => revealTally(row));
+            const finalTallies = { 2: 780, 3: 125, 4: 76, 5: 19 };
+            Object.keys(finalTallies).forEach((row) => animateTallyTo(+row, finalTallies[row], 1400));
+            setTimeout(() => {
+              setActiveBeatVisual(6);
+              canvasWrap.setAttribute('data-mode', 'fix');
+              showCompareOverlay(786);
+            }, 1900);
+          }
+        });
+      }, { threshold: 0.2 });
+      obs.observe(section);
+    }
+
     // ─── Matter.js physics setup ─────────────────────────────
     const M = window.Matter;
-    const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = M;
+    const { Engine, Render, Runner, Bodies, Body, Events, Composite } = M;
 
     const engine = Engine.create({
-      gravity: { x: 0, y: 1, scale: 0.0012 },
+      gravity: { x: 0, y: 1, scale: 0.0014 },
     });
     const world = engine.world;
 
-    // Size the canvas to its wrapper
     function sizeCanvas() {
       const r = canvasWrap.getBoundingClientRect();
       canvasEl.width = r.width;
@@ -184,7 +260,7 @@
     const runner = Runner.create();
     Runner.run(runner, engine);
 
-    // Pause physics when the section is off-screen (CPU friendly)
+    // Pause physics when off-screen (CPU friendly)
     let physicsActive = true;
     const visObs = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
@@ -197,183 +273,296 @@
     }, { threshold: 0 });
     visObs.observe(section);
 
-    // ─── Build the world: walls + filters + sensors ──────────
-    // Filter Y positions (as % of canvas height)
-    const FILTER_Y = [0.30, 0.50, 0.70];   // 3 filters
-    const BOOKED_Y = 0.93;                 // bottom container
-    const WALL_T = 14;                     // wall thickness
-
-    // Outer walls (left, right, bottom)
+    // Outer walls
+    const WALL_T = 14;
     const wallStyle = { isStatic: true, render: { fillStyle: 'transparent' } };
     Composite.add(world, [
-      Bodies.rectangle(-WALL_T / 2,        h / 2,   WALL_T, h * 2, wallStyle),  // left
-      Bodies.rectangle(w + WALL_T / 2,     h / 2,   WALL_T, h * 2, wallStyle),  // right
-      Bodies.rectangle(w / 2,              h + WALL_T / 2, w * 2, WALL_T, wallStyle), // bottom
+      Bodies.rectangle(-WALL_T / 2,    h / 2,            WALL_T, h * 2, wallStyle),
+      Bodies.rectangle(w + WALL_T / 2, h / 2,            WALL_T, h * 2, wallStyle),
+      Bodies.rectangle(w / 2,          h + WALL_T / 2,   w * 2,  WALL_T, wallStyle),
     ]);
 
-    // Filter walls — each one is a wall with a centered gap.
-    // gapW is sized to the survival rate; the rest is solid wall.
-    const filterStyle = {
-      isStatic: true,
-      render: {
-        fillStyle: 'rgba(238, 58, 57, 0.5)',
-        strokeStyle: 'rgba(238, 58, 57, 0.8)',
-        lineWidth: 1.5,
-      },
-    };
-    const filters = []; // { y, gapLeft, gapRight, rate }
-    FILTER_Y.forEach((yPct, i) => {
-      const rate = [RATES.f1, RATES.f2, RATES.f3][i];
-      const gapW = Math.max(28, w * rate * 0.85);  // gap a bit narrower than rate to compensate for bouncing
-      const gapLeft  = (w - gapW) / 2;
-      const gapRight = gapLeft + gapW;
-      const yPx = h * yPct;
-      const leftSegW = gapLeft;
-      const rightSegW = w - gapRight;
-      // left segment
-      Composite.add(world, Bodies.rectangle(leftSegW / 2, yPx, leftSegW, 6, filterStyle));
-      // right segment
-      Composite.add(world, Bodies.rectangle(gapRight + rightSegW / 2, yPx, rightSegW, 6, filterStyle));
-      filters.push({ yPx, gapLeft, gapRight, rate, idx: i });
-    });
-
-    // BOOKED container (a green-tinted rectangle drawn behind balls)
-    // Visualized as a sensor strip + below-floor catcher
-    const bookedZone = Bodies.rectangle(w / 2, h * BOOKED_Y, w * 0.42, 4, {
+    // BOOKED sensor zone at bottom
+    const bookedZone = Bodies.rectangle(w / 2, h * BOOKED_Y, w * 0.7, 4, {
       isStatic: true,
       isSensor: true,
-      render: { fillStyle: 'rgba(74, 222, 128, 0.35)' },
+      label: 'bookedZone',
+      render: { fillStyle: 'rgba(74, 222, 128, 0.4)' },
     });
     Composite.add(world, bookedZone);
 
-    // Sensor strips RIGHT below each filter — when a ball crosses, it
-    // means it passed through the gap (color upgrade). When it hits
-    // a filter wall, the collision event downgrades it to red.
-    // We use Events to detect "ball passed line N" via Y position.
+    // ─── Filter walls + center gates ─────────────────────────
+    // Each filter has 3 pieces: left segment, right segment, and a
+    // removable center "gate" that closes the gap. Balls pile above
+    // each closed gate. On beat advance, we remove the gate so
+    // survivors fall through.
+    const filters = [];   // { yPx, gapLeft, gapRight, leftSeg, rightSeg, gate, idx, open }
 
-    // ─── Spawn buyers ────────────────────────────────────────
-    const BALL_R = 4;
-    const SPAWN_INTERVAL_MS = 30;       // ~33/sec → 1000 in ~30s
-    const SPAWN_BURST_GAP = 90;         // small pause between bursts
-    const STAGE_COLORS = ['rgba(255,255,255,0.85)', '#fbbf24', '#fb923c', '#86efac', '#4ade80'];
-    const REJECT_COLOR = '#ee3a39';
-    let spawned = 0;
-    let spawnTimer = null;
-
-    function spawnBall() {
-      if (spawned >= TARGET_TOTAL) {
-        clearInterval(spawnTimer);
-        return;
-      }
-      spawned += 1;
-      bump('arrived');
-      const x = w * 0.5 + (Math.random() - 0.5) * w * 0.6;
-      const b = Bodies.circle(x, 12, BALL_R, {
-        restitution: 0.45,
-        friction: 0.005,
-        frictionAir: 0.012,
-        density: 0.002,
-        render: { fillStyle: STAGE_COLORS[0] },
-      });
-      b.stage = 0;             // 0 = just spawned; 1-3 after each filter; 4 = booked; -1 = rejected
-      b.counted = false;       // has it been counted as lost yet?
-      Composite.add(world, b);
+    function makeFilterStyle() {
+      return {
+        isStatic: true,
+        label: 'filterWall',
+        render: {
+          fillStyle: 'rgba(238, 58, 57, 0.55)',
+          strokeStyle: 'rgba(238, 58, 57, 0.85)',
+          lineWidth: 1.5,
+        },
+      };
+    }
+    function makeGateStyle() {
+      return {
+        isStatic: true,
+        label: 'gate',
+        render: {
+          fillStyle: 'rgba(238, 58, 57, 0.85)',
+          strokeStyle: 'rgba(255, 100, 100, 1)',
+          lineWidth: 1,
+        },
+      };
     }
 
-    // Collision events: detect rejection (hit filter wall) and passage (cross filter Y)
+    function buildBrokenFilters() {
+      FILTER_Y.forEach((yPct, i) => {
+        const rate = [BROKEN_RATES.f1, BROKEN_RATES.f2, BROKEN_RATES.f3][i];
+        const gapW = Math.max(44, w * rate * 0.85);
+        const gapLeft = (w - gapW) / 2;
+        const gapRight = gapLeft + gapW;
+        const yPx = h * yPct;
+        const leftSegW = gapLeft;
+        const rightSegW = w - gapRight;
+        const leftSeg  = Bodies.rectangle(leftSegW / 2,            yPx, leftSegW,  6, makeFilterStyle());
+        const rightSeg = Bodies.rectangle(gapRight + rightSegW / 2, yPx, rightSegW, 6, makeFilterStyle());
+        const gate     = Bodies.rectangle((gapLeft + gapRight) / 2, yPx, gapW,      6, makeGateStyle());
+        Composite.add(world, [leftSeg, rightSeg, gate]);
+        filters.push({ yPx, gapLeft, gapRight, leftSeg, rightSeg, gate, idx: i, open: false });
+      });
+    }
+
+    function openGate(i) {
+      const f = filters[i];
+      if (!f || f.open) return;
+      f.open = true;
+      if (f.gate) Composite.remove(world, f.gate);
+    }
+
+    // ─── Ball pool ───────────────────────────────────────────
+    const balls = [];
+
+    function spawnPackedWave(opts = {}) {
+      const { tagFixed = false } = opts;
+      const cols = 40;
+      const rows = Math.ceil(TARGET_TOTAL / cols);
+      const xPad = 30;
+      const colSpacing = (w - xPad * 2) / cols;
+      let count = 0;
+      for (let r = 0; r < rows && count < TARGET_TOTAL; r += 1) {
+        for (let c = 0; c < cols && count < TARGET_TOTAL; c += 1) {
+          const x = xPad + colSpacing * (c + 0.5) + (Math.random() - 0.5) * 3;
+          const y = 14 + r * (BALL_R * 2 + 1);
+          const b = Bodies.circle(x, y, BALL_R, {
+            isStatic: !tagFixed,         // initial wave starts STATIC; fix wave drops immediately
+            restitution: 0.4,
+            friction: 0.01,
+            frictionAir: 0.018,
+            density: 0.0025,
+            label: 'ball',
+            render: { fillStyle: STAGE_COLORS[0] },
+          });
+          b.stage = 0;
+          b.counted = false;
+          b.fixed = tagFixed;
+          balls.push(b);
+          Composite.add(world, b);
+          count += 1;
+        }
+      }
+    }
+
+    buildBrokenFilters();
+    spawnPackedWave();   // initial 1,000 white balls, static at top
+
+    // ─── Collision tally + booked detection ──────────────────
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         const a = pair.bodyA, b = pair.bodyB;
-        // Ball hits filter wall → reject (downgrade to red, mark lost)
-        [
-          [a, b], [b, a],
-        ].forEach(([ball, other]) => {
-          if (ball.label === 'Circle Body' && other.isStatic && !other.isSensor) {
-            // It hit a wall — check if it's a filter wall (between 0 and h-WALL_T)
-            const wallY = other.position.y;
-            if (wallY > 12 && wallY < h * 0.78 && ball.stage >= 0 && !ball.counted) {
-              const filter = filters.find((f) => Math.abs(f.yPx - wallY) < 8);
-              if (filter && ball.stage <= filter.idx) {
-                ball.stage = -1;
-                ball.render.fillStyle = REJECT_COLOR;
-                ball.counted = true;
-                bump('lost');
-                // Give a small horizontal kick so they slide off to a side
-                const dir = ball.position.x < w / 2 ? -1 : 1;
-                Body.applyForce(ball, ball.position, { x: dir * 0.0005, y: 0 });
-              }
-            }
+        const ball = a.label === 'ball' ? a : (b.label === 'ball' ? b : null);
+        if (!ball) return;
+        const other = a === ball ? b : a;
+        if (ball.stage < 0 || ball.counted || ball.stage >= 4) return;
+
+        if (other.label === 'filterWall' && !ball.fixed) {
+          const filter = filters.find((f) =>
+            (f.leftSeg === other || f.rightSeg === other)
+          );
+          if (filter && ball.stage <= filter.idx) {
+            ball.stage = -1;
+            ball.counted = true;
+            ball.render.fillStyle = REJECT_COLOR;
+            const row = filter.idx + 2;
+            setTallyNum(row, tallyCounts[row] + 1);
+            const dir = ball.position.x < w / 2 ? -1 : 1;
+            Body.applyForce(ball, ball.position, { x: dir * 0.0006, y: 0 });
           }
-        });
-        // Ball reaches booked zone
-        if ((a === bookedZone || b === bookedZone)) {
-          const ball = a === bookedZone ? b : a;
-          if (ball.label === 'Circle Body' && ball.stage >= 3 && ball.stage !== 4) {
+        } else if (other === bookedZone) {
+          if (ball.stage >= 3) {
             ball.stage = 4;
+            ball.counted = true;
             ball.render.fillStyle = STAGE_COLORS[4];
-            bump('booked');
+            if (ball.fixed) {
+              fixCounts.booked += 1;
+              if (compareAfterEl) compareAfterEl.textContent = fixCounts.booked.toLocaleString('en-US');
+            } else {
+              setTallyNum(5, tallyCounts[5] + 1);
+            }
           }
         }
       });
     });
 
-    // On each engine update, check ball positions vs filter Ys to upgrade colors
-    // (we detect "ball crossed filter Y while in the gap" — only those pass)
+    // Upgrade ball stage when it crosses a filter Y within the gap
     Events.on(engine, 'beforeUpdate', () => {
-      Composite.allBodies(world).forEach((body) => {
-        if (body.label !== 'Circle Body' || body.stage < 0 || body.stage >= 4) return;
+      for (let bi = 0; bi < balls.length; bi += 1) {
+        const body = balls[bi];
+        if (body.stage < 0 || body.stage >= 4) continue;
         for (let i = body.stage; i < filters.length; i += 1) {
           const f = filters[i];
-          // ball is below this filter and inside the gap → upgrade stage
-          if (body.position.y > f.yPx + 4 && body.position.x > f.gapLeft && body.position.x < f.gapRight && body.stage === i) {
+          if (body.position.y > f.yPx + 4 &&
+              body.position.x > f.gapLeft &&
+              body.position.x < f.gapRight &&
+              body.stage === i) {
             body.stage = i + 1;
             body.render.fillStyle = STAGE_COLORS[i + 1];
           }
         }
-        // If a ball is below the booked zone but never got there, count as lost
-        if (body.position.y > h - 10 && !body.counted) {
-          if (body.stage < 3) {
-            body.stage = -1;
-            body.render.fillStyle = REJECT_COLOR;
-            body.counted = true;
-            bump('lost');
-          }
-        }
-        // Cleanup: bodies that fall way off-screen
-        if (body.position.y > h + 80) {
-          Composite.remove(world, body);
-        }
-      });
+      }
     });
 
-    // Kick off spawning once the section enters the viewport
-    const spawnObs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting && !spawnTimer) {
-          spawnTimer = setInterval(spawnBall, SPAWN_INTERVAL_MS);
-          spawnObs.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-    spawnObs.observe(section);
+    // ─── Beat handlers ───────────────────────────────────────
+    function enterBeat(beat) {
+      if (beat === currentBeat) return;
+      const previous = currentBeat;
+      currentBeat = beat;
+      setActiveBeatVisual(beat);
 
-    // ─── Scroll trigger: activate beat captions sequentially ──
+      // Forward-only physics state advancement (idempotent)
+      if (beat >= 2 && previous < 2) {
+        // Release the initial wave
+        balls.forEach((b) => {
+          if (b.isStatic && !b.fixed) Body.setStatic(b, false);
+        });
+        revealTally(2);
+      }
+      if (beat >= 3 && previous < 3) { openGate(0); revealTally(3); }
+      if (beat >= 4 && previous < 4) { openGate(1); revealTally(4); }
+      if (beat >= 5 && previous < 5) { openGate(2); revealTally(5); }
+      if (beat >= 6 && previous < 6 && !beat6Fired) {
+        beat6Fired = true;
+        runReverseCascade();
+      }
+
+      // Keep tally rows visible if user jumps backward (state stays accumulated)
+      if (beat >= 2) revealTally(2);
+      if (beat >= 3) revealTally(3);
+      if (beat >= 4) revealTally(4);
+      if (beat >= 5) revealTally(5);
+    }
+
+    function runReverseCascade() {
+      // 1. Reskin canvas wrap to "fix" mode (CSS swaps tint to green)
+      canvasWrap.setAttribute('data-mode', 'fix');
+
+      // 2. Turn old filter wall segments green (visual signal: "AI dissolves them")
+      filters.forEach((f) => {
+        [f.leftSeg, f.rightSeg].forEach((seg) => {
+          if (seg && seg.render) {
+            seg.render.fillStyle = 'rgba(74, 222, 128, 0.5)';
+            seg.render.strokeStyle = 'rgba(74, 222, 128, 0.85)';
+          }
+        });
+      });
+
+      // 3. Fade out red trash balls over ~0.9s, then remove
+      const trashBalls = balls.filter((b) => b.stage === -1);
+      const fadeStart = performance.now();
+      const fadeDur = 900;
+      function fadeStep() {
+        const t = Math.min(1, (performance.now() - fadeStart) / fadeDur);
+        const alpha = 1 - t;
+        trashBalls.forEach((b) => {
+          b.render.fillStyle = `rgba(238, 58, 57, ${(alpha * 0.85).toFixed(3)})`;
+        });
+        if (t < 1) {
+          requestAnimationFrame(fadeStep);
+        } else {
+          trashBalls.forEach((b) => Composite.remove(world, b));
+          for (let i = balls.length - 1; i >= 0; i -= 1) {
+            if (balls[i].stage === -1) balls.splice(i, 1);
+          }
+        }
+      }
+      requestAnimationFrame(fadeStep);
+
+      // 4. After fade, rebuild filters with wide green gaps + drop new wave
+      setTimeout(() => {
+        // Remove the old red filter wall segments
+        filters.forEach((f) => {
+          if (f.leftSeg) Composite.remove(world, f.leftSeg);
+          if (f.rightSeg) Composite.remove(world, f.rightSeg);
+        });
+        filters.length = 0;
+
+        // Rebuild with wide gaps + green styling
+        FILTER_Y.forEach((yPct, i) => {
+          const rate = [FIXED_RATES.f1, FIXED_RATES.f2, FIXED_RATES.f3][i];
+          const gapW = w * rate * 0.92;
+          const gapLeft = (w - gapW) / 2;
+          const gapRight = gapLeft + gapW;
+          const yPx = h * yPct;
+          const leftSegW = Math.max(1, gapLeft);
+          const rightSegW = Math.max(1, w - gapRight);
+          const greenStyle = {
+            isStatic: true,
+            label: 'filterWall',
+            render: {
+              fillStyle: 'rgba(74, 222, 128, 0.5)',
+              strokeStyle: 'rgba(74, 222, 128, 0.85)',
+              lineWidth: 1.5,
+            },
+          };
+          const leftSeg  = Bodies.rectangle(leftSegW / 2,             yPx, leftSegW,  6, greenStyle);
+          const rightSeg = Bodies.rectangle(gapRight + rightSegW / 2, yPx, rightSegW, 6, greenStyle);
+          Composite.add(world, [leftSeg, rightSeg]);
+          filters.push({ yPx, gapLeft, gapRight, leftSeg, rightSeg, gate: null, idx: i, open: true });
+        });
+
+        // Drop the green wave (immediately dynamic, no static pause)
+        spawnPackedWave({ tagFixed: true });
+
+        // Reveal the compare overlay (the "with DealerEdge" counter ticks
+        // up live via the bookedZone collision handler above)
+        if (compareEl) {
+          compareEl.removeAttribute('hidden');
+          requestAnimationFrame(() => compareEl.setAttribute('data-compare-active', 'true'));
+        }
+      }, 1050);
+    }
+
+    // ─── Scroll trigger: map scroll progress → active beat ────
     ScrollTrigger.create({
       trigger: section,
       start: 'top top',
       end: 'bottom bottom',
       scrub: false,
       onUpdate: (self) => {
-        // Map progress 0→1 to beat 0-3 active
         const p = self.progress;
-        const activeIdx = Math.min(3, Math.floor(p * 4.001));
-        beatCopies.forEach((b, i) => b.classList.toggle('is-active', i <= activeIdx));
-        stageLabels.forEach((l, i) => l.classList.toggle('is-active', i <= activeIdx));
+        const beat = Math.min(TOTAL_BEATS, Math.max(1, Math.floor(p * TOTAL_BEATS) + 1));
+        if (beat !== currentBeat) enterBeat(beat);
       },
     });
-    // Initially: only beat 0 active
-    beatCopies.forEach((b, i) => b.classList.toggle('is-active', i === 0));
-    stageLabels.forEach((l, i) => l.classList.toggle('is-active', i === 0));
+
+    // Initial state: beat 1 (balls hover at top, no gates open)
+    currentBeat = 1;
+    setActiveBeatVisual(1);
 
     // ─── Resize handling ─────────────────────────────────────
     let resizeTimer = null;
@@ -385,7 +574,10 @@
         render.canvas.height = dim.h;
         render.options.width = dim.w;
         render.options.height = dim.h;
-        // (Filter positions don't auto-resize; reload to redraw correctly)
+        w = dim.w;
+        h = dim.h;
+        // (Filter positions don't auto-reposition; the cascade is
+        // designed for a stable viewport. Major resize: refresh page.)
       }, 250);
     });
   }
