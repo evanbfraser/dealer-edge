@@ -371,8 +371,9 @@
 
 .s-cascade-beat {
   display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 16px;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 16px;
+  row-gap: 0;
   align-items: start;
   padding: 14px 12px 14px 0;
   width: 100%;
@@ -394,6 +395,7 @@
 .s-cascade-beat::before {
   content: '';
   grid-column: 1;
+  grid-row: 1 / -1;
   align-self: start;
   margin-top: 7px;
   width: 11px;
@@ -407,6 +409,16 @@
     box-shadow 0.4s ease,
     transform 0.4s ease;
   margin-left: 9px;
+}
+
+/* Force text children into the right (wide) column; without this,
+   grid auto-placement puts the H3 in column 1 (28px) on row 2 and
+   every word wraps to its own line. */
+.s-cascade-beat > .s-cascade-eyebrow,
+.s-cascade-beat > h3,
+.s-cascade-beat > p {
+  grid-column: 2;
+  min-width: 0;
 }
 
 .s-cascade-beat:hover {
