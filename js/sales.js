@@ -101,6 +101,11 @@
     const canvasEl = section.querySelector('[data-cascade-canvas]');
     const stageLabels = section.querySelectorAll('[data-stage-label]');
     const beatButtons = section.querySelectorAll('[data-cbeat]');
+    const slides = section.querySelectorAll('[data-slide]');
+    const slideStats = section.querySelectorAll('[data-slide-stat]');
+    const counterActive = section.querySelector('[data-stats-counter-active]');
+    const forceFields = section.querySelectorAll('[data-force-field]');
+    const fxLayer = section.querySelector('[data-fx-layer]');
     const compareEl = section.querySelector('[data-compare]');
     const compareAfterEl = section.querySelector('[data-compare-after]');
     const tallyNums = {
@@ -133,16 +138,57 @@
 
     // ─── helpers shared with fallback ─────────────────────────
     function setActiveBeatVisual(beat) {
+      // Top progress segments (also clickable scroll-jump targets)
       beatButtons.forEach((btn) => {
         const n = +btn.dataset.cbeat;
         btn.setAttribute('data-active', String(n === beat));
         btn.setAttribute('data-completed', String(n < beat));
       });
+      // One-slide-at-a-time: cross-fade by toggling .is-active
+      slides.forEach((s) => {
+        const n = +s.dataset.slide;
+        s.classList.toggle('is-active', n === beat);
+      });
+      // Filter-wall labels follow beat progression:
+      //   label 1 lights when beat 2+ (we're past CWV gate)
+      //   label 2 lights when beat 3+
+      //   label 3 lights when beat 4+
+      //   label 4 (BOOKED) lights when beat 5+
       stageLabels.forEach((label) => {
         const n = +label.dataset.stageLabel;
-        // stage label N "is-active" once we're past its beat (n+1)
         label.classList.toggle('is-active', n <= Math.max(0, beat - 1));
       });
+      // Force-field halos: only the ACTIVE filter pulses, completed
+      // filters glow steady, dissolved filters fade out at beat 6.
+      forceFields.forEach((field) => {
+        const n = +field.dataset.forceField;
+        field.classList.toggle('is-active', n === (beat - 1));
+        field.classList.toggle('is-dissolved', beat === 6);
+      });
+      // Counter ("01/06") at the right of the top bar
+      if (counterActive) {
+        const padded = String(Math.max(1, beat)).padStart(2, '0');
+        if (counterActive.textContent !== padded) counterActive.textContent = padded;
+      }
+      // Section-level data-active-beat drives the ambient color wash
+      section.setAttribute('data-active-beat', String(Math.max(1, beat)));
+    }
+
+    // Beat 06: animate the green-slide's hero stat from 0 to the live
+    // booked count. Called repeatedly via scheduleFlush (it's idempotent
+    // and very cheap — just one textContent write per frame max).
+    let fixStatEl = null;
+    slides.forEach((s) => {
+      if (s.dataset.slide === '6') {
+        fixStatEl = s.querySelector('[data-slide-stat]');
+      }
+    });
+    function syncFixStatToCount(count) {
+      if (!fixStatEl) return;
+      const rounded = Math.round(count);
+      if (fixStatEl._lastVal === rounded) return;
+      fixStatEl._lastVal = rounded;
+      fixStatEl.textContent = rounded.toLocaleString('en-US');
     }
 
     function revealTally(row) {
@@ -190,8 +236,66 @@
         if (compareDirty) {
           compareDirty = false;
           if (compareAfterEl) compareAfterEl.textContent = Math.round(fixCounts.booked).toLocaleString('en-US');
+          // The slide-6 hero stat mirrors the live booked count so the
+          // user can watch the big number climb as the green wave lands.
+          syncFixStatToCount(fixCounts.booked);
         }
       });
+    }
+
+    // ─── Particle FX: wall-shatter (Beat 06) and burst (compare) ──
+    function spawnShatter(yFraction, palette = 'red') {
+      if (!fxLayer) return;
+      const r = canvasWrap.getBoundingClientRect();
+      const yPx = r.height * yFraction;
+      const count = 14;
+      for (let i = 0; i < count; i += 1) {
+        const p = document.createElement('span');
+        p.className = palette === 'green' ? 's-fx-particle s-fx-particle--burst' : 's-fx-particle';
+        const startX = r.width * (0.18 + Math.random() * 0.64);
+        p.style.left = `${startX}px`;
+        p.style.top = `${yPx}px`;
+        p.style.opacity = '0.9';
+        // Animate via Web Animations API — no CSS keyframe juggling
+        const dx = (Math.random() - 0.5) * 220;
+        const dy = (Math.random() - 0.7) * 180;   // bias upward
+        const dur = 700 + Math.random() * 500;
+        fxLayer.appendChild(p);
+        p.animate(
+          [
+            { transform: 'translate(0, 0) scale(1)', opacity: 0.9 },
+            { transform: `translate(${dx}px, ${dy}px) scale(0.4)`, opacity: 0 },
+          ],
+          { duration: dur, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        ).onfinish = () => p.remove();
+      }
+    }
+
+    function spawnBurst() {
+      if (!fxLayer) return;
+      const r = canvasWrap.getBoundingClientRect();
+      const cx = r.width * 0.72;     // roughly under the "after" column
+      const cy = r.height * 0.5;
+      const count = 22;
+      for (let i = 0; i < count; i += 1) {
+        const p = document.createElement('span');
+        p.className = 's-fx-particle s-fx-particle--burst';
+        p.style.left = `${cx}px`;
+        p.style.top = `${cy}px`;
+        const angle = (i / count) * Math.PI * 2;
+        const dist = 90 + Math.random() * 80;
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist;
+        const dur = 800 + Math.random() * 500;
+        fxLayer.appendChild(p);
+        p.animate(
+          [
+            { transform: 'translate(0, 0) scale(0.6)', opacity: 1 },
+            { transform: `translate(${dx}px, ${dy}px) scale(0.2)`, opacity: 0 },
+          ],
+          { duration: dur, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        ).onfinish = () => p.remove();
+      }
     }
 
     function animateTallyTo(row, target, durMs = 900) {
@@ -263,6 +367,16 @@
               setActiveBeatVisual(6);
               canvasWrap.setAttribute('data-mode', 'fix');
               showCompareOverlay(786);
+              // Mirror the live count into the slide-6 hero stat too
+              const start = performance.now();
+              const dur = 1400;
+              function tick() {
+                const t = Math.min(1, (performance.now() - start) / dur);
+                const eased = 1 - Math.pow(1 - t, 4);
+                syncFixStatToCount(786 * eased);
+                if (t < 1) requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
             }, 1900);
           }
         });
@@ -429,6 +543,27 @@
       if (!f || f.open) return;
       f.open = true;
       if (f.gate) Composite.remove(world, f.gate);
+      // Visual flash at the gap so the user sees the moment the
+      // dam opens. Cheap — 6 particles, one rAF burst.
+      if (fxLayer) {
+        const r = canvasWrap.getBoundingClientRect();
+        const yPx = h * FILTER_Y[i] * (r.height / h);
+        for (let p = 0; p < 6; p += 1) {
+          const el = document.createElement('span');
+          el.className = 's-fx-particle';
+          el.style.background = 'rgba(255, 255, 255, 0.85)';
+          el.style.left = `${r.width / 2}px`;
+          el.style.top = `${yPx}px`;
+          fxLayer.appendChild(el);
+          el.animate(
+            [
+              { transform: 'translate(0,0) scale(1.2)', opacity: 1 },
+              { transform: `translate(${(Math.random() - 0.5) * 80}px, ${(Math.random() - 0.5) * 50}px) scale(0.2)`, opacity: 0 },
+            ],
+            { duration: 500, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+          ).onfinish = () => el.remove();
+        }
+      }
     }
 
     // ─── Ball pool ───────────────────────────────────────────
@@ -624,7 +759,14 @@
       // 1. Reskin canvas wrap to "fix" mode (CSS swaps tint to green)
       canvasWrap.setAttribute('data-mode', 'fix');
 
-      // 2. Turn old filter wall segments green (visual signal: "AI dissolves them")
+      // 2. Particle shatter at each filter Y as the walls "dissolve."
+      //    Force-field halos also fade via .is-dissolved (already
+      //    triggered by setActiveBeatVisual at beat 6).
+      FILTER_Y.forEach((yPct, i) => {
+        setTimeout(() => spawnShatter(yPct, 'red'), i * 80);
+      });
+
+      // 3. Turn old filter wall segments green (visual signal: "AI dissolves them")
       filters.forEach((f) => {
         [f.leftSeg, f.rightSeg].forEach((seg) => {
           if (seg && seg.render) {
@@ -703,10 +845,13 @@
         spawnPackedWave({ tagFixed: true });
 
         // Reveal the compare overlay (the "with DealerEdge" counter ticks
-        // up live via the bookedZone collision handler above)
+        // up live via the bookedZone collision handler above).
+        // Slight delay after the overlay-active class fires so the
+        // burst lands roughly when the "after" number scale-ups.
         if (compareEl) {
           compareEl.removeAttribute('hidden');
           requestAnimationFrame(() => compareEl.setAttribute('data-compare-active', 'true'));
+          setTimeout(() => spawnBurst(), 900);
         }
       }, 1050);
     }

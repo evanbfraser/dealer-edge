@@ -252,20 +252,57 @@
 
 /* ═══════════════════════════════════════════════════════════════
    STATS SECTION  —  6-beat scroll-pinned physics cascade.
-   Replaces the old s-hero-cascade. Hero now stays as the entry,
-   this section pins below it and walks the funnel beat by beat.
+   Theatrical "slide-deck-inside-a-pin" treatment: top progress
+   bar, hero-stat typography on the active slide, glow-framed
+   canvas stage with force-field filter walls.
    ═══════════════════════════════════════════════════════════════ */
 
 .s-stats-section {
   position: relative;
   height: 600vh;                /* 6 beats * 100vh */
-  background:
-    radial-gradient(ellipse at 50% 20%, rgba(238, 58, 57, 0.06), transparent 60%),
-    radial-gradient(ellipse at 50% 90%, rgba(74, 222, 128, 0.04), transparent 60%),
-    #000;
+  background: #000;
   overflow: visible;
   isolation: isolate;
 }
+
+/* Ambient color wash — three stacked CSS gradient layers (neutral
+   → red → green) crossfaded by data-ambient on body. Each layer
+   uses opacity 0/1 transitions so the wash blends smoothly across
+   beats. The whole thing sits behind .s-stats-pin content. */
+.s-stats-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.s-stats-ambient::before,
+.s-stats-ambient::after,
+.s-stats-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-stats-ambient::before {
+  background:
+    radial-gradient(ellipse at 50% 18%, rgba(238, 58, 57, 0.10), transparent 60%),
+    radial-gradient(ellipse at 50% 85%, rgba(238, 58, 57, 0.06), transparent 65%);
+  opacity: 0;
+}
+.s-stats-ambient::after {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(74, 222, 128, 0.08), transparent 60%),
+    radial-gradient(ellipse at 50% 90%, rgba(74, 222, 128, 0.10), transparent 65%);
+  opacity: 0;
+}
+.s-stats-section[data-active-beat="1"] .s-stats-ambient::before { opacity: 0.4; }
+.s-stats-section[data-active-beat="2"] .s-stats-ambient::before { opacity: 0.7; }
+.s-stats-section[data-active-beat="3"] .s-stats-ambient::before { opacity: 0.85; }
+.s-stats-section[data-active-beat="4"] .s-stats-ambient::before { opacity: 1; }
+.s-stats-section[data-active-beat="5"] .s-stats-ambient::before { opacity: 1; }
+.s-stats-section[data-active-beat="6"] .s-stats-ambient::before { opacity: 0; }
+.s-stats-section[data-active-beat="6"] .s-stats-ambient::after  { opacity: 1; }
 
 .s-stats-bg-grid {
   position: absolute;
@@ -287,231 +324,335 @@
   border-radius: 50%;
   filter: blur(140px);
   pointer-events: none;
-  opacity: 0.32;
+  opacity: 0.28;
   z-index: 0;
+  transition: background 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.s-stats-bg-glow--1 { top: -160px; left: -160px; background: rgba(238, 58, 57, 0.35); }
+.s-stats-bg-glow--1 { top: -160px; left: -160px; background: rgba(238, 58, 57, 0.32); }
 .s-stats-bg-glow--2 { bottom: -160px; right: -160px; background: rgba(238, 58, 57, 0.18); }
+.s-stats-section[data-active-beat="6"] .s-stats-bg-glow--1 { background: rgba(74, 222, 128, 0.28); }
+.s-stats-section[data-active-beat="6"] .s-stats-bg-glow--2 { background: rgba(74, 222, 128, 0.16); }
 
 .s-stats-pin {
   position: sticky;
   top: 0;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 90px 32px 40px;
+  flex-direction: column;
+  padding: 70px 40px 40px;
   overflow: hidden;
   z-index: 1;
 }
 
-.s-stats-inner {
-  width: 100%;
-  max-width: 1480px;
+/* ─── TOP BAR: chapter eyebrow + progress segments + counter ───── */
+.s-stats-topbar {
+  position: relative;
+  z-index: 5;
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 56px;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
   align-items: center;
-  position: relative;
-  z-index: 2;
+  padding: 0 4px 22px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
 }
 
-/* ─── LEFT: 6 stacked beat captions, clickable scroll-jump ──── */
-.s-cascade-copy {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.s-stats-eyebrow {
-  display: inline-block;
-  margin-bottom: 4px;
-  color: var(--accent);
-}
-
-.s-stats-section-title {
-  font-size: clamp(1.4rem, 1.8vw, 1.7rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #fff;
-  margin: 0 0 10px;
-  line-height: 1.15;
-}
-
-.s-cascade-beats {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  position: relative;
-}
-
-.s-cascade-beats::before {
-  content: '';
-  position: absolute;
-  left: 14px;
-  top: 22px;
-  bottom: 22px;
-  width: 1px;
-  background: linear-gradient(180deg,
-    rgba(238, 58, 57, 0.3) 0%,
-    rgba(238, 58, 57, 0.45) 75%,
-    rgba(74, 222, 128, 0.5) 100%);
-  opacity: 0.6;
-  z-index: 0;
-}
-
-.s-cascade-beats > li {
-  position: relative;
-  z-index: 1;
-}
-
-.s-cascade-beat {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  column-gap: 16px;
-  row-gap: 0;
-  align-items: start;
-  padding: 14px 12px 14px 0;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: 0;
-  border-radius: 10px;
-  opacity: 0.28;
-  transition:
-    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.3s ease,
-    transform 0.3s ease;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-  position: relative;
-}
-
-.s-cascade-beat::before {
-  content: '';
-  grid-column: 1;
-  grid-row: 1 / -1;
-  align-self: start;
-  margin-top: 7px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--panel);
-  border: 1.5px solid rgba(238, 58, 57, 0.55);
-  transition:
-    background 0.4s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease,
-    transform 0.4s ease;
-  margin-left: 9px;
-}
-
-/* Force text children into the right (wide) column; without this,
-   grid auto-placement puts the H3 in column 1 (28px) on row 2 and
-   every word wraps to its own line. */
-.s-cascade-beat > .s-cascade-eyebrow,
-.s-cascade-beat > h3,
-.s-cascade-beat > p {
-  grid-column: 2;
-  min-width: 0;
-}
-
-.s-cascade-beat:hover {
-  opacity: 0.7;
-}
-
-.s-cascade-beat[data-active="true"] {
-  opacity: 1;
-}
-.s-cascade-beat[data-active="true"]::before {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(238, 58, 57, 0.18);
-  transform: scale(1.1);
-}
-
-.s-cascade-beat[data-completed="true"] {
-  opacity: 0.62;
-}
-.s-cascade-beat[data-completed="true"]:hover {
-  opacity: 0.95;
-}
-.s-cascade-beat[data-completed="true"]::before {
-  background: rgba(238, 58, 57, 0.85);
-  border-color: rgba(238, 58, 57, 0.85);
-}
-
-.s-cascade-beat--fix[data-active="true"]::before,
-.s-cascade-beat--fix[data-completed="true"]::before {
-  background: var(--good);
-  border-color: var(--good);
-  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.22);
-}
-
-.s-cascade-eyebrow {
+.s-stats-chapter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-dim);
-  display: block;
-  margin-bottom: 4px;
+  white-space: nowrap;
 }
-.s-cascade-beat[data-active="true"] .s-cascade-eyebrow {
+.s-stats-chapter-num {
   color: var(--accent);
+  font-weight: 700;
 }
-.s-cascade-beat--fix[data-active="true"] .s-cascade-eyebrow {
+.s-stats-chapter-sep {
+  opacity: 0.4;
+}
+.s-stats-chapter-title {
+  color: #fff;
+}
+.s-stats-section[data-active-beat="6"] .s-stats-chapter-num {
   color: var(--good);
 }
 
-.s-cascade-beat h3 {
-  font-size: clamp(0.98rem, 1.15vw, 1.12rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  color: #fff;
-  margin: 0 0 4px;
-  line-height: 1.25;
+/* The progress segments — clickable beat jumps. Visually they form
+   a hairline rule split into 6 segments; the active and completed
+   segments fill in to show position. */
+.s-stats-progress {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.s-stats-progress > li { display: block; }
+
+.s-stats-prog-seg {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 18px 0 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  color: inherit;
+  font: inherit;
+  position: relative;
+  width: 100%;
+}
+.s-stats-prog-seg::before {
+  content: '';
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  transition:
+    background 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-stats-prog-seg[data-completed="true"]::before {
+  background: rgba(238, 58, 57, 0.7);
+}
+.s-stats-prog-seg[data-active="true"]::before {
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(238, 58, 57, 0.7), 0 0 1px rgba(238, 58, 57, 1);
+}
+.s-stats-prog-seg--fix[data-completed="true"]::before {
+  background: rgba(74, 222, 128, 0.7);
+}
+.s-stats-prog-seg--fix[data-active="true"]::before {
+  background: var(--good);
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.75), 0 0 1px rgba(74, 222, 128, 1);
 }
 
-.s-cascade-beat p {
-  font-size: 0.82rem;
-  line-height: 1.45;
+.s-stats-prog-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  color: var(--text-dim);
+  text-align: left;
+  transition: color 0.35s ease;
+}
+.s-stats-prog-seg[data-active="true"] .s-stats-prog-label {
+  color: #fff;
+}
+.s-stats-prog-seg[data-completed="true"] .s-stats-prog-label {
   color: var(--text-mid);
+}
+.s-stats-prog-seg:hover .s-stats-prog-label {
+  color: #fff;
+}
+
+.s-stats-counter {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.s-stats-counter [data-stats-counter-active] {
+  color: #fff;
+  font-weight: 700;
+}
+.s-stats-counter-sep {
+  margin: 0 4px;
+  opacity: 0.4;
+}
+
+.s-stats-inner {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  gap: 56px;
+  align-items: center;
+  min-height: 0;
+}
+
+/* ─── LEFT: one slide at a time — hero typography ───────────── */
+.s-cascade-copy {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  height: 100%;
+  min-height: 0;
+}
+
+/* All slides are stacked in the same grid cell. Only the active one
+   has opacity:1 / pointer-events on; others are invisible and locked
+   out. Cross-fades on beat change. The hero stat scales up with a
+   subtle overshoot when its slide becomes active. */
+.s-cascade-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s-cascade-slide.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.s-slide-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
   margin: 0;
 }
+.s-slide-beat-num {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(238, 58, 57, 0.10);
+  border: 1px solid rgba(238, 58, 57, 0.35);
+  color: var(--accent);
+  font-weight: 700;
+}
+.s-slide-eyebrow--fix .s-slide-beat-num {
+  background: rgba(74, 222, 128, 0.10);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: var(--good);
+}
 
-/* ─── RIGHT: physics stage ──────────────────────────────────── */
+/* THE HERO STAT — the visual protagonist of each beat. Massive
+   gradient-fill type that scales in when the slide becomes active.
+   Gradient direction signals the polarity: red-down for the cascade
+   beats, green-up for the fix beat. */
+.s-slide-stat {
+  display: block;
+  font-size: clamp(5rem, 9.5vw, 9rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 0.88;
+  color: transparent;
+  background: linear-gradient(180deg, #fff 18%, var(--accent) 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-variant-numeric: tabular-nums;
+  transform: scale(0.94);
+  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);   /* tiny overshoot */
+}
+.s-cascade-slide.is-active .s-slide-stat {
+  transform: scale(1);
+}
+.s-slide-stat--fix {
+  background: linear-gradient(180deg, #fff 18%, var(--good) 120%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.s-slide-stat-pct {
+  font-size: 0.55em;
+  letter-spacing: -0.04em;
+  margin-left: 4px;
+  opacity: 0.85;
+}
+
+.s-slide-headline {
+  font-size: clamp(1.6rem, 2.3vw, 2.15rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0;
+  max-width: 540px;
+}
+
+.s-slide-desc {
+  font-size: clamp(0.98rem, 1.15vw, 1.1rem);
+  line-height: 1.55;
+  color: var(--text-mid);
+  margin: 0;
+  max-width: 520px;
+}
+.s-slide-desc strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ─── RIGHT: the stage ──────────────────────────────────────── */
 .s-cascade-stage {
   position: relative;
-  height: 80vh;
+  height: 78vh;
   max-height: 760px;
 }
 
+/* Multi-layer glow frame: inner ring + outer halo, tinted by the
+   active beat's color. Vignette inside the canvas wrap focuses
+   attention on the center where the cascade plays. */
 .s-cascade-canvas-wrap {
   position: relative;
   width: 100%;
   height: 100%;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.015) 0%, transparent 30%, rgba(238,58,57,0.025) 100%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.5) 80%),
+    linear-gradient(180deg, rgba(255,255,255,0.018) 0%, transparent 30%, rgba(238,58,57,0.035) 100%),
     #050505;
-  border: 1px solid var(--line-strong);
-  border-radius: 14px;
+  border: 1px solid rgba(238, 58, 57, 0.25);
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-  transition: background 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 0 60px rgba(238, 58, 57, 0.10);
+  transition:
+    background 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Inner vignette via pseudo-element so it overlays the canvas
+   without clipping the physics rendering. */
+.s-cascade-canvas-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%,
+              transparent 55%,
+              rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* Beat 06: red frame cross-fades to green halo. */
 .s-cascade-canvas-wrap[data-mode="fix"] {
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 30%, rgba(74,222,128,0.06) 100%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.5) 80%),
+    linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 30%, rgba(74,222,128,0.08) 100%),
     #050505;
-  border-color: rgba(74, 222, 128, 0.32);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.40);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 0 80px rgba(74, 222, 128, 0.22);
 }
 
 #cascade-canvas {
@@ -520,68 +661,173 @@
   width: 100%;
   height: 100%;
   display: block;
+  z-index: 1;
 }
 
-/* Filter row labels overlaid on the canvas */
+/* ─── Force-field halos: pure CSS glows over the filter Y positions.
+       Matter.js draws the actual wall geometry; these add the depth
+       and "containment field" feel. The active filter pulses. */
+.s-force-field {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 56px;
+  pointer-events: none;
+  z-index: 2;
+  transform: translateY(-50%);
+  background: radial-gradient(ellipse at 50% 50%,
+              rgba(238, 58, 57, 0.32) 0%,
+              rgba(238, 58, 57, 0.12) 35%,
+              transparent 75%);
+  opacity: 0.45;
+  transition: opacity 0.5s ease, background 0.9s ease;
+}
+.s-force-field--1 { top: 32%; }
+.s-force-field--2 { top: 52%; }
+.s-force-field--3 { top: 72%; }
+
+.s-force-field.is-active {
+  opacity: 0.85;
+  animation: s-field-pulse 2.4s ease-in-out infinite;
+}
+.s-force-field.is-dissolved {
+  opacity: 0;
+}
+.s-cascade-canvas-wrap[data-mode="fix"] .s-force-field {
+  background: radial-gradient(ellipse at 50% 50%,
+              rgba(74, 222, 128, 0.32) 0%,
+              rgba(74, 222, 128, 0.12) 35%,
+              transparent 75%);
+}
+
+@keyframes s-field-pulse {
+  0%, 100% { opacity: 0.75; transform: translateY(-50%) scaleY(1); }
+  50%      { opacity: 1;    transform: translateY(-50%) scaleY(1.15); }
+}
+
+/* ─── Filter labels: bigger, positioned BESIDE the wall with a
+       leader line connecting them to the actual filter geometry.
+       Reads as a technical-diagram callout, not a floating pill. */
 .s-cascade-stage-label {
   position: absolute;
-  left: 14px;
-  right: 200px;                  /* leave space for the tally column */
+  right: 18px;
   pointer-events: none;
   display: flex;
-  justify-content: center;
-  z-index: 3;
-  opacity: 0.45;
-  transition: opacity 0.5s ease;
+  align-items: center;
+  gap: 12px;
+  z-index: 4;
+  opacity: 0.32;
+  transform: translateY(-50%) translateX(8px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .s-cascade-stage-label.is-active {
   opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
-.s-cascade-stage-label span {
-  display: inline-block;
-  padding: 4px 10px;
-  background: rgba(0, 0, 0, 0.7);
+
+.s-stage-leader {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(238, 58, 57, 0.65), rgba(238, 58, 57, 0.15));
+  flex: 0 0 auto;
+}
+.s-stage-pct {
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.s-stage-name {
+  display: inline-flex;
+  padding: 5px 11px;
+  background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(6px);
-  border: 1px solid var(--line-strong);
+  border: 1px solid rgba(238, 58, 57, 0.32);
   border-radius: 100px;
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-mid);
   white-space: nowrap;
 }
-.s-cascade-stage-label.is-active span {
+.s-cascade-stage-label.is-active .s-stage-name {
   color: #fff;
-  border-color: rgba(238, 58, 57, 0.4);
+  border-color: rgba(238, 58, 57, 0.55);
 }
-.s-cascade-canvas-wrap[data-mode="fix"] .s-cascade-stage-label.is-active span {
-  border-color: rgba(74, 222, 128, 0.45);
+.s-cascade-canvas-wrap[data-mode="fix"] .s-stage-leader {
+  background: linear-gradient(90deg, rgba(74, 222, 128, 0.7), rgba(74, 222, 128, 0.15));
 }
-.s-cascade-stage-label--1 { top: calc(30% - 13px); }
-.s-cascade-stage-label--2 { top: calc(50% - 13px); }
-.s-cascade-stage-label--3 { top: calc(70% - 13px); }
-.s-cascade-stage-label--4 { bottom: 18px; }
-.s-cascade-stage-label--4 span {
+.s-cascade-canvas-wrap[data-mode="fix"] .s-stage-pct {
+  color: var(--good);
+}
+.s-cascade-canvas-wrap[data-mode="fix"] .s-cascade-stage-label.is-active .s-stage-name {
+  border-color: rgba(74, 222, 128, 0.55);
+}
+
+.s-cascade-stage-label--1 { top: 32%; }
+.s-cascade-stage-label--2 { top: 52%; }
+.s-cascade-stage-label--3 { top: 72%; }
+.s-cascade-stage-label--4 {
+  top: auto;
+  bottom: 14px;
+  right: 50%;
+  transform: translateX(50%) translateY(0);
+  flex-direction: row-reverse;
+}
+.s-cascade-stage-label--4 .s-stage-leader { display: none; }
+.s-cascade-stage-label--4 .s-stage-name {
   background: rgba(74, 222, 128, 0.12);
   border-color: rgba(74, 222, 128, 0.45);
   color: var(--good);
   font-weight: 700;
 }
-.s-cascade-stage-label--4.is-active span {
-  background: rgba(74, 222, 128, 0.2);
+.s-cascade-stage-label--4.is-active {
+  transform: translateX(50%) translateY(0);
+}
+.s-cascade-stage-label--4.is-active .s-stage-name {
+  background: rgba(74, 222, 128, 0.22);
   color: #fff;
 }
 
+/* FX layer: holds DOM particles for the Beat 06 wall-shatter and
+   compare burst effects. Pointer-events off so it never blocks UX. */
+.s-fx-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+}
+.s-fx-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.s-fx-particle--burst {
+  background: var(--good);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.7);
+}
+
 /* ─── Tally column (top-right corner of canvas) ─────────────── */
+/* ─── Tally column: scaled up, stamp-in entrances ──────────── */
 .s-tally {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 180px;
+  top: 18px;
+  left: 18px;                  /* moved to LEFT — labels are on the right */
+  width: 230px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -591,31 +837,32 @@
 
 .s-tally-row {
   display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 10px;
+  grid-template-columns: 64px 1fr;
+  gap: 14px;
   align-items: center;
-  padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(238, 58, 57, 0.35);
-  border-radius: 10px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(238, 58, 57, 0.4);
+  border-radius: 12px;
   opacity: 0;
-  transform: translateX(20px);
+  transform: translateY(-12px) scale(0.92);
   transition:
-    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);   /* overshoot stamp */
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 .s-tally-row[data-tally-active="true"] {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0) scale(1);
 }
 
 .s-tally-pct {
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-size: 1.9rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
   color: var(--accent);
-  line-height: 1;
+  line-height: 0.95;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -623,22 +870,22 @@
 .s-tally-meta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
 .s-tally-label {
   font-family: var(--mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.16em;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-dim);
   line-height: 1.2;
 }
 
 .s-tally-num {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #fff;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
@@ -647,20 +894,23 @@
   font-style: normal;
   font-weight: 500;
   color: var(--text-dim);
-  font-size: 0.72rem;
-  margin-left: 2px;
+  font-size: 0.78rem;
+  margin-left: 4px;
 }
 
 .s-tally-row--final {
-  border-color: rgba(74, 222, 128, 0.55);
-  background: linear-gradient(180deg, rgba(74, 222, 128, 0.06), rgba(0, 0, 0, 0.72));
-  box-shadow: 0 0 24px rgba(74, 222, 128, 0.18);
+  border-color: rgba(74, 222, 128, 0.6);
+  background:
+    linear-gradient(180deg, rgba(74, 222, 128, 0.10), rgba(0, 0, 0, 0.78));
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.35),
+    0 0 32px rgba(74, 222, 128, 0.22);
 }
 .s-tally-row--final .s-tally-pct {
   color: var(--good);
 }
 
-/* ─── Beat 06 compare overlay ──────────────────────────────── */
+/* ─── Beat 06 compare overlay — the payoff ──────────────────── */
 .s-compare {
   position: absolute;
   inset: 0;
@@ -669,26 +919,47 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  padding: 32px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.78) 100%);
-  backdrop-filter: blur(2px);
+  gap: 28px;
+  padding: 48px 40px;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.92) 80%);
+  backdrop-filter: blur(6px);
   opacity: 0;
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 .s-compare[data-compare-active="true"] {
   opacity: 1;
+  transform: translateY(0);
 }
 .s-compare[hidden] { display: none; }
+
+.s-compare-eyebrow-top {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--good);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+}
+.s-compare[data-compare-active="true"] .s-compare-eyebrow-top {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .s-compare-row {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 36px;
+  gap: 32px;
   align-items: center;
-  max-width: 640px;
+  max-width: 760px;
   width: 100%;
+  position: relative;
 }
 
 .s-compare-col {
@@ -697,23 +968,36 @@
   gap: 8px;
   align-items: center;
   text-align: center;
-  padding: 24px 16px;
-  border-radius: 14px;
+  padding: 28px 18px;
+  border-radius: 16px;
   border: 1px solid var(--line-strong);
-  background: rgba(10, 10, 10, 0.85);
+  background: rgba(8, 8, 8, 0.85);
+  opacity: 0;
+  transform: scale(0.92) translateY(12px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+.s-compare[data-compare-active="true"] .s-compare-col {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.s-compare[data-compare-active="true"] .s-compare-before { transition-delay: 0.25s; }
+.s-compare[data-compare-active="true"] .s-compare-after  { transition-delay: 0.50s; }
 
 .s-compare-before {
-  border-color: rgba(238, 58, 57, 0.4);
+  border-color: rgba(238, 58, 57, 0.45);
 }
 .s-compare-after {
-  border-color: rgba(74, 222, 128, 0.5);
-  box-shadow: 0 0 36px rgba(74, 222, 128, 0.18);
+  border-color: rgba(74, 222, 128, 0.55);
+  box-shadow:
+    0 0 48px rgba(74, 222, 128, 0.22),
+    0 0 1px rgba(74, 222, 128, 0.4);
 }
 
 .s-compare-eyebrow {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -722,42 +1006,148 @@
 .s-compare-after  .s-compare-eyebrow { color: var(--good); }
 
 .s-compare-num {
-  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-size: clamp(3.4rem, 6.5vw, 5.2rem);
   font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 0.9;
+  letter-spacing: -0.055em;
+  line-height: 0.88;
   color: #fff;
   font-variant-numeric: tabular-nums;
+  display: inline-block;
 }
 .s-compare-before .s-compare-num { color: var(--accent); }
 .s-compare-after  .s-compare-num { color: var(--good); }
 
-.s-compare-sub {
-  font-size: 0.78rem;
-  color: var(--text-dim);
+/* "Without" number lightly shrinks while "With" scales up — direct
+   visual telegraph of the math reversal. */
+.s-compare[data-compare-active="true"] .s-compare-before .s-compare-num {
+  animation: s-compare-shrink 0.7s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.s-compare[data-compare-active="true"] .s-compare-after .s-compare-num {
+  animation: s-compare-grow 0.9s 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes s-compare-shrink {
+  0%   { transform: scale(1);    text-shadow: 0 0 0 transparent; }
+  100% { transform: scale(0.88); text-shadow: 0 0 0 transparent; }
+}
+@keyframes s-compare-grow {
+  0%   { transform: scale(0.6);  text-shadow: 0 0 0 rgba(74, 222, 128, 0); }
+  60%  { transform: scale(1.12); text-shadow: 0 0 32px rgba(74, 222, 128, 0.6); }
+  100% { transform: scale(1);    text-shadow: 0 0 24px rgba(74, 222, 128, 0.35); }
 }
 
-.s-compare-arrow {
-  font-family: var(--mono);
-  font-size: 2rem;
+.s-compare-sub {
+  font-size: 0.84rem;
   color: var(--text-dim);
-  opacity: 0.65;
+  letter-spacing: 0.02em;
+}
+
+.s-compare-swoosh {
+  width: 120px;
+  height: 50px;
+  color: var(--good);
+  opacity: 0.7;
+}
+.s-compare[data-compare-active="true"] .s-compare-swoosh path {
+  animation: s-swoosh-draw 0.9s 1.1s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes s-swoosh-draw {
+  0%   { stroke-dashoffset: 400; }
+  100% { stroke-dashoffset: 0; }
 }
 
 .s-compare-cap {
-  font-size: clamp(0.9rem, 1.05vw, 1rem);
+  font-size: clamp(0.95rem, 1.1vw, 1.08rem);
   color: var(--text-mid);
   text-align: center;
-  max-width: 540px;
+  max-width: 560px;
   margin: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease 0.95s, transform 0.6s ease 0.95s;
+}
+.s-compare[data-compare-active="true"] .s-compare-cap {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Chapter divider between Stats Section and Marine Reality ── */
+.s-chapter-divider {
+  position: relative;
+  padding: 160px 32px;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(74, 222, 128, 0.04), transparent 70%),
+    #000;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.s-chapter-divider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 65%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 65%);
+  pointer-events: none;
+}
+.s-chapter-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.s-chapter-num {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+.s-chapter-title {
+  font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: #fff;
+  margin: 0;
+  max-width: 720px;
+}
+.s-chapter-sub {
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  color: var(--text-mid);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 540px;
+}
+.s-chapter-rule {
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin-top: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .s-tally-row,
   .s-compare,
+  .s-compare-col,
+  .s-compare-num,
+  .s-compare-swoosh path,
   .s-cascade-canvas-wrap,
-  .s-cascade-beat {
+  .s-cascade-slide,
+  .s-slide-stat,
+  .s-force-field {
     transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
 }
 
@@ -958,22 +1348,35 @@
   .s-stats-pin {
     position: relative;
     height: auto;
-    padding: 80px 24px 60px;
+    padding: 60px 24px 60px;
   }
+  .s-stats-topbar {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .s-stats-progress { order: 2; }
+  .s-stats-counter { display: none; }
   .s-stats-inner {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
   }
+  .s-cascade-copy { height: auto; }
+  .s-cascade-slide {
+    position: relative;
+    inset: auto;
+    display: none;
+  }
+  .s-cascade-slide.is-active { display: flex; }
   .s-cascade-stage {
-    height: 420px;
+    height: 440px;
   }
   .s-tally {
-    width: 160px;
+    width: 180px;
     top: 10px;
-    right: 10px;
+    left: 10px;
   }
   .s-cascade-stage-label {
-    right: 180px;
+    right: 12px;
   }
   .s-marine-inner {
     grid-template-columns: 1fr;
@@ -983,29 +1386,41 @@
 }
 
 @media (max-width: 640px) {
-  .s-stats-section-title { font-size: 1.3rem; }
-  .s-cascade-beat h3 { font-size: 0.98rem; }
-  .s-cascade-beats::before { left: 14px; }
-  .s-cascade-stage { height: 360px; }
+  .s-stats-pin { padding: 40px 18px 40px; }
+  .s-slide-stat { font-size: clamp(3.2rem, 14vw, 5.5rem); }
+  .s-slide-headline { font-size: 1.35rem; }
+  .s-slide-desc { font-size: 0.92rem; }
+  .s-cascade-stage { height: 380px; }
   .s-tally {
     position: static;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: 14px;
+    gap: 8px;
   }
   .s-tally-row {
     flex: 1 1 calc(50% - 4px);
     min-width: 0;
-    padding: 8px 10px;
+    padding: 10px 12px;
+    grid-template-columns: 48px 1fr;
+    gap: 10px;
   }
-  .s-tally-pct { font-size: 1.1rem; }
-  .s-cascade-stage-label { right: 14px; }
+  .s-tally-pct { font-size: 1.4rem; }
+  .s-tally-num { font-size: 0.82rem; }
+  .s-cascade-stage-label { right: 12px; }
+  .s-stage-leader { width: 24px; }
+  .s-stage-name { font-size: 0.58rem; padding: 4px 8px; }
+  .s-stage-pct { font-size: 0.74rem; }
+  .s-force-field { height: 36px; }
   .s-compare-row {
     grid-template-columns: 1fr;
     gap: 18px;
   }
-  .s-compare-arrow { transform: rotate(90deg); }
+  .s-compare-swoosh { transform: rotate(90deg); width: 60px; height: 80px; }
+  .s-compare { padding: 28px 18px; gap: 18px; }
+  .s-chapter-divider { padding: 100px 24px; }
+  .s-chapter-title { font-size: 2rem; }
   .s-marine-card { padding: 20px 22px; }
 }
 
