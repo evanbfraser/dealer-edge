@@ -75,12 +75,319 @@
   );
   faders.forEach((el) => faderObs.observe(el));
 
-  /* ─────────────────────────────────────────────────────────────
-     HERO HEADLINE — strike-through reveal after a beat
-     ───────────────────────────────────────────────────────────── */
-  const heroHeadline = document.querySelector('.s-hero-headline');
-  if (heroHeadline) {
-    setTimeout(() => heroHeadline.classList.add('is-revealed'), 1200);
+  /* ═════════════════════════════════════════════════════════════
+     HERO CASCADE  —  Physics-driven Killer Proof Chain
+     A scroll-pinned 200vh section with a matter.js simulation:
+     1,000 buyer-balls drop from the top, hit 3 filter walls
+     (CWV / 24h response / voicemail) and 19 of them survive to
+     a BOOKED container. Counters tick up in real time. Beat
+     captions on the left activate as the user scrolls through
+     the pin. Skipped entirely on mobile (canvas physics is a
+     desktop experience); mobile shows a static counter version.
+     ═════════════════════════════════════════════════════════════ */
+
+  const cascadeSection = document.querySelector('.s-hero-cascade');
+  if (cascadeSection) initHeroCascade(cascadeSection);
+
+  function initHeroCascade(section) {
+    const canvasWrap = section.querySelector('[data-canvas-wrap]');
+    const canvasEl = section.querySelector('[data-cascade-canvas]');
+    const stageLabels = section.querySelectorAll('[data-stage-label]');
+    const beatCopies = section.querySelectorAll('[data-cbeat]');
+    const counters = {
+      arrived: section.querySelector('[data-cc="arrived"]'),
+      lost:    section.querySelector('[data-cc="lost"]'),
+      booked:  section.querySelector('[data-cc="booked"]'),
+    };
+
+    // ─── State ─────────────────────────────────────────────────
+    const TARGET_TOTAL = 1000;      // Total buyers to spawn
+    const RATES = {                  // pass-through rates per filter
+      f1: 0.22,                      // 78% block on CWV → 22% survive
+      f2: 0.43,                      // 57% no response → 43% survive
+      f3: 0.20,                      // 80% voicemail walk → 20% survive
+    };
+    const counts = { arrived: 0, lost: 0, booked: 0 };
+
+    function setCounter(key, value) {
+      counts[key] = value;
+      if (counters[key]) counters[key].textContent = value.toLocaleString('en-US');
+    }
+    function bump(key, delta = 1) {
+      setCounter(key, counts[key] + delta);
+    }
+
+    // ─── Mobile fallback: simulate the math without canvas ───
+    if (window.innerWidth < 1100 || !window.Matter) {
+      // Just activate all 4 beat captions, animate the counters
+      beatCopies.forEach((b) => b.classList.add('is-active'));
+      stageLabels.forEach((l) => l.classList.add('is-active'));
+      // Use IntersectionObserver to start counters when in view
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            obs.disconnect();
+            animateCountersStatic();
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(section);
+      return;
+    }
+
+    function animateCountersStatic() {
+      const finalBooked = Math.round(TARGET_TOTAL * RATES.f1 * RATES.f2 * RATES.f3);
+      const finalLost = TARGET_TOTAL - finalBooked;
+      const start = performance.now();
+      const dur = 2200;
+      function step() {
+        const t = Math.min(1, (performance.now() - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        setCounter('arrived', Math.round(TARGET_TOTAL * eased));
+        setCounter('lost',    Math.round(finalLost   * eased));
+        setCounter('booked',  Math.round(finalBooked * eased));
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // ─── Matter.js physics setup ─────────────────────────────
+    const M = window.Matter;
+    const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = M;
+
+    const engine = Engine.create({
+      gravity: { x: 0, y: 1, scale: 0.0012 },
+    });
+    const world = engine.world;
+
+    // Size the canvas to its wrapper
+    function sizeCanvas() {
+      const r = canvasWrap.getBoundingClientRect();
+      canvasEl.width = r.width;
+      canvasEl.height = r.height;
+      return { w: r.width, h: r.height };
+    }
+    let { w, h } = sizeCanvas();
+
+    const render = Render.create({
+      canvas: canvasEl,
+      engine: engine,
+      options: {
+        width: w,
+        height: h,
+        wireframes: false,
+        background: 'transparent',
+        pixelRatio: window.devicePixelRatio || 1,
+      },
+    });
+    Render.run(render);
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+
+    // Pause physics when the section is off-screen (CPU friendly)
+    let physicsActive = true;
+    const visObs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          if (!physicsActive) { Runner.run(runner, engine); physicsActive = true; }
+        } else {
+          if (physicsActive) { Runner.stop(runner); physicsActive = false; }
+        }
+      });
+    }, { threshold: 0 });
+    visObs.observe(section);
+
+    // ─── Build the world: walls + filters + sensors ──────────
+    // Filter Y positions (as % of canvas height)
+    const FILTER_Y = [0.30, 0.50, 0.70];   // 3 filters
+    const BOOKED_Y = 0.93;                 // bottom container
+    const WALL_T = 14;                     // wall thickness
+
+    // Outer walls (left, right, bottom)
+    const wallStyle = { isStatic: true, render: { fillStyle: 'transparent' } };
+    Composite.add(world, [
+      Bodies.rectangle(-WALL_T / 2,        h / 2,   WALL_T, h * 2, wallStyle),  // left
+      Bodies.rectangle(w + WALL_T / 2,     h / 2,   WALL_T, h * 2, wallStyle),  // right
+      Bodies.rectangle(w / 2,              h + WALL_T / 2, w * 2, WALL_T, wallStyle), // bottom
+    ]);
+
+    // Filter walls — each one is a wall with a centered gap.
+    // gapW is sized to the survival rate; the rest is solid wall.
+    const filterStyle = {
+      isStatic: true,
+      render: {
+        fillStyle: 'rgba(238, 58, 57, 0.5)',
+        strokeStyle: 'rgba(238, 58, 57, 0.8)',
+        lineWidth: 1.5,
+      },
+    };
+    const filters = []; // { y, gapLeft, gapRight, rate }
+    FILTER_Y.forEach((yPct, i) => {
+      const rate = [RATES.f1, RATES.f2, RATES.f3][i];
+      const gapW = Math.max(28, w * rate * 0.85);  // gap a bit narrower than rate to compensate for bouncing
+      const gapLeft  = (w - gapW) / 2;
+      const gapRight = gapLeft + gapW;
+      const yPx = h * yPct;
+      const leftSegW = gapLeft;
+      const rightSegW = w - gapRight;
+      // left segment
+      Composite.add(world, Bodies.rectangle(leftSegW / 2, yPx, leftSegW, 6, filterStyle));
+      // right segment
+      Composite.add(world, Bodies.rectangle(gapRight + rightSegW / 2, yPx, rightSegW, 6, filterStyle));
+      filters.push({ yPx, gapLeft, gapRight, rate, idx: i });
+    });
+
+    // BOOKED container (a green-tinted rectangle drawn behind balls)
+    // Visualized as a sensor strip + below-floor catcher
+    const bookedZone = Bodies.rectangle(w / 2, h * BOOKED_Y, w * 0.42, 4, {
+      isStatic: true,
+      isSensor: true,
+      render: { fillStyle: 'rgba(74, 222, 128, 0.35)' },
+    });
+    Composite.add(world, bookedZone);
+
+    // Sensor strips RIGHT below each filter — when a ball crosses, it
+    // means it passed through the gap (color upgrade). When it hits
+    // a filter wall, the collision event downgrades it to red.
+    // We use Events to detect "ball passed line N" via Y position.
+
+    // ─── Spawn buyers ────────────────────────────────────────
+    const BALL_R = 4;
+    const SPAWN_INTERVAL_MS = 30;       // ~33/sec → 1000 in ~30s
+    const SPAWN_BURST_GAP = 90;         // small pause between bursts
+    const STAGE_COLORS = ['rgba(255,255,255,0.85)', '#fbbf24', '#fb923c', '#86efac', '#4ade80'];
+    const REJECT_COLOR = '#ee3a39';
+    let spawned = 0;
+    let spawnTimer = null;
+
+    function spawnBall() {
+      if (spawned >= TARGET_TOTAL) {
+        clearInterval(spawnTimer);
+        return;
+      }
+      spawned += 1;
+      bump('arrived');
+      const x = w * 0.5 + (Math.random() - 0.5) * w * 0.6;
+      const b = Bodies.circle(x, 12, BALL_R, {
+        restitution: 0.45,
+        friction: 0.005,
+        frictionAir: 0.012,
+        density: 0.002,
+        render: { fillStyle: STAGE_COLORS[0] },
+      });
+      b.stage = 0;             // 0 = just spawned; 1-3 after each filter; 4 = booked; -1 = rejected
+      b.counted = false;       // has it been counted as lost yet?
+      Composite.add(world, b);
+    }
+
+    // Collision events: detect rejection (hit filter wall) and passage (cross filter Y)
+    Events.on(engine, 'collisionStart', (event) => {
+      event.pairs.forEach((pair) => {
+        const a = pair.bodyA, b = pair.bodyB;
+        // Ball hits filter wall → reject (downgrade to red, mark lost)
+        [
+          [a, b], [b, a],
+        ].forEach(([ball, other]) => {
+          if (ball.label === 'Circle Body' && other.isStatic && !other.isSensor) {
+            // It hit a wall — check if it's a filter wall (between 0 and h-WALL_T)
+            const wallY = other.position.y;
+            if (wallY > 12 && wallY < h * 0.78 && ball.stage >= 0 && !ball.counted) {
+              const filter = filters.find((f) => Math.abs(f.yPx - wallY) < 8);
+              if (filter && ball.stage <= filter.idx) {
+                ball.stage = -1;
+                ball.render.fillStyle = REJECT_COLOR;
+                ball.counted = true;
+                bump('lost');
+                // Give a small horizontal kick so they slide off to a side
+                const dir = ball.position.x < w / 2 ? -1 : 1;
+                Body.applyForce(ball, ball.position, { x: dir * 0.0005, y: 0 });
+              }
+            }
+          }
+        });
+        // Ball reaches booked zone
+        if ((a === bookedZone || b === bookedZone)) {
+          const ball = a === bookedZone ? b : a;
+          if (ball.label === 'Circle Body' && ball.stage >= 3 && ball.stage !== 4) {
+            ball.stage = 4;
+            ball.render.fillStyle = STAGE_COLORS[4];
+            bump('booked');
+          }
+        }
+      });
+    });
+
+    // On each engine update, check ball positions vs filter Ys to upgrade colors
+    // (we detect "ball crossed filter Y while in the gap" — only those pass)
+    Events.on(engine, 'beforeUpdate', () => {
+      Composite.allBodies(world).forEach((body) => {
+        if (body.label !== 'Circle Body' || body.stage < 0 || body.stage >= 4) return;
+        for (let i = body.stage; i < filters.length; i += 1) {
+          const f = filters[i];
+          // ball is below this filter and inside the gap → upgrade stage
+          if (body.position.y > f.yPx + 4 && body.position.x > f.gapLeft && body.position.x < f.gapRight && body.stage === i) {
+            body.stage = i + 1;
+            body.render.fillStyle = STAGE_COLORS[i + 1];
+          }
+        }
+        // If a ball is below the booked zone but never got there, count as lost
+        if (body.position.y > h - 10 && !body.counted) {
+          if (body.stage < 3) {
+            body.stage = -1;
+            body.render.fillStyle = REJECT_COLOR;
+            body.counted = true;
+            bump('lost');
+          }
+        }
+        // Cleanup: bodies that fall way off-screen
+        if (body.position.y > h + 80) {
+          Composite.remove(world, body);
+        }
+      });
+    });
+
+    // Kick off spawning once the section enters the viewport
+    const spawnObs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !spawnTimer) {
+          spawnTimer = setInterval(spawnBall, SPAWN_INTERVAL_MS);
+          spawnObs.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    spawnObs.observe(section);
+
+    // ─── Scroll trigger: activate beat captions sequentially ──
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: false,
+      onUpdate: (self) => {
+        // Map progress 0→1 to beat 0-3 active
+        const p = self.progress;
+        const activeIdx = Math.min(3, Math.floor(p * 4.001));
+        beatCopies.forEach((b, i) => b.classList.toggle('is-active', i <= activeIdx));
+        stageLabels.forEach((l, i) => l.classList.toggle('is-active', i <= activeIdx));
+      },
+    });
+    // Initially: only beat 0 active
+    beatCopies.forEach((b, i) => b.classList.toggle('is-active', i === 0));
+    stageLabels.forEach((l, i) => l.classList.toggle('is-active', i === 0));
+
+    // ─── Resize handling ─────────────────────────────────────
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const dim = sizeCanvas();
+        render.canvas.width = dim.w;
+        render.canvas.height = dim.h;
+        render.options.width = dim.w;
+        render.options.height = dim.h;
+        // (Filter positions don't auto-resize; reload to redraw correctly)
+      }, 250);
+    });
   }
 
   /* ─────────────────────────────────────────────────────────────

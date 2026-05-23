@@ -12,6 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
 </head>
 <body>
 
@@ -42,60 +43,141 @@
   </nav>
 
   <!-- ──────────────────────────────────────────────────────────────
-       HERO  —  The killer-proof-chain stat, in their face
+       HERO CASCADE  —  Physics-driven Killer Proof Chain.
+       Scroll-pinned 200vh. 1,000 buyer-balls drop, hit 3 filters,
+       19 survive into the BOOKED container. Live counters on right.
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-hero" id="s-hero">
+  <section class="s-hero-cascade" id="s-hero">
     <div class="s-hero-grid"></div>
     <div class="s-hero-glow s-hero-glow--1"></div>
     <div class="s-hero-glow s-hero-glow--2"></div>
 
-    <div class="s-hero-inner">
-      <span class="section-label s-hero-eyebrow" data-fade>Pillar · Sales</span>
+    <div class="s-cascade-pin">
+      <div class="s-cascade-inner">
 
-      <h1 class="s-hero-headline" data-fade data-delay="0.1">
-        <span class="s-hero-stat">78%</span>
-        of buyers go with whoever<br>
-        <span class="s-headline-strike">answers first.</span>
-        <span class="s-headline-accent">answers.</span>
-      </h1>
+        <!-- Left column: progressive captions -->
+        <div class="s-cascade-copy">
+          <span class="section-label s-hero-eyebrow" data-fade>Pillar · Sales</span>
 
-      <p class="s-hero-sub" data-fade data-delay="0.3">
-        Below is the story of one buyer at 11:17 PM Saturday.<br>
-        Two versions of the same Saturday night.<br>
-        Then you'll be the buyer.
-      </p>
+          <h1 class="s-cascade-headline" data-fade data-delay="0.1">
+            1,000 buyers arrive at your dealership this month.<br>
+            <span class="s-headline-accent">This is where they go.</span>
+          </h1>
 
-      <div class="s-hero-pulse" data-fade data-delay="0.6">
-        <div class="s-pulse-dot"></div>
-        <span>scroll</span>
+          <p class="s-cascade-sub" data-fade data-delay="0.25">
+            The four friction points your competitors haven't fixed. Compounded over a real funnel — the math is brutal.
+          </p>
+
+          <div class="s-cascade-beats">
+            <div class="s-cascade-beat" data-cbeat="1">
+              <span class="s-cb-num">78<span class="s-cb-pct">%</span></span>
+              <span class="s-cb-cap">of dealer sites fail Core Web Vitals — buyers bounce before becoming leads</span>
+            </div>
+            <div class="s-cascade-beat" data-cbeat="2">
+              <span class="s-cb-num">57<span class="s-cb-pct">%</span></span>
+              <span class="s-cb-cap">of dealers never respond to an inquiry in 24 hours</span>
+            </div>
+            <div class="s-cascade-beat" data-cbeat="3">
+              <span class="s-cb-num">80<span class="s-cb-pct">%</span></span>
+              <span class="s-cb-cap">of callers hit voicemail and dial a competitor instead</span>
+            </div>
+            <div class="s-cascade-beat s-cascade-beat--punch" data-cbeat="4">
+              <span class="s-cb-num">19</span>
+              <span class="s-cb-cap"><strong>of every 1,000 buyers</strong> ever booked a showing. <strong>The other 981 walked.</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: physics canvas + live counters -->
+        <div class="s-cascade-stage">
+          <div class="s-cascade-canvas-wrap" data-canvas-wrap>
+            <canvas id="cascade-canvas" data-cascade-canvas></canvas>
+            <!-- Stage labels positioned over the canvas -->
+            <div class="s-cascade-stage-label s-cascade-stage-label--1" data-stage-label="1"><span>CORE WEB VITALS</span></div>
+            <div class="s-cascade-stage-label s-cascade-stage-label--2" data-stage-label="2"><span>RESPONSE IN 24H</span></div>
+            <div class="s-cascade-stage-label s-cascade-stage-label--3" data-stage-label="3"><span>HUMAN AT THE PHONE</span></div>
+            <div class="s-cascade-stage-label s-cascade-stage-label--4" data-stage-label="4"><span>SHOWINGS BOOKED</span></div>
+          </div>
+
+          <div class="s-cascade-counters">
+            <div class="s-cc-stat">
+              <span class="s-cc-num" data-cc="arrived">0</span>
+              <span class="s-cc-lab">Buyers arrived</span>
+            </div>
+            <div class="s-cc-stat s-cc-stat--bad">
+              <span class="s-cc-num" data-cc="lost">0</span>
+              <span class="s-cc-lab">Lost at every gate</span>
+            </div>
+            <div class="s-cc-stat s-cc-stat--good">
+              <span class="s-cc-num" data-cc="booked">0</span>
+              <span class="s-cc-lab">Booked a showing</span>
+            </div>
+          </div>
+        </div>
+
       </div>
+    </div>
+
+    <div class="s-hero-pulse s-cascade-pulse" data-fade data-delay="0.6">
+      <div class="s-pulse-dot"></div>
+      <span>scroll to watch</span>
     </div>
   </section>
 
   <!-- ──────────────────────────────────────────────────────────────
-       PROOF CHAIN BAND — the four-stat cascade
+       MARINE REALITY  —  why this hits boats harder.
+       NMMA citation, Lead Black Hole, TCO Friction.
+       Bridges into the Saturday-night Castillo story (Act 1).
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-proof-chain">
-    <div class="s-proof-chain-inner">
-      <div class="s-proof-stat" data-fade>
-        <span class="s-proof-num">78%</span>
-        <span class="s-proof-cap">of dealer sites fail Core Web Vitals — buyers bounce before becoming leads</span>
+  <section class="s-marine">
+    <div class="s-marine-inner">
+
+      <div class="s-marine-copy">
+        <span class="section-label" data-fade>The marine reality</span>
+        <h2 class="s-marine-headline" data-fade data-delay="0.1">
+          Boats are the ultimate discretionary purchase.<br>
+          <span class="s-headline-accent">Marine buyers walk fastest.</span>
+        </h2>
+        <p class="s-marine-sub" data-fade data-delay="0.2">
+          Nobody needs a boat to commute. Marine retail faces the most cautious consumer behavior in the dealer world — every friction point compounds, and the buyer is one annoyance away from "never mind."
+        </p>
+
+        <div class="s-marine-citation" data-fade data-delay="0.3">
+          <div class="s-marine-stat">
+            <span class="s-marine-stat-num">70<span class="s-marine-stat-pct">%</span></span>
+            <span class="s-marine-stat-cap">of digital marine leads abandon before they ever test-drive a boat</span>
+          </div>
+          <a class="s-marine-source" href="https://www.nmma.org/" target="_blank" rel="noopener" aria-label="National Marine Manufacturers Association">
+            <img src="assets/nmma-logo-full.png" alt="National Marine Manufacturers Association" loading="lazy">
+          </a>
+        </div>
       </div>
-      <div class="s-proof-arrow" data-fade data-delay="0.08">→</div>
-      <div class="s-proof-stat" data-fade data-delay="0.16">
-        <span class="s-proof-num">57%</span>
-        <span class="s-proof-cap">of dealers never respond to an inquiry in 24 hours</span>
+
+      <div class="s-marine-cards">
+        <div class="s-marine-card" data-fade data-delay="0.35">
+          <span class="s-marine-card-tag">Frustration point #1</span>
+          <h3 class="s-marine-card-title">The Lead Black Hole</h3>
+          <p class="s-marine-card-body">
+            A buyer asks about a custom build or pings inventory at 9 PM. The dealer responds <em>three days later.</em> By then the buyer is already in real conversations with two other dealers. The lead was never lost in the CRM — it was lost to silence.
+          </p>
+        </div>
+
+        <div class="s-marine-card" data-fade data-delay="0.45">
+          <span class="s-marine-card-tag">Frustration point #2</span>
+          <h3 class="s-marine-card-title">TCO Friction</h3>
+          <p class="s-marine-card-body">
+            Slip availability. Insurance. Winterization. Storage. The sticker price is just the conversation opener. If the dealer can't seamlessly walk a buyer through the <em>total cost of ownership</em> during the sale, the logistical reality lands as a wall — and the buyer aborts.
+          </p>
+        </div>
+
+        <div class="s-marine-bridge" data-fade data-delay="0.55">
+          <span class="s-marine-bridge-dot"></span>
+          <p>
+            <strong>DealerEdge was built for both.</strong> AI never sleeps — the black hole closes. AI handles the TCO conversation in your brand voice — the friction softens. And next: AI manages the whole back office (deal flow · licensing · registration · service). See Act 4.
+          </p>
+        </div>
       </div>
-      <div class="s-proof-arrow" data-fade data-delay="0.24">→</div>
-      <div class="s-proof-stat" data-fade data-delay="0.32">
-        <span class="s-proof-num">80%</span>
-        <span class="s-proof-cap">of callers who reach voicemail hang up and call your competitor</span>
-      </div>
-      <div class="s-proof-arrow" data-fade data-delay="0.40">→</div>
-      <div class="s-proof-stat s-proof-stat--punch" data-fade data-delay="0.48">
-        <span class="s-proof-num">19%</span>
-        <span class="s-proof-cap">of boat dealers ever schedule an appointment from a web lead</span>
-      </div>
+
     </div>
   </section>
 
