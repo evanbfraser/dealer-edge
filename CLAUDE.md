@@ -86,7 +86,19 @@ The 4-stat cascade that opens any cold pitch:
 
 ## Page architecture (sales.html is the canonical pattern)
 
-A "deep-dive page" is structured as: **Hero → ProofChain band → N Acts → CTA**.
+A "deep-dive page" is structured as: **Hero Cascade → Marine Reality → N Acts → CTA**.
+
+The current `sales.html` order is:
+
+1. **Hero Cascade** (`s-hero-cascade`) — scroll-pinned 200vh physics simulation. The Killer Proof Chain visualized via 1,000 falling balls through 3 filter walls. See "Hero Cascade" section below for the full mechanic.
+2. **Marine Reality** (`s-marine`) — two-column section: NMMA citation on left (with the official NMMA logo on a white attribution card so brand colors stay intact against the dark theme), Lead Black Hole + TCO Friction frustration cards on the right + green bridge callout that explicitly ties to the Act 4 Beat 6 foreshadow ("Coming: deal flow, licensing, registration, service").
+3. **Act 1** (`s-act--without`) — Without DealerEdge, 4 beats
+4. **Pivot** (`s-pivot`) — transition
+5. **Act 2** (`s-act--with`) — With DealerEdge, 4 beats
+6. **Act 3** (`s-try`) — Try it yourself (interactive SMS demo)
+7. **Pivot 2** (`s-pivot--alt`) — transition
+8. **Act 4** (`s-act--team`) — Sales-team-side, 6 beats including ROI calc and philosophy close
+9. **CTA** (`cta-section`) — The Offer (currently static; planned for upgrade)
 
 An **Act** is a scroll-pinned scene that holds the viewport while the user scrolls through **Beats**. Each Beat is one moment in the act's story.
 
@@ -216,6 +228,64 @@ When adding new animations, follow this prefix convention so future readers can 
 
 ---
 
+## Hero Cascade (the physics simulation, `sales.html` only)
+
+The opening of the sales page is a [matter.js](https://brm.io/matter-js/) physics simulation. 1,000 buyer-balls fall through three calibrated filter walls. ~19 of them make it to the BOOKED container. Numbers tick up live on three counters. The four beat captions on the left activate as the user scrolls through the 200vh pin.
+
+### Tuning the cascade math
+
+The compounded survival math (matches the Killer Proof Chain stats):
+
+```
+1,000 buyers spawn
+    → 22% pass CWV filter      = 220 survive
+    → 43% pass response filter =  95 survive
+    → 20% pass voicemail filter=  19 survive (booked)
+```
+
+Filter pass rates live in [`js/sales.js`](js/sales.js) inside `initHeroCascade()`:
+
+```js
+const RATES = {
+  f1: 0.22,   // 78% block on CWV → 22% survive
+  f2: 0.43,   // 57% no response → 43% survive
+  f3: 0.20,   // 80% voicemail walk → 20% survive
+};
+```
+
+Filter gap widths are calibrated to roughly match these rates (`gapW = w * rate * 0.85` — the 0.85 compensates for balls bouncing back through gaps via physics, which would otherwise inflate the pass rate). If the displayed booked count drifts far from ~19, adjust the gap-width multiplier, not the RATES.
+
+### Ball color progression
+
+```
+spawn        → white #ffffff   (potential buyer)
+past filter 1→ yellow #fbbf24  (survived CWV)
+past filter 2→ orange #fb923c  (also got a response)
+past filter 3→ light green #86efac (also got a human at the phone)
+booked       → bright green #4ade80 (showing booked)
+rejected     → red #ee3a39     (hit a filter wall = lost)
+```
+
+Colors are mutated by setting `body.render.fillStyle` and matter.js's `Render` picks them up on the next frame.
+
+### Performance gates
+
+- **`visObs` IntersectionObserver** — pauses the matter.js `Runner` when the section is off-screen, resumes when back on-screen. Without this, the physics keeps running while the user is scrolled to Act 4 — pointless CPU.
+- **`spawnObs` IntersectionObserver** — spawn timer doesn't start until the section first becomes ~15% visible. Without this, the simulation completes invisibly before the user ever scrolls to it.
+- **Mobile fallback** — `if (window.innerWidth < 1100 || !window.Matter) return;` after a static counter animation. Canvas physics is a desktop experience; mobile gets a clean count-up.
+
+### When to NOT add ball physics to other beats
+
+The physics cascade is intentionally the ONLY matter.js usage on the page. Reasons:
+
+- Performance — running multiple physics worlds compounds CPU cost.
+- Visual restraint — if every section had falling balls, the cascade would lose its punch.
+- The 80KB matter.js download is justified by one big moment, not many small ones.
+
+For "particles flowing" elsewhere (e.g., the Act 4 Beat 1 funnel dots), use simple `setTimeout`-driven `<div>` particles with CSS transitions. Matter.js is reserved for the cascade.
+
+---
+
 ## Design system
 
 ### Color tokens (defined in [`css/sales.css`](css/sales.css))
@@ -274,6 +344,7 @@ All loaded via CDN in each page's `<head>`. Don't add new libraries casually —
 - [**Lenis**](https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js) v1 — smooth scroll
 - [**GSAP**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js) 3.12.5 — animations
 - [**ScrollTrigger**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js) 3.12.5 — scroll-driven triggers
+- [**matter-js**](https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js) 0.20.0 — 2D rigid-body physics. **Only used by the Hero Cascade on `sales.html`.** Don't load on other pages unless you also need a physics simulation.
 - Google Fonts: Inter + JetBrains Mono
 
 ---
@@ -364,7 +435,9 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **Don't break the scroll-pinned act sizing** (`height: N*100vh` rule). Last beat goes unreachable.
 - **Don't deploy the full source folder** to here.now — the `.git` folder is too big for Windows Git Bash to chew. Use the preview-folder pattern.
 - **Don't push to remote without committing cleanly.** Don't force-push to main.
-- **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, fonts. That's it.
+- **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, matter-js (sales.html only), fonts. That's it.
+- **Don't load matter.js on pages other than sales.html** — it's a 80KB cost for one specific feature (the Hero Cascade). Other pages shouldn't pay for it.
+- **Don't replace the cascade with multiple physics simulations** scattered across the page. One big physics moment > many small ones (performance AND visual impact reasons).
 - **Don't delete the `.s-` CSS prefix.** It's the namespace boundary; styles will leak across pages without it.
 - **Don't commit the preview folder** (`c:\Users\jason\repos\dealer-edge-preview`) into this repo.
 - **Don't reuse a `data-anim` key** across two different beats. Each key resolves to exactly one handler.
@@ -374,10 +447,10 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ## Open questions for future iterations
 
-- **Hero**: currently a static 78% stat with strike-through. Next iteration likely makes it a scroll-pinned Killer Proof Chain cascade. See conversation Sept 2025.
 - **CTA / The Offer**: currently four lines of text. Next iteration likely becomes a 3-beat sequence: vendor swap → mechanic → tier cards.
 - **Other pillars**: Marketing and Operations need the same act/beat treatment Sales got. The sales.html structure is the template.
 - **Real backends for Act 3**: SMS demo is fake-scripted. Real Twilio wiring planned later.
+- **Hero Cascade calibration**: the displayed BOOKED count is whatever the physics actually produces. If it drifts much from ~19, tune the `gapW * 0.85` multiplier or seed `RATES`.
 
 ---
 
