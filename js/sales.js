@@ -112,12 +112,15 @@
 
     // ─── State ─────────────────────────────────────────────────
     const TOTAL_BEATS = 6;
-    const TARGET_TOTAL = 1000;
+    const TARGET_TOTAL = 1000;          // displayed tally target (narrative)
+    const TARGET_VISUAL = 500;          // actual ball count for physics perf
+    const SCALE = TARGET_TOTAL / TARGET_VISUAL;   // every visible ball ≈ 2 buyers
     const BROKEN_RATES = { f1: 0.22, f2: 0.43, f3: 0.20 };   // narrow gaps
     const FIXED_RATES  = { f1: 0.94, f2: 0.91, f3: 0.92 };   // wide gaps (~786 booked)
     const FILTER_Y = [0.32, 0.52, 0.72];
     const BOOKED_Y = 0.93;
     const BALL_R = 4;
+    const SETTLE_MS = 800;              // counted balls freeze this long after being marked
     const STAGE_COLORS = ['rgba(255,255,255,0.92)', '#fbbf24', '#fb923c', '#86efac', '#4ade80'];
     const REJECT_COLOR = '#ee3a39';
     const tallyCounts = { 2: 0, 3: 0, 4: 0, 5: 0 };
@@ -147,9 +150,48 @@
       if (el) el.setAttribute('data-tally-active', 'true');
     }
 
+    // ─── Throttled DOM writes for tally + compare counters ────
+    // Collision handler updates tallyCounts / fixCounts in memory and
+    // raises dirty flags. One rAF per frame flushes those to the DOM,
+    // so 100+ collisions in a single frame still cost only one write
+    // per counter instead of one per collision.
+    const tallyDirty = { 2: false, 3: false, 4: false, 5: false };
+    let compareDirty = false;
+    let pendingFlush = false;
+
     function setTallyNum(row, value) {
       tallyCounts[row] = value;
       if (tallyNums[row]) tallyNums[row].textContent = Math.round(value).toLocaleString('en-US');
+    }
+
+    function bumpTally(row, delta = SCALE) {
+      tallyCounts[row] += delta;
+      tallyDirty[row] = true;
+      scheduleFlush();
+    }
+
+    function bumpCompare(delta = SCALE) {
+      fixCounts.booked += delta;
+      compareDirty = true;
+      scheduleFlush();
+    }
+
+    function scheduleFlush() {
+      if (pendingFlush) return;
+      pendingFlush = true;
+      requestAnimationFrame(() => {
+        pendingFlush = false;
+        [2, 3, 4, 5].forEach((row) => {
+          if (!tallyDirty[row]) return;
+          tallyDirty[row] = false;
+          const el = tallyNums[row];
+          if (el) el.textContent = Math.round(tallyCounts[row]).toLocaleString('en-US');
+        });
+        if (compareDirty) {
+          compareDirty = false;
+          if (compareAfterEl) compareAfterEl.textContent = Math.round(fixCounts.booked).toLocaleString('en-US');
+        }
+      });
     }
 
     function animateTallyTo(row, target, durMs = 900) {
@@ -233,8 +275,14 @@
     const { Engine, Render, Runner, Bodies, Body, Events, Composite } = M;
 
     const engine = Engine.create({
-      gravity: { x: 0, y: 1, scale: 0.0014 },
+      gravity: { x: 0, y: 1, scale: 0.0010 },   // slightly slower fall so the cascade reads
     });
+    // Defaults are positionIterations: 6, velocityIterations: 4.
+    // For 500 balls with the gated-cascade structure these can drop
+    // without visible artifacts, and cut per-frame CPU ~30%.
+    engine.positionIterations = 4;
+    engine.velocityIterations = 3;
+    engine.constraintIterations = 2;
     const world = engine.world;
 
     function sizeCanvas() {
@@ -256,19 +304,34 @@
         pixelRatio: window.devicePixelRatio || 1,
       },
     });
-    Render.run(render);
     const runner = Runner.create();
-    Runner.run(runner, engine);
+    // NOTE: we don't start Render or Runner yet — visObs below will
+    // start them once the section first enters the viewport. This way
+    // no CPU is spent rendering an empty canvas off-screen on load.
+    let physicsActive = false;
 
-    // Pause physics when off-screen (CPU friendly)
-    let physicsActive = true;
+    function startPhysics() {
+      if (physicsActive) return;
+      physicsActive = true;
+      Render.run(render);
+      Runner.run(runner, engine);
+    }
+    function stopPhysics() {
+      if (!physicsActive) return;
+      physicsActive = false;
+      Render.stop(render);
+      Runner.stop(runner);
+    }
+
+    // Pause BOTH render + runner when the section is off-screen.
+    // The old version only paused the Runner; Render.run was still
+    // drawing the canvas at 60fps the entire time the user was on
+    // the hero or the marine or any Act below. That alone was ~5%
+    // of the wasted CPU.
     const visObs = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        if (e.isIntersecting) {
-          if (!physicsActive) { Runner.run(runner, engine); physicsActive = true; }
-        } else {
-          if (physicsActive) { Runner.stop(runner); physicsActive = false; }
-        }
+        if (e.isIntersecting) startPhysics();
+        else stopPhysics();
       });
     }, { threshold: 0 });
     visObs.observe(section);
@@ -347,18 +410,43 @@
 
     // ─── Ball pool ───────────────────────────────────────────
     const balls = [];
+    // Counted/settling balls are pushed here with a settleAt timestamp.
+    // beforeUpdate sweeps the array once per frame and calls
+    // Body.setStatic(b, true) on any that have hung around long enough.
+    // Static bodies don't participate in active simulation — once a
+    // ball is "done" (booked or lost-and-settled) it stops costing CPU.
+    const settling = [];
+    function queueFreeze(b, delay = SETTLE_MS) {
+      b._settleAt = performance.now() + delay;
+      settling.push(b);
+    }
 
     function spawnPackedWave(opts = {}) {
       const { tagFixed = false } = opts;
-      const cols = 40;
-      const rows = Math.ceil(TARGET_TOTAL / cols);
-      const xPad = 30;
-      const colSpacing = (w - xPad * 2) / cols;
-      let count = 0;
-      for (let r = 0; r < rows && count < TARGET_TOTAL; r += 1) {
-        for (let c = 0; c < cols && count < TARGET_TOTAL; c += 1) {
-          const x = xPad + colSpacing * (c + 0.5) + (Math.random() - 0.5) * 3;
-          const y = 14 + r * (BALL_R * 2 + 1);
+      // Pack the wave into the strip ABOVE filter 1 (so all balls fall
+      // through filter 1 on release — no pre-spawned balls past it).
+      const xPad = 24;
+      const yTop = 8;
+      const yBottom = h * (FILTER_Y[0] - 0.04);   // small gap above the wall
+      const availableW = Math.max(1, w - xPad * 2);
+      const availableH = Math.max(1, yBottom - yTop);
+      // Solve cols × rows ≥ TARGET_VISUAL, fitting BALL_R*2 + small gap each cell.
+      // Pick a column count that matches the canvas aspect, then derive rows.
+      const cellSize = BALL_R * 2 + 1;       // 9px each direction
+      const maxCols = Math.max(8, Math.floor(availableW / cellSize));
+      const maxRows = Math.max(4, Math.floor(availableH / cellSize));
+      const fitCap = maxCols * maxRows;
+      const count = Math.min(TARGET_VISUAL, fitCap);
+      // Recompute cols/rows so balls roughly fill the region (square-ish grid).
+      const cols = Math.min(maxCols, Math.ceil(Math.sqrt(count * (availableW / availableH))));
+      const rows = Math.ceil(count / cols);
+      const colSpacing = availableW / cols;
+      const rowSpacing = Math.min(cellSize, availableH / rows);
+      let placed = 0;
+      for (let r = 0; r < rows && placed < count; r += 1) {
+        for (let c = 0; c < cols && placed < count; c += 1) {
+          const x = xPad + colSpacing * (c + 0.5) + (Math.random() - 0.5) * 1.5;
+          const y = yTop + r * rowSpacing + (Math.random() - 0.5) * 0.6;
           const b = Bodies.circle(x, y, BALL_R, {
             isStatic: !tagFixed,         // initial wave starts STATIC; fix wave drops immediately
             restitution: 0.4,
@@ -373,57 +461,66 @@
           b.fixed = tagFixed;
           balls.push(b);
           Composite.add(world, b);
-          count += 1;
+          placed += 1;
         }
       }
     }
 
     buildBrokenFilters();
-    spawnPackedWave();   // initial 1,000 white balls, static at top
+    spawnPackedWave();   // initial wave (~500 visible, scales to 1,000 in tallies)
 
     // ─── Collision tally + booked detection ──────────────────
     Events.on(engine, 'collisionStart', (event) => {
-      event.pairs.forEach((pair) => {
+      const pairs = event.pairs;
+      for (let i = 0; i < pairs.length; i += 1) {
+        const pair = pairs[i];
         const a = pair.bodyA, b = pair.bodyB;
         const ball = a.label === 'ball' ? a : (b.label === 'ball' ? b : null);
-        if (!ball) return;
+        if (!ball) continue;
         const other = a === ball ? b : a;
-        if (ball.stage < 0 || ball.counted || ball.stage >= 4) return;
+        if (ball.stage < 0 || ball.counted || ball.stage >= 4) continue;
 
         if (other.label === 'filterWall' && !ball.fixed) {
-          const filter = filters.find((f) =>
-            (f.leftSeg === other || f.rightSeg === other)
-          );
+          // Linear lookup over 3 filters × 2 segs = 6 refs; cheap.
+          let filter = null;
+          for (let fi = 0; fi < filters.length; fi += 1) {
+            const f = filters[fi];
+            if (f.leftSeg === other || f.rightSeg === other) { filter = f; break; }
+          }
           if (filter && ball.stage <= filter.idx) {
             ball.stage = -1;
             ball.counted = true;
             ball.render.fillStyle = REJECT_COLOR;
-            const row = filter.idx + 2;
-            setTallyNum(row, tallyCounts[row] + 1);
+            bumpTally(filter.idx + 2);
+            // Small horizontal kick so the ball slides off the wall,
+            // then queue a freeze so it stops costing CPU.
             const dir = ball.position.x < w / 2 ? -1 : 1;
             Body.applyForce(ball, ball.position, { x: dir * 0.0006, y: 0 });
+            queueFreeze(ball);
           }
         } else if (other === bookedZone) {
           if (ball.stage >= 3) {
             ball.stage = 4;
             ball.counted = true;
             ball.render.fillStyle = STAGE_COLORS[4];
-            if (ball.fixed) {
-              fixCounts.booked += 1;
-              if (compareAfterEl) compareAfterEl.textContent = fixCounts.booked.toLocaleString('en-US');
-            } else {
-              setTallyNum(5, tallyCounts[5] + 1);
-            }
+            if (ball.fixed) bumpCompare();
+            else            bumpTally(5);
+            // Booked balls are visually "done" — freeze almost
+            // immediately so the rest of the wave doesn't have to
+            // resolve collisions against a pile of bouncing balls.
+            queueFreeze(ball, 250);
           }
         }
-      });
+      }
     });
 
-    // Upgrade ball stage when it crosses a filter Y within the gap
+    // beforeUpdate: (1) upgrade stage on crossing a filter Y inside the
+    // gap; (2) sweep the settling queue and freeze landed balls.
     Events.on(engine, 'beforeUpdate', () => {
+      // Stage upgrades for in-flight balls only (skip booked + lost)
       for (let bi = 0; bi < balls.length; bi += 1) {
         const body = balls[bi];
-        if (body.stage < 0 || body.stage >= 4) continue;
+        if (body.stage < 0 || body.stage >= 4 || body.isStatic) continue;
         for (let i = body.stage; i < filters.length; i += 1) {
           const f = filters[i];
           if (body.position.y > f.yPx + 4 &&
@@ -432,6 +529,17 @@
               body.stage === i) {
             body.stage = i + 1;
             body.render.fillStyle = STAGE_COLORS[i + 1];
+          }
+        }
+      }
+      // Freeze settled balls (single pass; no per-ball setTimeout)
+      if (settling.length) {
+        const now = performance.now();
+        for (let si = settling.length - 1; si >= 0; si -= 1) {
+          const sb = settling[si];
+          if (now >= sb._settleAt) {
+            if (!sb.isStatic) Body.setStatic(sb, true);
+            settling.splice(si, 1);
           }
         }
       }
@@ -488,22 +596,33 @@
       function fadeStep() {
         const t = Math.min(1, (performance.now() - fadeStart) / fadeDur);
         const alpha = 1 - t;
-        trashBalls.forEach((b) => {
-          b.render.fillStyle = `rgba(238, 58, 57, ${(alpha * 0.85).toFixed(3)})`;
-        });
+        for (let i = 0; i < trashBalls.length; i += 1) {
+          trashBalls[i].render.fillStyle = `rgba(238, 58, 57, ${(alpha * 0.85).toFixed(3)})`;
+        }
         if (t < 1) {
           requestAnimationFrame(fadeStep);
-        } else {
-          trashBalls.forEach((b) => Composite.remove(world, b));
-          for (let i = balls.length - 1; i >= 0; i -= 1) {
-            if (balls[i].stage === -1) balls.splice(i, 1);
-          }
         }
       }
       requestAnimationFrame(fadeStep);
 
-      // 4. After fade, rebuild filters with wide green gaps + drop new wave
+      // 4. After fade, hard-clean the canvas: remove EVERY leftover
+      //    original-wave body (red trash + the ~9 booked survivors +
+      //    any in-flight stragglers), drop the old red wall segments,
+      //    rebuild green walls with wide gaps, drop the fresh wave.
+      //    Hard-cleaning is the big perf win — without it we'd be
+      //    simulating ~500 stale bodies alongside the fresh 500.
       setTimeout(() => {
+        // Remove every non-fixed ball from world + array
+        for (let i = balls.length - 1; i >= 0; i -= 1) {
+          const b = balls[i];
+          if (!b.fixed) {
+            Composite.remove(world, b);
+            balls.splice(i, 1);
+          }
+        }
+        // Drop any pending settle queue entries (their balls are gone)
+        settling.length = 0;
+
         // Remove the old red filter wall segments
         filters.forEach((f) => {
           if (f.leftSeg) Composite.remove(world, f.leftSeg);
