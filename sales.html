@@ -12,7 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
 </head>
 <body>
 
@@ -43,287 +42,90 @@
   </nav>
 
   <!-- ──────────────────────────────────────────────────────────────
-       HERO  —  the killer-proof-chain stat, in their face.
-       Static (no pin). Parallax-style: it scrolls off normally as
-       the next section (stats cascade) pins.
+       HERO + STATS  —  one scroll-pinned 6-beat experience.
+       Pillar · Sales, hero stat + headline swap per beat, prospects
+       launch into the headline-as-wall. Beat 06 dissolves the wall.
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-hero" id="s-hero">
-    <div class="s-hero-grid"></div>
-    <div class="s-hero-glow s-hero-glow--1"></div>
-    <div class="s-hero-glow s-hero-glow--2"></div>
-
-    <div class="s-hero-inner">
-      <span class="section-label s-hero-eyebrow" data-fade>Pillar · Sales</span>
-
-      <h1 class="s-hero-headline" data-fade data-delay="0.1">
-        <span class="s-hero-stat">78%</span>
-        of buyers go with whoever<br>
-        <span class="s-headline-strike">answers first.</span>
-        <span class="s-headline-accent">answers.</span>
-      </h1>
-
-      <p class="s-hero-sub" data-fade data-delay="0.3">
-        Below is the story of one buyer at 11:17 PM Saturday.<br>
-        Two versions of the same Saturday night.<br>
-        Then you'll be the buyer.
-      </p>
-
-      <div class="s-hero-pulse" data-fade data-delay="0.6">
-        <div class="s-pulse-dot"></div>
-        <span>scroll</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ──────────────────────────────────────────────────────────────
-       STATS SECTION  —  6-beat scroll-pinned physics cascade.
-       Each scroll release opens the next filter's gate. Balls pile
-       above each closed gate, drop through on advance, leaving red
-       trash piles behind as visual proof of every loss. Beat 06 is
-       the reverse cascade: filters turn green, piles dissolve, a
-       second wave of 1,000 balls mostly survives.
-       ────────────────────────────────────────────────────────────── -->
-  <section class="s-stats-section" id="stats" data-stats-section>
-    <div class="s-stats-bg-grid"></div>
-    <div class="s-stats-bg-glow s-stats-bg-glow--1"></div>
-    <div class="s-stats-bg-glow s-stats-bg-glow--2"></div>
-
-    <!-- Ambient color wash, fades through neutral → red → green per beat -->
+  <section class="s-hero s-stats-section" id="stats" data-stats-section>
+    <div class="s-hero-grid s-stats-bg-grid"></div>
+    <div class="s-hero-glow s-hero-glow--1 s-stats-bg-glow s-stats-bg-glow--1"></div>
+    <div class="s-hero-glow s-hero-glow--2 s-stats-bg-glow s-stats-bg-glow--2"></div>
     <div class="s-stats-ambient" data-stats-ambient></div>
 
-    <div class="s-stats-pin">
+    <div class="s-stats-pin s-hero-pin">
+      <div class="s-hero-inner s-hero-inner--pinned">
 
-      <!-- Top progress bar: 6 segments + click-to-jump targets + chapter eyebrow -->
-      <header class="s-stats-topbar">
-        <span class="s-stats-chapter">
-          <span class="s-stats-chapter-num">CH.&nbsp;1</span>
-          <span class="s-stats-chapter-sep">·</span>
-          <span class="s-stats-chapter-title">The funnel · today</span>
-        </span>
-        <ol class="s-stats-progress" data-stats-progress role="list" aria-label="Cascade beat navigation">
-          <li><button type="button" class="s-stats-prog-seg" data-cbeat="1" data-jump-to-beat="1" aria-label="Beat 1 — 1,000 buyers"><span class="s-stats-prog-label">01</span></button></li>
-          <li><button type="button" class="s-stats-prog-seg" data-cbeat="2" data-jump-to-beat="2" aria-label="Beat 2 — 78% bounce"><span class="s-stats-prog-label">02</span></button></li>
-          <li><button type="button" class="s-stats-prog-seg" data-cbeat="3" data-jump-to-beat="3" aria-label="Beat 3 — 57% no response"><span class="s-stats-prog-label">03</span></button></li>
-          <li><button type="button" class="s-stats-prog-seg" data-cbeat="4" data-jump-to-beat="4" aria-label="Beat 4 — 80% voicemail"><span class="s-stats-prog-label">04</span></button></li>
-          <li><button type="button" class="s-stats-prog-seg" data-cbeat="5" data-jump-to-beat="5" aria-label="Beat 5 — 19 booked"><span class="s-stats-prog-label">05</span></button></li>
-          <li><button type="button" class="s-stats-prog-seg s-stats-prog-seg--fix" data-cbeat="6" data-jump-to-beat="6" aria-label="Beat 6 — DealerEdge"><span class="s-stats-prog-label">06</span></button></li>
-        </ol>
-        <span class="s-stats-counter" data-stats-counter aria-live="polite"><span data-stats-counter-active>01</span><span class="s-stats-counter-sep">/</span><span class="s-stats-counter-total">06</span></span>
-      </header>
+        <div class="s-beat-wall" data-beat-wall>
+          <h1 class="s-hero-headline" data-wall-headline data-hero-headline aria-live="polite">
+            <span class="s-hero-stat" data-hero-stat>78<span class="s-hero-stat-suffix">%</span></span>
+            <span class="s-hero-headline-body" data-hero-headline-body>
+              of buyers go with whoever<br>
+              <span class="s-headline-strike">answers first.</span>
+              <span class="s-headline-accent">answers.</span>
+            </span>
+          </h1>
+        </div>
 
-      <div class="s-stats-inner">
+        <div class="s-hero-sub-slides" data-hero-sub-slides>
+          <p class="s-hero-sub is-active" data-slide="1">Same lead. Faster dealership. Deal gone.</p>
+          <p class="s-hero-sub" data-slide="2">We audited 200 marine dealership sites. Average mobile LCP: <strong>17.3s</strong>. Google wants under 2.5.</p>
+          <p class="s-hero-sub" data-slide="3">By Monday, the buyer has already moved on.</p>
+          <p class="s-hero-sub" data-slide="4">The rep is on the lot. The buyer is already calling the next dealer.</p>
+          <p class="s-hero-sub" data-slide="5">The other 981 didn't say no. Most just disappeared.</p>
+          <p class="s-hero-sub s-hero-sub--fix" data-slide="6">Same traffic. Fewer dead ends. More buyers make it through.</p>
+        </div>
 
-        <!-- LEFT: one slide at a time. The active slide cross-fades on
-             beat advance; non-active slides are visually hidden. The
-             stat number is the hero. -->
-        <aside class="s-cascade-copy" data-cascade-copy>
-          <div class="s-cascade-slide is-active" data-slide="1">
-            <span class="s-slide-eyebrow"><span class="s-slide-beat-num">Beat 01</span> · The funnel</span>
-            <span class="s-slide-stat" data-slide-stat>1,000</span>
-            <h2 class="s-slide-headline">buyers walk onto your lot this month.</h2>
-            <p class="s-slide-desc">Every white dot is one person ready to spend $40k+ on a boat. Watch what your funnel does to them.</p>
+        <div class="s-scene-stage" data-scene-stage>
+          <div class="s-scene-context" data-scene-context>Buyers hitting your process</div>
+
+          <div class="s-convert-zone" data-convert-zone>
+            <span class="s-zone-label" data-zone-label-good>Converted</span>
+            <span class="s-zone-count" data-zone-count>0</span>
           </div>
-          <div class="s-cascade-slide" data-slide="2">
-            <span class="s-slide-eyebrow"><span class="s-slide-beat-num">Beat 02</span> · Core Web Vitals</span>
-            <span class="s-slide-stat" data-slide-stat>78<span class="s-slide-stat-pct">%</span></span>
-            <h2 class="s-slide-headline">bounce before they ever see a boat.</h2>
-            <p class="s-slide-desc">Slow site. Bad mobile. The first gate holds — most never make it through.</p>
-          </div>
-          <div class="s-cascade-slide" data-slide="3">
-            <span class="s-slide-eyebrow"><span class="s-slide-beat-num">Beat 03</span> · No response in 24h</span>
-            <span class="s-slide-stat" data-slide-stat>57<span class="s-slide-stat-pct">%</span></span>
-            <h2 class="s-slide-headline">of the rest never hear back from you.</h2>
-            <p class="s-slide-desc">Your inbox is buried by Monday. The second gate holds.</p>
-          </div>
-          <div class="s-cascade-slide" data-slide="4">
-            <span class="s-slide-eyebrow"><span class="s-slide-beat-num">Beat 04</span> · Voicemail wall</span>
-            <span class="s-slide-stat" data-slide-stat>80<span class="s-slide-stat-pct">%</span></span>
-            <h2 class="s-slide-headline">hit voicemail and never call back.</h2>
-            <p class="s-slide-desc">Rep on the lot. Buyer on hold. The last gate holds.</p>
-          </div>
-          <div class="s-cascade-slide" data-slide="5">
-            <span class="s-slide-eyebrow"><span class="s-slide-beat-num">Beat 05</span> · The truth</span>
-            <span class="s-slide-stat" data-slide-stat>19</span>
-            <h2 class="s-slide-headline">of every 1,000 ever book a showing.</h2>
-            <p class="s-slide-desc">The other 981 walked. You never even knew they were here.</p>
-          </div>
-          <div class="s-cascade-slide s-cascade-slide--fix" data-slide="6">
-            <span class="s-slide-eyebrow s-slide-eyebrow--fix"><span class="s-slide-beat-num">Beat 06</span> · With DealerEdge</span>
-            <span class="s-slide-stat s-slide-stat--fix" data-slide-stat data-slide-stat-target="786">0</span>
-            <h2 class="s-slide-headline">of every 1,000 booked — every gate dissolved.</h2>
-            <p class="s-slide-desc">Same buyers. Same funnel. AI on every step. <strong>That's a 41× lift.</strong></p>
-          </div>
-        </aside>
 
-        <!-- RIGHT: canvas as a stage. Multi-layer glow frame, vignette,
-             beat-tinted halo. Filter labels render BESIDE walls with
-             leader lines. Tally column floats over the canvas. -->
-        <div class="s-cascade-stage" data-cascade-stage>
-          <div class="s-cascade-canvas-wrap" data-canvas-wrap>
-            <canvas id="cascade-canvas" data-cascade-canvas></canvas>
-
-            <!-- Force-field glow halos at filter positions (CSS overlay,
-                 not matter.js geometry — purely visual). -->
-            <div class="s-force-field s-force-field--1" data-force-field="1"></div>
-            <div class="s-force-field s-force-field--2" data-force-field="2"></div>
-            <div class="s-force-field s-force-field--3" data-force-field="3"></div>
-
-            <!-- Filter labels: bigger, beside-the-wall, with leader lines -->
-            <div class="s-cascade-stage-label s-cascade-stage-label--1" data-stage-label="1">
-              <span class="s-stage-leader" aria-hidden="true"></span>
-              <span class="s-stage-pct">78%</span>
-              <span class="s-stage-name">Core Web Vitals</span>
-            </div>
-            <div class="s-cascade-stage-label s-cascade-stage-label--2" data-stage-label="2">
-              <span class="s-stage-leader" aria-hidden="true"></span>
-              <span class="s-stage-pct">57%</span>
-              <span class="s-stage-name">No response in 24h</span>
-            </div>
-            <div class="s-cascade-stage-label s-cascade-stage-label--3" data-stage-label="3">
-              <span class="s-stage-leader" aria-hidden="true"></span>
-              <span class="s-stage-pct">80%</span>
-              <span class="s-stage-name">Voicemail wall</span>
-            </div>
-            <div class="s-cascade-stage-label s-cascade-stage-label--4" data-stage-label="4">
-              <span class="s-stage-leader" aria-hidden="true"></span>
-              <span class="s-stage-pct">19</span>
-              <span class="s-stage-name">Showings booked</span>
-            </div>
-
-            <!-- Particle layer for theatrical Beat 06 wall-shatter effect -->
-            <div class="s-fx-layer" data-fx-layer aria-hidden="true"></div>
-
-            <!-- Per-beat tally column (top-right). Rows stamp in. -->
-            <ol class="s-tally" data-tally aria-live="polite" role="list">
-              <li class="s-tally-row" data-tally-row="2">
-                <span class="s-tally-pct">78%</span>
-                <span class="s-tally-meta">
-                  <span class="s-tally-label">CWV bounce</span>
-                  <span class="s-tally-num"><span data-tally-num="2">0</span> <em>lost</em></span>
-                </span>
-              </li>
-              <li class="s-tally-row" data-tally-row="3">
-                <span class="s-tally-pct">57%</span>
-                <span class="s-tally-meta">
-                  <span class="s-tally-label">No response</span>
-                  <span class="s-tally-num"><span data-tally-num="3">0</span> <em>lost</em></span>
-                </span>
-              </li>
-              <li class="s-tally-row" data-tally-row="4">
-                <span class="s-tally-pct">80%</span>
-                <span class="s-tally-meta">
-                  <span class="s-tally-label">Voicemail</span>
-                  <span class="s-tally-num"><span data-tally-num="4">0</span> <em>lost</em></span>
-                </span>
-              </li>
-              <li class="s-tally-row s-tally-row--final" data-tally-row="5">
-                <span class="s-tally-pct">19</span>
-                <span class="s-tally-meta">
-                  <span class="s-tally-label">Booked</span>
-                  <span class="s-tally-num"><span data-tally-num="5">0</span> <em>of 1k</em></span>
-                </span>
-              </li>
-            </ol>
-
-            <!-- Beat 06 compare overlay (hidden until beat 6) -->
-            <div class="s-compare" data-compare hidden>
-              <span class="s-compare-eyebrow-top">The same 1,000 buyers · re-run with DealerEdge</span>
-              <div class="s-compare-row">
-                <div class="s-compare-col s-compare-before">
-                  <span class="s-compare-eyebrow">Without</span>
-                  <span class="s-compare-num">19</span>
-                  <span class="s-compare-sub">booked</span>
+          <div class="s-prospect-lane" data-prospect-lane aria-hidden="true">
+            <div class="s-bar-chart" data-bar-chart>
+              <div class="s-bar-col s-bar-col--pass">
+                <div class="s-bar-frame" data-bar-frame-passed aria-hidden="true">
+                  <div class="s-bar-fill s-bar-fill--pass" data-bar-fill-passed></div>
                 </div>
-                <svg class="s-compare-swoosh" data-compare-swoosh viewBox="0 0 200 60" aria-hidden="true">
-                  <path d="M 8 40 Q 100 -10 192 40" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="400" stroke-dashoffset="400"/>
-                  <polygon points="192,40 184,34 184,46" fill="currentColor"/>
-                </svg>
-                <div class="s-compare-col s-compare-after">
-                  <span class="s-compare-eyebrow">With DealerEdge</span>
-                  <span class="s-compare-num"><span data-compare-after>0</span></span>
-                  <span class="s-compare-sub">booked · 41× lift</span>
-                </div>
+                <div class="s-bar-stack" data-bar-stack-passed></div>
+                <span class="s-bar-caption s-bar-caption--pass" data-bar-caption-good>Made it through</span>
               </div>
-              <p class="s-compare-cap">Same buyers. Same funnel. AI never sleeps. The gates dissolve.</p>
+              <div class="s-bar-col s-bar-col--fail">
+                <div class="s-bar-frame" data-bar-frame-lost aria-hidden="true">
+                  <div class="s-bar-fill s-bar-fill--fail" data-bar-fill-lost></div>
+                </div>
+                <div class="s-bar-stack" data-bar-stack-lost></div>
+                <span class="s-bar-caption s-bar-caption--fail" data-bar-caption-bad>Gave up</span>
+              </div>
             </div>
           </div>
-        </div>
 
-      </div>
-    </div>
-  </section>
-
-  <!-- ──────────────────────────────────────────────────────────────
-       CHAPTER DIVIDER — bridge from the funnel cascade into the
-       marine reality. Full-bleed transition card, Apple-style.
-       ────────────────────────────────────────────────────────────── -->
-  <section class="s-chapter-divider">
-    <div class="s-chapter-inner">
-      <span class="s-chapter-num" data-fade>Ch. 2</span>
-      <h2 class="s-chapter-title" data-fade data-delay="0.1">
-        Why marine buyers walk fastest.
-      </h2>
-      <p class="s-chapter-sub" data-fade data-delay="0.2">
-        The math you just watched? In marine, it's worse.
-      </p>
-      <span class="s-chapter-rule" data-fade data-delay="0.3" aria-hidden="true"></span>
-    </div>
-  </section>
-
-  <!-- ──────────────────────────────────────────────────────────────
-       MARINE REALITY  —  why this hits boats harder.
-       NMMA citation, Lead Black Hole, TCO Friction.
-       Bridges into the Saturday-night Castillo story (Act 1).
-       ────────────────────────────────────────────────────────────── -->
-  <section class="s-marine">
-    <div class="s-marine-inner">
-
-      <div class="s-marine-copy">
-        <span class="section-label" data-fade>The marine reality</span>
-        <h2 class="s-marine-headline" data-fade data-delay="0.1">
-          Boats are the ultimate discretionary purchase.<br>
-          <span class="s-headline-accent">Marine buyers walk fastest.</span>
-        </h2>
-        <p class="s-marine-sub" data-fade data-delay="0.2">
-          Nobody needs a boat to commute. Marine retail faces the most cautious consumer behavior in the dealer world — every friction point compounds, and the buyer is one annoyance away from "never mind."
-        </p>
-
-        <div class="s-marine-citation" data-fade data-delay="0.3">
-          <div class="s-marine-stat">
-            <span class="s-marine-stat-num">70<span class="s-marine-stat-pct">%</span></span>
-            <span class="s-marine-stat-cap">of digital marine leads abandon before they ever test-drive a boat</span>
+          <div class="s-gave-up-zone" data-gave-up-zone aria-live="polite">
+            <span class="s-zone-label s-zone-label--bad" data-zone-label-bad>Gave up</span>
+            <span class="s-zone-count s-zone-count--bad" data-scene-lost>0</span>
           </div>
-          <a class="s-marine-source" href="https://www.nmma.org/" target="_blank" rel="noopener" aria-label="National Marine Manufacturers Association">
-            <img src="assets/nmma-logo-full.png" alt="National Marine Manufacturers Association" loading="lazy">
-          </a>
-        </div>
-      </div>
 
-      <div class="s-marine-cards">
-        <div class="s-marine-card" data-fade data-delay="0.35">
-          <span class="s-marine-card-tag">Frustration point #1</span>
-          <h3 class="s-marine-card-title">The Lead Black Hole</h3>
-          <p class="s-marine-card-body">
-            A buyer asks about a custom build or pings inventory at 9 PM. The dealer responds <em>three days later.</em> By then the buyer is already in real conversations with two other dealers. The lead was never lost in the CRM — it was lost to silence.
-          </p>
+          <p class="s-scene-scale" data-scene-scale>15 dots visualize the split · counts scale to 1,000 buyers</p>
+
+          <div class="s-fx-layer" data-fx-layer aria-hidden="true"></div>
+          <div class="s-scene-next" data-scene-next hidden>Scroll to see how.</div>
         </div>
 
-        <div class="s-marine-card" data-fade data-delay="0.45">
-          <span class="s-marine-card-tag">Frustration point #2</span>
-          <h3 class="s-marine-card-title">TCO Friction</h3>
-          <p class="s-marine-card-body">
-            Slip availability. Insurance. Winterization. Storage. The sticker price is just the conversation opener. If the dealer can't seamlessly walk a buyer through the <em>total cost of ownership</em> during the sale, the logistical reality lands as a wall — and the buyer aborts.
-          </p>
+        <div class="s-hero-pulse" aria-hidden="true">
+          <div class="s-pulse-dot"></div>
+          <span>scroll</span>
         </div>
 
-        <div class="s-marine-bridge" data-fade data-delay="0.55">
-          <span class="s-marine-bridge-dot"></span>
+        <div class="s-hero-story-handoff" data-hero-story-handoff>
           <p>
-            <strong>DealerEdge was built for both.</strong> AI never sleeps — the black hole closes. AI handles the TCO conversation in your brand voice — the friction softens. And next: AI manages the whole back office (deal flow · licensing · registration · service). See Act 4.
+            Below is the story of one buyer at 11:17 PM Saturday.<br>
+            Two versions of the same Saturday night.<br>
+            Then you'll be the buyer.
           </p>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -499,6 +301,55 @@
       </div>
     </div>
   </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       MARINE PROOF — compact context after the lost Saturday story
+       ────────────────────────────────────────────────────────────── -->
+  <section class="s-marine-proof" data-fade>
+    <div class="s-marine-proof-inner">
+      <span class="s-marine-proof-rule" aria-hidden="true"></span>
+      <div class="s-marine-proof-copy">
+        <span class="section-label">Marine reality</span>
+        <h2>That lost Saturday hurts more in marine.</h2>
+        <p>
+          Boats are discretionary. Every delay, unanswered call, and ownership question gives the buyer one more reason to say "never mind."
+        </p>
+      </div>
+      <button class="s-marine-proof-card" type="button" data-marine-modal-open aria-haspopup="dialog">
+        <span class="s-marine-proof-stat">70<span>%</span></span>
+        <span class="s-marine-proof-label">of digital marine leads abandon before they ever test-drive a boat</span>
+        <span class="s-marine-proof-source">View NMMA context</span>
+      </button>
+    </div>
+  </section>
+
+  <dialog class="s-marine-modal" data-marine-modal aria-labelledby="marine-modal-title">
+    <button class="s-marine-modal-close" type="button" data-marine-modal-close aria-label="Close marine context">&times;</button>
+    <div class="s-marine-modal-grid">
+      <div>
+        <span class="section-label">Marine context</span>
+        <h2 id="marine-modal-title">Why marine buyers walk fastest.</h2>
+        <p>
+          Nobody needs a boat to commute. Marine retail faces the most cautious consumer behavior in the dealer world, so every friction point compounds.
+        </p>
+      </div>
+      <div class="s-marine-modal-stat">
+        <span>70%</span>
+        <p>of digital marine leads abandon before they ever test-drive a boat.</p>
+        <a class="s-marine-source" href="https://www.nmma.org/" target="_blank" rel="noopener" aria-label="National Marine Manufacturers Association">
+          <img src="assets/nmma-logo-full.png" alt="National Marine Manufacturers Association" loading="lazy">
+        </a>
+      </div>
+      <div class="s-marine-modal-card">
+        <h3>The lead black hole</h3>
+        <p>A buyer asks about a custom build or pings inventory at 9 PM. The dealer responds three days later. By then, the buyer is already talking to two other dealers.</p>
+      </div>
+      <div class="s-marine-modal-card">
+        <h3>TCO friction</h3>
+        <p>Slip availability. Insurance. Winterization. Storage. The sticker price is only the opener. If the dealer cannot answer the ownership questions, the buyer stalls.</p>
+      </div>
+    </div>
+  </dialog>
 
   <!-- ──────────────────────────────────────────────────────────────
        PIVOT — the moment between the two stories

@@ -86,20 +86,19 @@ The 4-stat cascade that opens any cold pitch:
 
 ## Page architecture (sales.html is the canonical pattern)
 
-A "deep-dive page" is structured as: **Hero → Stats Section → Marine Reality → N Acts → CTA**.
+A "deep-dive page" is structured as: **Pinned Hero (Killer Proof Chain) → Marine Reality → N Acts → CTA**.
 
 The current `sales.html` order is:
 
-1. **Hero** (`s-hero`) — static (no scroll-pin), full-viewport. The "78% of buyers go with whoever answers first/answers" strike-through headline. Parallaxes off as the user scrolls. Sets up the story; doesn't carry the cascade.
-2. **Stats Section** (`s-stats-section`, `id="stats"`) — scroll-pinned 600vh physics cascade. 6 beats; see "Stats Section" below for the full mechanic. Each scroll release opens the next filter's gate. Beat 06 is the reverse cascade.
-3. **Marine Reality** (`s-marine`) — two-column section: NMMA citation on left (with the official NMMA logo on a white attribution card so brand colors stay intact against the dark theme), Lead Black Hole + TCO Friction frustration cards on the right + green bridge callout that explicitly ties to the Act 4 Beat 6 foreshadow ("Coming: deal flow, licensing, registration, service").
-4. **Act 1** (`s-act--without`) — Without DealerEdge, 4 beats
-5. **Pivot** (`s-pivot`) — transition
-6. **Act 2** (`s-act--with`) — With DealerEdge, 4 beats
-7. **Act 3** (`s-try`) — Try it yourself (interactive SMS demo)
-8. **Pivot 2** (`s-pivot--alt`) — transition
-9. **Act 4** (`s-act--team`) — Sales-team-side, 6 beats including ROI calc and philosophy close
-10. **CTA** (`cta-section`) — The Offer (currently static; planned for upgrade)
+1. **Hero + Stats** (`s-hero.s-stats-section`, `id="stats"`) — **one** scroll-pinned 600vh experience. The big stat + `<h1>` headline swap per beat; prospects launch from the scene lane and feed proportional green/red bars. Beat 06 dissolves the wall and becomes the narrative turn: "Recover buyers you already paid to attract" + "Scroll to see how." See "Pinned hero (Killer Proof Chain)" below.
+2. **Act 1** (`s-act--without`) — Without DealerEdge, 4 beats
+3. **Marine Proof** (`s-marine-proof`) — compact post-Act-1 context card with NMMA modal. Keep this light so the John Castillo scenario remains the main path.
+4. **Pivot** (`s-pivot`) — transition
+5. **Act 2** (`s-act--with`) — With DealerEdge, 4 beats
+6. **Act 3** (`s-try`) — Try it yourself (interactive SMS demo)
+7. **Pivot 2** (`s-pivot--alt`) — transition
+8. **Act 4** (`s-act--team`) — Sales-team-side, 6 beats including ROI calc and philosophy close
+9. **CTA** (`cta-section`) — The Offer (currently static; planned for upgrade)
 
 An **Act** is a scroll-pinned scene that holds the viewport while the user scrolls through **Beats**. Each Beat is one moment in the act's story.
 
@@ -142,7 +141,7 @@ If you change the number of beats, change the height. If you forget, the last be
 
 ### Mobile breakpoint
 
-At ≤1100px wide, the scroll-pin is disabled and beats stack vertically. JS detects this and switches from `ScrollTrigger.onUpdate` to per-beat `IntersectionObserver`. Don't break this fallback when adding beats.
+At ≤1100px wide, the stats section keeps scroll-pin but stacks the scene stage vertically (prospects launch upward). Acts disable scroll-pin and stack beats vertically. JS uses `playSceneStatic()` for reduced-motion; otherwise GSAP launches with the same scroll progress mapping.
 
 ---
 
@@ -212,12 +211,7 @@ The pattern lives in the `acts.forEach((act) => {...})` block. If you ever see a
 Use `data-*` attrs as DOM hooks instead of class selectors. CSS classes are for styling state; data attrs are for JS plumbing.
 
 - `data-anim="actN-beatM"` — registers a beat with the dispatch
-- `data-stats-section`, `data-cascade-copy`, `data-cascade-stage`, `data-canvas-wrap`, `data-cascade-canvas` — Stats Section root hooks
-- `data-cbeat`, `data-jump-to-beat` — Stats Section beat buttons (left column); the latter enables scroll-jump nav
-- `data-stage-label` — Stats Section filter labels overlaid on canvas
-- `data-tally`, `data-tally-row`, `data-tally-num`, `data-tally-active` — Stats Section per-filter loss tally column (top-right)
-- `data-compare`, `data-compare-active`, `data-compare-after` — Stats Section Beat 06 before/after overlay
-- `data-mode="fix"` on `.s-cascade-canvas-wrap` — Stats Section Beat 06 reverse-cascade reskin
+- `data-stats-section`, `data-hero-stat`, `data-hero-headline-body`, `data-hero-sub-slides`, `data-scene-stage`, `data-beat-wall`, `data-wall-headline`, `data-prospect-lane`, `data-bar-stack-passed`, `data-bar-stack-lost`, `data-convert-zone`, `data-gave-up-zone`, `data-zone-count`, `data-scene-lost`, `data-scene-scale`, `data-scene-next`, `data-fx-layer` — pinned hero + scene hooks
 - `data-form`, `data-field`, `data-typed`, `data-submit-btn`, `data-confirm` — Act 1 Beat 1 form anim
 - `data-inbox-list`, `data-inbox-silence` — Act 1 Beat 2 inbox
 - `data-timeline-events` — Act 1 Beat 3 timeline
@@ -235,121 +229,53 @@ When adding new animations, follow this prefix convention so future readers can 
 
 ---
 
-## Stats Section (the 6-beat physics cascade, `sales.html` only)
+## Pinned hero (Killer Proof Chain, `sales.html` only)
 
-The second section of `sales.html` is a [matter.js](https://brm.io/matter-js/) physics simulation that walks the Killer Proof Chain beat by beat. 1,000 buyer-balls sit static at the top. Each scroll release opens the next filter's gate, balls drop, and red trash piles accumulate against the walls as visual proof of every loss. Beat 06 dissolves the gates and runs a green wave that mostly survives — the "with DealerEdge" reversal.
+The opening section of `sales.html` is a **single merged** scroll-pinned block: `section.s-hero.s-stats-section` at `600vh` (six beats × 100vh), sticky on `.s-hero-pin`. There is no separate static hero above it.
 
-The section is `600vh` (six beats × 100vh) and is scroll-pinned via CSS sticky on `.s-stats-pin`.
+**Layout (top → bottom inside the pin):** `[data-beat-wall]` wrapping the `<h1>` (big stat via `[data-hero-stat]` + body via `[data-hero-headline-body]`) → rotating subheads in `[data-hero-sub-slides]` → `[data-scene-stage]` (convert zone, prospect lane, counters, next-step prompt) → scroll pulse → Beat 06-only story handoff.
+
+Fifteen visible prospect dots launch per beat (from the center lane toward the headline wall, then into proportional green/red bar columns in the middle). Side boxes show **literal dot counts** (3 converted = "3", 12 gave up = "12"); the footnote explains the dots visualize the split. Beat 06 removes the numbers entirely and becomes the strategic turn: same traffic, fewer dead ends, scroll to see how. **matter.js is not used** — GSAP timelines + DOM sprites only.
 
 ### 6-beat structure
 
-| Beat | Left caption | Physics action | Tally row |
+| Beat | Stat | Headline body (wall) | Pass rate (15 visible) |
 |---|---|---|---|
-| 01 | "1,000 buyers arrive…" | Spawn 1,000 white balls at top, **isStatic: true** (hovering) | none |
-| 02 | "78% bounce on CWV" | `setStatic(false)` → balls drop. 78% bounce off Filter 1's wall (red trash), 22% pile above Gate 1. | row 2: `780 lost` |
-| 03 | "57% never get a response" | `World.remove(gate[0])` → survivors fall through. 57% bounce off Filter 2 wall, 43% pile above Gate 2. | row 3: `125 lost` |
-| 04 | "80% hit voicemail" | `World.remove(gate[1])` → survivors fall. 80% bounce off Filter 3 wall, 19 pile above Gate 3. | row 4: `76 lost` |
-| 05 | "19 of every 1,000" | `World.remove(gate[2])` → 19 survivors land in BOOKED sensor zone (bright green). | row 5 (final): `19 booked` |
-| 06 | "DealerEdge dissolves every gate" | Filter wall segments turn green, red trash piles fade then are removed from world, filter walls rebuilt with WIDE green gaps, second 1,000-ball wave drops. `compareEl` overlay reveals "Without 19 → With ~786" comparison live. | compare overlay |
+| 01 · Speed | 78% | of buyers go with whoever ~~answers first~~ **answers.** | 3 pass (22%) |
+| 02 · Site speed | -7% | per second over 3s your site takes to load. | 3 pass (22%) |
+| 03 · Response | 57% | never get a response in 24 hours. | 6 pass (43%) |
+| 04 · Voicemail | 80% | of callers who hit voicemail hang up and never call back. | 3 pass (20%) |
+| 05 · Truth | 19 | of every 1,000 visitors ever book a showing. | 1 pass (~2%) |
+| 06 · DealerEdge | — | Recover buyers you already paid to attract. | 12 pass (~79%); wall dissolves |
 
-The actual counts are organic — physics is chaotic, so the displayed numbers are whatever the simulation produces, not pre-computed totals.
+Beat 02 subhead cites the 200-site audit: average mobile LCP **17.3s**. Beat 06 reveals the `Scroll to see how.` prompt instead of a numeric compare.
 
-### The gated-filter mechanic
+### Scene reset on every beat
 
-This is the unlock that makes the wave-on-scroll work. Each filter has THREE bodies:
+`enterBeat(beat)` updates hero copy via `applyWallForBeat()`, increments `sceneGen`, and calls `playScene()` which **fully resets** prospects and counters. Scrolling backward replays the scene from scratch.
 
-1. **Left wall segment** — solid, fills `[0, gapLeft]` at the filter's Y position
-2. **Right wall segment** — solid, fills `[gapRight, w]` at the filter's Y position
-3. **Gate** — solid, fills `[gapLeft, gapRight]` at the filter's Y position, **removable**
+### Headline-as-wall collision
 
-Together they form a complete wall. Balls pile above. When the user scrolls into the next beat, `World.remove(world, filter.gate)` opens the gap. Balls flow through naturally. No teleporting, no fake pouring, no fighting gravity.
+Prospects are `.s-prospect` divs appended to `.s-hero-inner--pinned` (not the scene stage). GSAP animates them toward `[data-beat-wall]`'s bounding box (diagonal on desktop, vertical on mobile). Failures trigger a small impact particle at the wall, then dots continue into the red bar and disappear as the bar fill rises. Successes continue into the green bar with `.is-passed` + `spawnBurst()` confetti in `[data-fx-layer]`.
 
-```js
-function buildBrokenFilters() {
-  FILTER_Y.forEach((yPct, i) => {
-    const rate = [BROKEN_RATES.f1, BROKEN_RATES.f2, BROKEN_RATES.f3][i];
-    const gapW = Math.max(44, w * rate * 0.85);
-    const gapLeft = (w - gapW) / 2;
-    const gapRight = gapLeft + gapW;
-    const yPx = h * yPct;
-    const leftSeg  = Bodies.rectangle(/*…*/, makeFilterStyle());
-    const rightSeg = Bodies.rectangle(/*…*/, makeFilterStyle());
-    const gate     = Bodies.rectangle(/*…*/, makeGateStyle());
-    Composite.add(world, [leftSeg, rightSeg, gate]);
-    filters.push({ /*…*/, gate, idx: i, open: false });
-  });
-}
-function openGate(i) {
-  const f = filters[i];
-  if (!f || f.open) return;
-  f.open = true;
-  Composite.remove(world, f.gate);
-}
-```
+Beat 01 strike-through: `is-revealed` on `[data-wall-headline]` ~1.2s after first paint (see `applyWallForBeat`).
 
-### Forward-only beat advancement (no rewind reset)
+Beat 06 sequence (`playBeat6Finale`):
 
-`enterBeat(beat)` is **monotonically progressive**. Jumping forward (1 → 5) cascades all intermediate state changes (release balls, open gates 0/1/2, reveal tally rows). Jumping backward (5 → 2) only updates the active caption / completed dots — the canvas keeps its accumulated state (red trash piles, counters frozen at their current values).
-
-This is by design. A "true reset" would require wiping and replaying the matter.js world on every backward jump, which is expensive and visually jarring. Reviewing past beats with the canvas in its "story so far" state is the simpler read.
-
-The scroll-jump nav (`[data-jump-to-beat]` buttons in the left column) uses `lenis.scrollTo` so the smooth-scroll engine handles the animation.
-
-### Reverse cascade (Beat 06)
-
-`runReverseCascade()` fires once when the user crosses into Beat 06:
-
-1. Set `[data-mode="fix"]` on `.s-cascade-canvas-wrap` — CSS swaps the tint from red to green.
-2. Color all old filter wall segments green (visual cue: "AI dissolves the obstacles").
-3. Fade red trash balls' alpha from 1 → 0 over ~0.9s, then `Composite.remove` them and splice from the `balls[]` array.
-4. After fade, remove the old red filter wall segments and rebuild filters with WIDE green gaps (using `FIXED_RATES` instead of `BROKEN_RATES`).
-5. Spawn a second 1,000-ball wave tagged with `b.fixed = true`, dropping immediately (not static-and-released).
-6. Reveal `.s-compare` overlay. The "With DealerEdge" counter ticks up live as `b.fixed` balls land in the BOOKED sensor zone.
-
-The pass rate flips from `0.22 * 0.43 * 0.20 ≈ 1.9%` to `0.94 * 0.91 * 0.92 ≈ 78.7%`. Same canvas, same gravity, dissolved gates. ~786 booked vs 19.
-
-### Ball color progression
-
-```
-spawn        → white #ffffff   (potential buyer)
-past filter 1→ yellow #fbbf24  (survived CWV)
-past filter 2→ orange #fb923c  (also got a response)
-past filter 3→ light green #86efac (also got a human at the phone)
-booked       → bright green #4ade80 (showing booked)
-rejected     → red #ee3a39     (hit a filter wall = lost)
-```
-
-Colors are mutated by setting `body.render.fillStyle` and matter.js's `Render` picks them up on the next frame.
+1. `.is-dissolved` fades the wall; headline turns green.
+2. Second prospect wave launches with ~79% pass rate.
+3. `[data-scene-next]` reveals **Scroll to see how.**
 
 ### Performance gates
 
-- **`visObs` IntersectionObserver** — pauses the matter.js `Runner` when the section is off-screen, resumes when back on-screen. Without this, the physics keeps running while the user is scrolled to Act 4 — pointless CPU.
-- **Mobile / reduced-motion fallback** — `if (isSmallViewport || !window.Matter || prefersReducedMotion) initStatsSectionFallback();` short-circuits the entire physics stack. The fallback animates the four tallies to their target counts and reveals the compare overlay statically. The scroll-jump nav still works for both paths.
-- **Static initial wave** — the initial 1,000 balls spawn as `isStatic: true`. Matter.js doesn't simulate static bodies. Only on Beat 02 entry do we `setStatic(false)` and pay the per-frame cost.
-- **Trash cleanup at Beat 06** — when the reverse cascade fires, ~981 red trash balls are removed from the world after their fade-out so the green wave isn't simulated alongside the dead pile.
+- **`sectionObs` IntersectionObserver** — only runs `playScene()` when the section is on-screen.
+- **`stillCurrent` / `sceneGen`** — stale launch timelines bail when the user jumps beats mid-animation.
+- **`prefers-reduced-motion` / ≤1100px** — `playSceneStatic()` shows final pass/fail positions instantly, no GSAP arcs.
+- **15 DOM nodes per scene** — negligible CPU vs physics.
 
-### Tuning the cascade math
+### When to NOT add physics to other beats
 
-```js
-const BROKEN_RATES = { f1: 0.22, f2: 0.43, f3: 0.20 };   // narrow gaps  → ~19 booked
-const FIXED_RATES  = { f1: 0.94, f2: 0.91, f3: 0.92 };   // wide gaps    → ~786 booked
-```
-
-Filter gap widths are calibrated with `gapW = w * rate * 0.85` for the broken pass and `* 0.92` for the fixed pass. The multiplier compensates for balls bouncing back through gaps. If the displayed counts drift far from target, adjust the gap-width multiplier, not the rates themselves.
-
-### When to NOT add ball physics to other beats
-
-The physics cascade is intentionally the ONLY matter.js usage on the page. Reasons:
-
-- Performance — running multiple physics worlds compounds CPU cost.
-- Visual restraint — if every section had falling balls, the cascade would lose its punch.
-- The 80KB matter.js download is justified by one big moment, not many small ones.
-
-For "particles flowing" elsewhere (e.g., the Act 4 Beat 1 funnel dots), use simple `setTimeout`-driven `<div>` particles with CSS transitions. Matter.js is reserved for the cascade.
-
-### Restoring/changing the hero
-
-The hero (`s-hero`) above the cascade is the original 78% strike-through block: "78% of buyers go with whoever ~~answers first~~ answers." The strike-through animates ~1.2s after page load via `heroHeadline.classList.add('is-revealed')` in [`js/sales.js`](js/sales.js). Keep this section simple — the heavy lifting is in the Stats Section below.
+For "particles flowing" elsewhere (e.g., Act 4 Beat 1 funnel dots), use simple `setTimeout`-driven `<div>` particles with CSS transitions or GSAP — same pattern as `spawnBurst()` in the pinned hero.
 
 ---
 
@@ -411,7 +337,6 @@ All loaded via CDN in each page's `<head>`. Don't add new libraries casually —
 - [**Lenis**](https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js) v1 — smooth scroll
 - [**GSAP**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js) 3.12.5 — animations
 - [**ScrollTrigger**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js) 3.12.5 — scroll-driven triggers
-- [**matter-js**](https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js) 0.20.0 — 2D rigid-body physics. **Only used by the Stats Section on `sales.html`.** Don't load on other pages unless you also need a physics simulation.
 - Google Fonts: Inter + JetBrains Mono
 
 ---
@@ -502,10 +427,8 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **Don't break the scroll-pinned act sizing** (`height: N*100vh` rule). Last beat goes unreachable.
 - **Don't deploy the full source folder** to here.now — the `.git` folder is too big for Windows Git Bash to chew. Use the preview-folder pattern.
 - **Don't push to remote without committing cleanly.** Don't force-push to main.
-- **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, matter-js (sales.html only), fonts. That's it.
-- **Don't load matter.js on pages other than sales.html** — it's a 80KB cost for one specific feature (the Stats Section cascade). Other pages shouldn't pay for it.
-- **Don't make the Stats Section's `enterBeat` rewind-aware** — it's intentionally forward-only. Adding a hard reset on backward scroll-jumps is expensive and visually jarring. Captions update, canvas stays in its accumulated state. If users complain, address it in v2 with a snapshot/restore approach, not by tearing down the world on every backward tick.
-- **Don't replace the cascade with multiple physics simulations** scattered across the page. One big physics moment > many small ones (performance AND visual impact reasons).
+- **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, fonts. That's it.
+- **Don't add matter.js back** without explicit permission — the Stats Section now uses GSAP + DOM sprites.
 - **Don't delete the `.s-` CSS prefix.** It's the namespace boundary; styles will leak across pages without it.
 - **Don't commit the preview folder** (`c:\Users\jason\repos\dealer-edge-preview`) into this repo.
 - **Don't reuse a `data-anim` key** across two different beats. Each key resolves to exactly one handler.
@@ -518,7 +441,7 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **CTA / The Offer**: currently four lines of text. Next iteration likely becomes a 3-beat sequence: vendor swap → mechanic → tier cards.
 - **Other pillars**: Marketing and Operations need the same act/beat treatment Sales got. The sales.html structure is the template.
 - **Real backends for Act 3**: SMS demo is fake-scripted. Real Twilio wiring planned later.
-- **Stats Section calibration**: the displayed BOOKED count is whatever the physics actually produces. If broken-pass drifts much from ~19 or fixed-pass drifts much from ~786, tune the `gapW * 0.85` / `gapW * 0.92` multipliers or seed `BROKEN_RATES` / `FIXED_RATES`.
+- **Stats Section pass counts**: tune `passCount` in `BEAT_SCENES` in [`js/sales.js`](js/sales.js) if the visual dot ratio needs adjustment. Side counters always match visible dots; only Beat 06 compare/hero stat uses the 1,000-scale numbers.
 
 ---
 
@@ -540,4 +463,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: by the agent that built Act 4. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-05-26 by Codex GPT-5 for the grounded recovered-deals hero beat. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*

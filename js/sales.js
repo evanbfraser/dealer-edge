@@ -56,6 +56,20 @@
     });
   });
 
+  const marineModal = document.querySelector('[data-marine-modal]');
+  const marineOpen = document.querySelector('[data-marine-modal-open]');
+  const marineClose = document.querySelector('[data-marine-modal-close]');
+  if (marineModal && marineOpen) {
+    marineOpen.addEventListener('click', () => {
+      if (typeof marineModal.showModal === 'function') marineModal.showModal();
+      else marineModal.setAttribute('open', '');
+    });
+    marineClose?.addEventListener('click', () => marineModal.close());
+    marineModal.addEventListener('click', (e) => {
+      if (e.target === marineModal) marineModal.close();
+    });
+  }
+
   /* ─────────────────────────────────────────────────────────────
      [data-fade] reveal on scroll-into-view
      ───────────────────────────────────────────────────────────── */
@@ -75,819 +89,564 @@
   );
   faders.forEach((el) => faderObs.observe(el));
 
-  /* ─────────────────────────────────────────────────────────────
-     HERO  —  strike-through headline reveal (animation runs once)
-     ───────────────────────────────────────────────────────────── */
-  const heroHeadline = document.querySelector('.s-hero-headline');
-  if (heroHeadline) {
-    setTimeout(() => heroHeadline.classList.add('is-revealed'), 1200);
-  }
-
   /* ═════════════════════════════════════════════════════════════
-     STATS SECTION  —  6-beat scroll-pinned physics cascade
-     Each scroll release opens the next filter's gate. Balls pile
-     above the closed gates and drop through on advance. Red
-     "trash" piles accumulate as visual proof of every loss. Beat
-     06 is the reverse cascade: filters turn green, piles dissolve,
-     a second 1,000-ball wave drops through wide green gates,
-     and ~812 land in the BOOKED zone.
+     HERO + STATS  —  one pinned 6-beat prospect-launch experience
+     Hero stat + headline swap per beat; prospects collide with h1.
      ═════════════════════════════════════════════════════════════ */
 
   const statsSection = document.querySelector('[data-stats-section]');
   if (statsSection) initStatsSection(statsSection);
 
   function initStatsSection(section) {
-    const canvasWrap = section.querySelector('[data-canvas-wrap]');
-    const canvasEl = section.querySelector('[data-cascade-canvas]');
-    const stageLabels = section.querySelectorAll('[data-stage-label]');
-    const beatButtons = section.querySelectorAll('[data-cbeat]');
-    const slides = section.querySelectorAll('[data-slide]');
-    const slideStats = section.querySelectorAll('[data-slide-stat]');
-    const counterActive = section.querySelector('[data-stats-counter-active]');
-    const forceFields = section.querySelectorAll('[data-force-field]');
+    const subSlides = section.querySelectorAll('.s-hero-sub-slides [data-slide]');
+    const heroInner = section.querySelector('.s-hero-inner--pinned');
+    const sceneStage = section.querySelector('[data-scene-stage]');
+    const beatWall = section.querySelector('[data-beat-wall]');
+    const wallHeadline = section.querySelector('[data-wall-headline]');
+    const heroStatEl = section.querySelector('[data-hero-stat]');
+    const heroHeadlineBody = section.querySelector('[data-hero-headline-body]');
+    const prospectLane = section.querySelector('[data-prospect-lane]');
+    const convertZone = section.querySelector('[data-convert-zone]');
+    const gaveUpZone = section.querySelector('[data-gave-up-zone]');
+    const barStackPassed = section.querySelector('[data-bar-stack-passed]');
+    const barStackLost = section.querySelector('[data-bar-stack-lost]');
+    const barFramePassed = section.querySelector('[data-bar-frame-passed]');
+    const barFrameLost = section.querySelector('[data-bar-frame-lost]');
+    const zoneCountEl = section.querySelector('[data-zone-count]');
+    const sceneLostEl = section.querySelector('[data-scene-lost]');
     const fxLayer = section.querySelector('[data-fx-layer]');
-    const compareEl = section.querySelector('[data-compare]');
-    const compareAfterEl = section.querySelector('[data-compare-after]');
-    const tallyNums = {
-      2: section.querySelector('[data-tally-num="2"]'),
-      3: section.querySelector('[data-tally-num="3"]'),
-      4: section.querySelector('[data-tally-num="4"]'),
-      5: section.querySelector('[data-tally-num="5"]'),
-    };
+    const sceneNext = section.querySelector('[data-scene-next]');
+    const sceneContextEl = section.querySelector('[data-scene-context]');
+    const zoneLabelGoodEl = section.querySelector('[data-zone-label-good]');
+    const zoneLabelBadEl = section.querySelector('[data-zone-label-bad]');
+    const barCaptionGoodEl = section.querySelector('[data-bar-caption-good]');
+    const barCaptionBadEl = section.querySelector('[data-bar-caption-bad]');
+    const sceneScaleEl = section.querySelector('[data-scene-scale]');
 
-    // ─── State ─────────────────────────────────────────────────
     const TOTAL_BEATS = 6;
-    const TARGET_TOTAL = 1000;          // displayed tally target (narrative)
-    const TARGET_VISUAL = 500;          // actual ball count for physics perf
-    const SCALE = TARGET_TOTAL / TARGET_VISUAL;   // every visible ball ≈ 2 buyers
-    const BROKEN_RATES = { f1: 0.22, f2: 0.43, f3: 0.20 };   // narrow gaps
-    const FIXED_RATES  = { f1: 0.94, f2: 0.91, f3: 0.92 };   // wide gaps (~786 booked)
-    const FILTER_Y = [0.32, 0.52, 0.72];
-    const BOOKED_Y = 0.93;
-    const BALL_R = 4;
-    const SETTLE_MS = 800;              // counted balls freeze this long after being marked
-    const STAGE_COLORS = ['rgba(255,255,255,0.92)', '#fbbf24', '#fb923c', '#86efac', '#4ade80'];
-    const REJECT_COLOR = '#ee3a39';
-    const tallyCounts = { 2: 0, 3: 0, 4: 0, 5: 0 };
-    const fixCounts = { booked: 0 };
+    const VISUAL_COUNT = 15;
+    const LAUNCH_STAGGER_MS = 180;
+
+    const BEAT_SCENES = [
+      {
+        beat: 1,
+        statNum: '78',
+        statSuffix: '%',
+        statFix: false,
+        headlineHtml: 'of buyers go with whoever<br><span class="s-headline-strike">answers first.</span> <span class="s-headline-accent">answers.</span>',
+        passIndices: [1, 7, 12],
+        wallMode: 'strike',
+        contextLabel: 'Buyers choosing who answered',
+        passLabel: 'Reached you',
+        failLabel: 'Went elsewhere',
+        passCaption: 'Reached you',
+        failCaption: 'Went elsewhere',
+        scaleLabel: '15 dots visualize buyers choosing whoever answered first.',
+      },
+      {
+        beat: 2,
+        statNum: '-7',
+        statSuffix: '%',
+        statFix: false,
+        headlineHtml: 'per second over 3s your site takes to load.',
+        passIndices: [0, 6, 13],
+        wallMode: 'solid',
+        contextLabel: 'Visitors waiting on your site',
+        passLabel: 'Still here',
+        failLabel: 'Bounced',
+        passCaption: 'Still here',
+        failCaption: 'Bounced',
+        scaleLabel: '15 dots visualize how slow load time bleeds site visitors away.',
+      },
+      {
+        beat: 3,
+        statNum: '57',
+        statSuffix: '%',
+        statFix: false,
+        headlineHtml: 'never get a response in 24 hours.',
+        passIndices: [0, 2, 5, 8, 11, 13],
+        wallMode: 'solid',
+        contextLabel: 'Leads still waiting after 24 hours',
+        passLabel: 'Got a reply',
+        failLabel: 'Still waiting',
+        passCaption: 'Got a reply',
+        failCaption: 'Still waiting',
+        scaleLabel: '15 dots visualize the inbox split once the first 24 hours are gone.',
+      },
+      {
+        beat: 4,
+        statNum: '80',
+        statSuffix: '%',
+        statFix: false,
+        headlineHtml: 'of callers who hit voicemail hang up and never call back.',
+        passIndices: [2, 9, 14],
+        wallMode: 'solid',
+        contextLabel: 'Callers who hit voicemail',
+        passLabel: 'Stayed on',
+        failLabel: 'Hung up',
+        passCaption: 'Stayed on',
+        failCaption: 'Hung up',
+        scaleLabel: '15 dots visualize callers who stay engaged vs callers who vanish.',
+      },
+      {
+        beat: 5,
+        statNum: '19',
+        statSuffix: '',
+        statFix: false,
+        headlineHtml: 'of every 1,000 visitors ever book a showing.',
+        passIndices: [7],
+        wallMode: 'solid',
+        contextLabel: 'Visitors who ever book a showing',
+        passLabel: 'Booked',
+        failLabel: 'Walked',
+        passCaption: 'Booked',
+        failCaption: 'Walked',
+        scaleLabel: '15 dots visualize the booking truth. The real outcome is 19 of 1,000.',
+      },
+      {
+        beat: 6,
+        statNum: '',
+        statSuffix: '',
+        statFix: true,
+        headlineHtml: 'Recover buyers you already paid to attract.',
+        passIndices: [0, 1, 2, 4, 5, 6, 7, 8, 10, 11, 13, 14],
+        wallMode: 'dissolve',
+        contextLabel: 'Same traffic. Fewer dead ends.',
+        passLabel: 'Booked',
+        failLabel: 'Still lost',
+        passCaption: 'Booked',
+        failCaption: 'Still lost',
+        scaleLabel: 'No new traffic required. Just fewer buyers disappearing in the handoff.',
+      },
+    ];
+
     let currentBeat = 0;
-    let beat6Fired = false;
+    let sceneGen = 0;
+    let sectionVisible = false;
+    let counts = { converted: 0, lost: 0 };
+    let barTargets = { pass: 0, fail: 0 };
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isSmallViewport = window.innerWidth < 1100;
 
-    // ─── helpers shared with fallback ─────────────────────────
+    function tick(stillCurrent, fn) {
+      if (typeof stillCurrent === 'function' && !stillCurrent()) return;
+      fn();
+    }
+
     function setActiveBeatVisual(beat) {
-      // Top progress segments (also clickable scroll-jump targets)
-      beatButtons.forEach((btn) => {
-        const n = +btn.dataset.cbeat;
-        btn.setAttribute('data-active', String(n === beat));
-        btn.setAttribute('data-completed', String(n < beat));
+      subSlides.forEach((s) => {
+        s.classList.toggle('is-active', +s.dataset.slide === beat);
       });
-      // One-slide-at-a-time: cross-fade by toggling .is-active
-      slides.forEach((s) => {
-        const n = +s.dataset.slide;
-        s.classList.toggle('is-active', n === beat);
-      });
-      // Filter-wall labels follow beat progression:
-      //   label 1 lights when beat 2+ (we're past CWV gate)
-      //   label 2 lights when beat 3+
-      //   label 3 lights when beat 4+
-      //   label 4 (BOOKED) lights when beat 5+
-      stageLabels.forEach((label) => {
-        const n = +label.dataset.stageLabel;
-        label.classList.toggle('is-active', n <= Math.max(0, beat - 1));
-      });
-      // Force-field halos: only the ACTIVE filter pulses, completed
-      // filters glow steady, dissolved filters fade out at beat 6.
-      forceFields.forEach((field) => {
-        const n = +field.dataset.forceField;
-        field.classList.toggle('is-active', n === (beat - 1));
-        field.classList.toggle('is-dissolved', beat === 6);
-      });
-      // Counter ("01/06") at the right of the top bar
-      if (counterActive) {
-        const padded = String(Math.max(1, beat)).padStart(2, '0');
-        if (counterActive.textContent !== padded) counterActive.textContent = padded;
-      }
-      // Section-level data-active-beat drives the ambient color wash
       section.setAttribute('data-active-beat', String(Math.max(1, beat)));
     }
 
-    // Beat 06: animate the green-slide's hero stat from 0 to the live
-    // booked count. Called repeatedly via scheduleFlush (it's idempotent
-    // and very cheap — just one textContent write per frame max).
-    let fixStatEl = null;
-    slides.forEach((s) => {
-      if (s.dataset.slide === '6') {
-        fixStatEl = s.querySelector('[data-slide-stat]');
+    function updateCounters() {
+      if (zoneCountEl) zoneCountEl.textContent = Math.round(counts.converted).toLocaleString('en-US');
+      if (sceneLostEl) sceneLostEl.textContent = Math.round(counts.lost).toLocaleString('en-US');
+    }
+
+    function getPassCount(cfg) {
+      return Array.isArray(cfg?.passIndices) ? cfg.passIndices.length : 0;
+    }
+
+    function setSceneMeta(cfg) {
+      if (!cfg) return;
+      if (sceneContextEl) sceneContextEl.textContent = cfg.contextLabel || '';
+      if (zoneLabelGoodEl) zoneLabelGoodEl.textContent = cfg.passLabel || 'Converted';
+      if (zoneLabelBadEl) zoneLabelBadEl.textContent = cfg.failLabel || 'Gave up';
+      if (barCaptionGoodEl) barCaptionGoodEl.textContent = cfg.passCaption || cfg.passLabel || 'Converted';
+      if (barCaptionBadEl) barCaptionBadEl.textContent = cfg.failCaption || cfg.failLabel || 'Gave up';
+      if (sceneScaleEl) sceneScaleEl.textContent = cfg.scaleLabel || '15 dots visualize the split · counts scale to 1,000 buyers';
+    }
+
+    function resetSceneUI() {
+      counts = { converted: 0, lost: 0 };
+      updateCounters();
+      if (barStackPassed) barStackPassed.innerHTML = '';
+      if (barStackLost) barStackLost.innerHTML = '';
+      if (prospectLane) {
+        prospectLane.style.removeProperty('--bar-pass-pct');
+        prospectLane.style.removeProperty('--bar-fail-pct');
+        prospectLane.style.removeProperty('--bar-pass-live-pct');
+        prospectLane.style.removeProperty('--bar-fail-live-pct');
       }
-    });
-    function syncFixStatToCount(count) {
-      if (!fixStatEl) return;
-      const rounded = Math.round(count);
-      if (fixStatEl._lastVal === rounded) return;
-      fixStatEl._lastVal = rounded;
-      fixStatEl.textContent = rounded.toLocaleString('en-US');
+      if (heroInner) {
+        heroInner.querySelectorAll('.s-prospect').forEach((p) => p.remove());
+      }
+      if (beatWall) {
+        beatWall.classList.remove('is-dissolved');
+      }
+      if (wallHeadline) {
+        wallHeadline.classList.remove('is-revealed');
+      }
+      if (heroHeadlineBody) {
+        heroHeadlineBody.classList.remove('s-hero-headline-body--fix');
+      }
+      if (heroStatEl) {
+        heroStatEl.classList.remove('s-hero-stat--fix', 's-hero-stat--empty', 'is-swap');
+        heroStatEl._lastVal = null;
+      }
+      if (sceneNext) {
+        sceneNext.setAttribute('hidden', '');
+        sceneNext.classList.remove('is-active');
+      }
     }
 
-    function revealTally(row) {
-      const el = section.querySelector(`[data-tally-row="${row}"]`);
-      if (el) el.setAttribute('data-tally-active', 'true');
-    }
+    function applyWallForBeat(beat) {
+      const cfg = BEAT_SCENES[beat - 1];
+      if (!cfg) return;
 
-    // ─── Throttled DOM writes for tally + compare counters ────
-    // Collision handler updates tallyCounts / fixCounts in memory and
-    // raises dirty flags. One rAF per frame flushes those to the DOM,
-    // so 100+ collisions in a single frame still cost only one write
-    // per counter instead of one per collision.
-    const tallyDirty = { 2: false, 3: false, 4: false, 5: false };
-    let compareDirty = false;
-    let pendingFlush = false;
-
-    function setTallyNum(row, value) {
-      tallyCounts[row] = value;
-      if (tallyNums[row]) tallyNums[row].textContent = Math.round(value).toLocaleString('en-US');
-    }
-
-    function bumpTally(row, delta = SCALE) {
-      tallyCounts[row] += delta;
-      tallyDirty[row] = true;
-      scheduleFlush();
-    }
-
-    function bumpCompare(delta = SCALE) {
-      fixCounts.booked += delta;
-      compareDirty = true;
-      scheduleFlush();
-    }
-
-    function scheduleFlush() {
-      if (pendingFlush) return;
-      pendingFlush = true;
-      requestAnimationFrame(() => {
-        pendingFlush = false;
-        [2, 3, 4, 5].forEach((row) => {
-          if (!tallyDirty[row]) return;
-          tallyDirty[row] = false;
-          const el = tallyNums[row];
-          if (el) el.textContent = Math.round(tallyCounts[row]).toLocaleString('en-US');
+      if (heroStatEl) {
+        heroStatEl.classList.add('is-swap');
+        requestAnimationFrame(() => {
+          heroStatEl.innerHTML = cfg.statNum ? cfg.statNum + (cfg.statSuffix ? `<span class="s-hero-stat-suffix">${cfg.statSuffix}</span>` : '') : '';
+          heroStatEl.classList.toggle('s-hero-stat--fix', cfg.statFix);
+          heroStatEl.classList.toggle('s-hero-stat--empty', !cfg.statNum);
+          heroStatEl.classList.remove('is-swap');
         });
-        if (compareDirty) {
-          compareDirty = false;
-          if (compareAfterEl) compareAfterEl.textContent = Math.round(fixCounts.booked).toLocaleString('en-US');
-          // The slide-6 hero stat mirrors the live booked count so the
-          // user can watch the big number climb as the green wave lands.
-          syncFixStatToCount(fixCounts.booked);
-        }
-      });
-    }
-
-    // ─── Particle FX: wall-shatter (Beat 06) and burst (compare) ──
-    function spawnShatter(yFraction, palette = 'red') {
-      if (!fxLayer) return;
-      const r = canvasWrap.getBoundingClientRect();
-      const yPx = r.height * yFraction;
-      const count = 14;
-      for (let i = 0; i < count; i += 1) {
-        const p = document.createElement('span');
-        p.className = palette === 'green' ? 's-fx-particle s-fx-particle--burst' : 's-fx-particle';
-        const startX = r.width * (0.18 + Math.random() * 0.64);
-        p.style.left = `${startX}px`;
-        p.style.top = `${yPx}px`;
-        p.style.opacity = '0.9';
-        // Animate via Web Animations API — no CSS keyframe juggling
-        const dx = (Math.random() - 0.5) * 220;
-        const dy = (Math.random() - 0.7) * 180;   // bias upward
-        const dur = 700 + Math.random() * 500;
-        fxLayer.appendChild(p);
-        p.animate(
-          [
-            { transform: 'translate(0, 0) scale(1)', opacity: 0.9 },
-            { transform: `translate(${dx}px, ${dy}px) scale(0.4)`, opacity: 0 },
-          ],
-          { duration: dur, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
-        ).onfinish = () => p.remove();
       }
+
+      if (heroHeadlineBody) {
+        heroHeadlineBody.innerHTML = cfg.headlineHtml;
+        heroHeadlineBody.classList.toggle('s-hero-headline-body--fix', cfg.statFix);
+      }
+
+      if (wallHeadline) {
+        wallHeadline.classList.remove('is-revealed');
+        if (cfg.wallMode === 'strike') {
+          const delay = beat === 1 && !section.dataset.strikeShown ? 1200 : 400;
+          setTimeout(() => {
+            wallHeadline.classList.add('is-revealed');
+            section.dataset.strikeShown = '1';
+          }, delay);
+        }
+      }
+
+      if (beatWall) beatWall.classList.remove('is-dissolved');
+      setSceneMeta(cfg);
     }
 
-    function spawnBurst() {
-      if (!fxLayer) return;
-      const r = canvasWrap.getBoundingClientRect();
-      const cx = r.width * 0.72;     // roughly under the "after" column
-      const cy = r.height * 0.5;
-      const count = 22;
+    function spawnBurst(atX, atY) {
+      if (!fxLayer || !heroInner) return;
+      const innerR = heroInner.getBoundingClientRect();
+      const fxR = fxLayer.getBoundingClientRect();
+      const cx = atX != null ? atX - (fxR.left - innerR.left) : fxR.width * 0.5;
+      const cy = atY != null ? atY - (fxR.top - innerR.top) : fxR.height * 0.5;
+      const count = 18;
       for (let i = 0; i < count; i += 1) {
         const p = document.createElement('span');
         p.className = 's-fx-particle s-fx-particle--burst';
         p.style.left = `${cx}px`;
         p.style.top = `${cy}px`;
         const angle = (i / count) * Math.PI * 2;
-        const dist = 90 + Math.random() * 80;
+        const dist = 50 + Math.random() * 60;
         const dx = Math.cos(angle) * dist;
         const dy = Math.sin(angle) * dist;
-        const dur = 800 + Math.random() * 500;
         fxLayer.appendChild(p);
         p.animate(
           [
             { transform: 'translate(0, 0) scale(0.6)', opacity: 1 },
-            { transform: `translate(${dx}px, ${dy}px) scale(0.2)`, opacity: 0 },
+            { transform: `translate(${dx}px, ${dy}px) scale(0.15)`, opacity: 0 },
           ],
-          { duration: dur, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+          { duration: 700 + Math.random() * 400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
         ).onfinish = () => p.remove();
       }
     }
 
-    function animateTallyTo(row, target, durMs = 900) {
-      const start = tallyCounts[row];
-      const t0 = performance.now();
-      function step() {
-        const t = Math.min(1, (performance.now() - t0) / durMs);
-        const eased = 1 - Math.pow(1 - t, 4);
-        setTallyNum(row, start + (target - start) * eased);
-        if (t < 1) requestAnimationFrame(step);
+    function spawnImpact(atX, atY) {
+      if (!fxLayer || !heroInner) return;
+      const innerR = heroInner.getBoundingClientRect();
+      const fxR = fxLayer.getBoundingClientRect();
+      const cx = atX != null ? atX - (fxR.left - innerR.left) : fxR.width * 0.5;
+      const cy = atY != null ? atY - (fxR.top - innerR.top) : fxR.height * 0.5;
+      const count = 10;
+      for (let i = 0; i < count; i += 1) {
+        const p = document.createElement('span');
+        p.className = 's-fx-particle s-fx-particle--impact';
+        p.style.left = `${cx}px`;
+        p.style.top = `${cy}px`;
+        const angle = (-Math.PI / 2) + ((i - count / 2) * 0.22);
+        const dist = 18 + Math.random() * 24;
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist;
+        fxLayer.appendChild(p);
+        p.animate(
+          [
+            { transform: 'translate(0, 0) scale(0.85)', opacity: 1 },
+            { transform: `translate(${dx}px, ${dy}px) scale(0.1)`, opacity: 0 },
+          ],
+          { duration: 320 + Math.random() * 120, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        ).onfinish = () => p.remove();
       }
-      requestAnimationFrame(step);
     }
 
-    function showCompareOverlay(targetCount) {
-      if (!compareEl) return;
-      compareEl.removeAttribute('hidden');
-      requestAnimationFrame(() => compareEl.setAttribute('data-compare-active', 'true'));
-      // Animate the "with DealerEdge" counter
-      let v = 0;
-      const start = performance.now();
-      const dur = 1400;
-      function step() {
-        const t = Math.min(1, (performance.now() - start) / dur);
-        const eased = 1 - Math.pow(1 - t, 4);
-        v = Math.round(targetCount * eased);
-        if (compareAfterEl) compareAfterEl.textContent = v.toLocaleString('en-US');
-        if (t < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    // ─── Wire up scroll-jump nav (works for desktop + fallback) ───
-    beatButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const beat = +btn.dataset.jumpToBeat;
-        jumpToBeat(beat);
+    function pulseWallHit(stillCurrent, x, y) {
+      tick(stillCurrent, () => {
+        spawnImpact(x, y);
       });
-    });
+    }
 
-    function jumpToBeat(beat) {
-      const rect = section.getBoundingClientRect();
-      const sectionTop = window.scrollY + rect.top;
-      const totalScroll = Math.max(1, rect.height - window.innerHeight);
-      const target = sectionTop + ((beat - 1) / TOTAL_BEATS) * totalScroll + 6;
-      if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
-        lenis.scrollTo(target, { duration: 0.9 });
+    function getSceneMetrics() {
+      if (!heroInner || !beatWall || !sceneStage) {
+        return {
+          rootR: { left: 0, top: 0, width: 1, height: 1 },
+          wallLeft: 0,
+          wallTop: 0,
+          wallW: 1,
+          wallH: 1,
+        };
+      }
+      const rootR = heroInner.getBoundingClientRect();
+      const wallR = beatWall.getBoundingClientRect();
+
+      return {
+        rootR,
+        wallLeft: wallR.left - rootR.left,
+        wallTop: wallR.top - rootR.top,
+        wallW: wallR.width,
+        wallH: wallR.height,
+      };
+    }
+
+    function setBarFill(passCount) {
+      if (!prospectLane) return;
+      const failCount = VISUAL_COUNT - passCount;
+      const passPct = Math.max(12, (passCount / VISUAL_COUNT) * 100);
+      const failPct = Math.max(12, (failCount / VISUAL_COUNT) * 100);
+      barTargets = { pass: passCount, fail: failCount };
+      prospectLane.style.setProperty('--bar-pass-pct', `${passPct}%`);
+      prospectLane.style.setProperty('--bar-fail-pct', `${failPct}%`);
+      prospectLane.style.setProperty('--bar-pass-live-pct', '0%');
+      prospectLane.style.setProperty('--bar-fail-live-pct', '0%');
+    }
+
+    function updateBarLiveFill() {
+      if (!prospectLane) return;
+      const passLive = barTargets.pass ? Math.min(100, (counts.converted / barTargets.pass) * 100) : 0;
+      const failLive = barTargets.fail ? Math.min(100, (counts.lost / barTargets.fail) * 100) : 0;
+      prospectLane.style.setProperty('--bar-pass-live-pct', `${passLive}%`);
+      prospectLane.style.setProperty('--bar-fail-live-pct', `${failLive}%`);
+    }
+
+    function getBarLandingPoint(frameEl, rootR, willPass) {
+      if (!frameEl) return { x: 0, y: 0 };
+      const r = frameEl.getBoundingClientRect();
+      const target = willPass ? barTargets.pass : barTargets.fail;
+      const current = willPass ? counts.converted : counts.lost;
+      const next = target ? Math.min(target, current + 1) : 0;
+      const fillRatio = target ? next / target : 0;
+      const dot = 13;
+      return {
+        x: r.left - rootR.left + (r.width / 2) - (dot / 2),
+        y: r.bottom - rootR.top - (r.height * fillRatio) - (dot / 2),
+      };
+    }
+
+    function finishProspect(el, willPass, dest, stillCurrent) {
+      if (!stillCurrent()) return;
+      if (willPass) {
+        el.classList.add('is-passed');
+        if (dest) spawnBurst(dest.x + 6.5, dest.y + 6.5);
       } else {
-        window.scrollTo({ top: target, behavior: 'smooth' });
+        el.classList.add('is-blocked');
       }
+      onProspectResult(willPass);
+      gsap.to(el, {
+        scale: 1.6,
+        opacity: 0,
+        duration: 0.22,
+        ease: 'power2.out',
+        onComplete: () => el.remove(),
+      });
     }
 
-    // ─── Mobile / reduced-motion fallback ────────────────────
-    if (isSmallViewport || !window.Matter || prefersReducedMotion) {
-      initStatsSectionFallback();
-      return;
-    }
+    function launchProspect(el, willPass, stillCurrent) {
+      const m = getSceneMetrics();
+      const idx = +el.dataset.idx || 0;
+      const frame = willPass ? barFramePassed : barFrameLost;
 
-    function initStatsSectionFallback() {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            obs.disconnect();
-            setActiveBeatVisual(5);
-            [2, 3, 4, 5].forEach((row) => revealTally(row));
-            const finalTallies = { 2: 780, 3: 125, 4: 76, 5: 19 };
-            Object.keys(finalTallies).forEach((row) => animateTallyTo(+row, finalTallies[row], 1400));
-            setTimeout(() => {
-              setActiveBeatVisual(6);
-              canvasWrap.setAttribute('data-mode', 'fix');
-              showCompareOverlay(786);
-              // Mirror the live count into the slide-6 hero stat too
-              const start = performance.now();
-              const dur = 1400;
-              function tick() {
-                const t = Math.min(1, (performance.now() - start) / dur);
-                const eased = 1 - Math.pow(1 - t, 4);
-                syncFixStatToCount(786 * eased);
-                if (t < 1) requestAnimationFrame(tick);
-              }
-              requestAnimationFrame(tick);
-            }, 1900);
-          }
+      const spreadT = (idx + 0.5) / VISUAL_COUNT;
+      const startX = m.wallLeft + m.wallW * spreadT;
+      const startY = m.wallTop - 22 - (idx % 4) * 3;
+      const wallX = startX;
+      const wallY = m.wallTop + m.wallH * 0.52;
+
+      el.classList.add('is-flying');
+      heroInner.appendChild(el);
+      gsap.set(el, { left: startX, top: startY, x: 0, y: 0, clearProps: 'transform' });
+
+      const durDrop = 0.52 + Math.random() * 0.14;
+      const durBar = 0.42 + Math.random() * 0.12;
+
+      const tl = gsap.timeline();
+      tl.to(el, {
+        left: wallX,
+        top: wallY,
+        duration: durDrop,
+        ease: 'power2.in',
+        onComplete: () => {
+          if (!willPass) pulseWallHit(stillCurrent, m.rootR.left + wallX, m.rootR.top + wallY);
+        },
+      });
+      tl.add(() => tick(stillCurrent, () => {
+        const dest = getBarLandingPoint(frame, m.rootR, willPass);
+        gsap.to(el, {
+          left: dest.x,
+          top: dest.y,
+          duration: durBar,
+          ease: 'power2.out',
+          onComplete: () => tick(stillCurrent, () => finishProspect(el, willPass, dest, stillCurrent)),
         });
-      }, { threshold: 0.2 });
-      obs.observe(section);
+      }));
     }
 
-    // ─── Matter.js physics setup ─────────────────────────────
-    const M = window.Matter;
-    const { Engine, Render, Runner, Bodies, Body, Events, Composite } = M;
-
-    // Gravity starts at ZERO so the initial wave can hover at the top
-    // of the canvas as dynamic-but-still bodies during Beat 01. On
-    // Beat 02 we flip gravity to FULL_GRAVITY and balls start falling.
-    //
-    // (We intentionally do NOT spawn the initial wave with isStatic:true
-    // and then call Body.setStatic(b, false) on release. Matter.js has a
-    // known quirk: setStatic(false) only restores mass/inertia from
-    // _original — which is only populated by a *prior* setStatic(true)
-    // call. Bodies born static have no _original snapshot, so the
-    // "release" is a no-op and the wave stays frozen at the top forever.
-    // That bug is why the broken cascade silently failed while the
-    // Beat 06 green wave — born dynamic — worked.)
-    const FULL_GRAVITY = 0.0010;
-    const engine = Engine.create({
-      gravity: { x: 0, y: 1, scale: 0 },
-    });
-    // Defaults are positionIterations: 6, velocityIterations: 4.
-    // For 500 balls with the gated-cascade structure these can drop
-    // without visible artifacts, and cut per-frame CPU ~30%.
-    engine.positionIterations = 4;
-    engine.velocityIterations = 3;
-    engine.constraintIterations = 2;
-    // IMPORTANT: do NOT enable engine.enableSleeping here.
-    // The cascade starts with engine.gravity.scale = 0, so the initial
-    // wave has zero velocity and Matter.js's sleeping system puts
-    // every ball to sleep within ~1 second (default sleepThreshold
-    // is 60 frames of low motion). Sleeping bodies are explicitly
-    // skipped by Body.update — INCLUDING gravity application. So when
-    // enterBeat(2) flips gravity to FULL_GRAVITY, sleeping balls
-    // never receive the new force and stay frozen at the top forever.
-    // We rely on the explicit queueFreeze sweep (below) instead —
-    // it freezes counted balls via Body.setStatic which is safer.
-    const world = engine.world;
-
-    function sizeCanvas() {
-      const r = canvasWrap.getBoundingClientRect();
-      canvasEl.width = r.width;
-      canvasEl.height = r.height;
-      return { w: r.width, h: r.height };
-    }
-    let { w, h } = sizeCanvas();
-
-    const render = Render.create({
-      canvas: canvasEl,
-      engine: engine,
-      options: {
-        width: w,
-        height: h,
-        wireframes: false,
-        background: 'transparent',
-        pixelRatio: window.devicePixelRatio || 1,
-      },
-    });
-    const runner = Runner.create();
-    // NOTE: we don't start Render or Runner yet — visObs below will
-    // start them once the section first enters the viewport. This way
-    // no CPU is spent rendering an empty canvas off-screen on load.
-    let physicsActive = false;
-
-    function startPhysics() {
-      if (physicsActive) return;
-      physicsActive = true;
-      Render.run(render);
-      Runner.run(runner, engine);
-    }
-    function stopPhysics() {
-      if (!physicsActive) return;
-      physicsActive = false;
-      Render.stop(render);
-      Runner.stop(runner);
+    function onProspectResult(willPass) {
+      if (willPass) counts.converted += 1;
+      else counts.lost += 1;
+      updateCounters();
+      updateBarLiveFill();
     }
 
-    // Pause BOTH render + runner when the section is off-screen.
-    // The old version only paused the Runner; Render.run was still
-    // drawing the canvas at 60fps the entire time the user was on
-    // the hero or the marine or any Act below. That alone was ~5%
-    // of the wasted CPU.
-    const visObs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) startPhysics();
-        else stopPhysics();
+    function buildPassFlags(cfg) {
+      const flags = Array(VISUAL_COUNT).fill(false);
+      (cfg.passIndices || []).forEach((idx) => {
+        if (idx >= 0 && idx < VISUAL_COUNT) flags[idx] = true;
       });
-    }, { threshold: 0 });
-    visObs.observe(section);
-
-    // Outer walls
-    const WALL_T = 14;
-    const wallStyle = { isStatic: true, render: { fillStyle: 'transparent' } };
-    Composite.add(world, [
-      Bodies.rectangle(-WALL_T / 2,    h / 2,            WALL_T, h * 2, wallStyle),
-      Bodies.rectangle(w + WALL_T / 2, h / 2,            WALL_T, h * 2, wallStyle),
-      Bodies.rectangle(w / 2,          h + WALL_T / 2,   w * 2,  WALL_T, wallStyle),
-    ]);
-
-    // BOOKED sensor zone at bottom
-    const bookedZone = Bodies.rectangle(w / 2, h * BOOKED_Y, w * 0.7, 4, {
-      isStatic: true,
-      isSensor: true,
-      label: 'bookedZone',
-      render: { fillStyle: 'rgba(74, 222, 128, 0.4)' },
-    });
-    Composite.add(world, bookedZone);
-
-    // ─── Filter walls + center gates ─────────────────────────
-    // Each filter has 3 pieces: left segment, right segment, and a
-    // removable center "gate" that closes the gap. Balls pile above
-    // each closed gate. On beat advance, we remove the gate so
-    // survivors fall through.
-    const filters = [];   // { yPx, gapLeft, gapRight, leftSeg, rightSeg, gate, idx, open }
-
-    function makeFilterStyle() {
-      return {
-        isStatic: true,
-        label: 'filterWall',
-        render: {
-          fillStyle: 'rgba(238, 58, 57, 0.55)',
-          strokeStyle: 'rgba(238, 58, 57, 0.85)',
-          lineWidth: 1.5,
-        },
-      };
-    }
-    function makeGateStyle() {
-      return {
-        isStatic: true,
-        label: 'gate',
-        render: {
-          fillStyle: 'rgba(238, 58, 57, 0.85)',
-          strokeStyle: 'rgba(255, 100, 100, 1)',
-          lineWidth: 1,
-        },
-      };
+      return flags;
     }
 
-    function buildBrokenFilters() {
-      FILTER_Y.forEach((yPct, i) => {
-        const rate = [BROKEN_RATES.f1, BROKEN_RATES.f2, BROKEN_RATES.f3][i];
-        const gapW = Math.max(44, w * rate * 0.85);
-        const gapLeft = (w - gapW) / 2;
-        const gapRight = gapLeft + gapW;
-        const yPx = h * yPct;
-        const leftSegW = gapLeft;
-        const rightSegW = w - gapRight;
-        const leftSeg  = Bodies.rectangle(leftSegW / 2,            yPx, leftSegW,  6, makeFilterStyle());
-        const rightSeg = Bodies.rectangle(gapRight + rightSegW / 2, yPx, rightSegW, 6, makeFilterStyle());
-        const gate     = Bodies.rectangle((gapLeft + gapRight) / 2, yPx, gapW,      6, makeGateStyle());
-        Composite.add(world, [leftSeg, rightSeg, gate]);
-        filters.push({ yPx, gapLeft, gapRight, leftSeg, rightSeg, gate, idx: i, open: false });
-      });
-    }
+    function playScene(beat, stillCurrent) {
+      const cfg = BEAT_SCENES[beat - 1];
+      if (!cfg || !heroInner || !sectionVisible) return;
+      const passCount = getPassCount(cfg);
 
-    function openGate(i) {
-      const f = filters[i];
-      if (!f || f.open) return;
-      f.open = true;
-      if (f.gate) Composite.remove(world, f.gate);
-      // Visual flash at the gap so the user sees the moment the
-      // dam opens. Cheap — 6 particles, one rAF burst.
-      if (fxLayer) {
-        const r = canvasWrap.getBoundingClientRect();
-        const yPx = h * FILTER_Y[i] * (r.height / h);
-        for (let p = 0; p < 6; p += 1) {
+      resetSceneUI();
+      setBarFill(passCount);
+      if (sceneStage) void sceneStage.offsetHeight;
+
+      if (beat === 6) {
+        playBeat6Finale(stillCurrent, cfg);
+        return;
+      }
+
+      const passFlags = buildPassFlags(cfg);
+
+      for (let i = 0; i < VISUAL_COUNT; i += 1) {
+        const delay = i * LAUNCH_STAGGER_MS;
+        setTimeout(() => tick(stillCurrent, () => {
           const el = document.createElement('span');
-          el.className = 's-fx-particle';
-          el.style.background = 'rgba(255, 255, 255, 0.85)';
-          el.style.left = `${r.width / 2}px`;
-          el.style.top = `${yPx}px`;
-          fxLayer.appendChild(el);
-          el.animate(
-            [
-              { transform: 'translate(0,0) scale(1.2)', opacity: 1 },
-              { transform: `translate(${(Math.random() - 0.5) * 80}px, ${(Math.random() - 0.5) * 50}px) scale(0.2)`, opacity: 0 },
-            ],
-            { duration: 500, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
-          ).onfinish = () => el.remove();
-        }
+          el.className = 's-prospect';
+          el.dataset.idx = String(i);
+          heroInner.appendChild(el);
+          launchProspect(el, passFlags[i], stillCurrent);
+        }), delay);
       }
     }
 
-    // ─── Ball pool ───────────────────────────────────────────
-    const balls = [];
-    // Counted/settling balls are pushed here with a settleAt timestamp.
-    // beforeUpdate sweeps the array once per frame and calls
-    // Body.setStatic(b, true) on any that have hung around long enough.
-    // Static bodies don't participate in active simulation — once a
-    // ball is "done" (booked or lost-and-settled) it stops costing CPU.
-    const settling = [];
-    function queueFreeze(b, delay = SETTLE_MS) {
-      b._settleAt = performance.now() + delay;
-      settling.push(b);
+    function playBeat6Finale(stillCurrent, cfg) {
+      const passCount = getPassCount(cfg);
+      if (beatWall) beatWall.classList.remove('is-dissolved');
+      if (wallHeadline) wallHeadline.classList.remove('is-revealed');
+
+      setTimeout(() => tick(stillCurrent, () => {
+        if (beatWall) beatWall.classList.add('is-dissolved');
+        if (wallHeadline) wallHeadline.classList.add('is-revealed');
+      }), 400);
+
+      setTimeout(() => tick(stillCurrent, () => {
+        setBarFill(passCount);
+        const passFlags = buildPassFlags(cfg);
+        for (let i = 0; i < VISUAL_COUNT; i += 1) {
+          const delay = i * LAUNCH_STAGGER_MS;
+          setTimeout(() => tick(stillCurrent, () => {
+            const el = document.createElement('span');
+            el.className = 's-prospect';
+            el.dataset.idx = String(i);
+            heroInner.appendChild(el);
+            launchProspect(el, passFlags[i], stillCurrent);
+          }), delay);
+        }
+      }), 900);
+
+      setTimeout(() => tick(stillCurrent, () => {
+        if (sceneNext) {
+          sceneNext.removeAttribute('hidden');
+          requestAnimationFrame(() => sceneNext.classList.add('is-active'));
+        }
+      }), 2200);
     }
 
-    function spawnPackedWave(opts = {}) {
-      const { tagFixed = false } = opts;
-      // Pack the wave into the strip ABOVE filter 1 (so all balls fall
-      // through filter 1 on release — no pre-spawned balls past it).
-      const xPad = 24;
-      const yTop = 8;
-      const yBottom = h * (FILTER_Y[0] - 0.04);   // small gap above the wall
-      const availableW = Math.max(1, w - xPad * 2);
-      const availableH = Math.max(1, yBottom - yTop);
-      // Solve cols × rows ≥ TARGET_VISUAL, fitting BALL_R*2 + small gap each cell.
-      // Pick a column count that matches the canvas aspect, then derive rows.
-      const cellSize = BALL_R * 2 + 1;       // 9px each direction
-      const maxCols = Math.max(8, Math.floor(availableW / cellSize));
-      const maxRows = Math.max(4, Math.floor(availableH / cellSize));
-      const fitCap = maxCols * maxRows;
-      const count = Math.min(TARGET_VISUAL, fitCap);
-      // Recompute cols/rows so balls roughly fill the region (square-ish grid).
-      const cols = Math.min(maxCols, Math.ceil(Math.sqrt(count * (availableW / availableH))));
-      const rows = Math.ceil(count / cols);
-      const colSpacing = availableW / cols;
-      const rowSpacing = Math.min(cellSize, availableH / rows);
-      let placed = 0;
-      for (let r = 0; r < rows && placed < count; r += 1) {
-        for (let c = 0; c < cols && placed < count; c += 1) {
-          // Jitter kept tiny so the spawn grid is guaranteed to be
-          // non-overlapping (cellSize 9 - 2*BALL_R 8 = 1px slack; we
-          // jitter ±0.2 to stay safely inside that 1px envelope).
-          // Overlapping spawns trigger Matter.js collision resolution
-          // that pushes balls outward, creating a "popcorn" effect
-          // before gravity even engages.
-          const x = xPad + colSpacing * (c + 0.5) + (Math.random() - 0.5) * 0.4;
-          const y = yTop + r * rowSpacing + (Math.random() - 0.5) * 0.4;
-          // ALL balls spawn dynamic. The initial wave is held in place
-          // by engine.gravity.scale = 0 until Beat 02 (see enterBeat
-          // for the release). The fix-wave spawns when gravity is
-          // already at FULL_GRAVITY so it drops immediately.
-          const b = Bodies.circle(x, y, BALL_R, {
-            isStatic: false,
-            restitution: 0.4,
-            friction: 0.01,
-            frictionAir: 0.018,
-            density: 0.0025,
-            label: 'ball',
-            render: { fillStyle: STAGE_COLORS[0] },
-          });
-          b.stage = 0;
-          b.counted = false;
-          b.fixed = tagFixed;
-          balls.push(b);
-          Composite.add(world, b);
-          placed += 1;
+    function playSceneStatic(beat) {
+      const cfg = BEAT_SCENES[beat - 1];
+      if (!cfg) return;
+      const passCount = getPassCount(cfg);
+      resetSceneUI();
+      setBarFill(passCount);
+      counts.converted = passCount;
+      counts.lost = VISUAL_COUNT - passCount;
+      if (beat === 6) {
+        if (beatWall) beatWall.classList.add('is-dissolved');
+        if (sceneNext) {
+          sceneNext.removeAttribute('hidden');
+          sceneNext.classList.add('is-active');
         }
       }
+      updateCounters();
+      updateBarLiveFill();
     }
 
-    buildBrokenFilters();
-    spawnPackedWave();   // initial wave (~500 visible, scales to 1,000 in tallies)
-
-    // ─── Collision tally + booked detection ──────────────────
-    Events.on(engine, 'collisionStart', (event) => {
-      const pairs = event.pairs;
-      for (let i = 0; i < pairs.length; i += 1) {
-        const pair = pairs[i];
-        const a = pair.bodyA, b = pair.bodyB;
-        const ball = a.label === 'ball' ? a : (b.label === 'ball' ? b : null);
-        if (!ball) continue;
-        const other = a === ball ? b : a;
-        if (ball.stage < 0 || ball.counted || ball.stage >= 4) continue;
-
-        if (other.label === 'filterWall' && !ball.fixed) {
-          // Linear lookup over 3 filters × 2 segs = 6 refs; cheap.
-          let filter = null;
-          for (let fi = 0; fi < filters.length; fi += 1) {
-            const f = filters[fi];
-            if (f.leftSeg === other || f.rightSeg === other) { filter = f; break; }
-          }
-          if (filter && ball.stage <= filter.idx) {
-            ball.stage = -1;
-            ball.counted = true;
-            ball.render.fillStyle = REJECT_COLOR;
-            bumpTally(filter.idx + 2);
-            // Small horizontal kick so the ball slides off the wall,
-            // then queue a freeze so it stops costing CPU.
-            const dir = ball.position.x < w / 2 ? -1 : 1;
-            Body.applyForce(ball, ball.position, { x: dir * 0.0006, y: 0 });
-            queueFreeze(ball);
-          }
-        } else if (other === bookedZone) {
-          if (ball.stage >= 3) {
-            ball.stage = 4;
-            ball.counted = true;
-            ball.render.fillStyle = STAGE_COLORS[4];
-            if (ball.fixed) bumpCompare();
-            else            bumpTally(5);
-            // Booked balls are visually "done" — freeze almost
-            // immediately so the rest of the wave doesn't have to
-            // resolve collisions against a pile of bouncing balls.
-            queueFreeze(ball, 250);
-          }
-        }
-      }
-    });
-
-    // beforeUpdate: (1) upgrade stage on crossing a filter Y inside the
-    // gap; (2) sweep the settling queue and freeze landed balls.
-    Events.on(engine, 'beforeUpdate', () => {
-      // Stage upgrades for in-flight balls only (skip booked + lost)
-      for (let bi = 0; bi < balls.length; bi += 1) {
-        const body = balls[bi];
-        if (body.stage < 0 || body.stage >= 4 || body.isStatic) continue;
-        for (let i = body.stage; i < filters.length; i += 1) {
-          const f = filters[i];
-          if (body.position.y > f.yPx + 4 &&
-              body.position.x > f.gapLeft &&
-              body.position.x < f.gapRight &&
-              body.stage === i) {
-            body.stage = i + 1;
-            body.render.fillStyle = STAGE_COLORS[i + 1];
-          }
-        }
-      }
-      // Freeze settled balls (single pass; no per-ball setTimeout)
-      if (settling.length) {
-        const now = performance.now();
-        for (let si = settling.length - 1; si >= 0; si -= 1) {
-          const sb = settling[si];
-          if (now >= sb._settleAt) {
-            if (!sb.isStatic) Body.setStatic(sb, true);
-            settling.splice(si, 1);
-          }
-        }
-      }
-    });
-
-    // ─── Beat handlers ───────────────────────────────────────
     function enterBeat(beat) {
       if (beat === currentBeat) return;
-      const previous = currentBeat;
       currentBeat = beat;
+      const gen = ++sceneGen;
+      const stillCurrent = () => gen === sceneGen && currentBeat === beat;
+
       setActiveBeatVisual(beat);
+      applyWallForBeat(beat);
 
-      // Forward-only physics state advancement (idempotent)
-      if (beat >= 2 && previous < 2) {
-        // Release the initial wave by engaging gravity. Balls are
-        // already dynamic; setting gravity.scale starts the cascade.
-        engine.gravity.scale = FULL_GRAVITY;
-        // Defensive belt-and-suspenders for the gravity release:
-        //  (a) wake any ball that somehow ended up sleeping (e.g.
-        //      if engine.enableSleeping was toggled at runtime),
-        //  (b) give each ball a tiny downward velocity so the
-        //      cascade reads as a "drop" rather than a gradual
-        //      acceleration from rest.
-        const Sleeping = M.Sleeping;
-        for (let i = 0; i < balls.length; i += 1) {
-          const b = balls[i];
-          if (b.fixed) continue;
-          if (b.isSleeping && Sleeping) Sleeping.set(b, false);
-          Body.setVelocity(b, { x: 0, y: 0.6 });
-        }
-        revealTally(2);
-      }
-      if (beat >= 3 && previous < 3) { openGate(0); revealTally(3); }
-      if (beat >= 4 && previous < 4) { openGate(1); revealTally(4); }
-      if (beat >= 5 && previous < 5) { openGate(2); revealTally(5); }
-      if (beat >= 6 && previous < 6 && !beat6Fired) {
-        beat6Fired = true;
-        runReverseCascade();
+      if (prefersReducedMotion) {
+        playSceneStatic(beat);
+        return;
       }
 
-      // Keep tally rows visible if user jumps backward (state stays accumulated)
-      if (beat >= 2) revealTally(2);
-      if (beat >= 3) revealTally(3);
-      if (beat >= 4) revealTally(4);
-      if (beat >= 5) revealTally(5);
+      if (sectionVisible) playScene(beat, stillCurrent);
     }
 
-    function runReverseCascade() {
-      // 1. Reskin canvas wrap to "fix" mode (CSS swaps tint to green)
-      canvasWrap.setAttribute('data-mode', 'fix');
-
-      // 2. Particle shatter at each filter Y as the walls "dissolve."
-      //    Force-field halos also fade via .is-dissolved (already
-      //    triggered by setActiveBeatVisual at beat 6).
-      FILTER_Y.forEach((yPct, i) => {
-        setTimeout(() => spawnShatter(yPct, 'red'), i * 80);
+    const sectionObs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        sectionVisible = e.isIntersecting;
+        if (sectionVisible && currentBeat >= 1 && !prefersReducedMotion) {
+          const gen = ++sceneGen;
+          const beat = currentBeat;
+          const stillCurrent = () => gen === sceneGen && currentBeat === beat;
+          playScene(beat, stillCurrent);
+        }
       });
+    }, { threshold: 0.12 });
+    sectionObs.observe(section);
 
-      // 3. Turn old filter wall segments green (visual signal: "AI dissolves them")
-      filters.forEach((f) => {
-        [f.leftSeg, f.rightSeg].forEach((seg) => {
-          if (seg && seg.render) {
-            seg.render.fillStyle = 'rgba(74, 222, 128, 0.5)';
-            seg.render.strokeStyle = 'rgba(74, 222, 128, 0.85)';
-          }
-        });
-      });
-
-      // 3. Fade out red trash balls over ~0.9s, then remove
-      const trashBalls = balls.filter((b) => b.stage === -1);
-      const fadeStart = performance.now();
-      const fadeDur = 900;
-      function fadeStep() {
-        const t = Math.min(1, (performance.now() - fadeStart) / fadeDur);
-        const alpha = 1 - t;
-        for (let i = 0; i < trashBalls.length; i += 1) {
-          trashBalls[i].render.fillStyle = `rgba(238, 58, 57, ${(alpha * 0.85).toFixed(3)})`;
-        }
-        if (t < 1) {
-          requestAnimationFrame(fadeStep);
-        }
-      }
-      requestAnimationFrame(fadeStep);
-
-      // 4. After fade, hard-clean the canvas: remove EVERY leftover
-      //    original-wave body (red trash + the ~9 booked survivors +
-      //    any in-flight stragglers), drop the old red wall segments,
-      //    rebuild green walls with wide gaps, drop the fresh wave.
-      //    Hard-cleaning is the big perf win — without it we'd be
-      //    simulating ~500 stale bodies alongside the fresh 500.
-      setTimeout(() => {
-        // Remove every non-fixed ball from world + array
-        for (let i = balls.length - 1; i >= 0; i -= 1) {
-          const b = balls[i];
-          if (!b.fixed) {
-            Composite.remove(world, b);
-            balls.splice(i, 1);
-          }
-        }
-        // Drop any pending settle queue entries (their balls are gone)
-        settling.length = 0;
-
-        // Remove the old red filter wall segments
-        filters.forEach((f) => {
-          if (f.leftSeg) Composite.remove(world, f.leftSeg);
-          if (f.rightSeg) Composite.remove(world, f.rightSeg);
-        });
-        filters.length = 0;
-
-        // Rebuild with wide gaps + green styling
-        FILTER_Y.forEach((yPct, i) => {
-          const rate = [FIXED_RATES.f1, FIXED_RATES.f2, FIXED_RATES.f3][i];
-          const gapW = w * rate * 0.92;
-          const gapLeft = (w - gapW) / 2;
-          const gapRight = gapLeft + gapW;
-          const yPx = h * yPct;
-          const leftSegW = Math.max(1, gapLeft);
-          const rightSegW = Math.max(1, w - gapRight);
-          const greenStyle = {
-            isStatic: true,
-            label: 'filterWall',
-            render: {
-              fillStyle: 'rgba(74, 222, 128, 0.5)',
-              strokeStyle: 'rgba(74, 222, 128, 0.85)',
-              lineWidth: 1.5,
-            },
-          };
-          const leftSeg  = Bodies.rectangle(leftSegW / 2,             yPx, leftSegW,  6, greenStyle);
-          const rightSeg = Bodies.rectangle(gapRight + rightSegW / 2, yPx, rightSegW, 6, greenStyle);
-          Composite.add(world, [leftSeg, rightSeg]);
-          filters.push({ yPx, gapLeft, gapRight, leftSeg, rightSeg, gate: null, idx: i, open: true });
-        });
-
-        // Drop the green wave (immediately dynamic, no static pause)
-        spawnPackedWave({ tagFixed: true });
-
-        // Reveal the compare overlay (the "with DealerEdge" counter ticks
-        // up live via the bookedZone collision handler above).
-        // Slight delay after the overlay-active class fires so the
-        // burst lands roughly when the "after" number scale-ups.
-        if (compareEl) {
-          compareEl.removeAttribute('hidden');
-          requestAnimationFrame(() => compareEl.setAttribute('data-compare-active', 'true'));
-          setTimeout(() => spawnBurst(), 900);
-        }
-      }, 1050);
-    }
-
-    // ─── Scroll trigger: map scroll progress → active beat ────
     ScrollTrigger.create({
       trigger: section,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: false,
       onUpdate: (self) => {
-        const p = self.progress;
-        const beat = Math.min(TOTAL_BEATS, Math.max(1, Math.floor(p * TOTAL_BEATS) + 1));
+        const beat = Math.min(TOTAL_BEATS, Math.max(1, Math.floor(self.progress * TOTAL_BEATS) + 1));
         if (beat !== currentBeat) enterBeat(beat);
       },
     });
 
-    // Initial state: beat 1 (balls hover at top, no gates open)
-    currentBeat = 1;
-    setActiveBeatVisual(1);
+    currentBeat = 0;
+    enterBeat(1);
 
-    // ─── Resize handling ─────────────────────────────────────
-    let resizeTimer = null;
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        const dim = sizeCanvas();
-        render.canvas.width = dim.w;
-        render.canvas.height = dim.h;
-        render.options.width = dim.w;
-        render.options.height = dim.h;
-        w = dim.w;
-        h = dim.h;
-        // (Filter positions don't auto-reposition; the cascade is
-        // designed for a stable viewport. Major resize: refresh page.)
-      }, 250);
+      if (prefersReducedMotion) {
+        playSceneStatic(currentBeat);
+      } else if (sectionVisible && currentBeat >= 1) {
+        const gen = ++sceneGen;
+        const beat = currentBeat;
+        const stillCurrent = () => gen === sceneGen && currentBeat === beat;
+        playScene(beat, stillCurrent);
+      }
     });
   }
 
