@@ -90,7 +90,7 @@ A "deep-dive page" is structured as: **Pinned Hero (Killer Proof Chain) → Mari
 
 The current `sales.html` order is:
 
-1. **Hero + Stats** (`s-hero.s-stats-section`, `id="stats"`) — **one** scroll-pinned 600vh experience. The big stat + `<h1>` headline swap per beat; prospects launch from the scene lane and feed proportional green/red bars. Beat 06 dissolves the wall and becomes the narrative turn: "Recover buyers you already paid to attract" + "Scroll to see how." See "Pinned hero (Killer Proof Chain)" below.
+1. **Hero + Stats** (`s-hero.s-stats-section`, `id="stats"`) — **one** scroll-pinned 600vh cohort story. The same 1,000 buyers enter once, then the 100-dot visualization shows cumulative attrition: slow site → no 24-hour reply → voicemail → only 19 booked. Beat 06 flips green and recovers the cohort to **60 bookings instead of 19. Same 1,000 buyers.** Keep the "Scroll to see how" handoff. Avoid returning to the old 41X framing.
 2. **Act 1** (`s-act--without`) — Without DealerEdge, 4 beats
 3. **Marine Proof** (`s-marine-proof`) — compact post-Act-1 context card with NMMA modal. Keep this light so the John Castillo scenario remains the main path.
 4. **Pivot** (`s-pivot`) — transition
@@ -141,7 +141,7 @@ If you change the number of beats, change the height. If you forget, the last be
 
 ### Mobile breakpoint
 
-At ≤1100px wide, the stats section keeps scroll-pin but stacks the scene stage vertically (prospects launch upward). Acts disable scroll-pin and stack beats vertically. JS uses `playSceneStatic()` for reduced-motion; otherwise GSAP launches with the same scroll progress mapping.
+At ≤1100px wide, the stats section keeps scroll-pin but compresses the cohort card and stacks the dot grid above the counters on narrow screens. Acts disable scroll-pin and stack beats vertically.
 
 ---
 
@@ -211,7 +211,7 @@ The pattern lives in the `acts.forEach((act) => {...})` block. If you ever see a
 Use `data-*` attrs as DOM hooks instead of class selectors. CSS classes are for styling state; data attrs are for JS plumbing.
 
 - `data-anim="actN-beatM"` — registers a beat with the dispatch
-- `data-stats-section`, `data-hero-stat`, `data-hero-headline-body`, `data-hero-sub-slides`, `data-scene-stage`, `data-beat-wall`, `data-wall-headline`, `data-prospect-lane`, `data-bar-stack-passed`, `data-bar-stack-lost`, `data-convert-zone`, `data-gave-up-zone`, `data-zone-count`, `data-scene-lost`, `data-scene-scale`, `data-scene-next`, `data-fx-layer` — pinned hero + scene hooks
+- `data-stats-section`, `data-stage`, `data-cohort-label`, `data-cohort-alive-label`, `data-cohort-alive`, `data-cohort-lost-label`, `data-cohort-lost`, `data-cohort-grid`, `data-cohort-popup`, `data-cohort-caption`, `data-cohort-fix-stack`, `data-scene-next` — pinned hero + cohort hooks
 - `data-form`, `data-field`, `data-typed`, `data-submit-btn`, `data-confirm` — Act 1 Beat 1 form anim
 - `data-inbox-list`, `data-inbox-silence` — Act 1 Beat 2 inbox
 - `data-timeline-events` — Act 1 Beat 3 timeline
@@ -233,49 +233,46 @@ When adding new animations, follow this prefix convention so future readers can 
 
 The opening section of `sales.html` is a **single merged** scroll-pinned block: `section.s-hero.s-stats-section` at `600vh` (six beats × 100vh), sticky on `.s-hero-pin`. There is no separate static hero above it.
 
-**Layout (top → bottom inside the pin):** `[data-beat-wall]` wrapping the `<h1>` (big stat via `[data-hero-stat]` + body via `[data-hero-headline-body]`) → rotating subheads in `[data-hero-sub-slides]` → `[data-scene-stage]` (convert zone, prospect lane, counters, next-step prompt) → scroll pulse → Beat 06-only story handoff.
+**Layout (top → bottom inside the pin):** `[data-cohort-headlines]` headline stack → `[data-cohort-card]` with left/right counters and a persistent 100-dot cohort grid → scroll pulse → Beat 06-only story handoff.
 
-Fifteen visible prospect dots launch per beat (from the center lane toward the headline wall, then into proportional green/red bar columns in the middle). Side boxes show **literal dot counts** (3 converted = "3", 12 gave up = "12"); the footnote explains the dots visualize the split. Beat 06 removes the numbers entirely and becomes the strategic turn: same traffic, fewer dead ends, scroll to see how. **matter.js is not used** — GSAP timelines + DOM sprites only.
+The 100 dots represent the same 1,000 buyers from start to finish. Each dot equals 10 buyers. Red dots are cumulative attrition, not a fresh sample per beat. Beat 06 turns selected lost dots green again and counts from 19 to 60 bookings. The recovery copy may say **roughly 3X more bookings from buyers you already paid to attract**. Do not present that as 41X, and do not lead with `+41` as the primary promise.
 
 ### 6-beat structure
 
-| Beat | Stat | Headline body (wall) | Pass rate (15 visible) |
+| Beat | Stat | Headline | Cohort state |
 |---|---|---|---|
-| 01 · Speed | 78% | of buyers go with whoever ~~answers first~~ **answers.** | 3 pass (22%) |
-| 02 · Site speed | -7% | per second over 3s your site takes to load. | 3 pass (22%) |
-| 03 · Response | 57% | never get a response in 24 hours. | 6 pass (43%) |
-| 04 · Voicemail | 80% | of callers who hit voicemail hang up and never call back. | 3 pass (20%) |
-| 05 · Truth | 19 | of every 1,000 visitors ever book a showing. | 1 pass (~2%) |
-| 06 · DealerEdge | — | Recover buyers you already paid to attract. | 12 pass (~79%); wall dissolves |
+| 01 · Baseline | 1,000 | buyers came to your site this month. | 1,000 still here / 0 lost |
+| 02 · Site speed | 17.3s | to load. 700 left before it finished. | 300 still here / 700 lost |
+| 03 · Response | 57% | of the 300 who stayed never heard back in 24 hours. | 129 still engaged / 871 lost |
+| 04 · Voicemail | 80% | of callers hit voicemail and never called back. | 49 still engaged / 951 lost |
+| 05 · Truth | 19 | of 1,000 ever booked a showing. | 19 booked / 981 paid for, gone |
+| 06 · DealerEdge | 60 | bookings instead of 19. Same 1,000 buyers. | 60 booked / +41 deals recovered |
 
-Beat 02 subhead cites the 200-site audit: average mobile LCP **17.3s**. Beat 06 reveals the `Scroll to see how.` prompt instead of a numeric compare.
+Beat 02 subhead cites the 200-site audit: average mobile load **17.3s**. Beat 06 reveals the `Scroll to see how.` prompt after the recovery animation.
 
-### Scene reset on every beat
+### Scene state per beat
 
-`enterBeat(beat)` updates hero copy via `applyWallForBeat()`, increments `sceneGen`, and calls `playScene()` which **fully resets** prospects and counters. Scrolling backward replays the scene from scratch.
+`initCohortStatsSection()` owns the hero. It builds 100 `.s-cohort-dot` nodes, maps ScrollTrigger progress to the six cohort stages, updates counters, and uses a generation token (`cohortGen`) so stale final-beat timeouts do not mutate the DOM after the user scrolls away.
 
-### Headline-as-wall collision
+### Final recovery beat
 
-Prospects are `.s-prospect` divs appended to `.s-hero-inner--pinned` (not the scene stage). GSAP animates them toward `[data-beat-wall]`'s bounding box (diagonal on desktop, vertical on mobile). Failures trigger a small impact particle at the wall, then dots continue into the red bar and disappear as the bar fill rises. Successes continue into the green bar with `.is-passed` + `spawnBurst()` confetti in `[data-fx-layer]`.
+Beat 06 sequence:
 
-Beat 01 strike-through: `is-revealed` on `[data-wall-headline]` ~1.2s after first paint (see `applyWallForBeat`).
-
-Beat 06 sequence (`playBeat6Finale`):
-
-1. `.is-dissolved` fades the wall; headline turns green.
-2. Second prospect wave launches with ~79% pass rate.
-3. `[data-scene-next]` reveals **Scroll to see how.**
+1. Preserve the 981 lost baseline so the reader remembers the problem.
+2. Restore a few previously red dots with green pulses.
+3. Count bookings from 19 to 60 using four bounded fix cards: instant page load, AI replies in 60 seconds, automated follow-up, smart voicemail capture.
+4. Reveal `[data-scene-next]` with **Scroll to see how.**
 
 ### Performance gates
 
-- **`sectionObs` IntersectionObserver** — only runs `playScene()` when the section is on-screen.
-- **`stillCurrent` / `sceneGen`** — stale launch timelines bail when the user jumps beats mid-animation.
-- **`prefers-reduced-motion` / ≤1100px** — `playSceneStatic()` shows final pass/fail positions instantly, no GSAP arcs.
-- **15 DOM nodes per scene** — negligible CPU vs physics.
+- **ScrollTrigger progress only** — no physics and no Matter.js.
+- **`cohortGen`** — stale recovery timeouts bail when the user jumps stages mid-animation.
+- **`prefers-reduced-motion`** — number tweens and recovery delays collapse to near-instant.
+- **100 DOM dots** — still lightweight and easier to understand than moving physics particles.
 
 ### When to NOT add physics to other beats
 
-For "particles flowing" elsewhere (e.g., Act 4 Beat 1 funnel dots), use simple `setTimeout`-driven `<div>` particles with CSS transitions or GSAP — same pattern as `spawnBurst()` in the pinned hero.
+For "particles flowing" elsewhere (e.g., Act 4 Beat 1 funnel dots), use simple `setTimeout`-driven `<div>` particles with CSS transitions or GSAP. Do not add Matter.js back.
 
 ---
 
@@ -441,7 +438,7 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **CTA / The Offer**: currently four lines of text. Next iteration likely becomes a 3-beat sequence: vendor swap → mechanic → tier cards.
 - **Other pillars**: Marketing and Operations need the same act/beat treatment Sales got. The sales.html structure is the template.
 - **Real backends for Act 3**: SMS demo is fake-scripted. Real Twilio wiring planned later.
-- **Stats Section pass counts**: tune `passCount` in `BEAT_SCENES` in [`js/sales.js`](js/sales.js) if the visual dot ratio needs adjustment. Side counters always match visible dots; only Beat 06 compare/hero stat uses the 1,000-scale numbers.
+- **Stats Section cohort math**: tune the `stages` and `recoverySteps` arrays in `initCohortStatsSection()` in [`js/sales.js`](js/sales.js). Keep the through-line as one 1,000-buyer cohort and keep the final claim grounded as 60 bookings instead of 19, roughly 3X.
 
 ---
 
@@ -463,4 +460,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-05-26 by Codex GPT-5 for the grounded recovered-deals hero beat. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*

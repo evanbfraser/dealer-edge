@@ -42,9 +42,9 @@
   </nav>
 
   <!-- ──────────────────────────────────────────────────────────────
-       HERO + STATS  —  one scroll-pinned 6-beat experience.
-       Pillar · Sales, hero stat + headline swap per beat, prospects
-       launch into the headline-as-wall. Beat 06 dissolves the wall.
+       HERO + STATS  —  one scroll-pinned cohort story.
+       1,000 buyers enter once, then the same cohort leaks through
+       each failure point before DealerEdge recovers the journey.
        ────────────────────────────────────────────────────────────── -->
   <section class="s-hero s-stats-section" id="stats" data-stats-section>
     <div class="s-hero-grid s-stats-bg-grid"></div>
@@ -55,61 +55,57 @@
     <div class="s-stats-pin s-hero-pin">
       <div class="s-hero-inner s-hero-inner--pinned">
 
-        <div class="s-beat-wall" data-beat-wall>
-          <h1 class="s-hero-headline" data-wall-headline data-hero-headline aria-live="polite">
-            <span class="s-hero-stat" data-hero-stat>78<span class="s-hero-stat-suffix">%</span></span>
-            <span class="s-hero-headline-body" data-hero-headline-body>
-              of buyers go with whoever<br>
-              <span class="s-headline-strike">answers first.</span>
-              <span class="s-headline-accent">answers.</span>
-            </span>
-          </h1>
-        </div>
-
-        <div class="s-hero-sub-slides" data-hero-sub-slides>
-          <p class="s-hero-sub is-active" data-slide="1">Same lead. Faster dealership. Deal gone.</p>
-          <p class="s-hero-sub" data-slide="2">We audited 200 marine dealership sites. Average mobile LCP: <strong>17.3s</strong>. Google wants under 2.5.</p>
-          <p class="s-hero-sub" data-slide="3">By Monday, the buyer has already moved on.</p>
-          <p class="s-hero-sub" data-slide="4">The rep is on the lot. The buyer is already calling the next dealer.</p>
-          <p class="s-hero-sub" data-slide="5">The other 981 didn't say no. Most just disappeared.</p>
-          <p class="s-hero-sub s-hero-sub--fix" data-slide="6">Same traffic. Fewer dead ends. More buyers make it through.</p>
-        </div>
-
-        <div class="s-scene-stage" data-scene-stage>
-          <div class="s-scene-context" data-scene-context>Buyers hitting your process</div>
-
-          <div class="s-convert-zone" data-convert-zone>
-            <span class="s-zone-label" data-zone-label-good>Converted</span>
-            <span class="s-zone-count" data-zone-count>0</span>
+        <div class="s-cohort-headlines" data-cohort-headlines aria-live="polite">
+          <div class="s-cohort-headline is-active" data-stage="0">
+            <span class="s-cohort-stat">1,000</span>
+            <h1>buyers came to your site this month.</h1>
+            <p>Every one of them cost you money to attract. Watch where they go.</p>
           </div>
+          <div class="s-cohort-headline" data-stage="1">
+            <span class="s-cohort-stat">17.3s</span>
+            <h1>to load. <span>700 left before it finished.</span></h1>
+            <p>We audited 200 marine dealer sites. Average mobile load: 17.3s. Google wants under 2.5s.</p>
+          </div>
+          <div class="s-cohort-headline" data-stage="2">
+            <span class="s-cohort-stat">57%</span>
+            <h1>of the 300 who stayed <span>never heard back in 24 hours.</span></h1>
+            <p>By Monday morning, the buyer is already on another dealer's lot.</p>
+          </div>
+          <div class="s-cohort-headline" data-stage="3">
+            <span class="s-cohort-stat">80%</span>
+            <h1>of callers <span>hit voicemail and never called back.</span></h1>
+            <p>Your rep is on the lot. The buyer is already dialing the next dealer.</p>
+          </div>
+          <div class="s-cohort-headline" data-stage="4">
+            <span class="s-cohort-stat">19</span>
+            <h1>of 1,000 ever <span>booked a showing.</span></h1>
+            <p>The other 981 didn't say no. They just disappeared into the gaps.</p>
+          </div>
+          <div class="s-cohort-headline s-cohort-headline--fix" data-stage="5">
+            <span class="s-cohort-stat s-cohort-stat--green">60</span>
+            <h1>bookings instead of 19. <span>Same 1,000 buyers.</span></h1>
+            <p>We plug the leaks: instant pages, instant replies, no missed calls. Roughly 3X more bookings from buyers you already paid to attract.</p>
+          </div>
+        </div>
 
-          <div class="s-prospect-lane" data-prospect-lane aria-hidden="true">
-            <div class="s-bar-chart" data-bar-chart>
-              <div class="s-bar-col s-bar-col--pass">
-                <div class="s-bar-frame" data-bar-frame-passed aria-hidden="true">
-                  <div class="s-bar-fill s-bar-fill--pass" data-bar-fill-passed></div>
-                </div>
-                <div class="s-bar-stack" data-bar-stack-passed></div>
-                <span class="s-bar-caption s-bar-caption--pass" data-bar-caption-good>Made it through</span>
-              </div>
-              <div class="s-bar-col s-bar-col--fail">
-                <div class="s-bar-frame" data-bar-frame-lost aria-hidden="true">
-                  <div class="s-bar-fill s-bar-fill--fail" data-bar-fill-lost></div>
-                </div>
-                <div class="s-bar-stack" data-bar-stack-lost></div>
-                <span class="s-bar-caption s-bar-caption--fail" data-bar-caption-bad>Gave up</span>
-              </div>
+        <div class="s-cohort-card" data-cohort-card>
+          <div class="s-cohort-viz-label" data-cohort-label>All 1,000 buyers — still in your funnel</div>
+          <div class="s-cohort-row">
+            <div class="s-cohort-counter s-cohort-counter--alive">
+              <span data-cohort-alive-label>Still here</span>
+              <strong data-cohort-alive>1,000</strong>
+            </div>
+            <div class="s-cohort-grid-wrap">
+              <div class="s-cohort-popup" data-cohort-popup></div>
+              <div class="s-cohort-grid" data-cohort-grid aria-hidden="true"></div>
+            </div>
+            <div class="s-cohort-counter s-cohort-counter--lost">
+              <span data-cohort-lost-label>Lost so far</span>
+              <strong data-cohort-lost>0</strong>
             </div>
           </div>
-
-          <div class="s-gave-up-zone" data-gave-up-zone aria-live="polite">
-            <span class="s-zone-label s-zone-label--bad" data-zone-label-bad>Gave up</span>
-            <span class="s-zone-count s-zone-count--bad" data-scene-lost>0</span>
-          </div>
-
-          <p class="s-scene-scale" data-scene-scale>15 dots visualize the split · counts scale to 1,000 buyers</p>
-
-          <div class="s-fx-layer" data-fx-layer aria-hidden="true"></div>
+          <p class="s-cohort-caption" data-cohort-caption>100 dots = 1,000 buyers. Each dot represents 10 people.</p>
+          <div class="s-cohort-fix-stack" data-cohort-fix-stack></div>
           <div class="s-scene-next" data-scene-next hidden>Scroll to see how.</div>
         </div>
 

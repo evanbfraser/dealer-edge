@@ -90,12 +90,12 @@
   faders.forEach((el) => faderObs.observe(el));
 
   /* ═════════════════════════════════════════════════════════════
-     HERO + STATS  —  one pinned 6-beat prospect-launch experience
-     Hero stat + headline swap per beat; prospects collide with h1.
+     HERO + STATS  —  continuous 1,000-buyer cohort experience
+     A legacy prospect-launch prototype remains below for reference.
      ═════════════════════════════════════════════════════════════ */
 
   const statsSection = document.querySelector('[data-stats-section]');
-  if (statsSection) initStatsSection(statsSection);
+  if (statsSection) initCohortStatsSection(statsSection);
 
   function initStatsSection(section) {
     const subSlides = section.querySelectorAll('.s-hero-sub-slides [data-slide]');
@@ -205,10 +205,10 @@
       },
       {
         beat: 6,
-        statNum: '',
-        statSuffix: '',
+        statNum: '3',
+        statSuffix: 'X',
         statFix: true,
-        headlineHtml: 'Recover buyers you already paid to attract.',
+        headlineHtml: 'more bookings. Same 1,000 buyers.',
         passIndices: [0, 1, 2, 4, 5, 6, 7, 8, 10, 11, 13, 14],
         wallMode: 'dissolve',
         contextLabel: 'Same traffic. Fewer dead ends.',
@@ -648,6 +648,257 @@
         playScene(beat, stillCurrent);
       }
     });
+  }
+
+  // Current hero: one continuous 1,000-buyer cohort story.
+  function initCohortStatsSection(section) {
+    const headlines = Array.from(section.querySelectorAll('[data-stage]'));
+    const labelEl = section.querySelector('[data-cohort-label]');
+    const aliveLabelEl = section.querySelector('[data-cohort-alive-label]');
+    const aliveValueEl = section.querySelector('[data-cohort-alive]');
+    const lostLabelEl = section.querySelector('[data-cohort-lost-label]');
+    const lostValueEl = section.querySelector('[data-cohort-lost]');
+    const grid = section.querySelector('[data-cohort-grid]');
+    const captionEl = section.querySelector('[data-cohort-caption]');
+    const popupEl = section.querySelector('[data-cohort-popup]');
+    const fixStackEl = section.querySelector('[data-cohort-fix-stack]');
+    const sceneNext = section.querySelector('[data-scene-next]');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!headlines.length || !grid || !aliveValueEl || !lostValueEl) return;
+
+    const TOTAL_DOTS = 100;
+    const stages = [
+      {
+        alive: 1000,
+        lost: 0,
+        aliveLabel: 'Still here',
+        lostLabel: 'Lost so far',
+        label: 'All 1,000 buyers - still in your funnel',
+        caption: '100 dots = 1,000 buyers. Each dot represents 10 people.',
+        lostThrough: 0,
+      },
+      {
+        alive: 300,
+        lost: 700,
+        aliveLabel: 'Still here',
+        lostLabel: 'Lost to slow site',
+        label: '700 bounced before your page even loaded',
+        caption: '17.3s mobile LCP x 70% bounce rate = 700 buyers, gone.',
+        lostThrough: 70,
+      },
+      {
+        alive: 129,
+        lost: 871,
+        aliveLabel: 'Still engaged',
+        lostLabel: 'Lost so far',
+        label: '171 more vanished waiting for a 24-hour reply',
+        caption: '57% of 300 = 171 leads that never heard back.',
+        lostThrough: 87,
+      },
+      {
+        alive: 49,
+        lost: 951,
+        aliveLabel: 'Still engaged',
+        lostLabel: 'Lost so far',
+        label: '80 more hung up on your voicemail and never called back',
+        caption: '80% of callers hit voicemail. Most call the next dealer.',
+        lostThrough: 95,
+      },
+      {
+        alive: 19,
+        lost: 981,
+        aliveLabel: 'Booked',
+        lostLabel: 'Paid for. Gone.',
+        label: 'Only 19 of 1,000 ever booked a showing',
+        caption: '19 of 1,000 is the industry baseline. The 981 are your real opportunity.',
+        lostThrough: 98,
+      },
+      {
+        alive: 60,
+        lost: 41,
+        aliveLabel: 'Booked',
+        lostLabel: 'Deals recovered',
+        label: 'Same 1,000 buyers. Every leak plugged.',
+        caption: 'Same traffic. Fewer dead ends. More buyers make it through.',
+        lostThrough: 98,
+        isRecovery: true,
+      },
+    ];
+
+    const recoverySteps = [
+      { dotIdx: 25, count: 31, delta: '+12', fix: 'Instant page load', caption: 'Speed leak plugged. Buyers no longer bounce before the site renders.' },
+      { dotIdx: 75, count: 47, delta: '+16', fix: 'AI replies in 60 seconds', caption: '24-hour gap closed. Every lead gets answered instantly, day or night.' },
+      { dotIdx: 82, count: 53, delta: '+6', fix: 'Automated follow-up', caption: 'Conversation kept alive. The chat keeps going even after hours.' },
+      { dotIdx: 90, count: 60, delta: '+7', fix: 'Smart voicemail capture', caption: 'Hangups turn into callbacks. No buyer disappears into the void.' },
+    ];
+
+    let currentStage = -1;
+    let cohortGen = 0;
+    let lastAlive = 1000;
+    let lastLost = 0;
+
+    if (!grid.children.length) {
+      for (let i = 0; i < TOTAL_DOTS; i += 1) {
+        const dot = document.createElement('span');
+        dot.className = 's-cohort-dot';
+        dot.dataset.dot = String(i);
+        grid.appendChild(dot);
+      }
+    }
+
+    const dots = Array.from(grid.querySelectorAll('.s-cohort-dot'));
+
+    function formatNumber(value) {
+      return Number(value).toLocaleString('en-US');
+    }
+
+    function setText(el, value) {
+      if (el) el.textContent = value;
+    }
+
+    function tweenNumber(el, from, to, opts = {}) {
+      if (!el) return;
+      const { duration = 0.65, prefix = '' } = opts;
+      gsap.killTweensOf(el);
+      const state = { value: from };
+      gsap.to(state, {
+        value: to,
+        duration: prefersReducedMotion ? 0 : duration,
+        ease: 'power2.out',
+        onUpdate: () => {
+          el.textContent = `${prefix}${formatNumber(Math.round(state.value))}`;
+        },
+        onComplete: () => {
+          el.textContent = `${prefix}${formatNumber(to)}`;
+        },
+      });
+    }
+
+    function applyLossBands(lostThrough) {
+      dots.forEach((dot, idx) => {
+        dot.className = 's-cohort-dot';
+        if (idx < lostThrough) {
+          dot.classList.add(
+            idx < 70 ? 'is-lost-1' :
+              idx < 87 ? 'is-lost-2' :
+                idx < 95 ? 'is-lost-3' : 'is-lost-4'
+          );
+        }
+      });
+    }
+
+    function setFixCards(activeCount = 0) {
+      if (!fixStackEl) return;
+      fixStackEl.innerHTML = recoverySteps.map((step, idx) => `
+        <div class="s-cohort-fix-card ${idx < activeCount ? 'is-in' : ''}">
+          <span class="s-cohort-fix-check">✓</span>
+          <strong>${step.fix}</strong>
+          <span>${step.delta}</span>
+        </div>
+      `).join('');
+    }
+
+    function showPopup(step) {
+      if (!popupEl || !grid) return;
+      const dot = dots[step.dotIdx];
+      if (!dot) return;
+      const gridR = grid.getBoundingClientRect();
+      const dotR = dot.getBoundingClientRect();
+      popupEl.textContent = `${step.delta} ${step.fix}`;
+      popupEl.style.left = `${dotR.left - gridR.left + dotR.width / 2}px`;
+      popupEl.style.top = `${dotR.top - gridR.top}px`;
+      popupEl.classList.remove('is-in');
+      void popupEl.offsetWidth;
+      popupEl.classList.add('is-in');
+    }
+
+    function clearRecoveryUI() {
+      if (popupEl) popupEl.classList.remove('is-in');
+      if (sceneNext) {
+        sceneNext.setAttribute('hidden', '');
+        sceneNext.classList.remove('is-active');
+      }
+      if (fixStackEl) fixStackEl.innerHTML = '';
+    }
+
+    function runRecovery(stage, gen) {
+      applyLossBands(stage.lostThrough);
+      setFixCards(0);
+      tweenNumber(aliveValueEl, 19, 19);
+      tweenNumber(lostValueEl, 0, 0, { prefix: '+' });
+      lastAlive = 19;
+      lastLost = 0;
+
+      const restoreFinal = () => {
+        if (gen !== cohortGen) return;
+        setText(captionEl, 'Same traffic. Fewer dead ends. More buyers make it through.');
+        if (sceneNext) {
+          sceneNext.removeAttribute('hidden');
+          requestAnimationFrame(() => sceneNext.classList.add('is-active'));
+        }
+      };
+
+      recoverySteps.forEach((step, idx) => {
+        const delay = prefersReducedMotion ? 0 : 520 + idx * 620;
+        setTimeout(() => {
+          if (gen !== cohortGen) return;
+          const dot = dots[step.dotIdx];
+          if (dot) dot.classList.add('is-restored');
+          showPopup(step);
+          setFixCards(idx + 1);
+          setText(captionEl, step.caption);
+          tweenNumber(aliveValueEl, lastAlive, step.count);
+          tweenNumber(lostValueEl, lastLost, step.count - 19, { prefix: '+' });
+          lastAlive = step.count;
+          lastLost = step.count - 19;
+          if (idx === recoverySteps.length - 1) {
+            setTimeout(restoreFinal, prefersReducedMotion ? 0 : 760);
+          }
+        }, delay);
+      });
+    }
+
+    function setStage(idx) {
+      if (idx === currentStage) return;
+      currentStage = idx;
+      const gen = ++cohortGen;
+      const stage = stages[idx];
+      if (!stage) return;
+
+      section.setAttribute('data-active-beat', String(idx + 1));
+      section.classList.toggle('is-cohort-recovery', !!stage.isRecovery);
+      headlines.forEach((headline, i) => headline.classList.toggle('is-active', i === idx));
+
+      setText(labelEl, stage.label);
+      setText(aliveLabelEl, stage.aliveLabel);
+      setText(lostLabelEl, stage.lostLabel);
+      setText(captionEl, stage.caption);
+      clearRecoveryUI();
+
+      if (stage.isRecovery) {
+        runRecovery(stage, gen);
+        return;
+      }
+
+      applyLossBands(stage.lostThrough);
+      tweenNumber(aliveValueEl, lastAlive, stage.alive);
+      tweenNumber(lostValueEl, lastLost, stage.lost);
+      lastAlive = stage.alive;
+      lastLost = stage.lost;
+    }
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        const idx = Math.min(stages.length - 1, Math.floor(self.progress * stages.length));
+        setStage(idx);
+      },
+    });
+
+    setStage(0);
   }
 
   /* ─────────────────────────────────────────────────────────────
