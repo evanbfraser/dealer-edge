@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketing | DealerEdge - The AI agency that never sleeps</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/marketing.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="marketing-page">
+
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Scroll</span>
+    </div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="sales.html">Sales</a>
+        <a href="marketing.html" class="nav-link--active" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
+      <a href="features.html">Features</a>
+      <a href="sales.html">Sales</a>
+      <a href="marketing.html" class="nav-link--active">Marketing</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="case-studies.html">Results</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="m-hero" id="marketing-proof" data-marketing-hero>
+      <div class="m-hero-bg" aria-hidden="true">
+        <div class="m-grid"></div>
+        <div class="m-glow m-glow--good"></div>
+        <div class="m-glow m-glow--bad"></div>
+      </div>
+
+      <div class="m-hero-pin">
+        <div class="m-hero-inner">
+          <div class="m-hero-copy" aria-live="polite">
+            <div class="m-hero-slide is-active" data-hero-stage="0">
+              <span class="m-kicker">DealerEdge Marketing</span>
+              <h1 class="m-hero-promise">
+                <span class="m-hero-pain">Your agency promised results.</span>
+                <span class="m-hero-answer">Our AI <span class="m-ai-emoji" aria-hidden="true">🤖</span> automates the work. We <span class="m-guarantee-wrap"><span class="m-guarantee-word">guarantee</span><span class="m-hero-note">or you pay nothing<svg class="m-note-arrow" viewBox="0 0 96 62" aria-hidden="true" focusable="false"><path d="M88 7 C58 15 32 30 10 53"/><path d="M10 53 L15 36"/><path d="M10 53 L29 50"/></svg></span></span> the lift.</span>
+              </h1>
+              <p>You want a marketing agency that works as hard as you do. <span class="m-reality-check">Reality check: humans won't. AI will.</span> One system runs the work across your site, SEO, ads, content, reviews, and lead capture.</p>
+            </div>
+            <div class="m-hero-slide" data-hero-stage="1">
+              <span class="m-hero-stat m-hero-stat--green">24/7/365</span>
+              <h1>The AI agency that never sleeps feeds your sales engine.</h1>
+              <p>Cleaner leads in. Faster response out. Nothing lost between marketing and sales. No hand-off death.</p>
+            </div>
+          </div>
+
+          <div class="m-proof-machine" data-proof-machine>
+            <div class="m-website-chaos">
+              <div class="m-chaos-lines" aria-hidden="true">
+                <i class="m-chaos-line m-chaos-line--1"></i>
+                <i class="m-chaos-line m-chaos-line--2"></i>
+                <i class="m-chaos-line m-chaos-line--3"></i>
+                <i class="m-chaos-line m-chaos-line--4"></i>
+              </div>
+
+              <div class="m-site-core">
+                <div class="m-site-bar">
+                  <span></span><span></span><span></span>
+                  <em>lakeshoremarine.com</em>
+                </div>
+                <div class="m-site-body">
+                  <div class="m-site-boat">
+                    <img src="assets/2022-malibu-wakesetter.png" alt="" loading="lazy">
+                    <b>2022 Malibu Wakesetter</b>
+                  </div>
+                  <div class="m-site-panel">
+                    <span class="m-site-status" data-good-status="&lt;2s mobile load">17.3s mobile load</span>
+                    <h3>Great condition. Call for details.</h3>
+                    <p>Thin copy. No schema. No buyer context.</p>
+                    <div class="m-site-form">
+                      <span></span>
+                      <span></span>
+                      <button type="button">Submit inquiry</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="m-vendor-orbit" aria-label="Disconnected vendor stack">
+                <div class="m-vendor-node m-vendor-node--site">
+                  <span class="m-vendor-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 9h16M8 14h4M8 17h8"/></svg>
+                  </span>
+                  <strong>Website</strong>
+                  <small data-good="site active">ticket pending</small>
+                </div>
+                <div class="m-vendor-node m-vendor-node--seo">
+                  <span class="m-vendor-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="5.5"/><path d="M15 15l5 5M8 10h5M8 13h3"/></svg>
+                  </span>
+                  <strong>SEO</strong>
+                  <small data-good="daily checks">quarterly deck</small>
+                </div>
+                <div class="m-vendor-node m-vendor-node--ads">
+                  <span class="m-vendor-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg>
+                  </span>
+                  <strong>Ads</strong>
+                  <small data-good="sales-linked">clicks only</small>
+                </div>
+                <div class="m-vendor-node m-vendor-node--social">
+                  <span class="m-vendor-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M7 10h10M7 14h6"/><rect x="4" y="5" width="16" height="12" rx="3"/><path d="M9 17l-3 3v-4"/></svg>
+                  </span>
+                  <strong>Social</strong>
+                  <small data-good="right image">wrong image</small>
+                </div>
+                <div class="m-vendor-node m-vendor-node--reviews">
+                  <span class="m-vendor-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6-5.4-2.9-5.4 2.9 1-6-4.3-4.2 6-.9L12 3z"/></svg>
+                  </span>
+                  <strong>Reviews</strong>
+                  <small data-good="always on">forgotten sprint</small>
+                </div>
+              </div>
+
+              <div class="m-failure-tags" aria-hidden="true">
+                <span class="m-failure-tag m-failure-tag--1">thin copy</span>
+                <span class="m-failure-tag m-failure-tag--2">no schema</span>
+                <span class="m-failure-tag m-failure-tag--3">lead context lost</span>
+                <span class="m-failure-tag m-failure-tag--4">wrong image</span>
+              </div>
+
+              <div class="m-unify-layer">
+                <span>DealerEdge</span>
+                <strong>One AI marketing operation</strong>
+              </div>
+            </div>
+
+            <div class="m-proof-metrics">
+              <div class="m-proof-metric m-proof-metric--statement is-active" data-proof-stage="0">
+                <span>the agency problem</span>
+                <strong>Sold boats. Not clicks. Not rankings.</strong>
+                <small>That is the only result marketing should be judged by.</small>
+              </div>
+              <div class="m-proof-metric m-proof-metric--good" data-proof-stage="1">
+                <span>always-on operation</span>
+                <strong>better leads</strong>
+                <small>with context attached</small>
+              </div>
+            </div>
+            <div class="m-hero-next" data-hero-next>Scroll to see the machine.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-act m-act--old" id="old-way" data-act>
+      <div class="m-act-inner">
+        <div class="m-act-watermark">THE OLD WAY</div>
+        <header class="m-act-scene">
+          <span class="m-act-tag m-act-tag--bad">The buyer leak</span>
+          <h2 class="m-act-headline">Your marketing is busy. <span>Buyers are still disappearing.</span></h2>
+        </header>
+        <div class="m-act-copy">
+          <div class="m-act-beats">
+            <div class="m-act-beat is-active" data-beat="1"><span>01</span><p>The website vendor controls the clock. Your inventory does not wait for their queue.</p></div>
+            <div class="m-act-beat" data-beat="2"><span>02</span><p>The slow site loses buyers before they ever see the boat. Load time becomes a sales problem.</p></div>
+            <div class="m-act-beat" data-beat="3"><span>03</span><p>The form turns intent into homework. Every error is another exit ramp.</p></div>
+            <div class="m-act-beat" data-beat="4"><span>04</span><p>SEO, reviews, and content run in sprints. Buyers search, compare, and judge you every night.</p></div>
+            <div class="m-act-beat" data-beat="5"><span>05</span><p>Search results keep score in public. If buyers find the other dealer first, Sales never gets the lead.</p></div>
+            <div class="m-act-beat" data-beat="6"><span>06</span><p>One AI marketing operation keeps working, then hands Sales a buyer with context. No hand-off death.</p></div>
+          </div>
+        </div>
+        <div class="m-act-stage">
+          <div class="m-act-stage-sticky">
+            <div class="m-beat is-active" data-beat="1" data-anim="old-queue">
+              <div class="m-old-queue-scene">
+                <div class="m-old-listing-preview" data-old-listing>
+                  <span class="m-old-listing-stamp" data-old-updated>Updated 71 days ago</span>
+                  <span class="m-old-stale-buyer" data-old-stale-buyer aria-hidden="true"></span>
+                  <img src="assets/2022-malibu-wakesetter.png" alt="2022 Malibu Wakesetter" loading="lazy">
+                  <div>
+                    <span class="m-mono">2022 Malibu Wakesetter 23 LSV</span>
+                    <h3>Great condition. Call for details.</h3>
+                    <p>Last season's hero. Still waiting on the vendor queue.</p>
+                  </div>
+                </div>
+                <div class="m-window m-old-queue-board">
+                  <div class="m-window-bar"><span></span><span></span><span></span><em>Vendor queue</em></div>
+                  <div class="m-ticket-list">
+                    <div class="m-ticket" data-old-ticket><b>Update Malibu listing</b><em data-old-ticket-status>waiting</em></div>
+                    <div class="m-ticket" data-old-ticket><b>Fix slow inventory page</b><em data-old-ticket-status>next week</em></div>
+                    <div class="m-ticket" data-old-ticket><b>Add summer finance CTA</b><em data-old-ticket-status>discovery call</em></div>
+                  </div>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--bad"><i></i><span>The queue sets the pace.</span></div>
+            </div>
+            <div class="m-beat" data-beat="2" data-anim="old-speed">
+              <div class="m-old-speed-scene">
+                <div class="m-old-speed-buyers" data-old-speed-buyers aria-hidden="true"></div>
+                <div class="m-old-speed-split">
+                  <i class="m-old-speed-path m-old-speed-path--slow" aria-hidden="true"></i>
+                  <i class="m-old-speed-path m-old-speed-path--fast" aria-hidden="true"></i>
+                  <article class="m-old-speed-site m-old-speed-site--slow">
+                    <div class="m-old-speed-chrome"><span></span><span></span><span></span><em>Current vendor site</em></div>
+                    <div class="m-old-speed-wire is-blur">
+                      <div class="m-old-speed-hero-block"></div>
+                      <div class="m-old-speed-line"></div>
+                      <div class="m-old-speed-line m-old-speed-line--short"></div>
+                      <div class="m-old-speed-cta"></div>
+                    </div>
+                    <div class="m-old-speed-meta">
+                      <strong data-old-load="slow">0.0s</strong>
+                      <span data-old-speed-status="slow">loading...</span>
+                    </div>
+                    <div class="m-old-speed-zone" data-old-speed-zone="slow"></div>
+                  </article>
+                  <article class="m-old-speed-site m-old-speed-site--fast">
+                    <div class="m-old-speed-chrome"><span></span><span></span><span></span><em>DealerEdge site</em></div>
+                    <div class="m-old-speed-wire">
+                      <div class="m-old-speed-hero-block"></div>
+                      <div class="m-old-speed-line"></div>
+                      <div class="m-old-speed-line m-old-speed-line--short"></div>
+                      <div class="m-old-speed-cta"></div>
+                    </div>
+                    <div class="m-old-speed-meta">
+                      <strong data-old-load="fast">0.0s</strong>
+                      <span data-old-speed-status="fast">waiting for page</span>
+                    </div>
+                    <div class="m-old-speed-zone" data-old-speed-zone="fast"></div>
+                  </article>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--bad"><i></i><span>Buyers do not wait for slow pages.</span></div>
+            </div>
+            <div class="m-beat" data-beat="3" data-anim="old-form">
+              <div class="m-old-form-scene">
+                <div class="m-old-intent-packet" data-old-intent-packet>
+                  <span class="m-mono">Buyer intent</span>
+                  <strong>John Castillo · Wakesetter · Trade-in · Financing</strong>
+                </div>
+                <div class="m-old-form-card">
+                  <div class="m-old-form-head"><span>Inquiry form</span><em>Required fields</em></div>
+                  <div class="m-old-form-fields">
+                    <label class="m-old-form-field" data-old-field><span>Full legal name</span><input type="text" readonly value=""></label>
+                    <label class="m-old-form-field" data-old-field><span>Phone + extension</span><input type="text" readonly value=""></label>
+                    <label class="m-old-form-field" data-old-field data-old-error><span>Boat interest</span><input type="text" readonly value=""><b>Required</b></label>
+                    <label class="m-old-form-field" data-old-field data-old-error><span>Trade details</span><input type="text" readonly value=""><b>Required</b></label>
+                  </div>
+                  <button type="button" class="m-old-form-submit" data-old-submit>Submit inquiry</button>
+                </div>
+                <div class="m-old-intent-lost" data-old-intent-lost>
+                  <span data-old-lost-chip>trade-in lost</span>
+                  <span data-old-lost-chip>financing lost</span>
+                  <span data-old-lost-chip>boat intent lost</span>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--bad"><i></i><span>Intent became paperwork.</span></div>
+            </div>
+            <div class="m-beat" data-beat="4" data-anim="old-sleep">
+              <div class="m-old-sleep-scene">
+                <div class="m-old-sleep-strip" data-old-sleep-strip>
+                  <span class="m-old-sleep-milestone is-active" data-old-milestone="0">9:00 AM sprint planning</span>
+                  <span class="m-old-sleep-milestone" data-old-milestone="1">5:30 PM office closed</span>
+                  <span class="m-old-sleep-milestone" data-old-milestone="2">11:17 PM buyer searching</span>
+                  <span class="m-old-sleep-milestone" data-old-milestone="3">Sunday review posted</span>
+                </div>
+                <div class="m-old-sleep-activity" data-old-sleep-activity aria-hidden="true">
+                  <span class="m-old-activity-dot" data-old-activity-dot data-channel="search"></span>
+                  <span class="m-old-activity-dot" data-old-activity-dot data-channel="reviews"></span>
+                  <span class="m-old-activity-dot" data-old-activity-dot data-channel="inventory"></span>
+                  <span class="m-old-activity-dot" data-old-activity-dot data-channel="search"></span>
+                  <span class="m-old-activity-dot" data-old-activity-dot data-channel="reviews"></span>
+                </div>
+                <div class="m-old-sleep-tasks">
+                  <div class="m-old-sleep-task" data-old-task><b>Review response</b><span class="m-old-task-badge">Queued for Monday</span></div>
+                  <div class="m-old-sleep-task" data-old-task><b>Inventory copy</b><span class="m-old-task-badge">Waiting on photos</span></div>
+                  <div class="m-old-sleep-task" data-old-task><b>SEO fix</b><span class="m-old-task-badge">Next sprint</span></div>
+                  <div class="m-old-sleep-task" data-old-task><b>Content update</b><span class="m-old-task-badge">Backlog</span></div>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--bad"><i></i><span>Marketing sleeps. Buyers do not.</span></div>
+            </div>
+            <div class="m-beat" data-beat="5" data-anim="old-search">
+              <div class="m-old-search-scene">
+                <div class="m-old-search-bar">
+                  <span class="m-old-search-icon" aria-hidden="true"></span>
+                  <span class="m-old-search-query" data-old-query>Malibu Wakesetter near me</span>
+                </div>
+                <div class="m-old-search-results">
+                  <div class="m-old-search-result" data-old-result="you">
+                    <span class="m-mono">#4</span>
+                    <div>
+                      <strong>Your Dealership</strong>
+                      <p>Thin inventory page · 17.3s mobile load</p>
+                    </div>
+                  </div>
+                  <div class="m-old-search-result is-competitor" data-old-result="competitor">
+                    <span class="m-mono">#1</span>
+                    <div>
+                      <strong>Competitor Marine</strong>
+                      <p>4.9 rating · 12 listings · financing CTA live</p>
+                    </div>
+                  </div>
+                </div>
+                <span class="m-old-search-cursor" data-old-search-cursor aria-hidden="true"></span>
+                <span class="m-old-search-lost" data-old-search-lost aria-hidden="true"></span>
+              </div>
+              <div class="m-beat-cap m-beat-cap--bad"><i></i><span>Found first usually wins first.</span></div>
+            </div>
+            <div class="m-beat" data-beat="6" data-anim="old-unify">
+              <div class="m-old-unify-scene">
+                <svg class="m-old-unify-lines" data-old-lines viewBox="0 0 400 280" preserveAspectRatio="none" aria-hidden="true"></svg>
+                <div class="m-old-unify-labels" data-old-labels>
+                  <span class="m-old-unify-label" data-old-label data-pos="top">Website</span>
+                  <span class="m-old-unify-label" data-old-label data-pos="right-top">SEO</span>
+                  <span class="m-old-unify-label" data-old-label data-pos="right">Ads</span>
+                  <span class="m-old-unify-label" data-old-label data-pos="right-bottom">Social</span>
+                  <span class="m-old-unify-label" data-old-label data-pos="bottom">Reviews</span>
+                  <span class="m-old-unify-label" data-old-label data-pos="left-bottom">Content</span>
+                  <span class="m-old-unify-label" data-old-label data-pos="left">Chat</span>
+                </div>
+                <div class="m-old-unify-ring" data-old-ring>
+                  <strong>DealerEdge AI Marketing Operation</strong>
+                </div>
+                <div class="m-old-unify-handoff">
+                  <div class="m-old-lead-packet" data-old-packet>
+                    <span class="m-mono">Lead packet</span>
+                    <ul>
+                      <li>Viewed Wakesetter</li>
+                      <li>Saved boat</li>
+                      <li>Financing intent</li>
+                      <li>Ready for Tuesday</li>
+                    </ul>
+                  </div>
+                  <div class="m-old-sales-inbox" data-old-sales>
+                    <span class="m-mono">Sales</span>
+                    <strong>Mike · Wake boats</strong>
+                    <p>Context attached. No re-ask.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Cleaner leads in. Faster response out. Nothing lost between marketing and sales.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-proof-section" id="proof" data-fade>
+      <div class="m-section-inner">
+        <span class="m-section-label">Proof before autonomy</span>
+        <h2>This already worked before the AI workforce.</h2>
+        <p class="m-section-sub">The manual version produced the kind of outcomes dealers expect from agencies and rarely get. DealerEdge turns that playbook into software that keeps moving.</p>
+        <div class="m-proof-grid">
+          <article class="m-proof-card">
+            <span>Premier Watersports</span>
+            <strong>13.8s -> 2.3s</strong>
+            <p>Mobile load time improved by 83%, with security, accessibility, schema, and conversion tracking rebuilt around the buyer journey.</p>
+          </article>
+          <article class="m-proof-card">
+            <span>Premier Watersports</span>
+            <strong>16 -> 636</strong>
+            <p>Form submissions grew from 16 to 636 after the site became faster, cleaner, and easier for buyers to act on.</p>
+          </article>
+          <article class="m-proof-card">
+            <span>Skier's Choice</span>
+            <strong>3.6x</strong>
+            <p>Conversion rate increased from 2.2% to 7.92% while ad budget went down and the site became the center of the system.</p>
+          </article>
+          <article class="m-proof-card">
+            <span>Skier's Choice</span>
+            <strong>7 -> 49</strong>
+            <p>Top-10 rankings grew 471%. Ranking keywords rose 34 -> 122, with stronger organic visibility that kept compounding after launch.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-act m-act--site" id="ai-website" data-act>
+      <div class="m-act-inner">
+        <div class="m-act-watermark m-act-watermark--good">AI WEBSITE</div>
+        <header class="m-act-scene">
+          <span class="m-act-tag m-act-tag--good">More leads in</span>
+          <h2 class="m-act-headline">Not a prettier brochure. <span>A faster way to create demand.</span></h2>
+        </header>
+        <div class="m-act-copy">
+          <div class="m-act-beats">
+            <div class="m-act-beat is-active" data-beat="1"><span>01</span><p>We ingest the existing site, inventory, brand, and local market. In less than a week, the dealer has a site built to move buyers.</p></div>
+            <div class="m-act-beat" data-beat="2"><span>02</span><p>Inventory pages stop being placeholders. Every boat gets better copy, richer context, internal links, and buyer-ready calls to action.</p></div>
+            <div class="m-act-beat" data-beat="3"><span>03</span><p>Performance, schema, SEO, and Google visibility are not quarterly projects. The system keeps watching and keeps improving.</p></div>
+            <div class="m-act-beat" data-beat="4"><span>04</span><p>Chat, financing, and saved boats turn anonymous visitors into leads before they ever submit the old contact form.</p></div>
+          </div>
+        </div>
+        <div class="m-act-stage">
+          <div class="m-act-stage-sticky">
+            <div class="m-beat is-active" data-beat="1" data-anim="site-demo">
+              <div class="m-video-shell">
+                <video src="assets/marketing/ai-page-demo.mp4" muted playsinline loop preload="metadata"></video>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Site generation, not ticket queue.</span></div>
+            </div>
+            <div class="m-beat" data-beat="2" data-anim="site-inventory">
+              <div class="m-listing-card m-listing-card--rich">
+                <img src="assets/2022-malibu-wakesetter.png" alt="2022 Malibu Wakesetter" loading="lazy">
+                <div>
+                  <span class="m-mono">Enhanced inventory</span>
+                  <h3>2022 Malibu Wakesetter 23 LSV</h3>
+                  <p>Built for families who want surf-ready performance, premium seating, and lake-day storage without a custom-order wait.</p>
+                  <div class="m-good-tags"><span>FAQ</span><span>schema</span><span>financing CTA</span><span>related content</span></div>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Every listing gets a sales spine.</span></div>
+            </div>
+            <div class="m-beat" data-beat="3" data-anim="site-seo">
+              <div class="m-scoreboard">
+                <div class="m-score-ring" data-step><strong>99</strong><span>performance</span></div>
+                <div class="m-score-list">
+                  <div data-step><span>Core Web Vitals</span><b>pass</b></div>
+                  <div data-step><span>AutoDealer schema</span><b>live</b></div>
+                  <div data-step><span>SEO checks</span><b>daily</b></div>
+                  <div data-step><span>Search Console</span><b>connected</b></div>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Optimization never waits for a meeting.</span></div>
+            </div>
+            <div class="m-beat" data-beat="4" data-anim="site-capture">
+              <div class="m-capture-grid">
+                <div class="m-chat-card" data-step><span>Website chat</span><p>"Want me to compare this Malibu with the Axis A225?"</p></div>
+                <div class="m-chat-card" data-step><span>Saved boats</span><p>Google sign-in captures buyer intent without a hard form wall.</p></div>
+                <div class="m-chat-card" data-step><span>Financing</span><p>Payment questions become qualified sales context.</p></div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>More ways to raise a hand.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-act m-act--dam" id="content-dam" data-act>
+      <div class="m-act-inner">
+        <div class="m-act-watermark m-act-watermark--good">CONTENT + DAM</div>
+        <header class="m-act-scene">
+          <span class="m-act-tag m-act-tag--good">Every channel</span>
+          <h2 class="m-act-headline">Every page. Every post. <span>Every ad. Every reply.</span></h2>
+        </header>
+        <div class="m-act-copy">
+          <div class="m-act-beats">
+            <div class="m-act-beat is-active" data-beat="1"><span>01</span><p>The AI DAM gives the system the right image for the right buyer, instead of generic stock and off-brand filler.</p></div>
+            <div class="m-act-beat" data-beat="2"><span>02</span><p>One boat can become a landing page, social post, SMS image, and display ad without losing the brand or the asset.</p></div>
+            <div class="m-act-beat" data-beat="3"><span>03</span><p>The content calendar starts from goals, search demand, buyer questions, and campaign needs, then keeps the work organized.</p></div>
+            <div class="m-act-beat" data-beat="4"><span>04</span><p>Articles are structured, image-rich, internally linked, and built to help buyers move from research to inquiry.</p></div>
+          </div>
+        </div>
+        <div class="m-act-stage">
+          <div class="m-act-stage-sticky">
+            <div class="m-beat is-active" data-beat="1" data-anim="dam-proof">
+              <div class="m-dam-proof">
+                <figure data-step>
+                  <img src="assets/marketing/searay-dam-original.png" alt="Sea Ray asset from the DAM" loading="lazy">
+                  <figcaption>From the AI DAM</figcaption>
+                </figure>
+                <figure data-step>
+                  <img src="assets/marketing/searay-ai-ad.png" alt="On-brand Sea Ray ad generated from the DAM asset" loading="lazy">
+                  <figcaption>Same boat. On-brand. Ready to ship.</figcaption>
+                </figure>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Generative AI you can trust.</span></div>
+            </div>
+            <div class="m-beat" data-beat="2" data-anim="dam-channels">
+              <div class="m-channel-hub">
+                <div class="m-channel-core">AI DAM</div>
+                <div class="m-channel-card m-channel-card--page" data-step><span>Page</span><b>Model landing page</b></div>
+                <div class="m-channel-card m-channel-card--social" data-step><span>Post</span><b>Weekend inventory push</b></div>
+                <div class="m-channel-card m-channel-card--sms" data-step><span>Reply</span><b>SMS with the right image</b></div>
+                <div class="m-channel-card m-channel-card--ad" data-step><span>Ad</span><b>Display creative</b></div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>One source. Every channel.</span></div>
+            </div>
+            <div class="m-beat" data-beat="3" data-anim="dam-calendar">
+              <div class="m-video-shell m-video-shell--calendar">
+                <video src="assets/marketing/content-calendar.mp4" muted playsinline loop preload="metadata"></video>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Calendar built from strategy, not blank-page panic.</span></div>
+            </div>
+            <div class="m-beat" data-beat="4" data-anim="dam-article">
+              <div class="m-article-card">
+                <span class="m-mono">AI Content Marketing</span>
+                <h3>Best wake boats for families on Percy Priest Lake</h3>
+                <p data-step>Fact-checked structure, local search intent, buyer questions, inventory links, and DAM-selected images.</p>
+                <div class="m-article-modules">
+                  <span data-step>SEO brief</span>
+                  <span data-step>FAQ block</span>
+                  <span data-step>Internal links</span>
+                  <span data-step>Social snippets</span>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Content that has a job.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-act m-act--hub m-act--5" id="marketing-hub" data-act>
+      <div class="m-act-inner">
+        <div class="m-act-watermark m-act-watermark--good">MARKETING HUB</div>
+        <header class="m-act-scene">
+          <span class="m-act-tag m-act-tag--good">Attract. Engage. Convert.</span>
+          <h2 class="m-act-headline">Set the goals once. <span>The AI teams go to work.</span></h2>
+        </header>
+        <div class="m-act-copy">
+          <div class="m-act-beats">
+            <div class="m-act-beat is-active" data-beat="1"><span>01</span><p>The hub starts with dealership goals, buyer personas, inventory pressure, and market reality. Strategy comes before output.</p></div>
+            <div class="m-act-beat" data-beat="2"><span>02</span><p>Social, campaigns, content, ads, SEO, and reputation stop operating as separate vendors. They become one coordinated team.</p></div>
+            <div class="m-act-beat" data-beat="3"><span>03</span><p>Attract buyers with better pages, content, SEO, and ads. Engage them through chat, saved boats, SMS, and useful follow-up.</p></div>
+            <div class="m-act-beat" data-beat="4"><span>04</span><p>Reputation never becomes a forgotten sprint. Reviews are requested, monitored, triaged, and escalated every day.</p></div>
+            <div class="m-act-beat" data-beat="5"><span>05</span><p>Marketing hands Sales more than a name and phone number. It hands over what they looked at, what they saved, and why they are ready.</p></div>
+          </div>
+        </div>
+        <div class="m-act-stage">
+          <div class="m-act-stage-sticky">
+            <div class="m-beat is-active" data-beat="1" data-anim="hub-goals">
+              <div class="m-goal-board">
+                <div data-step><span>Goal</span><b>Move 2022 wake inventory</b></div>
+                <div data-step><span>Persona</span><b>Family upgrader</b></div>
+                <div data-step><span>Market</span><b>Nashville lake season</b></div>
+                <div data-step><span>Constraint</span><b>Lower wasted ad spend</b></div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Strategy first. Output second.</span></div>
+            </div>
+            <div class="m-beat" data-beat="2" data-anim="hub-teams">
+              <div class="m-team-grid">
+                <div data-step><span>Social</span><b>inventory + content</b></div>
+                <div data-step><span>Campaigns</span><b>Google + Meta</b></div>
+                <div data-step><span>Content</span><b>SEO + buyer education</b></div>
+                <div data-step><span>Ads</span><b>creative testing</b></div>
+                <div data-step><span>SEO</span><b>reports to action</b></div>
+                <div data-step><span>Reviews</span><b>auto-pilot program</b></div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>A full agency team, always on.</span></div>
+            </div>
+            <div class="m-beat" data-beat="3" data-anim="hub-funnel">
+              <div class="m-funnel-lanes">
+                <div data-step><span>Attract</span><p>SEO, ads, social, content, fast landing pages.</p></div>
+                <div data-step><span>Engage</span><p>Chat, saved boats, financing, SMS, buyer context.</p></div>
+                <div data-step><span>Convert</span><p>Validated lead, routed to Sales, tracked to outcome.</p></div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Clicks become buyer context.</span></div>
+            </div>
+            <div class="m-beat" data-beat="4" data-anim="hub-reviews">
+              <div class="m-review-system">
+                <div class="m-review-card" data-step>
+                  <span>5-star buyer</span>
+                  <p>"The walkthrough was easy and the delivery team was great."</p>
+                  <b>review request sent</b>
+                </div>
+                <div class="m-review-card m-review-card--warn" data-step>
+                  <span>Service complaint</span>
+                  <p>"Still waiting on a callback about winterization."</p>
+                  <b>escalated to manager</b>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Reputation runs every day.</span></div>
+            </div>
+            <div class="m-beat" data-beat="5" data-anim="hub-handoff">
+              <div class="m-handoff">
+                <div class="m-handoff-profile" data-step>
+                  <span>John Castillo</span>
+                  <b>2022 Malibu Wakesetter 23 LSV</b>
+                  <p>Viewed 4 times. Saved boat. Opened financing. Asked chat about surf package.</p>
+                </div>
+                <div class="m-handoff-arrow" data-step></div>
+                <div class="m-handoff-sales" data-step>
+                  <span>Sales engine</span>
+                  <strong>Mike gets the lead with context.</strong>
+                  <p>Marketing did its job. Now Sales responds fast with the exact story.</p>
+                </div>
+              </div>
+              <div class="m-beat-cap m-beat-cap--good"><i></i><span>Better leads in. Faster response out.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-offer" id="offer" data-fade>
+      <div class="m-offer-inner">
+        <span class="m-section-label">The offer</span>
+        <h2>Tell us what you spend across all your current marketing vendors.</h2>
+        <p>We replace every single one of them. You pay $0 until we beat your current results by 20%. When we do, pricing activates at the tier you chose before we started.</p>
+        <div class="m-offer-cards">
+          <div><span>Phase 1</span><strong>Prove It</strong><p>Up to 6 months at $0 while we run everything against your current baseline.</p></div>
+          <div><span>Trigger</span><strong>+20%</strong><p>Traffic, leads, and outcomes measured against prior performance.</p></div>
+          <div><span>Phase 2</span><strong>Partner</strong><p>Flat rate, base plus performance, or pure performance tier chosen upfront.</p></div>
+        </div>
+        <a href="#" class="btn-primary m-offer-btn js-modal">Schedule your Demo today</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="sales.html">Sales</a>
+            <a href="marketing.html">Marketing</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI marketing, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Schedule a Demo</span>
+        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+        <div class="form-group"><input type="text" id="ms-name" placeholder="Your name" autocomplete="name"></div>
+        <div class="form-group"><input type="email" id="ms-email" placeholder="Email address" autocomplete="email"></div>
+        <div class="form-group"><input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel"></div>
+        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/mobile-nav.js"></script>
+  <script src="js/demo-modal.js"></script>
+  <script src="js/marketing.js"></script>
+</body>
+</html>

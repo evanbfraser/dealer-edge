@@ -289,7 +289,8 @@ function animateVideoSection() {
 
   // Expand from 800px to full viewport width on scroll
   gsap.to(inner, {
-    width: '100vw',
+    width: '100%',
+    maxWidth: '100%',
     borderRadius: 0,
     ease: 'none',
     scrollTrigger: {
@@ -1287,6 +1288,7 @@ window.addEventListener('DOMContentLoaded', () => {
   animateJourney();
   initCustomCursor();
   initModal();
+  initMobileNav();
   initCaseStudyCarousel();
   initChatbot();
   preloadFrames();

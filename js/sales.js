@@ -22,6 +22,7 @@
   requestAnimationFrame(raf);
 
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ limitCallbacks: true });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -31,30 +32,35 @@
      ───────────────────────────────────────────────────────────── */
   const cursor = document.getElementById('custom-cursor');
   const glow = document.getElementById('cursor-glow');
-  let cx = window.innerWidth / 2,
-    cy = window.innerHeight / 2,
-    tx = cx,
-    ty = cy;
-  document.addEventListener('mousemove', (e) => {
-    tx = e.clientX;
-    ty = e.clientY;
-    if (cursor) cursor.style.transform = `translate(${tx}px, ${ty}px)`;
-    if (glow) {
-      glow.classList.add('visible');
-      glow.style.transform = `translate(${tx}px, ${ty}px)`;
-    }
-  });
-  document.addEventListener('mouseleave', () => glow && glow.classList.remove('visible'));
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (finePointer && (cursor || glow)) {
+    let tx = window.innerWidth / 2,
+      ty = window.innerHeight / 2;
+    document.addEventListener('mousemove', (e) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      if (cursor) cursor.style.transform = `translate(${tx}px, ${ty}px)`;
+      if (glow) {
+        glow.classList.add('visible');
+        glow.style.transform = `translate(${tx}px, ${ty}px)`;
+      }
+    });
+    document.addEventListener('mouseleave', () => glow && glow.classList.remove('visible'));
+  }
 
   /* ─────────────────────────────────────────────────────────────
-     CONTACT MODAL — minimal opener so the CTA buttons work
+     MOBILE NAV
      ───────────────────────────────────────────────────────────── */
-  document.querySelectorAll('.js-modal').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = 'index.html#contact';
-    });
-  });
+  initMobileNav();
+
+  /* ─────────────────────────────────────────────────────────────
+     DEMO REQUEST MODAL
+     ───────────────────────────────────────────────────────────── */
+  initDemoModal(lenis);
+  if (typeof initVideoBoatSections === 'function') {
+    initVideoBoatSections();
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+  }
 
   const marineModal = document.querySelector('[data-marine-modal]');
   const marineOpen = document.querySelector('[data-marine-modal-open]');
@@ -653,6 +659,7 @@
   // Current hero: one continuous 1,000-buyer cohort story.
   function initCohortStatsSection(section) {
     const headlines = Array.from(section.querySelectorAll('[data-stage]'));
+    const headlinesEl = section.querySelector('[data-cohort-headlines]');
     const labelEl = section.querySelector('[data-cohort-label]');
     const aliveLabelEl = section.querySelector('[data-cohort-alive-label]');
     const aliveValueEl = section.querySelector('[data-cohort-alive]');
@@ -733,10 +740,19 @@
       { dotIdx: 90, count: 60, delta: '+7', fix: 'Smart voicemail capture', caption: 'Hangups turn into callbacks. No buyer disappears into the void.' },
     ];
 
+    const baselineDotLabels = {
+      98: 'Baseline booking',
+      99: 'Baseline booking',
+    };
+
     let currentStage = -1;
     let cohortGen = 0;
     let lastAlive = 1000;
     let lastLost = 0;
+    let labelCarouselTimer = null;
+    let labelCarouselIdx = 0;
+    let labelCarouselPaused = false;
+    let labelCarouselGen = 0;
 
     if (!grid.children.length) {
       for (let i = 0; i < TOTAL_DOTS; i += 1) {
@@ -751,6 +767,12 @@
 
     function formatNumber(value) {
       return Number(value).toLocaleString('en-US');
+    }
+
+    function syncHeadlineSlot() {
+      const active = headlines.find((headline) => headline.classList.contains('is-active'));
+      if (!headlinesEl || !active) return;
+      headlinesEl.style.minHeight = `${active.offsetHeight}px`;
     }
 
     function setText(el, value) {
@@ -778,6 +800,7 @@
     function applyLossBands(lostThrough) {
       dots.forEach((dot, idx) => {
         dot.className = 's-cohort-dot';
+        if (idx >= 98) dot.classList.add('is-baseline');
         if (idx < lostThrough) {
           dot.classList.add(
             idx < 70 ? 'is-lost-1' :
@@ -786,6 +809,12 @@
           );
         }
       });
+    }
+
+    function markDotRestored(dot) {
+      if (!dot) return;
+      dot.classList.remove('is-lost-1', 'is-lost-2', 'is-lost-3', 'is-lost-4');
+      dot.classList.add('is-restored');
     }
 
     function setFixCards(activeCount = 0) {
@@ -799,21 +828,133 @@
       `).join('');
     }
 
-    function showPopup(step) {
-      if (!popupEl || !grid) return;
-      const dot = dots[step.dotIdx];
-      if (!dot) return;
-      const gridR = grid.getBoundingClientRect();
-      const dotR = dot.getBoundingClientRect();
-      popupEl.textContent = `${step.delta} ${step.fix}`;
-      popupEl.style.left = `${dotR.left - gridR.left + dotR.width / 2}px`;
-      popupEl.style.top = `${dotR.top - gridR.top}px`;
+    function isGreenDot(dot) {
+      return dot.classList.contains('is-restored')
+        || dot.classList.contains('is-baseline');
+    }
+
+    function getGreenDots() {
+      return dots.filter(isGreenDot);
+    }
+
+    function getCarouselItems() {
+      return recoverySteps
+        .map((step) => ({
+          dot: dots[step.dotIdx],
+          label: `${step.delta} ${step.fix}`.trim(),
+        }))
+        .filter((item) => item.dot);
+    }
+
+    function getDotLabel(dotIdx) {
+      const step = recoverySteps.find((item) => item.dotIdx === dotIdx);
+      if (step) return `${step.delta} ${step.fix}`.trim();
+      if (baselineDotLabels[dotIdx]) return baselineDotLabels[dotIdx];
+      return 'Recovered booking';
+    }
+
+    function clearLabelHighlight() {
+      dots.forEach((dot) => dot.classList.remove('is-label-active'));
+    }
+
+    function stopLabelCarousel() {
+      if (labelCarouselTimer) {
+        clearTimeout(labelCarouselTimer);
+        labelCarouselTimer = null;
+      }
+      labelCarouselGen += 1;
+      clearLabelHighlight();
+    }
+
+    function showPopupForDot(dot, label) {
+      if (!popupEl || !grid || !dot) return;
+      clearLabelHighlight();
+      dot.classList.add('is-label-active');
+      popupEl.textContent = label;
+      if (window.matchMedia('(max-width: 640px)').matches) {
+        popupEl.style.left = '50%';
+        popupEl.style.top = '0px';
+      } else {
+        const gridR = grid.getBoundingClientRect();
+        const dotR = dot.getBoundingClientRect();
+        popupEl.style.left = `${dotR.left - gridR.left + dotR.width / 2}px`;
+        popupEl.style.top = `${dotR.top - gridR.top}px`;
+      }
       popupEl.classList.remove('is-in');
       void popupEl.offsetWidth;
       popupEl.classList.add('is-in');
     }
 
+    function showPopup(step) {
+      const dot = dots[step.dotIdx];
+      if (!dot) return;
+      showPopupForDot(dot, `${step.delta} ${step.fix}`.trim());
+    }
+
+    function startLabelCarousel(gen) {
+      stopLabelCarousel();
+      const carouselGen = ++labelCarouselGen;
+      const items = getCarouselItems();
+      if (!items.length) return;
+      labelCarouselIdx = 0;
+      labelCarouselPaused = false;
+
+      const cycle = () => {
+        if (gen !== cohortGen || carouselGen !== labelCarouselGen || labelCarouselPaused) return;
+        const item = items[labelCarouselIdx % items.length];
+        showPopupForDot(item.dot, item.label);
+        labelCarouselIdx += 1;
+        labelCarouselTimer = setTimeout(cycle, prefersReducedMotion ? 2400 : 1650);
+      };
+
+      cycle();
+    }
+
+    function pauseLabelCarouselForDot(dot) {
+      if (currentStage !== stages.length - 1 || !isGreenDot(dot)) return;
+      labelCarouselPaused = true;
+      stopLabelCarousel();
+      showPopupForDot(dot, getDotLabel(Number(dot.dataset.dot)));
+    }
+
+    function resumeLabelCarousel() {
+      if (currentStage !== stages.length - 1) return;
+      labelCarouselPaused = false;
+      if (popupEl) popupEl.classList.remove('is-in');
+      clearLabelHighlight();
+      startLabelCarousel(cohortGen);
+    }
+
+    function setGreenDotInteractivity(enabled) {
+      dots.forEach((dot) => {
+        if (enabled && isGreenDot(dot)) {
+          dot.setAttribute('tabindex', '0');
+          dot.setAttribute('role', 'button');
+          dot.setAttribute('aria-label', getDotLabel(Number(dot.dataset.dot)));
+        } else {
+          dot.removeAttribute('tabindex');
+          dot.removeAttribute('role');
+          dot.removeAttribute('aria-label');
+        }
+      });
+    }
+
+    dots.forEach((dot) => {
+      dot.addEventListener('mouseenter', () => pauseLabelCarouselForDot(dot));
+      dot.addEventListener('mouseleave', () => resumeLabelCarousel());
+      dot.addEventListener('focusin', () => pauseLabelCarouselForDot(dot));
+      dot.addEventListener('focusout', (e) => {
+        if (currentStage !== stages.length - 1) return;
+        const next = e.relatedTarget;
+        if (next && next.classList && next.classList.contains('s-cohort-dot') && isGreenDot(next)) return;
+        resumeLabelCarousel();
+      });
+    });
+
     function clearRecoveryUI() {
+      stopLabelCarousel();
+      labelCarouselPaused = false;
+      setGreenDotInteractivity(false);
       if (popupEl) popupEl.classList.remove('is-in');
       if (sceneNext) {
         sceneNext.setAttribute('hidden', '');
@@ -832,19 +973,35 @@
 
       const restoreFinal = () => {
         if (gen !== cohortGen) return;
+        setText(aliveValueEl, formatNumber(60));
+        setText(lostValueEl, '+41');
+        lastAlive = 60;
+        lastLost = 41;
         setText(captionEl, 'Same traffic. Fewer dead ends. More buyers make it through.');
         if (sceneNext) {
           sceneNext.removeAttribute('hidden');
           requestAnimationFrame(() => sceneNext.classList.add('is-active'));
         }
+        if (popupEl) popupEl.classList.remove('is-in');
+        setGreenDotInteractivity(true);
+        startLabelCarousel(gen);
       };
+
+      if (prefersReducedMotion) {
+        recoverySteps.forEach((step) => {
+          markDotRestored(dots[step.dotIdx]);
+        });
+        setFixCards(recoverySteps.length);
+        setText(captionEl, stage.caption);
+        restoreFinal();
+        return;
+      }
 
       recoverySteps.forEach((step, idx) => {
         const delay = prefersReducedMotion ? 0 : 520 + idx * 620;
         setTimeout(() => {
           if (gen !== cohortGen) return;
-          const dot = dots[step.dotIdx];
-          if (dot) dot.classList.add('is-restored');
+          markDotRestored(dots[step.dotIdx]);
           showPopup(step);
           setFixCards(idx + 1);
           setText(captionEl, step.caption);
@@ -869,6 +1026,11 @@
       section.setAttribute('data-active-beat', String(idx + 1));
       section.classList.toggle('is-cohort-recovery', !!stage.isRecovery);
       headlines.forEach((headline, i) => headline.classList.toggle('is-active', i === idx));
+
+      requestAnimationFrame(() => {
+        syncHeadlineSlot();
+        requestAnimationFrame(syncHeadlineSlot);
+      });
 
       setText(labelEl, stage.label);
       setText(aliveLabelEl, stage.aliveLabel);
@@ -899,6 +1061,8 @@
     });
 
     setStage(0);
+    syncHeadlineSlot();
+    window.addEventListener('resize', syncHeadlineSlot);
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -915,23 +1079,68 @@
   let BEAT_ANIMS = {};
 
   const acts = document.querySelectorAll('.s-act');
+  const actControllers = [];
 
-  acts.forEach((act) => {
+  function createActController(act) {
     const inner = act.querySelector('.s-act-inner');
     const beats = act.querySelectorAll('.s-beat');
     const beatCopies = act.querySelectorAll('.s-act-beat');
     const totalBeats = beats.length;
+    const cleanup = { scrollTrigger: null, beatObs: [] };
 
-    if (!inner || !beats.length) return;
+    if (!inner || !beats.length) {
+      return { destroy() {} };
+    }
 
-    // Track an animation token per beat so a re-entry cancels the prior run
     const animTokens = new Array(totalBeats).fill(0);
-    // Has this act been scrolled into view yet? Gates animation firing so
-    // off-screen acts don't pre-play their stories before the user arrives.
-    let actEntered = false;
+    let actLocked = false;
+    act._currentBeat = 0;
+    const mobileActMedia = window.matchMedia('(max-width: 1100px)');
+
+    function fitActiveBeatToStage() {
+      const idx = act._currentBeat ?? 0;
+      const beatEl = beats[idx];
+      const stageEl = act.querySelector('.s-act-stage-sticky');
+
+      beats.forEach((beat) => beat.style.removeProperty('--s-beat-fit-scale'));
+      if (!mobileActMedia.matches || !beatEl || !stageEl) return;
+
+      const children = Array.from(beatEl.children).filter((child) => {
+        const childStyle = window.getComputedStyle(child);
+        return childStyle.display !== 'none';
+      });
+      if (!children.length) return;
+
+      const beatStyle = window.getComputedStyle(beatEl);
+      const gap = Number.parseFloat(beatStyle.rowGap || beatStyle.gap) || 0;
+      const paddingY =
+        (Number.parseFloat(beatStyle.paddingTop) || 0) +
+        (Number.parseFloat(beatStyle.paddingBottom) || 0);
+      const contentHeight = children.reduce((sum, child) => {
+        return sum + Math.max(child.scrollHeight, child.getBoundingClientRect().height);
+      }, paddingY + gap * Math.max(0, children.length - 1));
+      const availableHeight = stageEl.clientHeight;
+      if (!contentHeight || !availableHeight) return;
+
+      const bottomBuffer = mobileActMedia.matches ? 22 : 4;
+      const minScale = mobileActMedia.matches ? 0.6 : 0.68;
+      const scale = Math.min(1, Math.max(minScale, (availableHeight - bottomBuffer) / contentHeight));
+      beatEl.style.setProperty('--s-beat-fit-scale', scale.toFixed(3));
+    }
+
+    function scheduleFitActiveBeat() {
+      requestAnimationFrame(() => {
+        fitActiveBeatToStage();
+        requestAnimationFrame(fitActiveBeatToStage);
+      });
+    }
 
     function setActiveBeatClass(idx) {
-      beats.forEach((b, i) => b.classList.toggle('is-active', i === idx));
+      beats.forEach((b, i) => {
+        const wasActive = b.classList.contains('is-active');
+        b.classList.toggle('is-active', i === idx);
+        if (wasActive && i !== idx) animTokens[i] += 1;
+      });
       beatCopies.forEach((b, i) => b.classList.toggle('is-active', i === idx));
     }
 
@@ -943,79 +1152,93 @@
       const key = beatEl.dataset.anim;
       const fn = BEAT_ANIMS[key];
       if (typeof fn === 'function') {
-        // tiny defer so opacity transition gets a frame to settle first
         setTimeout(() => {
-          if (animTokens[idx] === token) fn(beatEl, () => animTokens[idx] === token);
+          if (animTokens[idx] !== token) return;
+          fn(beatEl, () => animTokens[idx] === token);
+          if (mobileActMedia.matches) {
+            [120, 520, 1000, 1800, 2800, 4200, 6200].forEach((delay) => {
+              setTimeout(() => {
+                if (animTokens[idx] === token) scheduleFitActiveBeat();
+              }, delay);
+            });
+          }
         }, 220);
       }
     }
 
-    // Full activation: class toggle + fire animation (only if entered)
+    function invalidateBeatAnims() {
+      animTokens.forEach((_, i) => {
+        animTokens[i] += 1;
+      });
+    }
+
+    function lockActAnimations() {
+      if (actLocked) return;
+      actLocked = true;
+      fireBeatAnim(act._currentBeat ?? 0);
+    }
+
+    function unlockActAnimations() {
+      if (!actLocked) return;
+      actLocked = false;
+      invalidateBeatAnims();
+    }
+
     function setActiveBeat(idx) {
+      act._currentBeat = idx;
       setActiveBeatClass(idx);
-      if (actEntered) fireBeatAnim(idx);
+      fitActiveBeatToStage();
+      scheduleFitActiveBeat();
+      if (actLocked) fireBeatAnim(idx);
     }
 
-    // IntersectionObserver flips actEntered the first time the act becomes
-    // visible. Then we fire whatever beat is currently active.
-    const enterObs = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !actEntered) {
-          actEntered = true;
-          const currentIdx = act._currentBeat ?? 0;
-          fireBeatAnim(currentIdx);
-          enterObs.unobserve(act);
-        }
-      });
-    }, { threshold: 0.08 });
-    enterObs.observe(act);
+    cleanup.scrollTrigger = ScrollTrigger.create({
+      trigger: act,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: false,
+      onEnter: lockActAnimations,
+      onEnterBack: lockActAnimations,
+      onLeave: unlockActAnimations,
+      onLeaveBack: unlockActAnimations,
+      onRefresh: (self) => {
+        if (self.isActive) lockActAnimations();
+        else unlockActAnimations();
+      },
+      onUpdate: (self) => {
+        const p = self.progress;
+        const idx = Math.min(totalBeats - 1, Math.floor(p * totalBeats));
+        if (act._currentBeat !== idx) setActiveBeat(idx);
+      },
+    });
 
-    // Only scroll-pin on larger screens — on mobile we stack naturally
-    if (window.innerWidth >= 1100) {
-      ScrollTrigger.create({
-        trigger: act,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: false,
-        onUpdate: (self) => {
-          const p = self.progress;
-          const idx = Math.min(totalBeats - 1, Math.floor(p * totalBeats));
-          if (act._currentBeat !== idx) {
-            act._currentBeat = idx;
-            setActiveBeat(idx);
-          }
-        },
-      });
-    } else {
-      // On mobile, observe each beat individually and fire its animation
-      // when scrolled into view (so all of them eventually play)
-      beats.forEach((beat, i) => {
-        const obs = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              beat.classList.add('is-active');
-              if (beatCopies[i]) beatCopies[i].classList.add('is-active');
-              animTokens[i] += 1;
-              const token = animTokens[i];
-              const key = beat.dataset.anim;
-              const fn = BEAT_ANIMS[key];
-              if (typeof fn === 'function') {
-                fn(beat, () => animTokens[i] === token);
-              }
-              obs.unobserve(beat);
-            }
-          });
-        }, { threshold: 0.35 });
-        obs.observe(beat);
-      });
-    }
-
-    // Init: only toggle the class. Animation will fire when the act
-    // enters the viewport via ScrollTrigger.onUpdate (desktop) or
-    // IntersectionObserver (mobile), guaranteeing each beat starts
-    // in its "before" state until the user actually arrives.
     setActiveBeatClass(0);
-  });
+    fitActiveBeatToStage();
+    scheduleFitActiveBeat();
+    window.addEventListener('resize', scheduleFitActiveBeat);
+    mobileActMedia.addEventListener('change', scheduleFitActiveBeat);
+
+    return {
+      destroy() {
+        cleanup.scrollTrigger?.kill();
+        cleanup.beatObs.forEach((obs) => obs.disconnect());
+        window.removeEventListener('resize', scheduleFitActiveBeat);
+        mobileActMedia.removeEventListener('change', scheduleFitActiveBeat);
+        unlockActAnimations();
+        act._currentBeat = 0;
+        setActiveBeatClass(0);
+      },
+    };
+  }
+
+  function setupActs() {
+    actControllers.forEach((c) => c.destroy());
+    actControllers.length = 0;
+    acts.forEach((act) => {
+      actControllers.push(createActController(act));
+    });
+    ScrollTrigger.refresh();
+  }
 
   /* ─────────────────────────────────────────────────────────────
      PER-BEAT ANIMATION HELPERS
@@ -1204,6 +1427,10 @@
       requestAnimationFrame(tickAge);
     }
 
+    const isMobileBeat = window.matchMedia('(max-width: 1100px)').matches;
+    const bubbleStart = isMobileBeat ? 800 : 1800;
+    const bubbleGap = isMobileBeat ? 900 : 1500;
+
     // bubbles
     act1Beat4Convo.forEach((b, i) => {
       setTimeout(() => tick(stillCurrent, () => {
@@ -1213,13 +1440,13 @@
         div.textContent = b.text;
         convo.appendChild(div);
         requestAnimationFrame(() => div.classList.add('is-in'));
-      }), 1800 + i * 1500);
+      }), bubbleStart + i * bubbleGap);
     });
 
     // stamp
     setTimeout(() => tick(stillCurrent, () => {
       if (stamp) stamp.classList.add('is-in');
-    }), 1800 + act1Beat4Convo.length * 1500 + 300);
+    }), bubbleStart + act1Beat4Convo.length * bubbleGap + (isMobileBeat ? 180 : 300));
   }
 
   /* ----- ACT 2 BEAT 1 — sequential stack reveal ----- */
@@ -1500,17 +1727,22 @@
     tag.style.transform = 'translate(-50%, -50%) scale(0)';
     result.classList.remove('is-in');
 
+    const isMobileBeat = window.matchMedia('(max-width: 1100px)').matches;
+    const timing = isMobileBeat
+      ? { lead: 160, drop: 520, pulse: 760, tag: 980, bob: 1240, mike: 1500, sarah: 1760, settle: 2040, result: 2380 }
+      : { lead: 200, drop: 900, pulse: 1300, tag: 1600, bob: 2000, mike: 2500, sarah: 3000, settle: 3500, result: 4100 };
+
     // 1. lead card fades in
-    setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-in')), 200);
+    setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-in')), timing.lead);
 
     // 2. lead card drops into router
-    setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-dropping')), 900);
+    setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-dropping')), timing.drop);
 
     // 3. router pulses
     setTimeout(() => tick(stillCurrent, () => {
       router.classList.add('is-pulse');
       setTimeout(() => router.classList.remove('is-pulse'), 600);
-    }), 1300);
+    }), timing.pulse);
 
     // 4. tag emerges & visits each rep in sequence
     const routerRect = router.getBoundingClientRect();
@@ -1533,35 +1765,101 @@
       tag.style.top = (rx.top - beatRect.top - 22) + 'px';
       tag.style.transform = 'translate(-50%, -50%) scale(1)';
       tag.classList.add('is-on');
-    }), 1600);
+    }), timing.tag);
 
     // Bob
     setTimeout(() => tick(stillCurrent, () => {
       showTagOver(reps[0], false);
       reps[0].classList.add('is-considered-skip');
-    }), 2000);
+    }), timing.bob);
     // Mike
     setTimeout(() => tick(stillCurrent, () => {
       showTagOver(reps[1], true);
       reps[1].classList.add('is-matched');
-    }), 2500);
+    }), timing.mike);
     // Sarah
     setTimeout(() => tick(stillCurrent, () => {
       showTagOver(reps[2], false);
       tag.classList.remove('is-match');
       reps[2].classList.add('is-considered-skip');
-    }), 3000);
+    }), timing.sarah);
     // Back to Mike (settle)
     setTimeout(() => tick(stillCurrent, () => {
       showTagOver(reps[1], true);
-    }), 3500);
+    }), timing.settle);
 
     // 5. result slides up
     setTimeout(() => tick(stillCurrent, () => {
       tag.classList.remove('is-on');
       result.classList.add('is-in');
-    }), 4100);
+    }), timing.result);
   }
+
+  /* ─────────────────────────────────────────────────────────────
+     ACT 4 BEAT 5  —  Live ROI calculator
+     Inputs: leads/mo, current close rate, margin per deal
+     Outputs: today vs with-DealerEdge deals + revenue + annual lift
+     Math anchor: Pied Piper ILE Study — dealers improving response
+     score (<40 → >80) sell 50% more units from the same leads.
+     ───────────────────────────────────────────────────────────── */
+  const fmt = (n) =>
+    Math.round(n).toLocaleString('en-US');
+  const fmt1 = (n) => (Math.round(n * 10) / 10).toLocaleString('en-US');
+
+  function paintRange(input) {
+    if (!input) return;
+    const v = ((input.value - input.min) / (input.max - input.min)) * 100;
+    input.style.background = `linear-gradient(90deg, var(--good) 0%, var(--good) ${v}%, var(--line) ${v}%, var(--line) 100%)`;
+  }
+
+  function updateROI() {
+    const leadsEl = document.getElementById('roi-leads');
+    const closeEl = document.getElementById('roi-close');
+    const marginEl = document.getElementById('roi-margin');
+    if (!leadsEl || !closeEl || !marginEl) return;
+
+    const leads = +leadsEl.value;
+    const closeRate = +closeEl.value; // %
+    const margin = +marginEl.value;
+
+    // Conservative close-rate lift: 1.5x (50% more from same leads)
+    const liftMultiplier = 1.5;
+    const closeRateWith = Math.min(100, closeRate * liftMultiplier);
+
+    const dealsNow = leads * (closeRate / 100);
+    const dealsWith = leads * (closeRateWith / 100);
+    const revNow = dealsNow * margin;
+    const revWith = dealsWith * margin;
+    const annualLift = (revWith - revNow) * 12;
+
+    const leadsVal = document.getElementById('roi-leads-val');
+    const closeVal = document.getElementById('roi-close-val');
+    const marginVal = document.getElementById('roi-margin-val');
+    const nowDeals = document.getElementById('roi-now-deals');
+    const deDeals = document.getElementById('roi-de-deals');
+    const nowRev = document.getElementById('roi-now-rev');
+    const deRev = document.getElementById('roi-de-rev');
+    const lift = document.getElementById('roi-lift');
+
+    if (leadsVal) leadsVal.textContent = leads;
+    if (closeVal) closeVal.textContent = closeRate;
+    if (marginVal) marginVal.textContent = fmt(margin);
+    if (nowDeals) nowDeals.textContent = fmt1(dealsNow);
+    if (deDeals) deDeals.textContent = fmt1(dealsWith);
+    if (nowRev) nowRev.textContent = fmt(revNow);
+    if (deRev) deRev.textContent = fmt(revWith);
+    if (lift) lift.textContent = fmt(annualLift);
+
+    paintRange(leadsEl);
+    paintRange(closeEl);
+    paintRange(marginEl);
+  }
+
+  ['roi-leads', 'roi-close', 'roi-margin'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateROI);
+  });
+  updateROI();
 
   /* ----- ACT 4 BEAT 5 — ROI cursor demo + hint ----- */
   function playAct4Beat5RoiDemo(beatEl, stillCurrent) {
@@ -1569,47 +1867,72 @@
     const cursor = beatEl.querySelector('[data-roi-cursor]');
     const leadsSlider = beatEl.querySelector('#roi-leads');
     const closeSlider = beatEl.querySelector('#roi-close');
+    const marginSlider = beatEl.querySelector('#roi-margin');
     const roi = beatEl.querySelector('.s-roi');
     if (!hint || !cursor || !leadsSlider || !closeSlider || !roi) return;
 
     // reset
     hint.classList.remove('is-on');
     cursor.classList.remove('is-on', 'is-pressed');
+    cursor.style.transition = '';
+    leadsSlider.value = '80';
+    closeSlider.value = '6';
+    if (marginSlider) marginSlider.value = '14000';
+    updateROI();
+
+    function isAlive() {
+      return typeof stillCurrent !== 'function' || stillCurrent();
+    }
+
+    const skipCursor =
+      window.matchMedia('(pointer: coarse)').matches
+      || window.matchMedia('(max-width: 1100px)').matches;
 
     function getRoiOffset(el) {
       const rr = roi.getBoundingClientRect();
       const er = el.getBoundingClientRect();
       return { x: er.left - rr.left, y: er.top - rr.top, w: er.width, h: er.height };
     }
-    function moveCursorTo(x, y, duration) {
-      cursor.style.transition = `left ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), top ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.12s ease`;
-      cursor.style.left = x + 'px';
-      cursor.style.top = y + 'px';
-    }
-    function dragSliderTo(slider, targetValue, durationMs) {
+
+    function dragSliderTo(slider, targetValue, durationMs, pinCursor) {
       const start = +slider.value;
       const startedAt = performance.now();
       function step() {
-        if (!stillCurrent()) return;
+        if (!isAlive()) return;
         const t = Math.min(1, (performance.now() - startedAt) / durationMs);
         const eased = 1 - Math.pow(1 - t, 3);
         slider.value = String(start + (targetValue - start) * eased);
-        slider.dispatchEvent(new Event('input', { bubbles: true }));
-        // keep cursor pinned to the thumb position
-        const sliderOff = getRoiOffset(slider);
-        const ratio = (+slider.value - +slider.min) / (+slider.max - +slider.min);
-        cursor.style.left = (sliderOff.x + ratio * sliderOff.w) + 'px';
-        cursor.style.top = (sliderOff.y + sliderOff.h / 2) + 'px';
+        updateROI();
+        if (pinCursor && cursor) {
+          const sliderOff = getRoiOffset(slider);
+          const ratio = (+slider.value - +slider.min) / (+slider.max - +slider.min);
+          cursor.style.left = (sliderOff.x + ratio * sliderOff.w) + 'px';
+          cursor.style.top = (sliderOff.y + sliderOff.h / 2) + 'px';
+        }
         if (t < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
     }
 
-    // show hint
-    setTimeout(() => tick(stillCurrent, () => hint.classList.add('is-on')), 200);
+    if (skipCursor) {
+      hint.classList.add('is-on');
+      setTimeout(() => tick(isAlive, () => dragSliderTo(leadsSlider, 160, 1400, false)), 400);
+      setTimeout(() => tick(isAlive, () => dragSliderTo(closeSlider, 9, 1200, false)), 2000);
+      setTimeout(() => tick(isAlive, () => hint.classList.remove('is-on')), 3400);
+      return;
+    }
+
+    function moveCursorTo(x, y, duration) {
+      cursor.style.transition = `left ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), top ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.12s ease`;
+      cursor.style.left = x + 'px';
+      cursor.style.top = y + 'px';
+    }
+
+    // show hint — desktop cursor demo only below
+    setTimeout(() => tick(isAlive, () => hint.classList.add('is-on')), 200);
 
     // cursor appears off-screen-ish, then moves to the leads slider thumb
-    setTimeout(() => tick(stillCurrent, () => {
+    setTimeout(() => tick(isAlive, () => {
       const off = getRoiOffset(leadsSlider);
       cursor.style.left = (off.x - 30) + 'px';
       cursor.style.top = (off.y + off.h / 2 + 30) + 'px';
@@ -1620,33 +1943,33 @@
     }), 900);
 
     // press + drag leads 80 → 160
-    setTimeout(() => tick(stillCurrent, () => {
+    setTimeout(() => tick(isAlive, () => {
       cursor.classList.add('is-pressed');
-      dragSliderTo(leadsSlider, 160, 1400);
+      dragSliderTo(leadsSlider, 160, 1400, true);
     }), 1700);
 
-    setTimeout(() => tick(stillCurrent, () => cursor.classList.remove('is-pressed')), 3200);
+    setTimeout(() => tick(isAlive, () => cursor.classList.remove('is-pressed')), 3200);
 
     // glide to close-rate slider
-    setTimeout(() => tick(stillCurrent, () => {
+    setTimeout(() => tick(isAlive, () => {
       const off = getRoiOffset(closeSlider);
       const ratio = (+closeSlider.value - +closeSlider.min) / (+closeSlider.max - +closeSlider.min);
       moveCursorTo(off.x + ratio * off.w, off.y + off.h / 2, 700);
     }), 3500);
 
     // press + drag close 6 → 9
-    setTimeout(() => tick(stillCurrent, () => {
+    setTimeout(() => tick(isAlive, () => {
       cursor.classList.add('is-pressed');
-      dragSliderTo(closeSlider, 9, 1200);
+      dragSliderTo(closeSlider, 9, 1200, true);
     }), 4300);
 
-    setTimeout(() => tick(stillCurrent, () => cursor.classList.remove('is-pressed')), 5600);
+    setTimeout(() => tick(isAlive, () => cursor.classList.remove('is-pressed')), 5600);
 
     // fade cursor + hint
-    setTimeout(() => tick(stillCurrent, () => {
+    setTimeout(() => tick(isAlive, () => {
       cursor.classList.remove('is-on');
     }), 6000);
-    setTimeout(() => tick(stillCurrent, () => {
+    setTimeout(() => tick(isAlive, () => {
       hint.classList.remove('is-on');
     }), 7000);
   }
@@ -1733,9 +2056,11 @@
     'act4-beat6': playAct4Beat6Philosophy,
   };
 
-  // First-paint animation firing is handled per-act by the IntersectionObserver
-  // inside the acts.forEach loop above. Act 1 fires immediately (in viewport
-  // on load), Act 2 / Act 4 fire when the user scrolls them into view.
+  setupActs();
+  const actLayoutMq = window.matchMedia('(min-width: 1100px)');
+  actLayoutMq.addEventListener('change', setupActs);
+
+  // Beat animations fire when acts enter the viewport (desktop scroll-pin or mobile IO).
 
   /* ─────────────────────────────────────────────────────────────
      ACT 2 BEAT 2  —  scripted SMS conversation in the convo panel
@@ -1994,69 +2319,6 @@
       }
     });
   }
-
-  /* ─────────────────────────────────────────────────────────────
-     ACT 4 BEAT 5  —  Live ROI calculator
-     Inputs: leads/mo, current close rate, margin per deal
-     Outputs: today vs with-DealerEdge deals + revenue + annual lift
-     Math anchor: Pied Piper ILE Study — dealers improving response
-     score (<40 → >80) sell 50% more units from the same leads.
-     ───────────────────────────────────────────────────────────── */
-  const fmt = (n) =>
-    Math.round(n).toLocaleString('en-US');
-  const fmt1 = (n) => (Math.round(n * 10) / 10).toLocaleString('en-US');
-
-  function paintRange(input) {
-    const v = ((input.value - input.min) / (input.max - input.min)) * 100;
-    input.style.background = `linear-gradient(90deg, var(--good) 0%, var(--good) ${v}%, var(--line) ${v}%, var(--line) 100%)`;
-  }
-
-  function updateROI() {
-    const leadsEl = document.getElementById('roi-leads');
-    const closeEl = document.getElementById('roi-close');
-    const marginEl = document.getElementById('roi-margin');
-    if (!leadsEl || !closeEl || !marginEl) return;
-
-    const leads = +leadsEl.value;
-    const closeRate = +closeEl.value; // %
-    const margin = +marginEl.value;
-
-    // Conservative close-rate lift: 1.5x (50% more from same leads)
-    const liftMultiplier = 1.5;
-    const closeRateWith = Math.min(100, closeRate * liftMultiplier);
-
-    const dealsNow = leads * (closeRate / 100);
-    const dealsWith = leads * (closeRateWith / 100);
-    const revNow = dealsNow * margin;
-    const revWith = dealsWith * margin;
-    const annualLift = (revWith - revNow) * 12;
-
-    // value labels
-    document.getElementById('roi-leads-val').textContent = leads;
-    document.getElementById('roi-close-val').textContent = closeRate;
-    document.getElementById('roi-margin-val').textContent = fmt(margin);
-
-    // result cells
-    document.getElementById('roi-now-deals').textContent = fmt1(dealsNow);
-    document.getElementById('roi-de-deals').textContent = fmt1(dealsWith);
-    document.getElementById('roi-now-rev').textContent = fmt(revNow);
-    document.getElementById('roi-de-rev').textContent = fmt(revWith);
-    document.getElementById('roi-lift').textContent = fmt(annualLift);
-
-    // range fill
-    paintRange(leadsEl);
-    paintRange(closeEl);
-    paintRange(marginEl);
-  }
-
-  ['roi-leads', 'roi-close', 'roi-margin'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', updateROI);
-    }
-  });
-  // initial paint
-  updateROI();
 
   /* ─────────────────────────────────────────────────────────────
      NAVBAR — same scroll-hide behavior as rest of site

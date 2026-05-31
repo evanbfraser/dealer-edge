@@ -13,7 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
-<body>
+<body class="sales-page">
 
   <!-- Cursor -->
   <div class="cursor-glow" id="cursor-glow"></div>
@@ -32,12 +32,24 @@
       <div class="nav-links">
         <a href="features.html">Features</a>
         <a href="sales.html" class="nav-link--active" style="position:relative;">Sales <sup style="font-size:0.55em;color:#ee3a39;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="marketing.html" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
         <a href="pricing.html">Pricing</a>
         <a href="case-studies.html">Results</a>
       </div>
       <div class="nav-cta">
         <a href="#" class="btn-nav js-modal">Get Started</a>
       </div>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
+      <a href="features.html">Features</a>
+      <a href="sales.html" class="nav-link--active">Sales</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="case-studies.html">Results</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
     </div>
   </nav>
 
@@ -47,10 +59,12 @@
        each failure point before DealerEdge recovers the journey.
        ────────────────────────────────────────────────────────────── -->
   <section class="s-hero s-stats-section" id="stats" data-stats-section>
-    <div class="s-hero-grid s-stats-bg-grid"></div>
-    <div class="s-hero-glow s-hero-glow--1 s-stats-bg-glow s-stats-bg-glow--1"></div>
-    <div class="s-hero-glow s-hero-glow--2 s-stats-bg-glow s-stats-bg-glow--2"></div>
-    <div class="s-stats-ambient" data-stats-ambient></div>
+    <div class="s-stats-bg" aria-hidden="true">
+      <div class="s-hero-grid s-stats-bg-grid"></div>
+      <div class="s-hero-glow s-hero-glow--1 s-stats-bg-glow s-stats-bg-glow--1"></div>
+      <div class="s-hero-glow s-hero-glow--2 s-stats-bg-glow s-stats-bg-glow--2"></div>
+      <div class="s-stats-ambient" data-stats-ambient></div>
+    </div>
 
     <div class="s-stats-pin s-hero-pin">
       <div class="s-hero-inner s-hero-inner--pinned">
@@ -83,7 +97,7 @@
           </div>
           <div class="s-cohort-headline s-cohort-headline--fix" data-stage="5">
             <span class="s-cohort-stat s-cohort-stat--green">60</span>
-            <h1>bookings instead of 19. <span>Same 1,000 buyers.</span></h1>
+            <h1>bookings instead of 19.<br><span>Same 1,000 buyers.</span></h1>
             <p>We plug the leaks: instant pages, instant replies, no missed calls. Roughly 3X more bookings from buyers you already paid to attract.</p>
           </div>
         </div>
@@ -132,19 +146,18 @@
        Monday morning → buyer is gone.
        ────────────────────────────────────────────────────────────── -->
   <section class="s-act s-act--without" id="act1">
-    <div class="s-act-watermark">WITHOUT&nbsp;&middot;&nbsp;DEALEREDGE</div>
-
     <div class="s-act-inner">
-      <!-- Left: copy that progresses with scroll -->
-      <div class="s-act-copy">
-        <div class="s-act-copy-sticky">
-          <span class="s-act-tag s-act-tag--bad">The old way</span>
-          <h2 class="s-act-headline">
-            Saturday, 11:17 PM.<br>
-            <span class="s-act-headline-faded">Your dealership is closed.</span>
-          </h2>
+      <div class="s-act-watermark">WITHOUT&nbsp;&middot;&nbsp;DEALEREDGE</div>
 
-          <div class="s-act-beats">
+      <header class="s-act-scene">
+        <span class="s-act-tag s-act-tag--bad">The old way</span>
+        <h2 class="s-act-headline">
+          Saturday, 11:17 PM. <span class="s-act-headline-faded">Your dealership is closed.</span>
+        </h2>
+      </header>
+
+      <div class="s-act-copy">
+        <div class="s-act-beats">
             <div class="s-act-beat" data-beat="1">
               <span class="s-act-beat-num">01</span>
               <p>A buyer fills out a form on your site about a 2022 Malibu Wakesetter. They've been on the listing for 9 minutes.</p>
@@ -162,7 +175,6 @@
               <p>Monday at 9:42 AM your sales manager finally dials. John picks up. "Oh hey — I went with North Lake actually. Sorry about that." 59 hours after the inquiry, you never even got a shot at the deal.</p>
             </div>
           </div>
-        </div>
       </div>
 
       <!-- Right: media stage — animates per beat -->
@@ -370,19 +382,18 @@
        90 seconds, qualifies, books the showing, alerts the rep.
        ────────────────────────────────────────────────────────────── -->
   <section class="s-act s-act--with" id="act2">
-    <div class="s-act-watermark s-act-watermark--with">WITH&nbsp;&middot;&nbsp;DEALEREDGE</div>
-
     <div class="s-act-inner">
-      <!-- Left -->
-      <div class="s-act-copy">
-        <div class="s-act-copy-sticky">
-          <span class="s-act-tag s-act-tag--good">The new way</span>
-          <h2 class="s-act-headline">
-            Saturday, 11:17 PM.<br>
-            <span class="s-act-headline-accent">The AI Sales Captain is on duty.</span>
-          </h2>
+      <div class="s-act-watermark s-act-watermark--with">WITH&nbsp;&middot;&nbsp;DEALEREDGE</div>
 
-          <div class="s-act-beats">
+      <header class="s-act-scene">
+        <span class="s-act-tag s-act-tag--good">The new way</span>
+        <h2 class="s-act-headline">
+          Saturday, 11:17 PM. <span class="s-act-headline-accent">The AI Sales Captain is on duty.</span>
+        </h2>
+      </header>
+
+      <div class="s-act-copy">
+        <div class="s-act-beats">
             <div class="s-act-beat" data-beat="1">
               <span class="s-act-beat-num">01</span>
               <p>Same form submission. Within 47 seconds, John gets a text in your dealership's brand voice — referencing the exact boat he was looking at.</p>
@@ -400,7 +411,6 @@
               <p>Monday morning, your sales manager opens the dashboard. A pre-qualified buyer is walking in Tuesday already half-sold. Total rep time: 0 minutes.</p>
             </div>
           </div>
-        </div>
       </div>
 
       <!-- Right -->
@@ -641,19 +651,18 @@
        concierge routing → ROI calculator → philosophy close.
        ────────────────────────────────────────────────────────────── -->
   <section class="s-act s-act--with s-act--team" id="act4">
-    <div class="s-act-watermark s-act-watermark--with">SALES&nbsp;TEAM&nbsp;&middot;&nbsp;ON DEALEREDGE</div>
-
     <div class="s-act-inner">
-      <!-- Left copy -->
-      <div class="s-act-copy">
-        <div class="s-act-copy-sticky">
-          <span class="s-act-tag s-act-tag--good">What the team actually does now</span>
-          <h2 class="s-act-headline">
-            The bullshit, off your desk.<br>
-            <span class="s-act-headline-accent">The customer, back in front of you.</span>
-          </h2>
+      <div class="s-act-watermark s-act-watermark--with">SALES&nbsp;TEAM&nbsp;&middot;&nbsp;ON DEALEREDGE</div>
 
-          <div class="s-act-beats">
+      <header class="s-act-scene">
+        <span class="s-act-tag s-act-tag--good">What the team actually does now</span>
+        <h2 class="s-act-headline">
+          The bullshit, off your desk. <span class="s-act-headline-accent">The customer, back in front of you.</span>
+        </h2>
+      </header>
+
+      <div class="s-act-copy">
+        <div class="s-act-beats">
             <div class="s-act-beat" data-beat="1">
               <span class="s-act-beat-num">01</span>
               <p><strong>One funnel for every source.</strong> Your site, Aimbase, BoatTrader, Facebook, manufacturer pass-throughs. All ingested, all routed through one AI layer. The "where did this come from?" question dies.</p>
@@ -679,7 +688,6 @@
               <p><strong>Your salespeople are people-people.</strong> That's why they're salespeople. We took the admin work off their desk so they can do the only thing that actually closes deals — be present with the customer. Next: deal flow, licensing, registration. We're not done.</p>
             </div>
           </div>
-        </div>
       </div>
 
       <!-- Right media stage -->
@@ -1002,22 +1010,31 @@
   </section>
 
   <!-- ──────────────────────────────────────────────────────────────
-       CTA
+       VIDEO + BOAT  —  homepage closing sequence
        ────────────────────────────────────────────────────────────── -->
-  <section class="cta-section" id="contact">
-    <div class="cta-glow"></div>
-    <div class="section-container cta-inner">
-      <div class="cta-tag" data-fade>The Offer</div>
-      <h2 class="cta-title" data-fade data-delay="0.1">
-        Tell us what you spend on your current vendors.<br>
-        <span class="headline-accent">We replace all of them.</span>
-      </h2>
-      <p class="cta-sub" data-fade data-delay="0.2">
-        You pay <strong>$0</strong> until we beat your current results by 20%. When we do, pricing activates at the tier you chose before we started. There's no scenario where you lose money.
-      </p>
-      <div data-fade data-delay="0.3">
-        <a href="#" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+  <section class="video-section" id="video-section">
+    <div class="video-wrapper">
+      <div class="video-inner" id="video-inner">
+        <img src="assets/dealer-edge-video-homepage-2.jpg" alt="DealerEdge Video" class="video-thumb">
+        <div class="video-overlay-text" id="video-overlay-text">
+          <h2>This Is How Dealerships Sell Smarter</h2>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <section class="boat-section" id="boat-section">
+    <div class="boat-sticky">
+      <div class="boat-left">
+        <div class="section-label">The Competitive Edge</div>
+        <div class="boat-headline-wrap">
+          <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
+          <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
+        </div>
+        <p class="boat-sub" id="boat-sub">Why wait on improving your sales. We can have this platform up and running for your dealership quickly.</p>
+        <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your Demo today</button>
+      </div>
+      <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
     </div>
   </section>
 
@@ -1055,6 +1072,46 @@
     </div>
   </footer>
 
+  <!-- Demo request modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Schedule a Demo</span>
+        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="Email address" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/mobile-nav.js"></script>
+  <script src="js/demo-modal.js"></script>
+  <script src="js/section-video-boat.js"></script>
   <script src="js/sales.js"></script>
 </body>
 </html>
