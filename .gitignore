@@ -1,3 +1,6 @@
 .DS_Store
 claude:skills:frontend-design:
 claude:skills:video-to-website:
+
+# Local QA / audit artifacts — not runtime assets, keep .git lean
+screenshots/

@@ -1,6 +1,6 @@
 # DealerEdge Marketing Site — Agent Guide
 
-This file is the persistent context for any AI agent (Claude Code, Cursor, Codex, etc.) working in this repo. Read it first. The conventions below were earned over real iteration with Jason — please don't re-derive them or rewrite locked language without explicit permission.
+This file is the persistent context for any AI agent (Codex, Cursor, Codex, etc.) working in this repo. Read it first. The conventions below were earned over real iteration with Jason — please don't re-derive them or rewrite locked language without explicit permission.
 
 ---
 
@@ -141,11 +141,7 @@ If you change the number of beats, change the height. If you forget, the last be
 
 ### Mobile breakpoint
 
-At ≤1100px wide, the stats section keeps scroll-pin at **450vh** (6 beats × 75vh). Acts **also stay scroll-pinned** — same ScrollTrigger beat progression as desktop, with a single-column layout inside the sticky pin (scene header → active beat copy → stage visual). Act heights: **300vh** (4 beats) and **450vh** (6 beats for Act 4). Hide `.s-act-watermark` on mobile; keep `.s-act-tag` only. Inactive beat rows collapse to `display: none` — only the active beat shows in the rail.
-
-**Mobile content width:** `.s-act-inner` uses **16px** horizontal padding at ≤1100px and **12px** at ≤640px. Beat visuals should use `width: 100%` — avoid `transform: scale()` shrink hacks unless a component still overflows after the width bump.
-
-**Mobile cohort card:** The 100-dot grid spans **full card width** (10×10, `aspect-ratio: 1`, capped at `min(100%, 34vh)` so the full card fits the pin). On ≤1100px the card uses **CSS Grid + `display: contents` on `.s-cohort-row`** so zones cannot flex-collapse: label → grid → counters → caption → (beat 6) fix stack → scene-next. Baseline dots (98–99) must **not** get forced `min-width` — they stay grid-cell sized; green glow only on beat 6. On beat 6 mobile: hide `.s-hero-pulse` and in-pin `.s-hero-story-handoff`; put `.s-scene-next` in document flow (not absolute); anchor popups as a banner above the grid.
+At ≤1100px wide, the stats section keeps scroll-pin but compresses the cohort card and stacks the dot grid above the counters on narrow screens. Acts disable scroll-pin and stack beats vertically.
 
 ---
 
@@ -376,7 +372,7 @@ The wrapper script `.run-publish.sh` calls `~/.agents/skills/here-now/scripts/pu
 
 ### When NOT to redeploy
 
-CLAUDE.md, README, .git/*, plan files, scratch files — none of these are runtime assets. Don't redeploy when only meta files change.
+AGENTS.md, README, .git/*, plan files, scratch files — none of these are runtime assets. Don't redeploy when only meta files change.
 
 ---
 
@@ -402,7 +398,7 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 2. **CSS**: Adjust the act's height to `height: <N*100>vh;`.
 3. **JS**: Write `playActXBeatN(beatEl, stillCurrent)` following the conventions above. Register it in `BEAT_ANIMS`.
 4. **Reset on entry**: First thing the function does is reset any animation state, so re-entry replays cleanly.
-5. **Test mobile**: Verify beat progression under 1100px (75vh/beat pin, single-column layout inside sticky pin).
+5. **Test mobile**: Verify it works under 1100px viewport (where the scroll-pin is disabled).
 
 ### Add a new Act
 
