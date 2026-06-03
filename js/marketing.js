@@ -33,6 +33,10 @@
   initShowcase();
   initHero();
   initActs();
+  if (typeof initVideoBoatSections === 'function') {
+    initVideoBoatSections();
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+  }
 
   function initCursor() {
     const cursor = document.getElementById('custom-cursor');
