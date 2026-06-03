@@ -432,21 +432,23 @@
     'old-sleep': playOldSleep,
     'old-search': playOldSearch,
     'old-unify': playOldUnify,
-    'site-demo': playSequential,
-    'site-inventory': playSequential,
+    'site-demo': playGenSite,
+    'site-thin': playThinListing,
+    'site-inventory': playSpine,
     'site-seo': playSequential,
-    'site-capture': playSequential,
-    'dam-proof': playSequential,
-    'dam-channels': playSequential,
+    'site-capture': playCapture,
+    'dam-proof': playDamMorph,
+    'dam-channels': playDamChannels,
     'dam-calendar': playSequential,
-    'dam-article': playSequential,
-    'hub-goals': playSequential,
-    'hub-teams': playSequential,
-    'hub-funnel': playSequential,
-    'hub-reviews': playSequential,
-    'hub-handoff': playSequential,
-    'op-rot': playSequential,
-    'geo-answer': playSequential,
+    'dam-article': playRankClimb,
+    'hub-goals': playStrategy,
+    'hub-reviews': playRevFix,
+    'hub-handoff': playHandoff,
+    'op-team': playOpTeam,
+    'op-fanout': playFanout,
+    'op-invads': playInvAds,
+    'geo-miss': playGeoMiss,
+    'geo-answer': playGeoAnswer,
   };
 
   function initActs() {
@@ -662,33 +664,89 @@
     dot.classList.add(className);
   }
 
+  // Decimal counter (e.g. star ratings) with cubic ease-out; bails on beat change.
+  function countFloat(el, from, to, ms, stillCurrent, decimals = 1) {
+    if (!el) return;
+    if (reduceMotion) { el.textContent = to.toFixed(decimals); return; }
+    const start = performance.now();
+    function frame(now) {
+      if (typeof stillCurrent === 'function' && !stillCurrent()) return;
+      const p = Math.min(1, (now - start) / ms);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (from + (to - from) * eased).toFixed(decimals);
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // Generic integer counter with cubic ease-out; bails if the beat moved on.
+  function countInt(el, from, to, ms, stillCurrent, prefix = '', suffix = '') {
+    if (!el) return;
+    if (reduceMotion) { el.textContent = `${prefix}${to.toLocaleString('en-US')}${suffix}`; return; }
+    const start = performance.now();
+    function frame(now) {
+      if (typeof stillCurrent === 'function' && !stillCurrent()) return;
+      const p = Math.min(1, (now - start) / ms);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(from + (to - from) * eased);
+      el.textContent = `${prefix}${val.toLocaleString('en-US')}${suffix}`;
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   function playOldQueue(beatEl, stillCurrent) {
     beatEl.classList.add('is-playing');
     const listing = beatEl.querySelector('[data-old-listing]');
     const updated = beatEl.querySelector('[data-old-updated]');
+    const ready = beatEl.querySelector('[data-old-ready]');
+    const gate = beatEl.querySelector('[data-old-gate]');
     const staleBuyer = beatEl.querySelector('[data-old-stale-buyer]');
     const tickets = [...beatEl.querySelectorAll('[data-old-ticket]')];
+    // each ticket's ETA recedes: waiting → next sprint, etc.
+    const etaPush = ['next sprint', 'next month', 'Q3 roadmap'];
     const timeouts = [];
 
     listing?.classList.remove('is-stale');
     updated?.classList.remove('is-red');
+    if (updated) updated.textContent = 'Updated 71 days ago';
+    if (ready) { ready.classList.remove('is-stuck'); ready.textContent = 'Ready to publish'; }
+    gate?.classList.remove('is-down');
     staleBuyer?.classList.remove('is-in', 'is-out');
-    tickets.forEach((t) => t.classList.remove('is-in', 'is-stamped'));
+    tickets.forEach((t) => {
+      t.classList.remove('is-in', 'is-stamped');
+      const em = t.querySelector('[data-old-ticket-status]');
+      if (em) em.classList.remove('is-pushed');
+    });
 
     const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
 
-    add(reduceMotion ? 40 : 280, () => updated?.classList.add('is-red'));
-    add(reduceMotion ? 80 : 520, () => listing?.classList.add('is-stale'));
-    add(reduceMotion ? 120 : 780, () => staleBuyer?.classList.add('is-in'));
-    add(reduceMotion ? 220 : 1400, () => {
+    // the boat is ready — then the queue stamps it
+    add(reduceMotion ? 40 : 300, () => updated?.classList.add('is-red'));
+    add(reduceMotion ? 70 : 520, () => {
+      listing?.classList.add('is-stale');
+      if (ready) { ready.classList.add('is-stuck'); ready.textContent = 'Stuck in queue'; }
+    });
+    add(reduceMotion ? 90 : 640, () => gate?.classList.add('is-down'));
+    add(reduceMotion ? 120 : 820, () => staleBuyer?.classList.add('is-in'));
+    add(reduceMotion ? 220 : 1500, () => {
       staleBuyer?.classList.remove('is-in');
       staleBuyer?.classList.add('is-out');
     });
 
+    // days pile up while nothing happens
+    add(reduceMotion ? 60 : 900, () =>
+      countInt(updated, 71, 88, reduceMotion ? 0 : 2600, stillCurrent, 'Updated ', ' days ago')
+    );
+
     tickets.forEach((ticket, i) => {
-      add((reduceMotion ? 160 : 900) + i * (reduceMotion ? 70 : 320), () => {
-        ticket.classList.add('is-in');
-        ticket.classList.add('is-stamped');
+      add((reduceMotion ? 150 : 900) + i * (reduceMotion ? 60 : 300), () => {
+        ticket.classList.add('is-in', 'is-stamped');
+      });
+      // ETA recedes further out
+      add((reduceMotion ? 260 : 2100) + i * (reduceMotion ? 60 : 280), () => {
+        const em = ticket.querySelector('[data-old-ticket-status]');
+        if (em) { em.textContent = etaPush[i] || em.textContent; em.classList.add('is-pushed'); }
       });
     });
 
@@ -809,6 +867,7 @@
   function playOldForm(beatEl, stillCurrent) {
     beatEl.classList.add('is-playing');
     const packet = beatEl.querySelector('[data-old-intent-packet]');
+    const formCard = beatEl.querySelector('[data-old-form-card]');
     const fields = [...beatEl.querySelectorAll('[data-old-field]')];
     const errors = [...beatEl.querySelectorAll('[data-old-error]')];
     const submit = beatEl.querySelector('[data-old-submit]');
@@ -816,6 +875,7 @@
     const timeouts = [];
 
     packet?.classList.remove('is-in', 'is-press');
+    formCard?.classList.remove('is-reject');
     fields.forEach((el) => el.classList.remove('is-in', 'is-error'));
     submit?.classList.remove('is-shake');
     lost.forEach((el) => el.classList.remove('is-out'));
@@ -828,11 +888,12 @@
 
     const submitAt = reduceMotion ? 280 : 1100;
     add(submitAt, () => {
+      // intent compresses into the cold form and gets rejected — it never transfers
       packet?.classList.add('is-press');
+      formCard?.classList.add('is-reject');
       errors.forEach((el) => el.classList.add('is-error'));
       submit?.classList.add('is-shake');
       timeouts.push(schedule(stillCurrent, 420, () => submit?.classList.remove('is-shake')));
-      packet?.classList.remove('is-in');
     });
 
     lost.forEach((chip, i) => {
@@ -1020,6 +1081,566 @@
       );
     });
 
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Beat 3 — the stuck vendor queue dissolves and the site generates itself fast.
+  function playGenSite(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const tickets = [...beatEl.querySelectorAll('[data-gen-ticket]')];
+    const arrow = beatEl.querySelector('[data-gen-arrow]');
+    const inputs = [...beatEl.querySelectorAll('[data-gen-input]')];
+    const pages = [...beatEl.querySelectorAll('[data-gen-page]')];
+    const vendorFill = beatEl.querySelector('[data-gen-fill="vendor"]');
+    const deFill = beatEl.querySelector('[data-gen-fill="de"]');
+    const sla = beatEl.querySelector('[data-gen-sla]');
+    const timeouts = [];
+    const rm = reduceMotion;
+
+    tickets.forEach((t) => t.classList.remove('is-dissolve'));
+    arrow?.classList.remove('is-in');
+    inputs.forEach((el) => el.classList.remove('is-in'));
+    pages.forEach((el) => el.classList.remove('is-in'));
+    sla?.classList.remove('is-in');
+    if (vendorFill) vendorFill.style.width = '0%';
+    if (deFill) deFill.style.width = '0%';
+
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+
+    // the vendor queue stays on screen — the slow way you live in today —
+    // then the arrow + your inputs land beside it (the AI way that replaces it)
+    add(rm ? 80 : 600, () => arrow?.classList.add('is-in'));
+    inputs.forEach((el, i) => add((rm ? 90 : 760) + i * (rm ? 30 : 150), () => el.classList.add('is-in')));
+    // the full site assembles itself, page by page, fast
+    pages.forEach((el, i) => add((rm ? 140 : 1300) + i * (rm ? 30 : 120), () => el.classList.add('is-in')));
+    // 4) speed contrast — DealerEdge races, the vendor sprint crawls
+    add(rm ? 60 : 720, () => { if (vendorFill) vendorFill.style.width = '16%'; });
+    add(rm ? 160 : 1550, () => { if (deFill) deFill.style.width = '100%'; });
+    // the guarantee stamps in last
+    add(rm ? 200 : 2050, () => sla?.classList.add('is-in'));
+
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Website Beat 3 — the thin "Call for details" listing; the spine (Beat 4) resolves it.
+  function playThinListing(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const misses = [...beatEl.querySelectorAll('[data-thin-miss]')];
+    const bounce = beatEl.querySelector('[data-thin-bounce]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    misses.forEach((m) => m.classList.remove('is-in'));
+    bounce?.classList.remove('is-in');
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    misses.forEach((m, i) => add((rm ? 20 : 300) + i * (rm ? 20 : 180), () => m.classList.add('is-in')));
+    add(rm ? 120 : 1300, () => bounce?.classList.add('is-in'));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Beat 4 — the stale Beat-1 listing grows a sales spine, vertebra by vertebra.
+  function playSpine(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const rail = beatEl.querySelector('[data-spine-rail]');
+    const nodes = [...beatEl.querySelectorAll('[data-spine-node]')];
+    const card = beatEl.querySelector('[data-spine-card]');
+    const stamp = beatEl.querySelector('[data-spine-stamp]');
+    const headline = beatEl.querySelector('[data-spine-headline]');
+    const adds = [...beatEl.querySelectorAll('[data-spine-add]')];
+    const tags = [...beatEl.querySelectorAll('[data-spine-tag]')];
+    const order = ['copy', 'schema', 'financing', 'faq', 'related'];
+    const timeouts = [];
+    const rm = reduceMotion;
+
+    rail?.classList.remove('is-grown');
+    nodes.forEach((n) => n.classList.remove('is-lit'));
+    card?.classList.remove('is-live');
+    stamp?.classList.remove('is-live');
+    if (stamp) stamp.textContent = 'Updated 71 days ago';
+    if (headline) { headline.textContent = 'Great condition. Call for details.'; headline.style.opacity = ''; }
+    adds.forEach((el) => el.classList.remove('is-in'));
+    tags.forEach((el) => el.classList.remove('is-lit'));
+
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+
+    // the spine draws down the card
+    add(rm ? 30 : 260, () => rail?.classList.add('is-grown'));
+
+    // each vertebra lights and bolts on a selling capability
+    order.forEach((key, i) => {
+      add((rm ? 60 : 720) + i * (rm ? 40 : 360), () => {
+        nodes[i]?.classList.add('is-lit');
+        tags.find((t) => t.dataset.spineTag === key)?.classList.add('is-lit');
+        adds.find((a) => a.dataset.spineAdd === key)?.classList.add('is-in');
+        if (key === 'copy' && headline) {
+          headline.style.opacity = '0';
+          timeouts.push(schedule(stillCurrent, rm ? 20 : 200, () => {
+            headline.textContent = '$162,900 — surf-ready, family-built.';
+            headline.style.opacity = '1';
+          }));
+        }
+      });
+    });
+
+    // the dead listing comes alive
+    add((rm ? 220 : 900) + order.length * (rm ? 40 : 360), () => {
+      card?.classList.add('is-live');
+      stamp?.classList.add('is-live');
+      if (stamp) stamp.textContent = 'Live · optimized';
+    });
+
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Beat 5 — same traffic streams in; capture nets switch on; 16 → 636.
+  function playCapture(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const lane = beatEl.querySelector('[data-capture-lane]');
+    const nets = [...beatEl.querySelectorAll('[data-capture-net]')];
+    const tray = beatEl.querySelector('[data-capture-tray]');
+    const count = beatEl.querySelector('[data-capture-count]');
+    const timeouts = [];
+    const rm = reduceMotion;
+
+    nets.forEach((n) => n.classList.remove('is-on'));
+    tray?.classList.remove('is-spiking');
+    if (count) count.textContent = '16';
+
+    // build the inbound traffic lane — same volume throughout
+    if (lane) {
+      lane.innerHTML = '';
+      const N = 16;
+      for (let i = 0; i < N; i += 1) {
+        const dot = document.createElement('span');
+        dot.className = 'm-capture-dot';
+        dot.style.animationDelay = `${((i / N) * 2.8).toFixed(2)}s`;
+        if (rm) dot.style.animation = 'none';
+        lane.appendChild(dot);
+      }
+    }
+    const dots = lane ? [...lane.querySelectorAll('.m-capture-dot')] : [];
+
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+
+    // the capture mechanisms switch on one at a time
+    nets.forEach((net, i) => add((rm ? 40 : 620) + i * (rm ? 30 : 240), () => net.classList.add('is-on')));
+
+    // the stream that used to leave now gets caught
+    add(rm ? 120 : 1500, () => dots.forEach((d, i) => { if (i % 2 === 0) d.classList.add('is-caught'); }));
+
+    // the money shot — same traffic, 16 → 636
+    add(rm ? 140 : 1600, () => {
+      tray?.classList.add('is-spiking');
+      countInt(count, 16, 636, rm ? 0 : 1700, stillCurrent);
+    });
+    add(rm ? 200 : 3400, () => tray?.classList.remove('is-spiking'));
+
+    storeCleanup(beatEl, () => {
+      timeouts.forEach((id) => clearTimeout(id));
+      if (lane) lane.innerHTML = '';
+    });
+  }
+
+  // Content Beat 3 — raw DAM asset wipes into the on-brand ad in place.
+  function playDamMorph(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const stage = beatEl.querySelector('[data-damx-stage]');
+    const timeouts = [];
+    stage?.classList.remove('is-branded');
+    timeouts.push(schedule(stillCurrent, reduceMotion ? 30 : 600, () => stage?.classList.add('is-branded')));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Content Beat 4 — one source asset clones out to every channel.
+  function playDamChannels(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const hub = beatEl.querySelector('[data-chan-hub]');
+    const core = beatEl.querySelector('[data-chan-core]');
+    const cards = [...beatEl.querySelectorAll('[data-chan-card]')];
+    const timeouts = [];
+    const rm = reduceMotion;
+    cards.forEach((c) => c.classList.remove('is-in'));
+    hub?.querySelectorAll('.m-chan-clone').forEach((n) => n.remove());
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    cards.forEach((card, i) => {
+      add((rm ? 40 : 520) + i * (rm ? 30 : 320), () => {
+        if (!rm) flyClone(core, card, hub, stillCurrent, timeouts);
+        card.classList.add('is-in');
+      });
+    });
+    storeCleanup(beatEl, () => {
+      timeouts.forEach((id) => clearTimeout(id));
+      hub?.querySelectorAll('.m-chan-clone').forEach((n) => n.remove());
+    });
+  }
+
+  function flyClone(core, card, hub, stillCurrent, timeouts) {
+    if (!core || !card || !hub || !stillCurrent()) return;
+    const srcImg = core.querySelector('img');
+    const clone = document.createElement('img');
+    clone.className = 'm-chan-clone';
+    if (srcImg) clone.src = srcImg.currentSrc || srcImg.src;
+    const hubRect = hub.getBoundingClientRect();
+    const coreRect = core.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const startX = coreRect.left + coreRect.width / 2 - hubRect.left - 24;
+    const startY = coreRect.top + coreRect.height / 2 - hubRect.top - 16;
+    const endX = cardRect.left + cardRect.width / 2 - hubRect.left - 24;
+    const endY = cardRect.top + 18 - hubRect.top;
+    clone.style.left = `${startX}px`;
+    clone.style.top = `${startY}px`;
+    clone.style.opacity = '0';
+    hub.appendChild(clone);
+    requestAnimationFrame(() => {
+      if (!stillCurrent()) { clone.remove(); return; }
+      clone.style.opacity = '1';
+      clone.style.transform = `translate(${endX - startX}px, ${endY - startY}px) scale(1.05)`;
+    });
+    timeouts.push(schedule(stillCurrent, 560, () => { clone.style.opacity = '0'; }));
+    timeouts.push(setTimeout(() => clone.remove(), 820));
+  }
+
+  // Content Beat 5 — modules snap into the page, then the SERP flips (Beat 1 payoff).
+  function playRankClimb(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const article = beatEl.querySelector('[data-rank-article]');
+    const mods = [...beatEl.querySelectorAll('[data-rank-mod]')];
+    const ladder = beatEl.querySelector('[data-rank-ladder]');
+    const rows = beatEl.querySelector('[data-rank-rows]');
+    const count = beatEl.querySelector('[data-rank-count]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    article?.classList.remove('is-in');
+    mods.forEach((m) => m.classList.remove('is-in'));
+    ladder?.classList.remove('is-in');
+    rows?.classList.remove('is-ranked');
+    if (count) count.textContent = '7';
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    add(rm ? 20 : 200, () => article?.classList.add('is-in'));
+    mods.forEach((m, i) => add((rm ? 40 : 450) + i * (rm ? 30 : 130), () => m.classList.add('is-in')));
+    add(rm ? 60 : 720, () => ladder?.classList.add('is-in'));
+    // the climb — your listing rises past the competitor
+    add(rm ? 120 : 1500, () => rows?.classList.add('is-ranked'));
+    add(rm ? 160 : 2150, () => countInt(count, 7, 49, rm ? 0 : 1400, stillCurrent));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Content Beat 6 — the AI answer composes in real time and cites you.
+  function playGeoAnswer(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const q = beatEl.querySelector('.m-geo-q[data-step]');
+    const bubble = beatEl.querySelector('.m-geo-a');
+    const answer = beatEl.querySelector('[data-geo-answer]');
+    const cite = beatEl.querySelector('[data-geo-cite]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    const full = 'For wake boats around Knoxville, <b>Premier Watersports</b> is a standout — strong Malibu and Axis inventory, financing, and top-rated service.';
+    const segs = [
+      { t: 'For wake boats around Knoxville, ', b: false },
+      { t: 'Premier Watersports', b: true },
+      { t: ' is a standout — strong Malibu and Axis inventory, financing, and top-rated service.', b: false },
+    ];
+    q?.classList.remove('is-in');
+    bubble?.classList.remove('is-in');
+    cite?.classList.remove('is-in');
+    answer?.classList.remove('is-typing');
+    if (answer) answer.innerHTML = '';
+
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    add(rm ? 20 : 220, () => q?.classList.add('is-in'));
+
+    if (rm) {
+      add(60, () => {
+        bubble?.classList.add('is-in');
+        if (answer) answer.innerHTML = full;
+        cite?.classList.add('is-in');
+      });
+      storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+      return;
+    }
+
+    add(600, () => bubble?.classList.add('is-in'));
+
+    // typewriter across segments, preserving the bold brand span
+    add(900, () => {
+      if (!answer || !stillCurrent()) return;
+      answer.classList.add('is-typing');
+      let si = 0;
+      let ci = 0;
+      let node = null;
+      const typeNext = () => {
+        if (!stillCurrent()) return;
+        if (si >= segs.length) {
+          answer.classList.remove('is-typing');
+          cite?.classList.add('is-in');
+          return;
+        }
+        const seg = segs[si];
+        if (ci === 0) {
+          node = seg.b ? document.createElement('b') : document.createTextNode('');
+          answer.appendChild(node);
+        }
+        node.textContent += seg.t[ci];
+        ci += 1;
+        if (ci >= seg.t.length) { si += 1; ci = 0; }
+        timeouts.push(setTimeout(typeNext, 18));
+      };
+      typeNext();
+    });
+
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 1 — the human team you'd hire ($200k) collapses into one system.
+  function playOpTeam(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const roster = beatEl.querySelector('[data-roster]');
+    const roles = [...beatEl.querySelectorAll('[data-roster-role]')];
+    const count = beatEl.querySelector('[data-roster-count]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    roster?.classList.remove('is-merged');
+    roles.forEach((r) => r.classList.remove('is-in'));
+    if (count) count.textContent = '0';
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    roles.forEach((r, i) => add((rm ? 20 : 180) + i * (rm ? 20 : 140), () => r.classList.add('is-in')));
+    add(rm ? 60 : 750, () => countInt(count, 0, 200000, rm ? 0 : 1500, stillCurrent));
+    add(rm ? 140 : 2500, () => roster?.classList.add('is-merged'));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 3 — one campaign brief fans out into every coordinated asset.
+  function playFanout(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const brief = beatEl.querySelector('[data-fanout-brief]');
+    const arrow = beatEl.querySelector('[data-fanout-arrow]');
+    const assets = [...beatEl.querySelectorAll('[data-fanout-asset]')];
+    const timeouts = [];
+    const rm = reduceMotion;
+    brief?.classList.remove('is-in');
+    arrow?.classList.remove('is-in');
+    assets.forEach((a) => a.classList.remove('is-in'));
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    add(rm ? 20 : 220, () => brief?.classList.add('is-in'));
+    add(rm ? 60 : 700, () => arrow?.classList.add('is-in'));
+    assets.forEach((a, i) => add((rm ? 80 : 850) + i * (rm ? 30 : 160), () => a.classList.add('is-in')));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 4 — inventory feeds into dynamic Google/Meta ads that sell units.
+  function playInvAds(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const scene = beatEl.querySelector('[data-invads]');
+    const tiles = [...beatEl.querySelectorAll('[data-invads-tile]')];
+    const ads = [...beatEl.querySelectorAll('[data-invads-ad]')];
+    const sold = beatEl.querySelector('[data-invads-sold]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    scene?.classList.remove('is-flowing');
+    tiles.forEach((t) => t.classList.remove('is-in'));
+    ads.forEach((a) => a.classList.remove('is-in'));
+    sold?.classList.remove('is-in');
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    tiles.forEach((t, i) => add((rm ? 20 : 200) + i * (rm ? 20 : 120), () => t.classList.add('is-in')));
+    add(rm ? 80 : 800, () => scene?.classList.add('is-flowing'));
+    ads.forEach((a, i) => add((rm ? 90 : 1100) + i * (rm ? 30 : 380), () => a.classList.add('is-in')));
+    add(rm ? 140 : 2150, () => sold?.classList.add('is-in'));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 1 — reviews rot; the rating slides 4.2 → 3.9 live.
+  function playOpRot(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const steps = [...beatEl.querySelectorAll('[data-step]')];
+    const rating = beatEl.querySelector('[data-rot-rating]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    steps.forEach((s) => s.classList.remove('is-in'));
+    if (rating) rating.textContent = '4.2';
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    steps.forEach((s, i) => add((rm ? 20 : 200) + i * (rm ? 30 : 240), () => s.classList.add('is-in')));
+    add(rm ? 60 : 900, () => countFloat(rating, 4.2, 3.9, rm ? 0 : 1600, stillCurrent));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 2 — goals/persona/market/constraint feed one strategy brief.
+  function playStrategy(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const inputs = [...beatEl.querySelectorAll('[data-strat-input]')];
+    const arrow = beatEl.querySelector('[data-strat-arrow]');
+    const brief = beatEl.querySelector('[data-strat-brief]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    inputs.forEach((el) => el.classList.remove('is-in'));
+    arrow?.classList.remove('is-in');
+    brief?.classList.remove('is-in');
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    inputs.forEach((el, i) => add((rm ? 20 : 200) + i * (rm ? 30 : 180), () => el.classList.add('is-in')));
+    add(rm ? 80 : 1000, () => arrow?.classList.add('is-in'));
+    add(rm ? 100 : 1200, () => brief?.classList.add('is-in'));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 3 — separate vendor nodes wire into one team (the act anchor).
+  function playTeamNet(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const hub = beatEl.querySelector('[data-teamnet-hub]');
+    const lines = [...beatEl.querySelectorAll('[data-teamnet-line]')];
+    const nodes = [...beatEl.querySelectorAll('[data-teamnet-node]')];
+    const timeouts = [];
+    const rm = reduceMotion;
+    hub?.classList.remove('is-in');
+    nodes.forEach((n) => n.classList.remove('is-wired'));
+    lines.forEach((ln) => {
+      const len = ln.getTotalLength ? ln.getTotalLength() : 200;
+      ln.style.strokeDasharray = String(len);
+      ln.style.strokeDashoffset = rm ? '0' : String(len);
+    });
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    add(rm ? 20 : 200, () => hub?.classList.add('is-in'));
+    nodes.forEach((node, i) => {
+      add((rm ? 40 : 600) + i * (rm ? 30 : 230), () => {
+        if (lines[i]) lines[i].style.strokeDashoffset = '0';
+        node.classList.add('is-wired');
+      });
+    });
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 4 — a buyer dot flows Attract → Engage → Convert, gathering context.
+  function playFunnelFlow(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const lanes = [...beatEl.querySelectorAll('[data-flow-lane]')];
+    const dot = beatEl.querySelector('[data-flow-dot]');
+    const chips = [...beatEl.querySelectorAll('[data-flow-chip]')];
+    const timeouts = [];
+    const rm = reduceMotion;
+    const positions = ['16.6%', '50%', '83.3%'];
+    const laneChips = [[0], [1, 2], [3]];
+    lanes.forEach((l) => l.classList.remove('is-active'));
+    chips.forEach((c) => c.classList.remove('is-in'));
+    if (dot) dot.style.left = '16.6%';
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    lanes.forEach((lane, i) => {
+      add((rm ? 30 : 450) + i * (rm ? 40 : 850), () => {
+        if (dot) dot.style.left = positions[i];
+        lane.classList.add('is-active');
+        laneChips[i].forEach((ci, k) => {
+          timeouts.push(schedule(stillCurrent, (rm ? 20 : 300) + k * (rm ? 20 : 230), () => chips[ci]?.classList.add('is-in')));
+        });
+      });
+    });
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 5 — the rotting reviews from Beat 1 get handled; rating climbs 3.9 → 4.8.
+  function playRevFix(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const steps = [...beatEl.querySelectorAll('[data-revfix-step]')];
+    const rating = beatEl.querySelector('[data-revfix-rating]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    steps.forEach((s) => s.classList.remove('is-in'));
+    if (rating) rating.textContent = '3.9';
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    steps.forEach((s, i) => add((rm ? 20 : 200) + i * (rm ? 30 : 240), () => s.classList.add('is-in')));
+    add(rm ? 60 : 1000, () => countFloat(rating, 3.9, 4.8, rm ? 0 : 1600, stillCurrent));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Operation Beat 6 — Marketing passes the context-loaded buyer to Mike like a baton.
+  function playHandoff(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const profile = beatEl.querySelector('[data-ho-profile]');
+    const packet = beatEl.querySelector('[data-ho-packet]');
+    const sales = beatEl.querySelector('[data-ho-sales]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    profile?.classList.remove('is-in');
+    sales?.classList.remove('is-in', 'is-live');
+    packet?.classList.remove('is-travel');
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    add(rm ? 20 : 250, () => profile?.classList.add('is-in'));
+    add(rm ? 40 : 700, () => sales?.classList.add('is-in'));
+    add(rm ? 60 : 1000, () => packet?.classList.add('is-travel'));
+    add(rm ? 90 : 1850, () => sales?.classList.add('is-live'));
+    storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+  }
+
+  // Content Beat 5 — the GEO miss: AI names the competitor (red mirror of Beat 6).
+  function playGeoMiss(beatEl, stillCurrent) {
+    if (!beatEl) return;
+    beatEl.classList.add('is-playing');
+    const q = beatEl.querySelector('.m-geo-q[data-step]');
+    const bubble = beatEl.querySelector('.m-geo-a');
+    const answer = beatEl.querySelector('[data-geo-answer]');
+    const cite = beatEl.querySelector('[data-geo-cite]');
+    const timeouts = [];
+    const rm = reduceMotion;
+    const full = 'For wake boats near Knoxville, <b>North Lake Marine</b> comes up first — better reviews, fresher listings, an active feed.';
+    const segs = [
+      { t: 'For wake boats near Knoxville, ', b: false },
+      { t: 'North Lake Marine', b: true },
+      { t: ' comes up first — better reviews, fresher listings, an active feed.', b: false },
+    ];
+    q?.classList.remove('is-in');
+    bubble?.classList.remove('is-in');
+    cite?.classList.remove('is-in');
+    answer?.classList.remove('is-typing');
+    if (answer) answer.innerHTML = '';
+    const add = (ms, fn) => timeouts.push(schedule(stillCurrent, ms, fn));
+    add(rm ? 20 : 220, () => q?.classList.add('is-in'));
+    if (rm) {
+      add(60, () => {
+        bubble?.classList.add('is-in');
+        if (answer) answer.innerHTML = full;
+        cite?.classList.add('is-in');
+      });
+      storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
+      return;
+    }
+    add(600, () => bubble?.classList.add('is-in'));
+    add(900, () => {
+      if (!answer || !stillCurrent()) return;
+      answer.classList.add('is-typing');
+      let si = 0;
+      let ci = 0;
+      let node = null;
+      const typeNext = () => {
+        if (!stillCurrent()) return;
+        if (si >= segs.length) {
+          answer.classList.remove('is-typing');
+          cite?.classList.add('is-in');
+          return;
+        }
+        const seg = segs[si];
+        if (ci === 0) {
+          node = seg.b ? document.createElement('b') : document.createTextNode('');
+          answer.appendChild(node);
+        }
+        node.textContent += seg.t[ci];
+        ci += 1;
+        if (ci >= seg.t.length) { si += 1; ci = 0; }
+        timeouts.push(setTimeout(typeNext, 18));
+      };
+      typeNext();
+    });
     storeCleanup(beatEl, () => timeouts.forEach((id) => clearTimeout(id)));
   }
 
