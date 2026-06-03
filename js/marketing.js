@@ -445,6 +445,8 @@
     'hub-funnel': playSequential,
     'hub-reviews': playSequential,
     'hub-handoff': playSequential,
+    'op-rot': playSequential,
+    'geo-answer': playSequential,
   };
 
   function initActs() {

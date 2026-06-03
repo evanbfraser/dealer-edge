@@ -2504,6 +2504,10 @@
   height: 600vh;
 }
 
+.m-act--7 {
+  height: 700vh;
+}
+
 .m-act-inner {
   position: sticky;
   top: 0;
@@ -2622,6 +2626,137 @@
 .m-act[data-phase="bad"] .m-act-line b {
   color: var(--m-bad);
 }
+
+/* Operation red beat — reputation rotting in a backlog */
+.m-rot {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  max-width: 430px;
+}
+.m-rot [data-step] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.m-rot [data-step].is-in { opacity: 1; transform: none; }
+.m-rot-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font: 700 0.62rem/1 var(--m-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--m-dim);
+}
+.m-rot-head b { color: var(--m-bad); font-size: 0.95rem; letter-spacing: 0; }
+.m-rot-head b i { font-style: normal; font-size: 0.58rem; margin-left: 4px; }
+.m-rot-card {
+  border: 1px solid var(--m-line-strong);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.m-rot-card span {
+  display: block;
+  font: 600 0.56rem/1 var(--m-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--m-dim);
+  margin-bottom: 7px;
+}
+.m-rot-card p { margin: 0; font-size: 0.85rem; color: var(--m-mid); line-height: 1.42; }
+.m-rot-card b {
+  display: inline-block;
+  margin-top: 9px;
+  font: 700 0.58rem/1 var(--m-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--m-dim);
+}
+.m-rot-card--neg { border-color: rgba(238, 58, 57, 0.42); background: rgba(238, 58, 57, 0.07); }
+.m-rot-card--neg b { color: var(--m-bad); }
+
+/* Content GEO payoff — buyer asks AI, your inventory is the answer */
+.m-geo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+}
+.m-geo [data-step] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.m-geo [data-step].is-in { opacity: 1; transform: none; }
+.m-geo-q {
+  align-self: flex-end;
+  max-width: 82%;
+  border: 1px solid var(--m-line-strong);
+  border-radius: 12px 12px 4px 12px;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.m-geo-q span {
+  display: block;
+  font: 600 0.54rem/1 var(--m-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--m-dim);
+  margin-bottom: 6px;
+}
+.m-geo-q p { margin: 0; font-size: 0.9rem; color: #fff; }
+.m-geo-a {
+  border: 1px solid rgba(74, 222, 128, 0.32);
+  border-radius: 12px 12px 12px 4px;
+  padding: 14px 16px;
+  background: rgba(74, 222, 128, 0.05);
+}
+.m-geo-a-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 0.6rem/1 var(--m-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--m-good);
+  margin-bottom: 9px;
+}
+.m-geo-ai {
+  display: inline-grid;
+  place-items: center;
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  background: var(--m-good);
+  color: #04240f;
+  font: 800 0.55rem/1 var(--m-mono);
+}
+.m-geo-a p { margin: 0; font-size: 0.92rem; line-height: 1.5; color: var(--m-mid); }
+.m-geo-a p b {
+  color: #fff;
+  font-weight: 800;
+  background: rgba(74, 222, 128, 0.18);
+  padding: 0 5px;
+  border-radius: 4px;
+}
+.m-geo-cite {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid var(--m-line);
+}
+.m-geo-cite span {
+  font: 600 0.52rem/1 var(--m-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--m-dim);
+}
+.m-geo-cite i { font-style: normal; font: 600 0.74rem/1 var(--m-mono); color: var(--m-good); }
 
 .m-act-scene {
   grid-column: 1 / -1;
@@ -5084,6 +5219,10 @@
 
   .m-act--6 {
     height: 690vh;
+  }
+
+  .m-act--7 {
+    height: 805vh;
   }
 
   .m-act-inner {
