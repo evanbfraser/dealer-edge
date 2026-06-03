@@ -610,6 +610,36 @@
           applyScene(0, { animate: false, force: true });
         },
       });
+
+      // Snap-to-beat: once scrolling settles inside a fully-pinned act, ease to
+      // the nearest scene's center so we always rest cleanly on one beat.
+      // Desktop + fine-pointer only; left alone on touch/mobile and reduced-motion.
+      let snapTimer = 0;
+      let snapping = false;
+      const canSnap = () =>
+        !reduceMotion && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
+      function trySnap() {
+        snapTimer = 0;
+        if (snapping || !entered || !canSnap() || !isLocked()) return;
+        const travel = Math.max(1, act.offsetHeight - window.innerHeight);
+        const scene = currentScene();
+        const targetY = Math.round(act.offsetTop + ((scene + 0.5) / sceneCount) * travel);
+        if (Math.abs(window.scrollY - targetY) < 4) return;
+        snapping = true;
+        lenis.scrollTo(targetY, {
+          duration: 0.5,
+          easing: (t) => 1 - Math.pow(1 - t, 3),
+          onComplete: () => { snapping = false; },
+        });
+        // safety: clear the guard even if onComplete is pre-empted by user input
+        setTimeout(() => { snapping = false; }, 850);
+      }
+      function queueSnap() {
+        if (snapping) return;
+        if (snapTimer) clearTimeout(snapTimer);
+        snapTimer = setTimeout(trySnap, 170);
+      }
+      lenis.on('scroll', queueSnap);
     });
   }
 
