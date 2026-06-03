@@ -30,6 +30,7 @@
   initDemoModal(lenis);
   initCursor();
   initFade();
+  initShowcase();
   initHero();
   initActs();
 
@@ -63,6 +64,64 @@
       { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
     );
     faders.forEach((el) => obs.observe(el));
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     PROOF SHOWCASE — Premier Watersports.
+     Not scroll-pinned. Plays once when it scrolls into view: the
+     device trio "loads" (blur clears, slow 13.8s flips to fast 2.3s),
+     the PageSpeed score counts to 99, and the stat counters tick up.
+     ───────────────────────────────────────────────────────────── */
+  function initShowcase() {
+    const sec = document.querySelector('[data-showcase]');
+    if (!sec) return;
+    const stage = sec.querySelector('[data-showcase-stage]');
+    const score = sec.querySelector('[data-showcase-score]');
+    const load = sec.querySelector('[data-showcase-load]');
+    const loadLabel = sec.querySelector('[data-showcase-load-label]');
+    const counters = [...sec.querySelectorAll('[data-count]')];
+    let played = false;
+
+    function countTo(el, to, ms, decimals = 0, suffix = '') {
+      const from = parseFloat(el.textContent) || 0;
+      const start = performance.now();
+      function frame(now) {
+        const p = Math.min(1, (now - start) / ms);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = from + (to - from) * eased;
+        el.textContent = val.toFixed(decimals) + suffix;
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function run() {
+      if (played) return;
+      played = true;
+
+      if (reduceMotion) {
+        stage?.classList.add('is-loaded');
+        if (score) score.textContent = '99';
+        if (load) load.textContent = '2.3s';
+        if (loadLabel) loadLabel.textContent = 'loaded';
+        counters.forEach((c) => { c.textContent = c.dataset.count; });
+        return;
+      }
+
+      setTimeout(() => {
+        stage?.classList.add('is-loaded');
+        if (load) countTo(load, 2.3, 900, 1, 's');
+        if (loadLabel) setTimeout(() => { loadLabel.textContent = 'loaded'; }, 950);
+        if (score) countTo(score, 99, 1100);
+        counters.forEach((c) => countTo(c, Number(c.dataset.count) || 0, 1100));
+      }, 600);
+    }
+
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) run(); }),
+      { threshold: 0.3 }
+    );
+    obs.observe(sec);
   }
 
   function initHero() {
@@ -391,12 +450,19 @@
   function initActs() {
     const acts = [...document.querySelectorAll('[data-act]')];
     acts.forEach((act) => {
-      const copyBeats = [...act.querySelectorAll('.m-act-beat')];
+      // New "scene" mode: a leading headline scene (data-act-intro) that shrinks
+      // as the first beat arrives, then one big copy line per beat (.m-act-line).
+      // Falls back to the classic beat-list (.m-act-beat) when those are absent.
+      const hasIntro = act.hasAttribute('data-act-intro');
+      const lines = [...act.querySelectorAll('.m-act-line')];
+      const copyBeats = lines.length ? lines : [...act.querySelectorAll('.m-act-beat')];
       const stageBeats = [...act.querySelectorAll('.m-beat')];
-      const beatCount = Math.min(copyBeats.length, stageBeats.length);
+      const beatCount = Math.min(copyBeats.length || stageBeats.length, stageBeats.length);
       if (!beatCount) return;
+      const sceneCount = beatCount + (hasIntro ? 1 : 0);
 
       let activeBeat = -1;
+      let introActive = false;
       let runToken = 0;
       let entered = false;
 
@@ -409,6 +475,18 @@
         { threshold: 0.08, rootMargin: '0px 0px -18% 0px' }
       );
       enterObs.observe(act);
+
+      function clearBeats() {
+        const prevBeatEl = stageBeats[activeBeat];
+        if (prevBeatEl) oldAnimCleanups.get(prevBeatEl)?.();
+        copyBeats.forEach((beat) => beat.classList.remove('is-active'));
+        stageBeats.forEach((beat) => {
+          beat.classList.remove('is-active', 'is-playing');
+          beat.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('is-in'));
+          beat.querySelectorAll('video').forEach((video) => video.pause?.());
+        });
+        activeBeat = -1;
+      }
 
       function activate(index, options = {}) {
         const { force = false, animate = true } = options;
@@ -434,6 +512,10 @@
           });
         });
 
+        // diptych phase: red "pain" beats vs green "fix" beats recolor the
+        // left rail + crossfade the act watermark (data-phase on the stage beat)
+        act.dataset.phase = stageBeats[next]?.dataset.phase || 'good';
+
         if (!animate) return;
 
         const beatEl = stageBeats[next];
@@ -445,15 +527,32 @@
         }
       }
 
+      // map a scene index → intro or beat
+      function applyScene(scene, options = {}) {
+        const s = clamp(scene, 0, sceneCount - 1);
+        if (hasIntro && s === 0) {
+          if (!introActive || options.force) {
+            introActive = true;
+            act.classList.remove('is-engaged');
+            clearBeats();
+            act.dataset.phase = stageBeats[0]?.dataset.phase || 'good';
+          }
+          return;
+        }
+        introActive = false;
+        act.classList.add('is-engaged');
+        activate(hasIntro ? s - 1 : s, options);
+      }
+
       function isLocked() {
         const rect = act.getBoundingClientRect();
         return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
       }
 
-      function currentBeatIndex() {
+      function currentScene() {
         const travel = Math.max(1, act.offsetHeight - window.innerHeight);
         const progress = clamp((window.scrollY - act.offsetTop) / travel, 0, 0.9999);
-        return Math.min(beatCount - 1, Math.floor(progress * beatCount));
+        return Math.min(sceneCount - 1, Math.floor(progress * sceneCount));
       }
 
       let scrollRaf = 0;
@@ -468,9 +567,11 @@
         const locked = isLocked();
         act.classList.toggle('is-locked', locked);
         if (!locked) return;
-        const next = currentBeatIndex();
-        const beatEl = stageBeats[next];
-        activate(next, { force: next === activeBeat && !beatEl?.classList.contains('is-playing') });
+        const scene = currentScene();
+        const beatIdx = hasIntro ? scene - 1 : scene;
+        const beatEl = stageBeats[beatIdx];
+        const replay = beatIdx === activeBeat && !beatEl?.classList.contains('is-playing') && !(hasIntro && scene === 0);
+        applyScene(scene, { force: replay });
       }
 
       function queueLockedBeatUpdate() {
@@ -478,7 +579,7 @@
         scrollRaf = requestAnimationFrame(updateLockedBeat);
       }
 
-      activate(0, { animate: false, force: true });
+      applyScene(0, { animate: false, force: true });
       window.addEventListener('scroll', queueLockedBeatUpdate, { passive: true });
       lenis.on('scroll', queueLockedBeatUpdate);
 
@@ -490,7 +591,7 @@
         invalidateOnRefresh: true,
         onEnter: () => {
           entered = true;
-          if (isLocked()) activate(0, { force: true });
+          if (isLocked()) applyScene(currentScene(), { force: true });
         },
         onEnterBack: () => {
           entered = true;
@@ -502,7 +603,7 @@
         onLeave: () => act.classList.remove('is-locked'),
         onLeaveBack: () => {
           act.classList.remove('is-locked');
-          activate(0, { animate: false, force: true });
+          applyScene(0, { animate: false, force: true });
         },
       });
     });
