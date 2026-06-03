@@ -2353,55 +2353,27 @@
 
 .m-device-screen {
   position: relative;
-  padding: 16px;
-  min-height: 220px;
-  filter: blur(5px) saturate(0.5);
-  opacity: 0.62;
-  transition: filter 0.8s ease, opacity 0.8s ease;
+  overflow: hidden;
 }
-.m-device--phone .m-device-screen,
-.m-device--tablet .m-device-screen { min-height: 200px; }
-.m-showcase-stage.is-loaded .m-device-screen {
-  filter: blur(0) saturate(1);
+.m-device--desktop .m-device-screen { aspect-ratio: 16 / 10; }
+.m-device--tablet .m-device-screen { aspect-ratio: 3 / 4; }
+.m-device--phone .m-device-screen { aspect-ratio: 100 / 188; }
+
+/* real Premier screenshot fills the screen; only the image blurs in the
+   "before" load state, so the load-time badge stays crisp on top */
+.m-device-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: blur(5px) saturate(0.55);
+  opacity: 0.68;
+  transition: filter 0.85s ease, opacity 0.85s ease;
+}
+.m-showcase-stage.is-loaded .m-device-shot {
+  filter: none;
   opacity: 1;
-}
-
-.m-device-wire { display: flex; flex-direction: column; gap: 9px; }
-.m-device-hero {
-  height: 64px;
-  border-radius: 8px;
-  background: linear-gradient(120deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-}
-.m-showcase-stage.is-loaded .m-device-hero {
-  background: linear-gradient(120deg, rgba(74,222,128,0.32), rgba(34,211,238,0.16));
-}
-.m-device-line {
-  height: 8px; border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
-}
-.m-device-line--short { width: 60%; }
-.m-device-cta {
-  margin-top: 4px;
-  height: 22px; width: 96px; border-radius: 6px;
-  background: rgba(255, 255, 255, 0.16);
-}
-.m-showcase-stage.is-loaded .m-device-cta { background: var(--m-good); }
-
-.m-device-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 7px;
-  margin-top: 2px;
-}
-.m-device-grid--two { grid-template-columns: repeat(2, 1fr); }
-.m-device-grid i {
-  height: 40px; border-radius: 6px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid var(--m-line);
-}
-.m-showcase-stage.is-loaded .m-device-grid i {
-  border-color: rgba(74, 222, 128, 0.2);
-  background: rgba(74, 222, 128, 0.06);
 }
 
 .m-device-load {
