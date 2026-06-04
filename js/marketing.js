@@ -643,10 +643,15 @@
       });
 
       // Snap-to-beat: once scrolling settles inside a fully-pinned act, ease to
-      // the nearest scene's center so we always rest cleanly on one beat.
+      // a scene center so we always rest cleanly on one beat. Directional: a
+      // firm push ~28% past the current beat's center advances to the adjacent
+      // beat instead of recoiling backward — without this, stopping anywhere
+      // short of the scene boundary drags the user back half a scene.
       // Desktop + fine-pointer only; left alone on touch/mobile and reduced-motion.
       let snapTimer = 0;
       let snapping = false;
+      let lastDir = 0;
+      let lastY = window.scrollY;
       const canSnap = () =>
         !reduceMotion && !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
       function trySnap() {
@@ -659,7 +664,14 @@
           return;
         }
         const travel = Math.max(1, act.offsetHeight - window.innerHeight);
-        const scene = currentScene();
+        const f = clamp((window.scrollY - act.offsetTop) / travel, 0, 0.9999) * sceneCount;
+        let scene = Math.floor(f);
+        const frac = f - scene;
+        // directional bias: tiny nudges still rest on the current beat, but a
+        // real push in the direction of travel hands the user to the next one
+        if (lastDir > 0 && frac > 0.78) scene += 1;
+        else if (lastDir < 0 && frac < 0.22) scene -= 1;
+        scene = clamp(scene, 0, sceneCount - 1);
         const targetY = Math.round(act.offsetTop + ((scene + 0.5) / sceneCount) * travel);
         if (Math.abs(window.scrollY - targetY) < 4) return;
         snapping = true;
@@ -672,9 +684,14 @@
         setTimeout(() => { snapping = false; }, 850);
       }
       function queueSnap() {
+        // direction from real position deltas — lenis.velocity isn't reliably
+        // populated at event-callback time, and deltas can't lie
+        const y = window.scrollY;
+        if (Math.abs(y - lastY) > 1) lastDir = y > lastY ? 1 : -1;
+        lastY = y;
         if (snapping) return;
         if (snapTimer) clearTimeout(snapTimer);
-        snapTimer = setTimeout(trySnap, 170);
+        snapTimer = setTimeout(trySnap, 150);
       }
       lenis.on('scroll', queueSnap);
     });

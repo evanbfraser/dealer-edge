@@ -2501,15 +2501,16 @@
   .m-showcase-cta { font-size: 0.95rem; padding: 15px 28px; }
 }
 
-/* Acts */
+/* Acts — desktop scenes are 80vh each (N scenes × 80vh) so beats advance
+   with less wheel travel; mobile heights are overridden in the ≤1100px block */
 .m-act {
   position: relative;
-  height: 400vh;
+  height: 320vh;
   background: #000;
 }
 
 .m-act--old {
-  height: 600vh;
+  height: 480vh;
   background: linear-gradient(180deg, #000 0%, #0b0505 48%, #000 100%);
 }
 
@@ -2520,15 +2521,15 @@
 }
 
 .m-act--5 {
-  height: 500vh;
+  height: 400vh;
 }
 
 .m-act--6 {
-  height: 600vh;
+  height: 480vh;
 }
 
 .m-act--7 {
-  height: 700vh;
+  height: 560vh;
 }
 
 .m-act-inner {
