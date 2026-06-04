@@ -27,6 +27,10 @@
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 
+  // Safari's wheel momentum fights programmatic scrolls — snap-to-scene is
+  // disabled there (same detection as marketing.js).
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   /* ─────────────────────────────────────────────────────────────
      CUSTOM CURSOR + GLOW (shared with rest of site)
      ───────────────────────────────────────────────────────────── */
@@ -1096,15 +1100,21 @@
     const beats = act.querySelectorAll('.s-beat');
     const beatCopies = act.querySelectorAll('.s-act-beat');
     const totalBeats = beats.length;
+    // Intro scene mode (ported from marketing): scene 0 holds the act headline
+    // at display size (.is-engaged off), beats occupy scenes 1..N. Acts without
+    // the attribute keep the classic scene == beat mapping.
+    const hasIntro = act.hasAttribute('data-act-intro');
+    const sceneCount = totalBeats + (hasIntro ? 1 : 0);
     const cleanup = { scrollTrigger: null, beatObs: [] };
 
     if (!inner || !beats.length) {
       return { destroy() {} };
     }
 
+    act._sceneCount = sceneCount;
     const animTokens = new Array(totalBeats).fill(0);
     let actLocked = false;
-    act._currentBeat = 0;
+    act._currentBeat = hasIntro ? -1 : 0; // -1 = intro scene, no active beat
     const mobileActMedia = window.matchMedia('(max-width: 1100px)');
 
     function fitActiveBeatToStage() {
@@ -1185,7 +1195,8 @@
     function lockActAnimations() {
       if (actLocked) return;
       actLocked = true;
-      fireBeatAnim(act._currentBeat ?? 0);
+      // during the intro scene there's no active beat to fire (-1)
+      if ((act._currentBeat ?? 0) >= 0) fireBeatAnim(act._currentBeat ?? 0);
     }
 
     function unlockActAnimations() {
@@ -1202,6 +1213,22 @@
       if (actLocked) fireBeatAnim(idx);
     }
 
+    // map a scene index → intro or beat (intro acts shift beats up by one)
+    function applyScene(scene) {
+      if (hasIntro && scene === 0) {
+        if (act._currentBeat !== -1) {
+          act._currentBeat = -1;
+          act.classList.remove('is-engaged');
+          setActiveBeatClass(-1);
+          invalidateBeatAnims();
+        }
+        return;
+      }
+      if (hasIntro) act.classList.add('is-engaged');
+      const idx = hasIntro ? scene - 1 : scene;
+      if (act._currentBeat !== idx) setActiveBeat(idx);
+    }
+
     cleanup.scrollTrigger = ScrollTrigger.create({
       trigger: act,
       start: 'top top',
@@ -1210,19 +1237,25 @@
       onEnter: lockActAnimations,
       onEnterBack: lockActAnimations,
       onLeave: unlockActAnimations,
-      onLeaveBack: unlockActAnimations,
+      onLeaveBack: () => {
+        unlockActAnimations();
+        if (hasIntro) applyScene(0); // re-entry from above replays the intro
+      },
       onRefresh: (self) => {
         if (self.isActive) lockActAnimations();
         else unlockActAnimations();
       },
       onUpdate: (self) => {
-        const p = self.progress;
-        const idx = Math.min(totalBeats - 1, Math.floor(p * totalBeats));
-        if (act._currentBeat !== idx) setActiveBeat(idx);
+        applyScene(Math.min(sceneCount - 1, Math.floor(self.progress * sceneCount)));
       },
     });
 
-    setActiveBeatClass(0);
+    if (hasIntro) {
+      act.classList.remove('is-engaged');
+      setActiveBeatClass(-1);
+    } else {
+      setActiveBeatClass(0);
+    }
     fitActiveBeatToStage();
     scheduleFitActiveBeat();
     window.addEventListener('resize', scheduleFitActiveBeat);
@@ -2069,6 +2102,80 @@
   setupActs();
   const actLayoutMq = window.matchMedia('(min-width: 1100px)');
   actLayoutMq.addEventListener('change', setupActs);
+
+  /* ─────────────────────────────────────────────────────────────
+     SNAP-TO-SCENE  (ported from marketing.js — keep the tuned values
+     in sync between the two pages)
+     Once scrolling settles inside a fully-pinned section, ease to the
+     nearest scene center so we always rest cleanly on one beat.
+     Directional: a push >28% past the current scene's center advances
+     to the adjacent scene instead of recoiling backward. Desktop +
+     fine-pointer only; disabled on Safari and for reduced motion.
+     Attached ONCE per section — never inside setupActs(), which re-runs
+     on layout changes and would stack duplicate lenis listeners.
+     ───────────────────────────────────────────────────────────── */
+  const snapReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function attachSceneSnap(section, sceneCount) {
+    if (!section || !sceneCount) return;
+    const clampN = (v, min, max) => Math.min(max, Math.max(min, v));
+    let snapTimer = 0;
+    let snapping = false;
+    let lastDir = 0;
+    let lastY = window.scrollY;
+    const canSnap = () =>
+      !snapReduceMotion && !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
+    const isLocked = () => {
+      const rect = section.getBoundingClientRect();
+      return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
+    };
+    function trySnap() {
+      snapTimer = 0;
+      if (snapping || !canSnap() || !isLocked()) return;
+      // still coasting (wheel/trackpad momentum)? wait for a real settle —
+      // snapping mid-momentum fights the user's scroll.
+      if (Math.abs(lenis.velocity || 0) > 0.1) {
+        queueSnap();
+        return;
+      }
+      const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+      const f = clampN((window.scrollY - section.offsetTop) / travel, 0, 0.9999) * sceneCount;
+      let scene = Math.floor(f);
+      const frac = f - scene;
+      // directional bias: tiny nudges still rest on the current beat, but a
+      // real push in the direction of travel hands the user to the next one
+      if (lastDir > 0 && frac > 0.78) scene += 1;
+      else if (lastDir < 0 && frac < 0.22) scene -= 1;
+      scene = clampN(scene, 0, sceneCount - 1);
+      const targetY = Math.round(section.offsetTop + ((scene + 0.5) / sceneCount) * travel);
+      if (Math.abs(window.scrollY - targetY) < 4) return;
+      snapping = true;
+      lenis.scrollTo(targetY, {
+        duration: 0.5,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+        onComplete: () => { snapping = false; },
+      });
+      // safety: clear the guard even if onComplete is pre-empted by user input
+      setTimeout(() => { snapping = false; }, 850);
+    }
+    function queueSnap() {
+      // direction from real position deltas — lenis.velocity isn't reliably
+      // populated at event-callback time, and deltas can't lie
+      const y = window.scrollY;
+      if (Math.abs(y - lastY) > 1) lastDir = y > lastY ? 1 : -1;
+      lastY = y;
+      if (snapping) return;
+      if (snapTimer) clearTimeout(snapTimer);
+      snapTimer = setTimeout(trySnap, 150);
+    }
+    lenis.on('scroll', queueSnap);
+  }
+
+  acts.forEach((act) => attachSceneSnap(act, act._sceneCount));
+  attachSceneSnap(
+    document.querySelector('.s-hero.s-stats-section'),
+    document.querySelectorAll('.s-cohort-headline[data-stage]').length
+  );
 
   // Beat animations fire when acts enter the viewport (desktop scroll-pin or mobile IO).
 

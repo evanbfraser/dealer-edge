@@ -76,7 +76,7 @@ The 4-stat cascade that opens any cold pitch:
 
 - **"Bullshit" is intentional and on-brand** in copy (see "The bullshit, off your desk" on the sales page). Don't sanitize it without asking.
 - "We" not "DealerEdge" in most prose. The brand name does the work in headings.
-- **Product identity noun: "AI platform" / "the platform."** (Decided 2026-06-04 from Dustin Talley's feedback — pick ONE term so visitors aren't confused about whether DealerEdge is an AI tool, a marketing team, or a platform. Matches the homepage hero "The AI Growth Platform.") Don't alternate with "system," "operation," "machine," "engine," or "agency" as identity nouns. "Team" appears only as the thing DealerEdge replaces ("a whole marketing team — without the payroll"), never as what DealerEdge *is*. marketing.html is fully converted; sales.html still uses "system" in places and converts during its structural port. (This supersedes the earlier "system > platform" rule.)
+- **Product identity noun: "AI platform" / "the platform."** (Decided 2026-06-04 from Dustin Talley's feedback — pick ONE term so visitors aren't confused about whether DealerEdge is an AI tool, a marketing team, or a platform. Matches the homepage hero "The AI Growth Platform.") Don't alternate with "system," "operation," "machine," "engine," or "agency" as identity nouns. "Team" appears only as the thing DealerEdge replaces ("a whole marketing team — without the payroll"), never as what DealerEdge *is*. marketing.html and sales.html are both converted — the sales `<title>` says "The AI sales platform that never sleeps." **"AI Sales Captain"** survives in-page on sales as the persona name for the sales agent itself (pivot, Act 2 headline, Try-It demo) — it's a feature of the platform, not the product identity noun (Jason's call, 2026-06-04). (This supersedes the earlier "system > platform" rule.)
 - Stats are CONCRETE. "78%" not "most." "59h 25m" not "over a day." "\$162,900" not "around \$160K."
 - 4-beat story structure per topic (the pattern in Dustin's Business Outcomes Calendar): *Where they are today → What changes → What it means in dollars/time/deals → How they think differently after.*
 - One number per topic. Each section should have a single anchor stat the reader could repeat the next day.
@@ -86,19 +86,23 @@ The 4-stat cascade that opens any cold pitch:
 
 ## Page architecture (sales.html is the canonical pattern)
 
-A "deep-dive page" is structured as: **Pinned Hero (Killer Proof Chain) → Marine Reality → N Acts → CTA**.
+A "deep-dive page" is structured as: **Pinned Hero (Killer Proof Chain) → Marine Reality → N Acts → closing CTA**.
 
 The current `sales.html` order is:
 
-1. **Hero + Stats** (`s-hero.s-stats-section`, `id="stats"`) — **one** scroll-pinned 600vh cohort story. The same 1,000 buyers enter once, then the 100-dot visualization shows cumulative attrition: slow site → no 24-hour reply → voicemail → only 19 booked. Beat 06 flips green and recovers the cohort to **60 bookings instead of 19. Same 1,000 buyers.** Keep the "Scroll to see how" handoff. Avoid returning to the old 41X framing.
-2. **Act 1** (`s-act--without`) — Without DealerEdge, 4 beats
+1. **Hero + Stats** (`s-hero.s-stats-section`, `id="stats"`) — **one** scroll-pinned 480vh cohort story (6 stages × 80vh desktop). The same 1,000 buyers enter once, then the 100-dot visualization shows cumulative attrition: slow site → no 24-hour reply → voicemail → only 19 booked. Beat 06 flips green and recovers the cohort to **60 bookings instead of 19. Same 1,000 buyers.** Keep the "Scroll to see how" handoff. Avoid returning to the old 41X framing.
+2. **Act 1** (`s-act--without`, `data-act-intro`) — Without DealerEdge, intro + 4 beats
 3. **Marine Proof** (`s-marine-proof`) — compact post-Act-1 context card with NMMA modal. Keep this light so the John Castillo scenario remains the main path.
 4. **Pivot** (`s-pivot`) — transition
-5. **Act 2** (`s-act--with`) — With DealerEdge, 4 beats
+5. **Act 2** (`s-act--with`, `data-act-intro`) — With DealerEdge, intro + 4 beats
 6. **Act 3** (`s-try`) — Try it yourself (interactive SMS demo)
 7. **Pivot 2** (`s-pivot--alt`) — transition
-8. **Act 4** (`s-act--team`) — Sales-team-side, 6 beats including ROI calc and philosophy close
-9. **CTA** (`cta-section`) — The Offer (currently static; planned for upgrade)
+8. **Act 4** (`s-act--team`, `data-act-intro`) — Sales-team-side, intro + 6 beats including ROI calc and philosophy close
+9. **Video** (`#video-section`) → **Boat CTA** (`#boat-section`, "Get The Boat Off Your Lot" + `js-modal` demo button) → footer. (The old static Offer `cta-section` was retired; both marketing and sales now close with the boat CTA.)
+
+### Act intro scenes (`data-act-intro`)
+
+Acts carry `data-act-intro`: scene 0 shows the `s-act-scene` headline at display size (`clamp(2.7rem, 5.6vw, 5rem)`) with copy/stage/watermark hidden; when the user scrolls into beat 1 the JS adds **`.is-engaged`** and the headline shrinks to its docked label while the watermark and beat rail fade in. Scrolling back above the act removes `.is-engaged` so the intro replays. Same pattern as marketing's `data-act-intro` — keep them visually in sync.
 
 An **Act** is a scroll-pinned scene that holds the viewport while the user scrolls through **Beats**. Each Beat is one moment in the act's story.
 
@@ -130,18 +134,19 @@ An **Act** is a scroll-pinned scene that holds the viewport while the user scrol
 
 ### Critical sizing rule
 
-The act's height = N beats × 100vh.
+Desktop scenes are **80vh each** (tightened 2026-06-04 — 100vh felt like too much scroll per beat). An act with `data-act-intro` has **scenes = beats + 1** (the intro is scene 0).
 
 ```css
-.s-act { height: 400vh; }              /* 4 beats */
-.s-act--team { height: 600vh; }        /* 6 beats */
+.s-act { height: 400vh; }              /* 5 scenes (intro + 4 beats) × 80vh */
+.s-act--team { height: 560vh; }        /* 7 scenes (intro + 6 beats) × 80vh */
+.s-hero.s-stats-section { height: 480vh; }  /* 6 stages × 80vh, no intro */
 ```
 
-If you change the number of beats, change the height. If you forget, the last beat will be unreachable.
+If you change the number of beats, change the height (desktop AND the mobile override). If you forget, the last beat will be unreachable.
 
 ### Mobile breakpoint
 
-At ≤1100px wide, the stats section keeps scroll-pin at **450vh** (6 beats × 75vh). Acts **also stay scroll-pinned** — same ScrollTrigger beat progression as desktop, with a single-column layout inside the sticky pin (scene header → active beat copy → stage visual). Act heights: **300vh** (4 beats) and **450vh** (6 beats for Act 4). Hide `.s-act-watermark` on mobile; keep `.s-act-tag` only. Inactive beat rows collapse to `display: none` — only the active beat shows in the rail.
+At ≤1100px wide, the stats section keeps its scroll-pin at **600vh** (the later media-query block wins over the earlier 450vh declaration). Acts **also stay scroll-pinned** — same ScrollTrigger scene progression as desktop, with a single-column layout inside the sticky pin (scene header → active beat copy → stage visual). Mobile scenes are **115vh each**: act heights **575vh** (5 scenes) and **805vh** (7 scenes for Act 4) — same per-scene value as marketing mobile. Hide `.s-act-watermark` on mobile; keep `.s-act-tag` only. Inactive beat rows collapse to `display: none` — only the active beat shows in the rail.
 
 **Mobile content width:** `.s-act-inner` uses **16px** horizontal padding at ≤1100px and **12px** at ≤640px. Beat visuals should use `width: 100%` — avoid `transform: scale()` shrink hacks unless a component still overflows after the width bump.
 
@@ -231,11 +236,22 @@ Use `data-*` attrs as DOM hooks instead of class selectors. CSS classes are for 
 
 When adding new animations, follow this prefix convention so future readers can grep their way around.
 
+### Snap-to-scene (marketing + sales — keep the tuned values in sync)
+
+Both pages ease the scroll to the nearest scene center once scrolling settles inside a fully-pinned section (`attachSceneSnap` in sales.js; the per-act closure in marketing.js). The values were tuned with headless wheel-event tests — **don't re-derive them**:
+
+- Settle timer **150ms**; if `|lenis.velocity| > 0.1` the snap re-queues (still coasting).
+- **Directional**: a push **>28% past the current scene's center** advances to the adjacent scene (`frac > 0.78` scrolling down / `frac < 0.22` up) instead of recoiling backward.
+- Direction comes from **scroll-position deltas** (`lastY` tracking), **never `lenis.velocity`** — velocity reads 0 inside Lenis scroll callbacks, which silently breaks the directional advance (flicks recoil instead of advancing).
+- Target = `(scene + 0.5) / sceneCount` of the pin travel; 4px deadband; `lenis.scrollTo` duration 0.5 with cubic ease-out; 850ms safety reset of the `snapping` guard.
+- Gated by `canSnap()`: desktop ≥1101px + fine pointer only, disabled on **Safari** (momentum fights programmatic scrolls — colleague-reported "stick then zoom past") and for `prefers-reduced-motion`.
+- Attach **once per section** — never inside `setupActs()`/re-init paths, or duplicate `lenis.on('scroll')` listeners stack up.
+
 ---
 
 ## Pinned hero (Killer Proof Chain, `sales.html` only)
 
-The opening section of `sales.html` is a **single merged** scroll-pinned block: `section.s-hero.s-stats-section` at `600vh` (six beats × 100vh), sticky on `.s-hero-pin`. There is no separate static hero above it.
+The opening section of `sales.html` is a **single merged** scroll-pinned block: `section.s-hero.s-stats-section` at `480vh` (six beats × 80vh), sticky on `.s-hero-pin`. There is no separate static hero above it.
 
 **Layout (top → bottom inside the pin):** `[data-cohort-headlines]` headline stack → `[data-cohort-card]` with left/right counters and a persistent 100-dot cohort grid → scroll pulse → Beat 06-only story handoff.
 
@@ -399,10 +415,10 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 ### Add a new Beat to an existing Act
 
 1. **HTML**: Add a new `<div class="s-act-beat" data-beat="N">…</div>` to the left copy and a matching `<div class="s-beat s-beat--N" data-beat="N" data-anim="actX-beatN">…</div>` to the right stage.
-2. **CSS**: Adjust the act's height to `height: <N*100>vh;`.
+2. **CSS**: Adjust the act's height — desktop `height: <(N+1)*80>vh;` (intro counts as a scene), mobile override `<(N+1)*115>vh`.
 3. **JS**: Write `playActXBeatN(beatEl, stillCurrent)` following the conventions above. Register it in `BEAT_ANIMS`.
 4. **Reset on entry**: First thing the function does is reset any animation state, so re-entry replays cleanly.
-5. **Test mobile**: Verify beat progression under 1100px (75vh/beat pin, single-column layout inside sticky pin).
+5. **Test mobile**: Verify beat progression under 1100px (115vh/scene pin, single-column layout inside sticky pin).
 
 ### Add a new Act
 
@@ -425,7 +441,7 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **Don't rewrite The Offer.** "Match-spend + prove-it + tiered activation" is the locked language. Soft variants ("free trial," "money back guarantee," "no risk") undermine the actual mechanic.
 - **Don't change demo story specifics** without updating the canon table above. Mixing "Saturday at 10 AM" and "Tuesday at 10 AM" in different beats has happened — caused a Jason callout because the timing made no sense.
 - **Don't add CSS keyframe animations to beat content that ignore the IntersectionObserver gate.** Use JS-driven animations that read `stillCurrent` so they don't pre-play off-screen.
-- **Don't break the scroll-pinned act sizing** (`height: N*100vh` rule). Last beat goes unreachable.
+- **Don't break the scroll-pinned act sizing** (scenes × 80vh desktop / × 115vh mobile, intro counts as a scene). Last beat goes unreachable.
 - **Don't deploy the full source folder** to here.now — the `.git` folder is too big for Windows Git Bash to chew. Use the preview-folder pattern.
 - **Don't push to remote without committing cleanly.** Don't force-push to main.
 - **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, fonts. That's it.
@@ -464,4 +480,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the sales.html port of the marketing patterns (act intro scenes, 80vh scene pacing, directional snap-to-scene, "AI sales platform" title) — same day as the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*

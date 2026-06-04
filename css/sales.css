@@ -46,7 +46,7 @@
 /* ─── HERO + STATS (merged pinned experience) ─────────────────── */
 .s-hero.s-stats-section {
   position: relative;
-  height: 600vh;
+  height: 480vh; /* 6 stages × 80vh — desktop scenes are 80vh each, like marketing */
   min-height: 0;
   display: block;
   padding: 0;
@@ -819,7 +819,7 @@
 
 .s-stats-section {
   position: relative;
-  height: 600vh;                /* 6 beats * 100vh */
+  height: 480vh;                /* legacy decl — kept in sync with .s-hero.s-stats-section above */
   background: #000;
   overflow: visible;
   isolation: isolate;
@@ -1791,7 +1791,7 @@
 /* ─── ACT SECTIONS (pinned scroll) ─────────────────────────────── */
 .s-act {
   position: relative;
-  height: 400vh; /* 4 beats × ~1vh per beat-progression */
+  height: 400vh; /* 5 scenes (intro + 4 beats) × 80vh — desktop scenes are 80vh each */
   background: #000;
 }
 
@@ -1823,6 +1823,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   white-space: nowrap;
   pointer-events: none;
+  transition: opacity 0.45s ease;
 }
 .s-act-watermark--with {
   color: rgba(130, 255, 175, 0.95);
@@ -1922,10 +1923,41 @@
 .s-act--with .s-act-headline-accent { color: var(--good); }
 
 @media (min-width: 960px) {
-  #act1 .s-act-headline,
-  #act2 .s-act-headline {
+  /* nowrap only once docked — the big intro headline must be free to wrap */
+  #act1.is-engaged .s-act-headline,
+  #act2.is-engaged .s-act-headline {
     white-space: nowrap;
   }
+}
+
+/* ── Act intro scene (ported from marketing.css): the scene headline owns
+   the first 80vh of the pin at display size, then shrinks to its docked
+   label as beat 1 arrives. JS toggles .is-engaged on the act. ── */
+.s-act[data-act-intro] .s-act-headline {
+  transition: font-size 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+}
+.s-act[data-act-intro] .s-act-tag {
+  transition: opacity 0.45s ease;
+}
+.s-act[data-act-intro] .s-act-copy,
+.s-act[data-act-intro] .s-act-stage {
+  transition: opacity 0.5s ease;
+}
+
+/* intro: the headline owns the frame; copy + stage wait offstage */
+.s-act[data-act-intro]:not(.is-engaged) .s-act-headline {
+  font-size: clamp(2.7rem, 5.6vw, 5rem);
+  line-height: 1.04;
+}
+.s-act[data-act-intro]:not(.is-engaged) .s-act-copy,
+.s-act[data-act-intro]:not(.is-engaged) .s-act-stage {
+  opacity: 0;
+  pointer-events: none;
+}
+/* the centered watermark pill waits offstage too — it fades in only once
+   the act engages, otherwise it sits on top of the big intro headline */
+.s-act[data-act-intro]:not(.is-engaged) .s-act-watermark {
+  opacity: 0;
 }
 
 .s-act-beats::before {
@@ -3875,8 +3907,8 @@
 .s-pivot--alt { padding: 110px 24px; }
 
 .s-act--team {
-  /* 6 beats × 100vh = 600vh */
-  height: 600vh;
+  /* 7 scenes (intro + 6 beats) × 80vh */
+  height: 560vh;
   background: linear-gradient(180deg, #000 0%, #060a08 50%, #000 100%);
 }
 
@@ -5328,11 +5360,11 @@
     padding-top: max(72px, calc(24px + env(safe-area-inset-top, 0px)));
   }
   .s-act {
-    height: 460vh;
+    height: 575vh; /* 5 scenes (intro + 4 beats) × 115vh — matches marketing mobile */
     padding: 0;
   }
   .s-act--team {
-    height: 690vh;
+    height: 805vh; /* 7 scenes (intro + 6 beats) × 115vh */
   }
   .s-act-inner {
     position: sticky;
@@ -5386,6 +5418,10 @@
   .s-act-headline {
     font-size: clamp(1.6rem, 4.8vw, 2.15rem);
     line-height: 1.08;
+  }
+  .s-act[data-act-intro]:not(.is-engaged) .s-act-headline {
+    font-size: clamp(1.9rem, 8vw, 2.9rem);
+    line-height: 1.06;
   }
   .s-act-beat:not(.is-active) {
     display: none;
