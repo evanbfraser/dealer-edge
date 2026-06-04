@@ -2452,20 +2452,42 @@
   line-height: 1.55;
 }
 
+.m-showcase-cta-row {
+  margin-top: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.m-showcase-cta-lead {
+  margin: 0;
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
 .m-showcase-cta {
   display: inline-flex;
   align-items: center;
-  margin-top: 32px;
-  padding: 13px 24px;
+  gap: 10px;
+  padding: 18px 40px;
   border-radius: 999px;
   border: 1px solid var(--m-good);
-  background: var(--m-good-dim);
-  color: var(--m-good);
-  font-weight: 700;
-  font-size: 0.92rem;
-  transition: background 0.25s ease, transform 0.25s ease;
+  background: var(--m-good);
+  color: #04150b;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.08rem;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0 36px rgba(74, 222, 128, 0.28), 0 6px 24px rgba(74, 222, 128, 0.18);
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
-.m-showcase-cta:hover { background: rgba(74, 222, 128, 0.18); transform: translateY(-2px); }
+.m-showcase-cta:hover {
+  background: #6ee79a;
+  transform: translateY(-2px);
+  box-shadow: 0 0 54px rgba(74, 222, 128, 0.42), 0 8px 30px rgba(74, 222, 128, 0.26);
+}
 
 @media (max-width: 900px) {
   .m-showcase-stats { grid-template-columns: 1fr; }
@@ -2476,6 +2498,7 @@
 @media (max-width: 560px) {
   .m-showcase-stage { min-height: 280px; transform: scale(0.96); }
   .m-device--tablet { display: none; }
+  .m-showcase-cta { font-size: 0.95rem; padding: 15px 28px; }
 }
 
 /* Acts */
@@ -2586,6 +2609,12 @@
 .m-act[data-act-intro]:not(.is-engaged) .m-act-stage {
   opacity: 0;
   pointer-events: none;
+}
+/* the centered watermark pill waits offstage too — it fades in only once
+   the act engages and the headline shrinks to its docked label, otherwise
+   it sits on top of the big intro headline */
+.m-act[data-act-intro]:not(.is-engaged) .m-act-watermark {
+  opacity: 0;
 }
 
 /* engaged: headline becomes a muted label, the active line is the anchor */
@@ -7932,4 +7961,15 @@
   .m-includes-inner { padding: 0 20px; }
   .m-includes-grid { grid-template-columns: 1fr; gap: 14px; }
   .m-includes-head { margin-bottom: 32px; }
+}
+
+/* ── Boat closing CTA — "large and in charge" demo button (marketing only;
+      base .boat-cta/.btn-primary styles live in style.css) ── */
+.marketing-page .boat-cta {
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  padding: 1em 2.6em;
+  box-shadow: 0 0 40px rgba(238, 58, 57, 0.35), 0 6px 28px rgba(238, 58, 57, 0.28);
+}
+.marketing-page .boat-cta:hover {
+  box-shadow: 0 0 60px rgba(238, 58, 57, 0.5), 0 8px 34px rgba(238, 58, 57, 0.36);
 }

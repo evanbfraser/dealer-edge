@@ -6,6 +6,10 @@
   'use strict';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Safari's trackpad momentum keeps emitting scroll events long after the
+  // fingers lift, which re-triggers the settle timer and makes snap-to-beat
+  // fight the user ("stick, then zoom past"). Leave Safari un-snapped.
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   const lenis = new Lenis({
     duration: 1.1,
@@ -29,6 +33,7 @@
   initMobileNav();
   initDemoModal(lenis);
   initCursor();
+  initNavbar();
   initFade();
   initShowcase();
   initHero();
@@ -44,14 +49,36 @@
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (!finePointer || (!cursor && !glow)) return;
 
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let gx = mx;
+    let gy = my;
     document.addEventListener('mousemove', (e) => {
-      if (cursor) cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-      if (glow) {
-        glow.classList.add('visible');
-        glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-      }
+      mx = e.clientX;
+      my = e.clientY;
+      if (cursor) cursor.style.transform = `translate(${mx}px, ${my}px)`;
+      glow?.classList.add('visible');
     });
     document.addEventListener('mouseleave', () => glow?.classList.remove('visible'));
+    // glow trails the cursor with a lerp (same feel as the homepage), and the
+    // trailing translate keeps it centered — a bare translate(x, y) would
+    // drop the CSS -50%/-50% centering and park the glow 300px off-cursor.
+    if (glow) {
+      (function follow() {
+        gx += (mx - gx) * 0.1;
+        gy += (my - gy) * 0.1;
+        glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+        requestAnimationFrame(follow);
+      })();
+    }
+  }
+
+  function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+    const onScroll = () => navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 
   function initFade() {
@@ -621,10 +648,16 @@
       let snapTimer = 0;
       let snapping = false;
       const canSnap = () =>
-        !reduceMotion && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
+        !reduceMotion && !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
       function trySnap() {
         snapTimer = 0;
         if (snapping || !entered || !canSnap() || !isLocked()) return;
+        // still coasting (wheel/trackpad momentum)? wait for a real settle —
+        // snapping mid-momentum fights the user's scroll.
+        if (Math.abs(lenis.velocity || 0) > 0.1) {
+          queueSnap();
+          return;
+        }
         const travel = Math.max(1, act.offsetHeight - window.innerHeight);
         const scene = currentScene();
         const targetY = Math.round(act.offsetTop + ((scene + 0.5) / sceneCount) * travel);

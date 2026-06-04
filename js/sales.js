@@ -36,16 +36,26 @@
   if (finePointer && (cursor || glow)) {
     let tx = window.innerWidth / 2,
       ty = window.innerHeight / 2;
+    let gx = tx,
+      gy = ty;
     document.addEventListener('mousemove', (e) => {
       tx = e.clientX;
       ty = e.clientY;
       if (cursor) cursor.style.transform = `translate(${tx}px, ${ty}px)`;
-      if (glow) {
-        glow.classList.add('visible');
-        glow.style.transform = `translate(${tx}px, ${ty}px)`;
-      }
+      if (glow) glow.classList.add('visible');
     });
     document.addEventListener('mouseleave', () => glow && glow.classList.remove('visible'));
+    // glow trails the cursor with a lerp (same feel as the homepage), and the
+    // trailing translate keeps it centered — a bare translate(x, y) would
+    // drop the CSS -50%/-50% centering and park the glow 300px off-cursor.
+    if (glow) {
+      (function follow() {
+        gx += (tx - gx) * 0.1;
+        gy += (ty - gy) * 0.1;
+        glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+        requestAnimationFrame(follow);
+      })();
+    }
   }
 
   /* ─────────────────────────────────────────────────────────────
