@@ -8112,7 +8112,7 @@
   }
 
   .m-compare-old::before {
-    content: 'OLD WAY';
+    content: 'THE COMPETITION';
     display: block;
     font: 700 0.6rem/1 var(--m-mono);
     letter-spacing: 0.14em;
