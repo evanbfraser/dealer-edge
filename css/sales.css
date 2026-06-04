@@ -1867,14 +1867,36 @@
   min-width: 0;
 }
 
-.s-act-beats {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 0;
+/* ── Line-mode copy (shared structure with marketing's .m-act-line):
+   one big morphing line per beat, stacked in the same grid cell ── */
+.s-act-lines {
   position: relative;
-  width: 100%;
-  min-width: 100%;
+  display: grid;
+}
+.s-act-line {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.85rem);
+  line-height: 1.18;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #fff;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(22px);
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
+}
+.s-act-line.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.s-act-line b {
+  color: var(--good);
+  font-weight: 800;
+}
+.s-act--without .s-act-line b {
+  color: var(--accent);
 }
 
 .s-act-tag {
@@ -1960,121 +1982,14 @@
   opacity: 0;
 }
 
-.s-act-beats::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 4px;
-  bottom: 4px;
-  width: 1px;
-  background: linear-gradient(180deg, var(--line) 0%, var(--accent) 50%, var(--line) 100%);
-  opacity: 0.45;
+/* engaged: the headline becomes a muted label — the active line is the anchor
+   (same dock treatment as marketing) */
+.s-act[data-act-intro].is-engaged .s-act-headline {
+  font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+  opacity: 0.5;
 }
-
-.s-act--with .s-act-beats::before {
-  background: linear-gradient(180deg, var(--line) 0%, var(--good) 50%, var(--line) 100%);
-}
-
-.s-act-beat {
-  position: relative;
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
-  padding: 4px 0;
-  width: 100%;
-  transition:
-    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    gap 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.s-act-beat.is-active {
-  gap: 16px;
-  padding: 10px 0 12px;
-}
-
-.s-act-beat-num {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.28);
-  background: #000;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-  transition:
-    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.45s ease,
-    border-color 0.45s ease,
-    box-shadow 0.45s ease;
-}
-
-.s-act-beat.is-active .s-act-beat-num {
-  width: 32px;
-  height: 32px;
-  font-size: 0.72rem;
-  color: #fff;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(238, 58, 57, 0.12);
-}
-.s-act--with .s-act-beat.is-active .s-act-beat-num {
-  border-color: var(--good);
-  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.12);
-}
-
-.s-act-beat p {
-  margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.26);
-  transition:
-    font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    line-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.45s ease;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-}
-
-.s-act-beat.is-active p {
-  font-size: clamp(1.22rem, 1.55vw, 1.52rem);
-  line-height: 1.48;
-  font-weight: 500;
-  color: var(--text);
-  display: block;
-  overflow: visible;
-  -webkit-line-clamp: unset;
-}
-
-/* Act 4 — 6 beats: inactive rail is numbers only */
-.s-act--team .s-act-beat:not(.is-active) p {
-  visibility: hidden;
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-
-.s-act--team .s-act-beat:not(.is-active) {
-  padding: 2px 0;
-  gap: 0;
-}
-
-.s-act--team .s-act-beats {
-  gap: 6px;
+.s-act[data-act-intro].is-engaged .s-act-tag {
+  opacity: 0.7;
 }
 
 /* ─── ACT STAGE (right column) ─────────────────────────────────── */
@@ -5423,24 +5338,13 @@
     font-size: clamp(1.9rem, 8vw, 2.9rem);
     line-height: 1.06;
   }
-  .s-act-beat:not(.is-active) {
-    display: none;
+  .s-act-line {
+    font-size: clamp(1.25rem, 5.2vw, 1.7rem);
+    line-height: 1.22;
   }
-  .s-act-beat.is-active {
-    gap: 12px;
-    padding: 7px 0 3px;
-  }
-  .s-act-beat.is-active p {
-    font-size: clamp(0.98rem, 3.55vw, 1.15rem);
-    line-height: 1.38;
-  }
-  .s-act-beat.is-active .s-act-beat-num {
-    width: 28px;
-    height: 28px;
-    font-size: 0.68rem;
-  }
-  .s-act-beats {
-    gap: 0;
+  .s-act[data-act-intro].is-engaged .s-act-headline {
+    font-size: clamp(0.92rem, 3.6vw, 1.08rem);
+    opacity: 0.5;
   }
   .s-act-stage-sticky {
     position: relative;
@@ -5881,10 +5785,6 @@
   .s-act--team .s-act-headline {
     font-size: clamp(1.48rem, 6.1vw, 1.92rem);
     line-height: 1.07;
-  }
-  .s-act--team .s-act-beat.is-active p {
-    font-size: clamp(0.94rem, 3.35vw, 1.07rem);
-    line-height: 1.32;
   }
   .s-act--team .s-routing {
     gap: 6px;

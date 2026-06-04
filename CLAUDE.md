@@ -107,18 +107,18 @@ Acts carry `data-act-intro`: scene 0 shows the `s-act-scene` headline at display
 An **Act** is a scroll-pinned scene that holds the viewport while the user scrolls through **Beats**. Each Beat is one moment in the act's story.
 
 ```
-<section class="s-act s-act--with" id="actN">
-  <div class="s-act-watermark s-act-watermark--with">ACT NAME · LABEL</div>
+<section class="s-act s-act--with" id="actN" data-act-intro>
   <div class="s-act-inner">
-    <div class="s-act-copy">             <!-- LEFT: progressive copy -->
-      <div class="s-act-copy-sticky">
-        <span class="s-act-tag s-act-tag--good">Tag line</span>
-        <h2 class="s-act-headline">…</h2>
-        <div class="s-act-beats">
-          <div class="s-act-beat" data-beat="1">…</div>
-          <div class="s-act-beat" data-beat="2">…</div>
-          …
-        </div>
+    <div class="s-act-watermark s-act-watermark--with">ACT NAME · LABEL</div>
+    <header class="s-act-scene">         <!-- intro scene 0: big; docks + mutes on .is-engaged -->
+      <span class="s-act-tag s-act-tag--good">Tag line</span>
+      <h2 class="s-act-headline">…</h2>
+    </header>
+    <div class="s-act-copy">             <!-- LEFT: one big morphing line per beat -->
+      <div class="s-act-lines">
+        <p class="s-act-line" data-beat="1">… <b>accent</b> …</p>
+        <p class="s-act-line" data-beat="2">…</p>
+        …
       </div>
     </div>
     <div class="s-act-stage">            <!-- RIGHT: media that morphs -->
@@ -131,6 +131,8 @@ An **Act** is a scroll-pinned scene that holds the viewport while the user scrol
   </div>
 </section>
 ```
+
+This element tree is **structurally identical to marketing's `.m-act`** (watermark + header + lines + stage) — intentional, so the act becomes one shared component when the site moves into the CMS (2026-06-04). Line copy: one `<p class="s-act-line">` per beat, ≤ ~25 words, exactly one `<b>` accent phrase — colored red on `.s-act--without`, green elsewhere. The old numbered beat rail (`.s-act-beats`/`.s-act-beat`) is retired; the JS still falls back to it if a page reintroduces one.
 
 ### Critical sizing rule
 
@@ -414,7 +416,7 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ### Add a new Beat to an existing Act
 
-1. **HTML**: Add a new `<div class="s-act-beat" data-beat="N">…</div>` to the left copy and a matching `<div class="s-beat s-beat--N" data-beat="N" data-anim="actX-beatN">…</div>` to the right stage.
+1. **HTML**: Add a new `<p class="s-act-line" data-beat="N">… <b>accent</b> …</p>` to `.s-act-lines` and a matching `<div class="s-beat s-beat--N" data-beat="N" data-anim="actX-beatN">…</div>` to the right stage.
 2. **CSS**: Adjust the act's height — desktop `height: <(N+1)*80>vh;` (intro counts as a scene), mobile override `<(N+1)*115>vh`.
 3. **JS**: Write `playActXBeatN(beatEl, stillCurrent)` following the conventions above. Register it in `BEAT_ANIMS`.
 4. **Reset on entry**: First thing the function does is reset any animation state, so re-entry replays cleanly.
@@ -480,4 +482,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the sales.html port of the marketing patterns (act intro scenes, 80vh scene pacing, directional snap-to-scene, "AI sales platform" title) — same day as the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the sales.html port of the marketing patterns (act intro scenes, 80vh scene pacing, directional snap-to-scene, "AI sales platform" title) and the line-mode copy parity round (`.s-act-line` replaces the numbered beat rail; docked headline mutes — act tree now identical to marketing for CMS componentization) — same day as the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*

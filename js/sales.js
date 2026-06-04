@@ -1098,7 +1098,10 @@
   function createActController(act) {
     const inner = act.querySelector('.s-act-inner');
     const beats = act.querySelectorAll('.s-beat');
-    const beatCopies = act.querySelectorAll('.s-act-beat');
+    // line-mode copy (one .s-act-line per beat, like marketing) with a
+    // fallback to the classic numbered beat rail if an act still uses it
+    const lineCopies = act.querySelectorAll('.s-act-line');
+    const beatCopies = lineCopies.length ? lineCopies : act.querySelectorAll('.s-act-beat');
     const totalBeats = beats.length;
     // Intro scene mode (ported from marketing): scene 0 holds the act headline
     // at display size (.is-engaged off), beats occupy scenes 1..N. Acts without
