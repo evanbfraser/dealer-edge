@@ -88,7 +88,7 @@ The 4-stat cascade that opens any cold pitch:
 
 The deep-dive pages (marketing + sales) share one component system so CMS integration gets one act component, not two:
 
-- **`css/de-act.css`** — the act chassis under `.de-` classes (tokens are self-contained `--de-*`). Anatomy, scene math, and phase mechanics are documented at the top of that file. Load order in both pages: `style.css → de-act.css → <page>.css`.
+- **`css/de-act.css`** — the act chassis under `.de-` classes (tokens are self-contained `--de-*`). Anatomy, scene math, and phase mechanics are documented at the top of that file. Load order in both pages: `style.css → de-act.css → <page>.css`. Also holds the shared static sections (added 2026-06-04 later the same day): **`.de-section-label`**, **`.de-includes`** ("Everything included" 3-column checklist) and **`.de-compare`** (row-per-offering before/after table; red/green cells; mobile stacked-card labels come from string custom properties `--de-compare-label-old/-new` set inline on the section — defaults match marketing's "THE COMPETITION"/"DEALEREDGE", sales sets "WITHOUT DEALEREDGE"/"WITH DEALEREDGE"). Both are static `data-fade` sections — `DE.initFade` adds `.is-visible`, which drives the per-item `--i` stagger. Both pages have `#includes` + `#compare` instances; sales' sit between the hero and Act 1 ("From 19 bookings to 60. Here's everything that does it." → "Same leads. Same phones." 7-row table).
 - **`js/de-core.js`** — `window.DE = { reduceMotion, isSafari, createLenis, initCursorGlow, initNavScroll, initFade, attachSceneSnap }`. Loaded after the CDN libs, before the page script. The snap tuning lives ONLY here now.
 - **`css/style.css`** — all-pages base (nav incl. `.is-scrolled` gradient blur, buttons incl. the enlarged `.boat-cta`, footer, modal, cursor, `[data-fade]`).
 
@@ -107,14 +107,15 @@ A "deep-dive page" is structured as: **Pinned Hero (Killer Proof Chain) → Mari
 The current `sales.html` order is:
 
 1. **Hero + Stats** (`s-hero.s-stats-section`, `id="stats"`) — **one** scroll-pinned 480vh cohort story (6 stages × 80vh desktop). The same 1,000 buyers enter once, then the 100-dot visualization shows cumulative attrition: slow site → no 24-hour reply → voicemail → only 19 booked. Beat 06 flips green and recovers the cohort to **60 bookings instead of 19. Same 1,000 buyers.** Keep the "Scroll to see how" handoff. Avoid returning to the old 41X framing.
-2. **Act 1** (`s-act--without`, `data-act-intro`) — Without DealerEdge, intro + 4 beats
-3. **Marine Proof** (`s-marine-proof`) — compact post-Act-1 context card with NMMA modal. Keep this light so the John Castillo scenario remains the main path.
-4. **Pivot** (`s-pivot`) — transition
-5. **Act 2** (`s-act--with`, `data-act-intro`) — With DealerEdge, intro + 4 beats
-6. **Act 3** (`s-try`) — Try it yourself (interactive SMS demo)
-7. **Pivot 2** (`s-pivot--alt`) — transition
-8. **Act 4** (`s-act--team`, `data-act-intro`) — Sales-team-side, intro + 6 beats including ROI calc and philosophy close
-9. **Video** (`#video-section`) → **Boat CTA** (`#boat-section`, "Get The Boat Off Your Lot" + `js-modal` demo button) → footer. (The old static Offer `cta-section` was retired; both marketing and sales now close with the boat CTA.)
+2. **Everything included** (`.de-includes`, `id="includes"`) + **Without/With table** (`.de-compare`, `id="compare"`) — two static shared-chassis sections cashing in the hero's 19→60 ("here's everything that does it") before the acts dramatize the same rows. Added 2026-06-04.
+3. **Act 1** (`s-act--without`, `data-act-intro`) — Without DealerEdge, intro + 4 beats
+4. **Marine Proof** (`s-marine-proof`) — compact post-Act-1 context card with NMMA modal. Keep this light so the John Castillo scenario remains the main path.
+5. **Pivot** (`s-pivot`) — transition
+6. **Act 2** (`s-act--with`, `data-act-intro`) — With DealerEdge, intro + 4 beats
+7. **Act 3** (`s-try`) — Try it yourself (interactive SMS demo)
+8. **Pivot 2** (`s-pivot--alt`) — transition
+9. **Act 4** (`s-act--team`, `data-act-intro`) — Sales-team-side, intro + 6 beats including ROI calc and philosophy close
+10. **Video** (`#video-section`) → **Boat CTA** (`#boat-section`, "Get The Boat Off Your Lot" + `js-modal` demo button) → footer. (The old static Offer `cta-section` was retired; both marketing and sales now close with the boat CTA.)
 
 ### Act intro scenes (`data-act-intro`)
 
@@ -504,4 +505,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the shared layer (css/de-act.css + js/de-core.js — one `.de-` act chassis and one scroll-engine for marketing + sales, boat CTA/nav/fade promoted to style.css). Earlier the same day: the sales.html port of the marketing patterns (intro scenes, 80vh pacing, snap, line-mode copy, "AI sales platform" title) and the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the shared static sections (`.de-includes` + `.de-compare` + `.de-section-label` promoted into de-act.css; sales gained both under its hero — "From 19 bookings to 60" checklist + 7-row Without/With table). Earlier the same day: the shared layer (css/de-act.css + js/de-core.js — one `.de-` act chassis and one scroll-engine for marketing + sales, boat CTA/nav/fade promoted to style.css). Earlier the same day: the sales.html port of the marketing patterns (intro scenes, 80vh pacing, snap, line-mode copy, "AI sales platform" title) and the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
