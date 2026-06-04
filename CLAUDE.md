@@ -76,7 +76,7 @@ The 4-stat cascade that opens any cold pitch:
 
 - **"Bullshit" is intentional and on-brand** in copy (see "The bullshit, off your desk" on the sales page). Don't sanitize it without asking.
 - "We" not "DealerEdge" in most prose. The brand name does the work in headings.
-- "System" > "platform" in most contexts. Platform appears in The Edge Platform name and that's mostly where it stops.
+- **Product identity noun: "AI platform" / "the platform."** (Decided 2026-06-04 from Dustin Talley's feedback — pick ONE term so visitors aren't confused about whether DealerEdge is an AI tool, a marketing team, or a platform. Matches the homepage hero "The AI Growth Platform.") Don't alternate with "system," "operation," "machine," "engine," or "agency" as identity nouns. "Team" appears only as the thing DealerEdge replaces ("a whole marketing team — without the payroll"), never as what DealerEdge *is*. marketing.html is fully converted; sales.html still uses "system" in places and converts during its structural port. (This supersedes the earlier "system > platform" rule.)
 - Stats are CONCRETE. "78%" not "most." "59h 25m" not "over a day." "\$162,900" not "around \$160K."
 - 4-beat story structure per topic (the pattern in Dustin's Business Outcomes Calendar): *Where they are today → What changes → What it means in dollars/time/deals → How they think differently after.*
 - One number per topic. Each section should have a single anchor stat the reader could repeat the next day.
@@ -464,4 +464,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
