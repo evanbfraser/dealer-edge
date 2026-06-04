@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory | DealerEdge — Every unit in. Every buyer reached.</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/de-act.css">
+  <link rel="stylesheet" href="css/inventory.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="inventory-page">
+
+  <!-- Cursor -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Scroll</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="sales.html" style="position:relative;">Sales <sup style="font-size:0.55em;color:#ee3a39;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="marketing.html" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="inventory.html" class="nav-link--active" style="position:relative;">Inventory <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
+      <a href="features.html">Features</a>
+      <a href="sales.html">Sales</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="inventory.html" class="nav-link--active">Inventory</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="case-studies.html">Results</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
+    </div>
+  </nav>
+
+  <main>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       HERO — the before/after IS the promise. The Moomba raw lot
+       shot auto-wipes into the studio shot while the copy frames
+       the whole page: in, polished, found, everywhere.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="i-hero" id="hero">
+    <div class="i-hero-bg" aria-hidden="true">
+      <div class="i-hero-grid"></div>
+      <div class="i-hero-glow"></div>
+    </div>
+    <div class="i-hero-inner">
+      <div class="i-hero-copy" data-fade>
+        <span class="de-section-label">DealerEdge Inventory</span>
+        <h1>Your boats, the way buyers should see them &mdash; <span class="i-accent">everywhere they look.</span></h1>
+        <p>The platform pulls every unit from your DMS, rebuilds the listing &mdash; copy, photos, schema &mdash; and puts your inventory everywhere buyers look: Google, AI search, and every major marketplace.</p>
+        <div class="i-hero-ctas">
+          <button type="button" class="btn-primary js-modal">See it on your inventory</button>
+          <a href="#includes" class="i-hero-more">See how it works ↓</a>
+        </div>
+      </div>
+      <div class="i-hero-visual" data-fade data-delay="0.15">
+        <div class="i-wipe" data-hero-wipe>
+          <img class="i-wipe-after" src="assets/inventory/moomba-studio.png" alt="The same Moomba Mojo after DealerEdge image enhancement — studio quality, boat unchanged">
+          <div class="i-wipe-before" aria-hidden="true"><img src="assets/inventory/moomba-raw.jpg" alt=""></div>
+          <span class="i-wipe-tag i-wipe-tag--before">WHAT YOUR DMS SENT</span>
+          <span class="i-wipe-tag i-wipe-tag--after">WHAT BUYERS SEE</span>
+        </div>
+        <p class="i-hero-visual-note">Real dealer photo &middot; real output &middot; <b>the boat is untouched</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       EVERYTHING INCLUDED — shared .de-includes chassis (de-act.css)
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-includes" id="includes" data-fade>
+    <div class="de-includes-inner">
+      <header class="de-includes-head">
+        <span class="de-section-label">Everything included</span>
+        <h2>Every boat you own, working this hard. <span>Here's everything your inventory gets.</span></h2>
+        <p>From DMS export to deal magnet &mdash; ingested, rebuilt, found, and syndicated by one platform.</p>
+      </header>
+      <div class="de-includes-grid">
+        <div class="de-includes-col">
+          <div class="de-includes-pillar">Every unit, in</div>
+          <ul>
+            <li style="--i:0">10+ DMS integrations &mdash; Lightspeed, WinBoats, more</li>
+            <li style="--i:1">65+ fields normalized per boat</li>
+            <li style="--i:2">Automatic sync &mdash; only changes processed</li>
+            <li style="--i:3">Manual upload and file-drop supported</li>
+            <li style="--i:4">Full unit management &mdash; bulk price, status, location</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar">Every listing, ready to sell</div>
+          <ul>
+            <li style="--i:0">AI-written listing copy that ranks</li>
+            <li style="--i:1">Proprietary image enhancement &mdash; the boat stays the boat</li>
+            <li style="--i:2">AI picks the strongest hero shot</li>
+            <li style="--i:3">Complete specs, options, colors, financing</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar">Every buyer, reached</div>
+          <ul>
+            <li style="--i:0">Listing + category pages built for Google and AI search</li>
+            <li style="--i:1">Schema markup on every unit</li>
+            <li style="--i:2">Syndication to Boat Trader, YachtWorld and beyond</li>
+            <li style="--i:3">A pricing engine that respects each brand's territory</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       WITHOUT vs WITH — shared .de-compare chassis (de-act.css)
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-compare" id="compare" data-fade style="--de-compare-label-old: 'WITHOUT DEALEREDGE'; --de-compare-label-new: 'WITH DEALEREDGE';">
+    <div class="de-compare-inner">
+      <header class="de-compare-head">
+        <span class="de-section-label">Before &amp; after</span>
+        <h2>Same boats. Same lot. <span>A completely different shop window.</span></h2>
+        <p>Seven places a unit dies in the dark today &mdash; and what happens instead when the platform runs your inventory.</p>
+      </header>
+
+      <div class="de-compare-grid" role="table" aria-label="Without DealerEdge versus with DealerEdge">
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-service" role="columnheader">What you get</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-old" role="columnheader">Without DealerEdge</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-new" role="columnheader">With DealerEdge</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:0"><b>Getting units online</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:1">Re-keyed by hand from the DMS &mdash; or stuck in a vendor queue for days.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:2">Synced from 10+ DMSs automatically. New unit in, listing live &mdash; same day.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:3"><b>Listing copy</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:4">"Great condition. Call for details."</div>
+        <div class="de-compare-cell de-compare-new" style="--i:5">AI-written copy on every unit &mdash; the specs, the story, the context a buyer needs to act.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:6"><b>Photos</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:7">A phone shot on the lot &mdash; trailer, shed and parking lot included.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:8">Studio-grade enhancement. Background fixed, lighting fixed, the boat untouched.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:9"><b>Being found</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:10">One inventory page, invisible past page 3 of Google.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:11">Listing + category pages built to rank &mdash; Google and AI search both.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:12"><b>Marketplaces</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:13">Re-posting every unit by hand &mdash; or not at all.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:14">Syndicated to Boat Trader, YachtWorld and more. Update once, it updates everywhere.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:15"><b>Pricing</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:16">A spreadsheet and a gut feeling.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:17">A pricing engine that knows MSRP, your margin, and each brand's territory rules.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:18"><b>Unit management</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:19">Sold boats still listed. New arrivals missing.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:20">One dashboard: every unit, every channel, every status &mdash; live.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 1 — FROM THE DMS TO THE SHOWROOM
+       Scroll-pinned, red→green couplets. The buried DMS record
+       becomes a living listing: ingest → photos fixed by the
+       pipeline → before/after → the sales spine.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-act de-act--7 de-act--good" id="living-listing" data-act data-act-intro>
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--bad">THE BURIED UNIT</div>
+      <div class="de-act-watermark de-act-watermark--good">THE LIVING LISTING</div>
+
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">Every unit, in</span>
+        <h2 class="de-act-headline">Your DMS already knows the boat. <span class="de-act-headline-faded">Your buyers never see it.</span></h2>
+      </header>
+
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">Your DMS holds <b>65 fields of truth</b> on every boat. The listing your buyer sees got three of them.</p>
+          <p class="de-act-line" data-beat="2">DealerEdge plugs into <b>10+ dealer management systems</b> &mdash; Lightspeed, WinBoats and more. Every unit, every field, synced automatically.</p>
+          <p class="de-act-line" data-beat="3">Then there's the photo. A glare-and-gravel phone shot that's <b>costing you the click</b>.</p>
+          <p class="de-act-line" data-beat="4">Our proprietary image pipeline rebuilds the shot <b>without touching the boat</b>. No fakes. No AI hallucinations.</p>
+          <p class="de-act-line" data-beat="5">Same boat, new first impression. A stronger lead photo lifts click-through by <b>40% or more</b>.</p>
+          <p class="de-act-line" data-beat="6">Then every listing gets the <b>sales spine</b>: real copy, schema, financing, FAQ &mdash; the context a buyer needs to act.</p>
+        </div>
+      </div>
+
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
+
+          <!-- Beat 1 · bad — 65 fields in, 3 fields out -->
+          <div class="de-beat is-active" data-beat="1" data-anim="inv-buried" data-phase="bad">
+            <div class="i-buried" data-buried>
+              <div class="i-window i-buried-dms">
+                <div class="i-window-bar"><span></span><span></span><span></span><em>Your DMS &middot; unit record</em></div>
+                <div class="i-buried-rows">
+                  <div class="i-buried-row" data-buried-row><span>year</span><b>2022</b></div>
+                  <div class="i-buried-row" data-buried-row><span>make</span><b>Malibu</b></div>
+                  <div class="i-buried-row" data-buried-row><span>model</span><b>Wakesetter 23 LSV</b></div>
+                  <div class="i-buried-row" data-buried-row><span>price</span><b>$162,900</b></div>
+                  <div class="i-buried-row" data-buried-row><span>length</span><b>23'5"</b></div>
+                  <div class="i-buried-row" data-buried-row><span>engine</span><b>Monsoon 410</b></div>
+                  <div class="i-buried-row" data-buried-row><span>ballast</span><b>G6 system</b></div>
+                  <div class="i-buried-row" data-buried-row><span>seating</span><b>15</b></div>
+                  <div class="i-buried-row i-buried-row--more" data-buried-row><span>+ 57 more fields</span><b data-buried-count>&hellip;</b></div>
+                </div>
+              </div>
+              <div class="i-buried-gate" data-buried-gate aria-hidden="true"><span data-buried-gate-label>3 of 65 made it online</span></div>
+              <div class="i-buried-listing" data-buried-listing>
+                <img src="assets/2022-malibu-wakesetter.png" alt="" loading="lazy">
+                <span class="i-mono">2022 Malibu Wakesetter</span>
+                <h3>Great condition. Call for details.</h3>
+                <div class="i-buried-missing">
+                  <span data-buried-miss>no specs</span>
+                  <span data-buried-miss>no story</span>
+                  <span data-buried-miss>no financing</span>
+                  <span data-buried-miss>one photo</span>
+                </div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>The DMS knows everything. The buyer sees nothing.</span></div>
+          </div>
+
+          <!-- Beat 2 · good — ingestion from 10+ DMSs -->
+          <div class="de-beat" data-beat="2" data-anim="inv-ingest" data-phase="good">
+            <div class="i-ingest" data-ingest>
+              <div class="i-ingest-sources">
+                <span class="i-ingest-source" data-ingest-source>Lightspeed</span>
+                <span class="i-ingest-source" data-ingest-source>WinBoats</span>
+                <span class="i-ingest-source i-ingest-source--more" data-ingest-source>+ 8 more DMS feeds</span>
+              </div>
+              <div class="i-ingest-stream" data-ingest-stream aria-hidden="true">
+                <span data-ingest-token>year</span><span data-ingest-token>make</span><span data-ingest-token>model</span><span data-ingest-token>price</span><span data-ingest-token>engine</span><span data-ingest-token>hours</span><span data-ingest-token>options</span><span data-ingest-token>colors</span><span data-ingest-token>HIN</span><span data-ingest-token>location</span>
+              </div>
+              <div class="i-window i-ingest-record" data-ingest-record>
+                <div class="i-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; normalized unit</em></div>
+                <div class="i-ingest-record-body">
+                  <img src="assets/2022-malibu-wakesetter.png" alt="" loading="lazy">
+                  <div class="i-ingest-record-info">
+                    <span class="i-mono">2022 Malibu Wakesetter 23 LSV</span>
+                    <b>$162,900</b>
+                    <div class="i-ingest-specs">
+                      <span data-ingest-spec>23'5" length</span>
+                      <span data-ingest-spec>Monsoon 410</span>
+                      <span data-ingest-spec>G6 ballast</span>
+                      <span data-ingest-spec>Seats 15</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="i-ingest-badge" data-ingest-badge>65+ fields normalized &middot; synced automatically</div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Every DMS. Every field. No re-keying.</span></div>
+          </div>
+
+          <!-- Beat 3 · bad — the photo problem (real dealer shots) -->
+          <div class="de-beat" data-beat="3" data-anim="inv-rawshot" data-phase="bad">
+            <div class="i-rawshot" data-rawshot>
+              <figure class="i-rawshot-main" data-rawshot-photo>
+                <img src="assets/inventory/moomba-raw.jpg" alt="Raw dealer lot photo of a Moomba Mojo on a trailer" loading="lazy">
+                <span class="i-rawshot-chip" data-rawshot-chip style="--cx: 8%; --cy: 70%;">trailer in frame</span>
+                <span class="i-rawshot-chip" data-rawshot-chip style="--cx: 55%; --cy: 12%;">gravel lot + power lines</span>
+                <span class="i-rawshot-chip" data-rawshot-chip style="--cx: 50%; --cy: 86%;">320px phone shot</span>
+              </figure>
+              <figure class="i-rawshot-side" data-rawshot-photo>
+                <img src="assets/inventory/supra-raw-2.jpg" alt="Raw dealer lot photo of a Supra SE550 shot into the sun" loading="lazy">
+                <span class="i-rawshot-chip" data-rawshot-chip style="--cx: 12%; --cy: 80%;">shot into the sun</span>
+              </figure>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>This is the first thing a buyer sees.</span></div>
+          </div>
+
+          <!-- Beat 4 · good — the pipeline: inputs feed in, studio shot comes out -->
+          <div class="de-beat" data-beat="4" data-anim="inv-pipeline" data-phase="good">
+            <div class="i-pipe" data-pipe>
+              <div class="i-pipe-in">
+                <figure class="i-pipe-tile" data-pipe-tile>
+                  <img src="assets/inventory/moomba-raw.jpg" alt="" loading="lazy">
+                  <figcaption>lot shot 01</figcaption>
+                </figure>
+                <figure class="i-pipe-tile" data-pipe-tile>
+                  <img src="assets/inventory/moomba-raw-3.jpg" alt="" loading="lazy">
+                  <figcaption>lot shot 02</figcaption>
+                </figure>
+                <figure class="i-pipe-tile i-pipe-tile--mask" data-pipe-tile>
+                  <span class="i-pipe-mask" aria-hidden="true"></span>
+                  <figcaption>boat mask &mdash; locked</figcaption>
+                </figure>
+              </div>
+              <div class="i-pipe-core" data-pipe-core>
+                <div class="i-pipe-graph" aria-hidden="true"></div>
+                <span class="i-pipe-core-label">Proprietary image pipeline</span>
+                <div class="i-pipe-core-steps">
+                  <span data-pipe-step>mask the boat</span>
+                  <span data-pipe-step>rebuild the scene</span>
+                  <span data-pipe-step>verify &mdash; zero changes</span>
+                </div>
+              </div>
+              <div class="i-pipe-out" data-pipe-out>
+                <img src="assets/inventory/moomba-studio-dark.png" alt="The same Moomba Mojo, studio quality, boat unchanged" loading="lazy">
+                <span class="i-pipe-badge" data-pipe-badge>&#10003; boat untouched</span>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>The boat stays the boat. Everything else gets fixed.</span></div>
+          </div>
+
+          <!-- Beat 5 · good — before/after scrub slider -->
+          <div class="de-beat" data-beat="5" data-anim="inv-ba" data-phase="good">
+            <div class="i-ba" data-ba>
+              <div class="i-ba-frame" data-ba-frame>
+                <img class="i-ba-after" src="assets/inventory/supra-studio.png" alt="Supra SE550 after enhancement">
+                <div class="i-ba-before" aria-hidden="true"><img src="assets/inventory/supra-raw.jpg" alt=""></div>
+                <div class="i-ba-handle" data-ba-handle aria-hidden="true"><span></span></div>
+                <span class="i-ba-tag i-ba-tag--before">BEFORE</span>
+                <span class="i-ba-tag i-ba-tag--after">AFTER</span>
+              </div>
+              <p class="i-ba-hint" data-ba-hint>Drag to compare &mdash; same boat, same registration, same trailer hooks.</p>
+              <div class="i-ba-thumbs">
+                <figure data-ba-thumb><img src="assets/inventory/moomba-studio.png" alt="" loading="lazy"><figcaption>every unit</figcaption></figure>
+                <figure data-ba-thumb><img src="assets/inventory/seapro-studio.png" alt="" loading="lazy"><figcaption>every brand</figcaption></figure>
+                <figure data-ba-thumb><img src="assets/inventory/supra-studio-dark.png" alt="" loading="lazy"><figcaption>every style</figcaption></figure>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>A stronger lead photo lifts click-through 40%+.</span></div>
+          </div>
+
+          <!-- Beat 6 · good — the sales spine -->
+          <div class="de-beat" data-beat="6" data-anim="inv-spine" data-phase="good">
+            <div class="i-spine" data-spine>
+              <div class="i-spine-card" data-spine-card>
+                <div class="i-spine-top">
+                  <span class="i-mono">2022 Malibu Wakesetter 23 LSV</span>
+                  <b>$162,900</b>
+                </div>
+                <div class="i-spine-body">
+                  <img src="assets/2022-malibu-wakesetter.png" alt="" loading="lazy">
+                  <div class="i-spine-content">
+                    <h3 data-spine-headline>Great condition. Call for details.</h3>
+                    <p class="i-spine-copy" data-spine-add="copy">Surf-ready performance, premium seating, and lake-day storage &mdash; built for families, no custom-order wait.</p>
+                    <div class="i-spine-fin" data-spine-add="financing"><b>$1,847<i>/mo</i></b><span>est. financing</span></div>
+                    <div class="i-spine-faq" data-spine-add="faq"><span>Buyer FAQ</span><em>Wake size? Warranty? Trade value?</em></div>
+                  </div>
+                </div>
+                <div class="i-spine-tags">
+                  <span data-spine-tag>real copy</span><span data-spine-tag>schema</span><span data-spine-tag>financing</span><span data-spine-tag>FAQ</span><span data-spine-tag>related boats</span>
+                </div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Unique descriptions: 4&ndash;10x more search impressions.</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 2 — FOUND EVERYWHERE. MANAGED IN ONE PLACE.
+       Scroll-pinned couplets: invisible → category pages rank →
+       marketplace grind → syndication → unit management → pricing.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-act de-act--7 de-act--good" id="found-everywhere" data-act data-act-intro>
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--bad">THE INVISIBLE LOT</div>
+      <div class="de-act-watermark de-act-watermark--good">EVERYWHERE BUYERS LOOK</div>
+
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">Every buyer, reached</span>
+        <h2 class="de-act-headline">A perfect listing nobody finds <span class="de-act-headline-faded">is still a lost deal.</span></h2>
+      </header>
+
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">A buyer searches <b>"pontoon dealer nashville."</b> Marketplaces and competitors fill page one. Your store is nowhere.</p>
+          <p class="de-act-line" data-beat="2">DealerEdge builds category and location pages that <b>rank &mdash; on Google and in AI answers</b>.</p>
+          <p class="de-act-line" data-beat="3">Meanwhile the marketplaces run on memory: stale listings, sold boats still live, <b>re-posted by hand</b>.</p>
+          <p class="de-act-line" data-beat="4">Syndication pushes every unit to <b>Boat Trader, YachtWorld and beyond</b> &mdash; automatically. Update once, it updates everywhere.</p>
+          <p class="de-act-line" data-beat="5">And managing it all stops being a spreadsheet: <b>every unit, every channel, one dashboard</b>.</p>
+          <p class="de-act-line" data-beat="6">Even pricing gets smart &mdash; an engine that knows <b>your brand's territory</b>, MSRP and margin on every new boat.</p>
+        </div>
+      </div>
+
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
+
+          <!-- Beat 1 · bad — invisible on page one -->
+          <div class="de-beat is-active" data-beat="1" data-anim="inv-invisible" data-phase="bad">
+            <div class="i-serp i-serp--miss" data-serp>
+              <div class="i-serp-bar"><i>G</i><span>pontoon dealer nashville</span></div>
+              <div class="i-serp-results">
+                <div class="i-serp-result" data-serp-result><span>boattrader.com</span><b>Pontoon Boats for Sale in Nashville &mdash; 1,400 listings</b></div>
+                <div class="i-serp-result" data-serp-result><span>northlakemarine.com</span><b>North Lake Marine &mdash; Pontoon Dealer</b></div>
+                <div class="i-serp-result" data-serp-result><span>facebook.com/marketplace</span><b>Pontoon boats near Nashville, TN</b></div>
+                <div class="i-serp-result" data-serp-result><span>yelp.com</span><b>Top 10 Boat Dealers near Nashville</b></div>
+              </div>
+              <div class="i-serp-you" data-serp-you>Your dealership &mdash; page 7</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Buyers can't buy what they can't find.</span></div>
+          </div>
+
+          <!-- Beat 2 · good — category pages rank + AI answer -->
+          <div class="de-beat" data-beat="2" data-anim="inv-rank" data-phase="good">
+            <div class="i-found" data-found>
+              <div class="i-serp i-serp--win">
+                <div class="i-serp-bar"><i>G</i><span>pontoon dealer nashville</span></div>
+                <div class="i-serp-results">
+                  <div class="i-serp-result i-serp-result--rich" data-found-step>
+                    <span>premierwatersports.net/pontoon-boats-nashville</span>
+                    <b>Nashville Pontoon Dealership | Premier Watersports</b>
+                    <div class="i-serp-rich">
+                      <em data-found-chip>&#9733; 4.9</em>
+                      <em data-found-chip>12 in stock</em>
+                      <em data-found-chip>$24k&ndash;$110k</em>
+                    </div>
+                  </div>
+                  <div class="i-serp-result i-serp-result--dim"><span>boattrader.com</span><b>Pontoon Boats for Sale in Nashville</b></div>
+                </div>
+              </div>
+              <div class="i-geo" data-found-ai>
+                <div class="i-geo-q"><span>Buyer asks AI</span><p>"Best pontoon dealer near Nashville?"</p></div>
+                <div class="i-geo-a">
+                  <div class="i-geo-a-head"><span>AI</span> Answer</div>
+                  <p data-found-answer></p>
+                  <div class="i-geo-cite" data-found-cite><span>Sources</span><i>premierwatersports.net</i></div>
+                </div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Rich results lift click-through 20&ndash;50%.</span></div>
+          </div>
+
+          <!-- Beat 3 · bad — the marketplace grind -->
+          <div class="de-beat" data-beat="3" data-anim="inv-stale" data-phase="bad">
+            <div class="i-stale" data-stale>
+              <div class="i-stale-row" data-stale-row>
+                <b>Boat Trader</b>
+                <span data-stale-status>last updated 23 days ago</span>
+              </div>
+              <div class="i-stale-row" data-stale-row>
+                <b>YachtWorld</b>
+                <span data-stale-status>3 sold boats still listed</span>
+              </div>
+              <div class="i-stale-row" data-stale-row>
+                <b>Facebook Marketplace</b>
+                <span data-stale-status>never posted</span>
+              </div>
+              <div class="i-stale-cost" data-stale-cost>45 minutes a day of re-posting by hand &mdash; or it just doesn't happen.</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Every marketplace, maintained from memory.</span></div>
+          </div>
+
+          <!-- Beat 4 · good — syndication fan-out -->
+          <div class="de-beat" data-beat="4" data-anim="inv-synd" data-phase="good">
+            <div class="i-synd" data-synd>
+              <div class="i-synd-unit" data-synd-unit>
+                <img src="assets/inventory/supra-studio.png" alt="" loading="lazy">
+                <span class="i-mono">2021 Supra SE550</span>
+                <b>Listed once</b>
+              </div>
+              <div class="i-synd-wires" aria-hidden="true">
+                <span class="i-synd-packet" data-synd-packet></span>
+                <span class="i-synd-packet" data-synd-packet></span>
+                <span class="i-synd-packet" data-synd-packet></span>
+                <span class="i-synd-packet" data-synd-packet></span>
+              </div>
+              <div class="i-synd-channels">
+                <div class="i-synd-channel" data-synd-channel><b>Your website</b><span data-synd-status>live &middot; synced just now</span></div>
+                <div class="i-synd-channel" data-synd-channel><b>Boat Trader</b><span data-synd-status>live &middot; synced just now</span></div>
+                <div class="i-synd-channel" data-synd-channel><b>YachtWorld</b><span data-synd-status>live &middot; synced just now</span></div>
+                <div class="i-synd-channel" data-synd-channel><b>Facebook Marketplace</b><span data-synd-status>live &middot; synced just now</span></div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>One boat on 5 marketplaces: 3x the inquiries.</span></div>
+          </div>
+
+          <!-- Beat 5 · good — unit management dashboard -->
+          <div class="de-beat" data-beat="5" data-anim="inv-dash" data-phase="good">
+            <div class="i-window i-dash" data-dash>
+              <div class="i-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; unit management</em></div>
+              <div class="i-dash-toolbar">
+                <span class="i-dash-chip is-on">All 48</span>
+                <span class="i-dash-chip">New 11</span>
+                <span class="i-dash-chip">Used 37</span>
+                <span class="i-dash-bulk" data-dash-bulk>12 selected &middot; Price &minus;5% &middot; <b>Apply</b></span>
+              </div>
+              <div class="i-dash-rows">
+                <div class="i-dash-row" data-dash-row>
+                  <i data-dash-check></i><b>2022 Malibu Wakesetter 23 LSV</b>
+                  <span class="i-dash-price" data-dash-price data-from="$162,900" data-to="$154,755">$162,900</span>
+                  <em class="i-dash-status i-dash-status--active">active</em>
+                </div>
+                <div class="i-dash-row" data-dash-row>
+                  <i data-dash-check></i><b>2021 Supra SE550</b>
+                  <span class="i-dash-price" data-dash-price data-from="$129,500" data-to="$123,025">$129,500</span>
+                  <em class="i-dash-status i-dash-status--active">active</em>
+                </div>
+                <div class="i-dash-row" data-dash-row>
+                  <i data-dash-check></i><b>2026 Moomba Mojo</b>
+                  <span class="i-dash-price" data-dash-price data-from="$108,900" data-to="$103,455">$108,900</span>
+                  <em class="i-dash-status i-dash-status--pending">pending</em>
+                </div>
+                <div class="i-dash-row i-dash-row--sold" data-dash-row>
+                  <i></i><b>2023 Regulator 26XO</b>
+                  <span class="i-dash-price">$189,000</span>
+                  <em class="i-dash-status i-dash-status--sold" data-dash-sold>sold &middot; pulled from 4 channels</em>
+                </div>
+              </div>
+              <div class="i-dash-note" data-dash-note>Price drop detected &rarr; re-engagement sent to 6 saved-boat leads</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Bulk actions across every unit, every channel.</span></div>
+          </div>
+
+          <!-- Beat 6 · good — territory-aware pricing engine -->
+          <div class="de-beat" data-beat="6" data-anim="inv-price" data-phase="good">
+            <div class="i-price" data-price>
+              <div class="i-price-unit">
+                <img src="assets/inventory/moomba-studio.png" alt="" loading="lazy">
+                <div>
+                  <span class="i-mono">2026 Moomba Mojo &middot; NEW</span>
+                  <b>Moomba &middot; East Tennessee territory</b>
+                </div>
+              </div>
+              <div class="i-price-rows">
+                <div class="i-price-row" data-price-row><span>MSRP</span><b>$114,500</b></div>
+                <div class="i-price-row" data-price-row><span>MAP floor</span><b>$106,400</b></div>
+                <div class="i-price-row" data-price-row><span>Your margin target</span><b>12%</b></div>
+                <div class="i-price-row" data-price-row><span>Territory rules</span><b>Moomba &middot; East TN</b></div>
+              </div>
+              <div class="i-price-result" data-price-result>
+                <span>Suggested price</span>
+                <b data-price-value data-to="108900">$0</b>
+                <em data-price-badge>&#10003; territory-safe &middot; MAP respected</em>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Priced right for your brand's territory.</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="boat-section" id="boat-section">
+    <div class="boat-sticky">
+      <div class="boat-left">
+        <div class="section-label">The Competitive Edge</div>
+        <div class="boat-headline-wrap">
+          <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
+          <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
+        </div>
+        <p class="boat-sub" id="boat-sub">Why wait on improving your inventory. We can have this platform up and running for your dealership quickly.</p>
+        <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your Demo today</button>
+      </div>
+      <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
+    </div>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="sales.html">Sales</a>
+            <a href="marketing.html">Marketing</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Demo request modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Schedule a Demo</span>
+        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="Email address" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/mobile-nav.js"></script>
+  <script src="js/demo-modal.js"></script>
+  <script src="js/section-video-boat.js"></script>
+  <script src="js/de-core.js"></script>
+  <script src="js/inventory.js"></script>
+</body>
+</html>

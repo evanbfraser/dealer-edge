@@ -17,7 +17,7 @@
   DE.initFade();
   initShowcase();
   initHero();
-  initActs();
+  // act engine: DE.initActs — invoked below, after BEAT_ANIMS is declared
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
     window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
@@ -408,170 +408,10 @@
     'geo-answer': playGeoAnswer,
   };
 
-  function initActs() {
-    const acts = [...document.querySelectorAll('[data-act]')];
-    acts.forEach((act) => {
-      // New "scene" mode: a leading headline scene (data-act-intro) that shrinks
-      // as the first beat arrives, then one big copy line per beat (.de-act-line).
-      // Falls back to the classic beat-list (.de-act-beat) when those are absent.
-      const hasIntro = act.hasAttribute('data-act-intro');
-      const lines = [...act.querySelectorAll('.de-act-line')];
-      const copyBeats = lines.length ? lines : [...act.querySelectorAll('.de-act-beat')];
-      const stageBeats = [...act.querySelectorAll('.de-beat')];
-      const beatCount = Math.min(copyBeats.length || stageBeats.length, stageBeats.length);
-      if (!beatCount) return;
-      const sceneCount = beatCount + (hasIntro ? 1 : 0);
+  // act engine lives in js/de-core.js now (shared with inventory.js);
+  // the controller body that used to sit here is DE.initActs verbatim.
+  DE.initActs(lenis, { anims: BEAT_ANIMS, cleanups: oldAnimCleanups });
 
-      let activeBeat = -1;
-      let introActive = false;
-      let runToken = 0;
-      let entered = false;
-
-      const enterObs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) entered = true;
-          });
-        },
-        { threshold: 0.08, rootMargin: '0px 0px -18% 0px' }
-      );
-      enterObs.observe(act);
-
-      function clearBeats() {
-        const prevBeatEl = stageBeats[activeBeat];
-        if (prevBeatEl) oldAnimCleanups.get(prevBeatEl)?.();
-        copyBeats.forEach((beat) => beat.classList.remove('is-active'));
-        stageBeats.forEach((beat) => {
-          beat.classList.remove('is-active', 'is-playing');
-          beat.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('is-in'));
-          beat.querySelectorAll('video').forEach((video) => video.pause?.());
-        });
-        activeBeat = -1;
-      }
-
-      function activate(index, options = {}) {
-        const { force = false, animate = true } = options;
-        const next = clamp(index, 0, beatCount - 1);
-        if (next === activeBeat && !force) return;
-        const prevBeatEl = stageBeats[activeBeat];
-        if (prevBeatEl && activeBeat !== next) {
-          oldAnimCleanups.get(prevBeatEl)?.();
-        }
-        activeBeat = next;
-        runToken += 1;
-        const token = runToken;
-
-        copyBeats.forEach((beat, i) => beat.classList.toggle('is-active', i === next));
-        stageBeats.forEach((beat, i) => {
-          const active = i === next;
-          beat.classList.toggle('is-active', active);
-          beat.classList.remove('is-playing');
-          beat.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('is-in'));
-          beat.querySelectorAll('video').forEach((video) => {
-            if (active) video.play?.().catch(() => {});
-            else video.pause?.();
-          });
-        });
-
-        // diptych phase: red "pain" beats vs green "fix" beats recolor the
-        // left rail + crossfade the act watermark (data-phase on the stage beat)
-        act.dataset.phase = stageBeats[next]?.dataset.phase || 'good';
-
-        if (!animate) return;
-
-        const beatEl = stageBeats[next];
-        const anim = BEAT_ANIMS[beatEl?.dataset.anim];
-        if (anim) {
-          requestAnimationFrame(() => {
-            tick(() => token === runToken, () => anim(beatEl, () => token === runToken));
-          });
-        }
-      }
-
-      // map a scene index → intro or beat
-      function applyScene(scene, options = {}) {
-        const s = clamp(scene, 0, sceneCount - 1);
-        if (hasIntro && s === 0) {
-          if (!introActive || options.force) {
-            introActive = true;
-            act.classList.remove('is-engaged');
-            clearBeats();
-            act.dataset.phase = stageBeats[0]?.dataset.phase || 'good';
-          }
-          return;
-        }
-        introActive = false;
-        act.classList.add('is-engaged');
-        activate(hasIntro ? s - 1 : s, options);
-      }
-
-      function isLocked() {
-        const rect = act.getBoundingClientRect();
-        return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
-      }
-
-      function currentScene() {
-        const travel = Math.max(1, act.offsetHeight - window.innerHeight);
-        const progress = clamp((window.scrollY - act.offsetTop) / travel, 0, 0.9999);
-        return Math.min(sceneCount - 1, Math.floor(progress * sceneCount));
-      }
-
-      let scrollRaf = 0;
-      function updateLockedBeat() {
-        scrollRaf = 0;
-        const rect = act.getBoundingClientRect();
-        if (rect.bottom <= 0 || rect.top >= window.innerHeight) {
-          act.classList.remove('is-locked');
-          return;
-        }
-        entered = true;
-        const locked = isLocked();
-        act.classList.toggle('is-locked', locked);
-        if (!locked) return;
-        const scene = currentScene();
-        const beatIdx = hasIntro ? scene - 1 : scene;
-        const beatEl = stageBeats[beatIdx];
-        const replay = beatIdx === activeBeat && !beatEl?.classList.contains('is-playing') && !(hasIntro && scene === 0);
-        applyScene(scene, { force: replay });
-      }
-
-      function queueLockedBeatUpdate() {
-        if (scrollRaf) return;
-        scrollRaf = requestAnimationFrame(updateLockedBeat);
-      }
-
-      applyScene(0, { animate: false, force: true });
-      window.addEventListener('scroll', queueLockedBeatUpdate, { passive: true });
-      lenis.on('scroll', queueLockedBeatUpdate);
-
-      ScrollTrigger.create({
-        trigger: act,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        invalidateOnRefresh: true,
-        onEnter: () => {
-          entered = true;
-          if (isLocked()) applyScene(currentScene(), { force: true });
-        },
-        onEnterBack: () => {
-          entered = true;
-        },
-        onUpdate: (self) => {
-          if (!entered || !self.isActive || !isLocked()) return;
-          updateLockedBeat();
-        },
-        onLeave: () => act.classList.remove('is-locked'),
-        onLeaveBack: () => {
-          act.classList.remove('is-locked');
-          applyScene(0, { animate: false, force: true });
-        },
-      });
-
-      // snap-to-scene — shared tuned implementation in js/de-core.js
-      DE.attachSceneSnap(lenis, act, sceneCount);
-    });
-  }
 
   function storeCleanup(beatEl, cleanup) {
     const prev = oldAnimCleanups.get(beatEl);
