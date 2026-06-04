@@ -22,27 +22,6 @@
   --bp-phone: 640px;
 }
 
-/* fade-in observer baseline */
-[data-fade] {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
-}
-[data-fade].is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.sales-page .navbar.is-scrolled,
-.sales-page .navbar.scrolled {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.82) 72%, rgba(0, 0, 0, 0) 100%);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
 /* ─── HERO + STATS (merged pinned experience) ─────────────────── */
 .s-hero.s-stats-section {
   position: relative;
@@ -1789,272 +1768,15 @@
 }
 
 /* ─── ACT SECTIONS (pinned scroll) ─────────────────────────────── */
-.s-act {
-  position: relative;
-  height: 400vh; /* 5 scenes (intro + 4 beats) × 80vh — desktop scenes are 80vh each */
-  background: #000;
-}
-
-.s-act--without {
-  background: linear-gradient(180deg, #000 0%, #0a0606 50%, #000 100%);
-}
-
-.s-act--with {
-  background: linear-gradient(180deg, #000 0%, #060a08 50%, #000 100%);
-}
-
-.s-act-watermark {
-  position: absolute;
-  top: calc(var(--nav-height) + 10px);
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  color: rgba(255, 140, 138, 0.92);
-  text-transform: uppercase;
-  z-index: 10;
-  padding: 8px 18px;
-  border: 1px solid rgba(238, 58, 57, 0.48);
-  border-radius: 100px;
-  background: rgba(238, 58, 57, 0.14);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  white-space: nowrap;
-  pointer-events: none;
-  transition: opacity 0.45s ease;
-}
-.s-act-watermark--with {
-  color: rgba(130, 255, 175, 0.95);
-  border-color: rgba(74, 222, 128, 0.5);
-  background: rgba(74, 222, 128, 0.12);
-}
-
-.s-act-inner {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(0, 1.15fr);
-  grid-template-rows: auto auto;
-  gap: 24px 64px;
-  align-content: safe center;
-  align-items: start;
-  padding: calc(var(--nav-height) + 52px) 64px 48px;
-  max-width: 1480px;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-.s-act-scene {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  width: 100%;
-}
-
-.s-act-copy {
-  position: relative;
-  grid-column: 1;
-  grid-row: 2;
-  align-self: center;
-  width: 100%;
-  max-width: 34rem;
-  min-width: 0;
-}
-
-/* ── Line-mode copy (shared structure with marketing's .m-act-line):
-   one big morphing line per beat, stacked in the same grid cell ── */
-.s-act-lines {
-  position: relative;
-  display: grid;
-}
-.s-act-line {
-  grid-area: 1 / 1;
-  margin: 0;
-  font-size: clamp(1.6rem, 3vw, 2.85rem);
-  line-height: 1.18;
-  font-weight: 750;
-  letter-spacing: -0.02em;
-  color: #fff;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(22px);
-  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
-}
-.s-act-line.is-active {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-}
-.s-act-line b {
-  color: var(--good);
-  font-weight: 800;
-}
-.s-act--without .s-act-line b {
-  color: var(--accent);
-}
-
-.s-act-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 100px;
-}
-.s-act-tag--bad {
-  color: var(--accent);
-  background: var(--bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.3);
-}
-.s-act-tag--good {
-  color: var(--good);
-  background: var(--good-dim);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-}
-
-.s-act-headline {
-  font-size: clamp(1.85rem, 3.2vw, 2.85rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  color: #fff;
-  margin: 0;
-  width: 100%;
-  max-width: 100%;
-  text-wrap: balance;
-}
-
-.s-act-headline-faded {
-  color: var(--text-dim);
-  font-weight: 600;
-}
-.s-act-headline-accent {
-  color: var(--accent);
-  font-weight: 600;
-}
-.s-act--with .s-act-headline-accent { color: var(--good); }
+/* Act chassis (.de-act system) lives in css/de-act.css — shared with marketing */
 
 @media (min-width: 960px) {
   /* nowrap only once docked — the big intro headline must be free to wrap */
-  #act1.is-engaged .s-act-headline,
-  #act2.is-engaged .s-act-headline {
+  #act1.is-engaged .de-act-headline,
+  #act2.is-engaged .de-act-headline {
     white-space: nowrap;
   }
 }
-
-/* ── Act intro scene (ported from marketing.css): the scene headline owns
-   the first 80vh of the pin at display size, then shrinks to its docked
-   label as beat 1 arrives. JS toggles .is-engaged on the act. ── */
-.s-act[data-act-intro] .s-act-headline {
-  transition: font-size 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
-}
-.s-act[data-act-intro] .s-act-tag {
-  transition: opacity 0.45s ease;
-}
-.s-act[data-act-intro] .s-act-copy,
-.s-act[data-act-intro] .s-act-stage {
-  transition: opacity 0.5s ease;
-}
-
-/* intro: the headline owns the frame; copy + stage wait offstage */
-.s-act[data-act-intro]:not(.is-engaged) .s-act-headline {
-  font-size: clamp(2.7rem, 5.6vw, 5rem);
-  line-height: 1.04;
-}
-.s-act[data-act-intro]:not(.is-engaged) .s-act-copy,
-.s-act[data-act-intro]:not(.is-engaged) .s-act-stage {
-  opacity: 0;
-  pointer-events: none;
-}
-/* the centered watermark pill waits offstage too — it fades in only once
-   the act engages, otherwise it sits on top of the big intro headline */
-.s-act[data-act-intro]:not(.is-engaged) .s-act-watermark {
-  opacity: 0;
-}
-
-/* engaged: the headline becomes a muted label — the active line is the anchor
-   (same dock treatment as marketing) */
-.s-act[data-act-intro].is-engaged .s-act-headline {
-  font-size: clamp(1.15rem, 1.7vw, 1.6rem);
-  opacity: 0.5;
-}
-.s-act[data-act-intro].is-engaged .s-act-tag {
-  opacity: 0.7;
-}
-
-/* ─── ACT STAGE (right column) ─────────────────────────────────── */
-.s-act-stage {
-  position: relative;
-  grid-column: 2;
-  grid-row: 2;
-  align-self: center;
-  width: 100%;
-  min-width: 0;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.s-act-stage-sticky {
-  position: relative;
-  width: 100%;
-  height: min(62vh, 600px);
-  max-height: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.s-beat {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  opacity: 0;
-  transform: scale(0.96) translateY(20px);
-  transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-}
-
-.s-beat.is-active {
-  opacity: 1;
-  transform: scale(var(--s-beat-fit-scale, 1)) translateY(0);
-  pointer-events: auto;
-}
-
-.s-beat-cap {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  padding: 8px 14px;
-  border: 1px solid var(--line-strong);
-  border-radius: 100px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-}
-.s-beat-cap--good { color: #fff; border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.08); }
-.s-beat-cap--bad  { color: #fff; border-color: rgba(238, 58, 57, 0.4); background: rgba(238, 58, 57, 0.08); }
 
 .s-cap-dot {
   width: 7px; height: 7px; border-radius: 50%;
@@ -3821,13 +3543,9 @@
 
 .s-pivot--alt { padding: 110px 24px; }
 
-.s-act--team {
-  /* 7 scenes (intro + 6 beats) × 80vh */
-  height: 560vh;
-  background: linear-gradient(180deg, #000 0%, #060a08 50%, #000 100%);
-}
-
-.s-act--team .s-act-stage-sticky {
+/* height + tint come from the shared chassis (de-act--7 de-act--good);
+   .s-act--team remains as the page hook for Act-4-specific overrides */
+.s-act--team .de-act-stage-sticky {
   height: min(58vh, 560px);
   max-height: 560px;
 }
@@ -3901,7 +3619,7 @@
   transform-origin: left center;
   animation: s-strike 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
 }
-.s-beat--1.is-active .s-vrow.is-bad::after { transform: scaleX(1); }
+.de-beat--1.is-active .s-vrow.is-bad::after { transform: scaleX(1); }
 @keyframes s-strike { to { transform: scaleX(1); } }
 
 .s-vrow-name {
@@ -5274,105 +4992,11 @@
   .s-marine-proof {
     padding-top: max(72px, calc(24px + env(safe-area-inset-top, 0px)));
   }
-  .s-act {
-    height: 575vh; /* 5 scenes (intro + 4 beats) × 115vh — matches marketing mobile */
-    padding: 0;
-  }
-  .s-act--team {
-    height: 805vh; /* 7 scenes (intro + 6 beats) × 115vh */
-  }
-  .s-act-inner {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    min-height: 100svh;
-    overflow: hidden;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto max-content minmax(0, 1fr);
-    gap: 6px;
-    padding: calc(var(--nav-height) + 24px + env(safe-area-inset-top, 0px)) 16px calc(18px + env(safe-area-inset-bottom, 0px));
-    align-content: start;
-    box-sizing: border-box;
-  }
-  @supports (height: 100dvh) {
-    .s-act-inner {
-      height: 100dvh;
-      min-height: 100dvh;
-    }
-  }
-  .s-act-watermark {
-    display: none;
-  }
-  .s-act-scene {
-    grid-column: 1;
-    grid-row: 1;
-    max-width: none;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .s-act-copy {
-    grid-column: 1;
-    grid-row: 2;
-    max-width: none;
-    align-self: start;
-    min-height: 0;
-    overflow: visible;
-    flex-shrink: 0;
-  }
-  .s-act-stage {
-    grid-column: 1;
-    grid-row: 3;
-    align-self: stretch;
-    min-height: 0;
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;
-    align-content: flex-start;
-    overflow: clip;
-  }
-  .s-act-headline {
-    font-size: clamp(1.6rem, 4.8vw, 2.15rem);
-    line-height: 1.08;
-  }
-  .s-act[data-act-intro]:not(.is-engaged) .s-act-headline {
-    font-size: clamp(1.9rem, 8vw, 2.9rem);
-    line-height: 1.06;
-  }
-  .s-act-line {
-    font-size: clamp(1.25rem, 5.2vw, 1.7rem);
-    line-height: 1.22;
-  }
-  .s-act[data-act-intro].is-engaged .s-act-headline {
-    font-size: clamp(0.92rem, 3.6vw, 1.08rem);
-    opacity: 0.5;
-  }
-  .s-act-stage-sticky {
-    position: relative;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    max-height: none;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    overflow: clip;
-  }
-  .s-act--team .s-act-stage-sticky {
+  /* mobile act chassis lives in css/de-act.css (≤1100px block) */
+  .s-act--team .de-act-stage-sticky {
     height: 100%;
     max-height: none;
     min-height: 0;
-  }
-  .s-beat {
-    justify-content: flex-start;
-    align-items: center;
-    overflow: hidden;
-    gap: 12px;
-    padding-top: 2px;
-    transform-origin: top center;
-  }
-  .s-beat > * {
-    flex-shrink: 0;
   }
   .s-act--team .s-sources {
     grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1.05fr);
@@ -5688,8 +5312,8 @@
     margin-top: 0;
     width: 100%;
   }
-  .s-beat,
-  .s-beat > * {
+  .de-beat,
+  .de-beat > * {
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -5775,14 +5399,14 @@
     margin: 0 14px 14px;
     padding: 10px 0;
   }
-  .s-act-inner {
+  .de-act-inner {
     padding: calc(var(--nav-height) + 30px + env(safe-area-inset-top, 0px)) 12px calc(16px + env(safe-area-inset-bottom, 0px));
     gap: 6px;
   }
-  .s-act-headline {
+  .de-act-headline {
     font-size: clamp(1.55rem, 6.5vw, 2rem);
   }
-  .s-act--team .s-act-headline {
+  .s-act--team .de-act-headline {
     font-size: clamp(1.48rem, 6.1vw, 1.92rem);
     line-height: 1.07;
   }
@@ -5896,90 +5520,90 @@
     font-size: 0.55rem;
     line-height: 1.28;
   }
-  .s-act--team .s-beat--5 {
+  .s-act--team .de-beat--5 {
     gap: 8px;
   }
-  .s-act--team .s-beat--5 .s-roi {
+  .s-act--team .de-beat--5 .s-roi {
     overflow: hidden;
   }
-  .s-act--team .s-beat--5 .s-roi-header {
+  .s-act--team .de-beat--5 .s-roi-header {
     padding: 9px 12px 8px;
   }
-  .s-act--team .s-beat--5 .s-roi-title {
+  .s-act--team .de-beat--5 .s-roi-title {
     font-size: 0.84rem;
   }
-  .s-act--team .s-beat--5 .s-roi-sub {
+  .s-act--team .de-beat--5 .s-roi-sub {
     margin-top: 2px;
     font-size: 0.54rem;
   }
-  .s-act--team .s-beat--5 .s-roi-inputs {
+  .s-act--team .de-beat--5 .s-roi-inputs {
     gap: 7px;
     padding: 9px 12px;
   }
-  .s-act--team .s-beat--5 .s-roi-input {
+  .s-act--team .de-beat--5 .s-roi-input {
     grid-template-columns: 1fr;
     gap: 4px;
   }
-  .s-act--team .s-beat--5 .s-roi-input label {
+  .s-act--team .de-beat--5 .s-roi-input label {
     font-size: 0.56rem;
   }
-  .s-act--team .s-beat--5 .s-roi-control {
+  .s-act--team .de-beat--5 .s-roi-control {
     grid-template-columns: minmax(0, 1fr) 72px;
     gap: 8px;
   }
-  .s-act--team .s-beat--5 .s-roi-control input[type="range"] {
+  .s-act--team .de-beat--5 .s-roi-control input[type="range"] {
     height: 3px;
   }
-  .s-act--team .s-beat--5 .s-roi-control input[type="range"]::-webkit-slider-thumb {
+  .s-act--team .de-beat--5 .s-roi-control input[type="range"]::-webkit-slider-thumb {
     width: 14px;
     height: 14px;
   }
-  .s-act--team .s-beat--5 .s-roi-control input[type="range"]::-moz-range-thumb {
+  .s-act--team .de-beat--5 .s-roi-control input[type="range"]::-moz-range-thumb {
     width: 14px;
     height: 14px;
   }
-  .s-act--team .s-beat--5 .s-roi-val {
+  .s-act--team .de-beat--5 .s-roi-val {
     font-size: 0.72rem;
   }
-  .s-act--team .s-beat--5 .s-roi-grid {
+  .s-act--team .de-beat--5 .s-roi-grid {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     gap: 6px;
     padding: 10px 12px;
   }
-  .s-act--team .s-beat--5 .s-roi-arrow {
+  .s-act--team .de-beat--5 .s-roi-arrow {
     align-self: center;
     font-size: 0.9rem;
     transform: none;
   }
-  .s-act--team .s-beat--5 .s-roi-col {
+  .s-act--team .de-beat--5 .s-roi-col {
     gap: 3px;
   }
-  .s-act--team .s-beat--5 .s-roi-col-label {
+  .s-act--team .de-beat--5 .s-roi-col-label {
     font-size: 0.5rem;
     letter-spacing: 0.14em;
   }
-  .s-act--team .s-beat--5 .s-roi-deals {
+  .s-act--team .de-beat--5 .s-roi-deals {
     font-size: 0.62rem;
   }
-  .s-act--team .s-beat--5 .s-roi-rev {
+  .s-act--team .de-beat--5 .s-roi-rev {
     font-size: 1.12rem;
   }
-  .s-act--team .s-beat--5 .s-roi-rev-cap {
+  .s-act--team .de-beat--5 .s-roi-rev-cap {
     font-size: 0.52rem;
   }
-  .s-act--team .s-beat--5 .s-roi-lift {
+  .s-act--team .de-beat--5 .s-roi-lift {
     padding: 9px 12px 10px;
   }
-  .s-act--team .s-beat--5 .s-roi-lift-label {
+  .s-act--team .de-beat--5 .s-roi-lift-label {
     margin-bottom: 3px;
     font-size: 0.52rem;
     letter-spacing: 0.18em;
   }
-  .s-act--team .s-beat--5 .s-roi-lift-num {
+  .s-act--team .de-beat--5 .s-roi-lift-num {
     margin-bottom: 4px;
     font-size: 1.42rem;
   }
-  .s-act--team .s-beat--5 .s-roi-lift-cap {
+  .s-act--team .de-beat--5 .s-roi-lift-cap {
     font-size: 0.56rem;
     line-height: 1.24;
   }

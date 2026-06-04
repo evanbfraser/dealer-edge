@@ -84,6 +84,22 @@ The 4-stat cascade that opens any cold pitch:
 
 ---
 
+## The shared layer (`.de-` = DealerEdge chassis) — added 2026-06-04
+
+The deep-dive pages (marketing + sales) share one component system so CMS integration gets one act component, not two:
+
+- **`css/de-act.css`** — the act chassis under `.de-` classes (tokens are self-contained `--de-*`). Anatomy, scene math, and phase mechanics are documented at the top of that file. Load order in both pages: `style.css → de-act.css → <page>.css`.
+- **`js/de-core.js`** — `window.DE = { reduceMotion, isSafari, createLenis, initCursorGlow, initNavScroll, initFade, attachSceneSnap }`. Loaded after the CDN libs, before the page script. The snap tuning lives ONLY here now.
+- **`css/style.css`** — all-pages base (nav incl. `.is-scrolled` gradient blur, buttons incl. the enlarged `.boat-cta`, footer, modal, cursor, `[data-fade]`).
+
+**Prefix rule:** `.de-` classes are the shared chassis and are owned by de-act.css — never restyle them from a page stylesheet directly. `.m-`/`.s-` prefixes are ONLY for page-unique stage content (`.m-roster`, `.s-browser`…) and page override hooks (`.s-act--team`). Page overrides of chassis elements hang off a page class: `.s-act--team .de-act-stage-sticky { … }`.
+
+**Phase mechanics:** an act's `data-phase="bad|good"` recolors line `<b>` accents + the headline accent and crossfades a `--bad`/`--good` watermark pair. Sales sets it statically per act (Act 1 bad, Acts 2/4 good); marketing.js rewrites it per beat (red→green couplets). Both pages use the exact same CSS.
+
+**Don't duplicate into page files what de-core/de-act own.** If both pages need a change, change the shared file.
+
+---
+
 ## Page architecture (sales.html is the canonical pattern)
 
 A "deep-dive page" is structured as: **Pinned Hero (Killer Proof Chain) → Marine Reality → N Acts → closing CTA**.
@@ -107,24 +123,25 @@ Acts carry `data-act-intro`: scene 0 shows the `s-act-scene` headline at display
 An **Act** is a scroll-pinned scene that holds the viewport while the user scrolls through **Beats**. Each Beat is one moment in the act's story.
 
 ```
-<section class="s-act s-act--with" id="actN" data-act-intro>
-  <div class="s-act-inner">
-    <div class="s-act-watermark s-act-watermark--with">ACT NAME · LABEL</div>
-    <header class="s-act-scene">         <!-- intro scene 0: big; docks + mutes on .is-engaged -->
-      <span class="s-act-tag s-act-tag--good">Tag line</span>
-      <h2 class="s-act-headline">…</h2>
+<section class="de-act de-act--5 de-act--bad" id="actN" data-act data-act-intro data-phase="bad">
+  <div class="de-act-inner">
+    <div class="de-act-watermark de-act-watermark--bad">ACT NAME · LABEL</div>
+    <!-- couplet acts (marketing) add a second watermark: --good; data-phase crossfades them -->
+    <header class="de-act-head">         <!-- intro scene 0: big; docks + mutes on .is-engaged -->
+      <span class="de-act-tag de-act-tag--bad">Tag line</span>
+      <h2 class="de-act-headline">… <span class="de-act-headline-faded">…</span></h2>
     </header>
-    <div class="s-act-copy">             <!-- LEFT: one big morphing line per beat -->
-      <div class="s-act-lines">
-        <p class="s-act-line" data-beat="1">… <b>accent</b> …</p>
-        <p class="s-act-line" data-beat="2">…</p>
+    <div class="de-act-copy">            <!-- LEFT: one big morphing line per beat -->
+      <div class="de-act-lines">
+        <p class="de-act-line" data-beat="1">… <b>accent</b> …</p>
+        <p class="de-act-line" data-beat="2">…</p>
         …
       </div>
     </div>
-    <div class="s-act-stage">            <!-- RIGHT: media that morphs -->
-      <div class="s-act-stage-sticky">
-        <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="actN-beat1">…</div>
-        <div class="s-beat s-beat--2"           data-beat="2" data-anim="actN-beat2">…</div>
+    <div class="de-act-stage">           <!-- RIGHT: media that morphs -->
+      <div class="de-act-stage-sticky">
+        <div class="de-beat de-beat--1 is-active" data-beat="1" data-anim="actN-beat1">…</div>
+        <div class="de-beat de-beat--2"           data-beat="2" data-anim="actN-beat2">…</div>
         …
       </div>
     </div>
@@ -132,19 +149,21 @@ An **Act** is a scroll-pinned scene that holds the viewport while the user scrol
 </section>
 ```
 
-This element tree is **structurally identical to marketing's `.m-act`** (watermark + header + lines + stage) — intentional, so the act becomes one shared component when the site moves into the CMS (2026-06-04). Line copy: one `<p class="s-act-line">` per beat, ≤ ~25 words, exactly one `<b>` accent phrase — colored red on `.s-act--without`, green elsewhere. The old numbered beat rail (`.s-act-beats`/`.s-act-beat`) is retired; the JS still falls back to it if a page reintroduces one.
+This element tree is **identical on marketing and sales** (one shared chassis, `css/de-act.css`) so the act becomes one component when the site moves into the CMS (2026-06-04). `de-act--<scenes>` sets the height (scenes = beats + 1 intro), `de-act--bad/--good` the background tint, `data-phase` the accent/watermark phase. Line copy: one `<p class="de-act-line">` per beat, ≤ ~25 words, exactly one `<b>` accent phrase — red under `data-phase="bad"`, green under `"good"`. The old numbered beat rail is retired; both controllers still fall back to `.de-act-beat` if a page reintroduces one.
 
 ### Critical sizing rule
 
-Desktop scenes are **80vh each** (tightened 2026-06-04 — 100vh felt like too much scroll per beat). An act with `data-act-intro` has **scenes = beats + 1** (the intro is scene 0).
+Desktop scenes are **80vh each** (tightened 2026-06-04 — 100vh felt like too much scroll per beat). An act with `data-act-intro` has **scenes = beats + 1** (the intro is scene 0). Heights come from the scene-count class in de-act.css — never hand-write an act height:
 
 ```css
-.s-act { height: 400vh; }              /* 5 scenes (intro + 4 beats) × 80vh */
-.s-act--team { height: 560vh; }        /* 7 scenes (intro + 6 beats) × 80vh */
-.s-hero.s-stats-section { height: 480vh; }  /* 6 stages × 80vh, no intro */
+/* css/de-act.css */
+.de-act--4 { height: 320vh; }  /* desktop: scenes × 80vh  */
+.de-act--5 { height: 400vh; }  /* mobile (≤1100px): scenes × 115vh */
+.de-act--6 { height: 480vh; }
+.de-act--7 { height: 560vh; }
 ```
 
-If you change the number of beats, change the height (desktop AND the mobile override). If you forget, the last beat will be unreachable.
+Sales' pinned hero stays page-owned: `.s-hero.s-stats-section { height: 480vh; }` (6 stages × 80vh, no intro). If you change the number of beats, change the act's `de-act--N` class. If you forget, the last beat will be unreachable.
 
 ### Mobile breakpoint
 
@@ -240,7 +259,7 @@ When adding new animations, follow this prefix convention so future readers can 
 
 ### Snap-to-scene (marketing + sales — keep the tuned values in sync)
 
-Both pages ease the scroll to the nearest scene center once scrolling settles inside a fully-pinned section (`attachSceneSnap` in sales.js; the per-act closure in marketing.js). The values were tuned with headless wheel-event tests — **don't re-derive them**:
+Both pages ease the scroll to the nearest scene center once scrolling settles inside a fully-pinned section — **one implementation: `DE.attachSceneSnap(lenis, section, sceneCount)` in js/de-core.js**. The values were tuned with headless wheel-event tests — **don't re-derive them or fork the function**:
 
 - Settle timer **150ms**; if `|lenis.velocity| > 0.1` the snap re-queues (still coasting).
 - **Directional**: a push **>28% past the current scene's center** advances to the adjacent scene (`frac > 0.78` scrolling down / `frac < 0.22` up) instead of recoiling backward.
@@ -335,7 +354,7 @@ For "particles flowing" elsewhere (e.g., Act 4 Beat 1 funnel dots), use simple `
 
 `.s-` prefix for everything on the sales page (`.s-act`, `.s-beat`, `.s-validator`, `.s-bs-rep`, etc.). BEM-ish (`.s-thing--variant`, `.s-thing-part`). State classes use `is-*` (`.is-active`, `.is-in`, `.is-pulse`, `.is-pressed`).
 
-When building other pages with the same act/beat pattern, **change the prefix** to match the page (`.h-` for hero, `.f-` for features, etc.) so styles don't leak across pages.
+When building other pages with the act/beat pattern, **reuse the `.de-` chassis as-is** (it's the shared component) and give page-unique stage content its own page prefix (`.o-` for an operations page, etc.) so page styles don't leak.
 
 ### Spacing
 
@@ -381,6 +400,9 @@ $dst = "C:\Users\jason\repos\dealer-edge-preview"
 Copy-Item "$src\sales.html"      "$dst\"     -Force
 Copy-Item "$src\css\sales.css"   "$dst\css\" -Force
 Copy-Item "$src\js\sales.js"     "$dst\js\"  -Force
+# shared-layer files when touched:
+Copy-Item "$src\css\de-act.css"  "$dst\css\" -Force
+Copy-Item "$src\js\de-core.js"   "$dst\js\"  -Force
 # (and any other changed runtime files — never .git, never node_modules)
 
 # 2. Publish via the existing wrapper (uses Git Bash + here.now/publish.sh)
@@ -416,8 +438,8 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ### Add a new Beat to an existing Act
 
-1. **HTML**: Add a new `<p class="s-act-line" data-beat="N">… <b>accent</b> …</p>` to `.s-act-lines` and a matching `<div class="s-beat s-beat--N" data-beat="N" data-anim="actX-beatN">…</div>` to the right stage.
-2. **CSS**: Adjust the act's height — desktop `height: <(N+1)*80>vh;` (intro counts as a scene), mobile override `<(N+1)*115>vh`.
+1. **HTML**: Add a new `<p class="de-act-line" data-beat="N">… <b>accent</b> …</p>` to `.de-act-lines` and a matching `<div class="de-beat" data-beat="N" data-anim="actX-beatN">…</div>` to the right stage.
+2. **CSS**: Bump the act's scene-count class (`de-act--5` → `de-act--6` etc.) — heights for desktop AND mobile come with it from de-act.css.
 3. **JS**: Write `playActXBeatN(beatEl, stillCurrent)` following the conventions above. Register it in `BEAT_ANIMS`.
 4. **Reset on entry**: First thing the function does is reset any animation state, so re-entry replays cleanly.
 5. **Test mobile**: Verify beat progression under 1100px (115vh/scene pin, single-column layout inside sticky pin).
@@ -443,12 +465,12 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **Don't rewrite The Offer.** "Match-spend + prove-it + tiered activation" is the locked language. Soft variants ("free trial," "money back guarantee," "no risk") undermine the actual mechanic.
 - **Don't change demo story specifics** without updating the canon table above. Mixing "Saturday at 10 AM" and "Tuesday at 10 AM" in different beats has happened — caused a Jason callout because the timing made no sense.
 - **Don't add CSS keyframe animations to beat content that ignore the IntersectionObserver gate.** Use JS-driven animations that read `stillCurrent` so they don't pre-play off-screen.
-- **Don't break the scroll-pinned act sizing** (scenes × 80vh desktop / × 115vh mobile, intro counts as a scene). Last beat goes unreachable.
+- **Don't break the scroll-pinned act sizing** — heights come from the `de-act--N` scene-count classes in de-act.css (scenes × 80vh desktop / × 115vh mobile, intro counts as a scene). Wrong N = last beat unreachable.
 - **Don't deploy the full source folder** to here.now — the `.git` folder is too big for Windows Git Bash to chew. Use the preview-folder pattern.
 - **Don't push to remote without committing cleanly.** Don't force-push to main.
 - **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, fonts. That's it.
 - **Don't add matter.js back** without explicit permission — the Stats Section now uses GSAP + DOM sprites.
-- **Don't delete the `.s-` CSS prefix.** It's the namespace boundary; styles will leak across pages without it.
+- **Don't restyle `.de-` chassis classes from a page stylesheet.** de-act.css owns them; page overrides hang off a page hook class (`.s-act--team .de-act-stage-sticky`). Page-unique components keep their page prefix (`.m-`/`.s-`) so styles don't leak.
 - **Don't commit the preview folder** (`c:\Users\jason\repos\dealer-edge-preview`) into this repo.
 - **Don't reuse a `data-anim` key** across two different beats. Each key resolves to exactly one handler.
 - **Don't put live API keys, customer phone numbers, or PII** anywhere in this repo. Even in demo data — use the `+1 (615) 555-XXXX` style fake numbers.
@@ -482,4 +504,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the sales.html port of the marketing patterns (act intro scenes, 80vh scene pacing, directional snap-to-scene, "AI sales platform" title) and the line-mode copy parity round (`.s-act-line` replaces the numbered beat rail; docked headline mutes — act tree now identical to marketing for CMS componentization) — same day as the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-06-04 by Claude Code (Opus 4.8) for the shared layer (css/de-act.css + js/de-core.js — one `.de-` act chassis and one scroll-engine for marketing + sales, boat CTA/nav/fade promoted to style.css). Earlier the same day: the sales.html port of the marketing patterns (intro scenes, 80vh pacing, snap, line-mode copy, "AI sales platform" title) and the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*

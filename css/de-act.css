@@ -1,0 +1,477 @@
+/* ═══════════════════════════════════════════════════════════════
+   DE-ACT — the shared scroll-pinned act chassis (marketing + sales)
+   ═══════════════════════════════════════════════════════════════
+   One class system for the act component on every deep-dive page, so
+   the act becomes a single component when the site moves into the CMS.
+
+   Load order: style.css → de-act.css → <page>.css
+   Page CSS owns ONLY page-unique stage content (.m-roster, .s-browser…)
+   and page overrides hung off page marker classes (.s-act--team …).
+
+   Anatomy (see CLAUDE.md "Page architecture" for the full skeleton):
+     section.de-act.de-act--<scenes>.de-act--<good|bad> [data-act] [data-act-intro] [data-phase]
+       └ .de-act-inner                  sticky 100vh pin
+           ├ .de-act-watermark(--good/--bad)   top pill (pair = phase crossfade)
+           ├ .de-act-head                intro scene 0 → docks on .is-engaged
+           │   ├ .de-act-tag(--good/--bad)
+           │   └ .de-act-headline (+ -faded / -accent spans)
+           ├ .de-act-copy > .de-act-lines > .de-act-line (one per beat, <b> accent)
+           └ .de-act-stage > .de-act-stage-sticky > .de-beat (one per beat)
+
+   Scene math: scenes = beats + 1 (intro). Desktop 80vh/scene,
+   mobile 115vh/scene — set via .de-act--4/--5/--6/--7.
+   Phase: [data-phase="bad|good"] recolors line accents + headline accent
+   and crossfades a --bad/--good watermark pair. Sales sets it statically
+   per act; marketing's JS rewrites it per beat (red→green couplets).
+   ─────────────────────────────────────────────────────────────── */
+
+:root {
+  --de-good: #4ade80;
+  --de-good-dim: rgba(74, 222, 128, 0.12);
+  --de-bad: #ee3a39;
+  --de-bad-dim: rgba(238, 58, 57, 0.12);
+  --de-line: rgba(255, 255, 255, 0.08);
+  --de-line-strong: rgba(255, 255, 255, 0.16);
+  --de-mid: rgba(255, 255, 255, 0.75);
+  --de-dim: rgba(255, 255, 255, 0.45);
+  --de-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+
+/* ─── act section ─── */
+.de-act {
+  position: relative;
+  background: #000;
+}
+
+/* scene-count heights — desktop scenes are 80vh each */
+.de-act--4 { height: 320vh; }
+.de-act--5 { height: 400vh; }
+.de-act--6 { height: 480vh; }
+.de-act--7 { height: 560vh; }
+
+/* phase background tints */
+.de-act--bad {
+  background: linear-gradient(180deg, #000 0%, #0a0606 50%, #000 100%);
+}
+.de-act--good {
+  background: linear-gradient(180deg, #000 0%, #060a08 50%, #000 100%);
+}
+
+/* ─── sticky pin ─── */
+.de-act-inner {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.92fr) minmax(0, 1.18fr);
+  grid-template-rows: auto 1fr;
+  gap: 26px 64px;
+  align-items: center;
+  align-content: center;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: calc(var(--nav-height, 72px) + 52px) 64px 52px;
+  box-sizing: border-box;
+}
+
+/* ─── watermark pill ─── */
+.de-act-watermark {
+  position: absolute;
+  top: calc(var(--nav-height, 72px) + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--de-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: rgba(255, 140, 138, 0.92);
+  text-transform: uppercase;
+  z-index: 10;
+  padding: 8px 18px;
+  border: 1px solid rgba(238, 58, 57, 0.48);
+  border-radius: 100px;
+  background: rgba(238, 58, 57, 0.14);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.de-act-watermark--good {
+  color: rgba(130, 255, 175, 0.95);
+  border-color: rgba(74, 222, 128, 0.5);
+  background: rgba(74, 222, 128, 0.12);
+}
+/* phase crossfade — acts with a --bad/--good watermark pair show one at a time */
+.de-act[data-phase="good"] .de-act-watermark--bad,
+.de-act[data-phase="bad"] .de-act-watermark--good {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── scene head (tag + headline) ─── */
+.de-act-head {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left bottom;
+}
+
+.de-act-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-family: var(--de-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+}
+.de-act-tag--bad {
+  color: var(--de-bad);
+  background: var(--de-bad-dim);
+  border: 1px solid rgba(238, 58, 57, 0.3);
+}
+.de-act-tag--good {
+  color: var(--de-good);
+  background: var(--de-good-dim);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.de-act-headline {
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  font-weight: 850;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin: 0;
+  width: 100%;
+  max-width: 1100px;
+  text-wrap: balance;
+}
+.de-act-headline-faded {
+  color: var(--de-dim);
+}
+.de-act-headline-accent {
+  color: var(--de-bad);
+}
+.de-act[data-phase="good"] .de-act-headline-accent {
+  color: var(--de-good);
+}
+
+/* ─── intro scene (data-act-intro): the headline owns scene 0 at display
+   size, then shrinks to a muted docked label once .is-engaged ─── */
+.de-act[data-act-intro] .de-act-headline {
+  transition: font-size 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+}
+.de-act[data-act-intro] .de-act-tag {
+  transition: opacity 0.45s ease;
+}
+.de-act[data-act-intro] .de-act-copy,
+.de-act[data-act-intro] .de-act-stage {
+  transition: opacity 0.5s ease;
+}
+.de-act[data-act-intro]:not(.is-engaged) .de-act-headline {
+  font-size: clamp(2.7rem, 5.6vw, 5rem);
+  line-height: 1.04;
+}
+.de-act[data-act-intro]:not(.is-engaged) .de-act-copy,
+.de-act[data-act-intro]:not(.is-engaged) .de-act-stage {
+  opacity: 0;
+  pointer-events: none;
+}
+.de-act[data-act-intro]:not(.is-engaged) .de-act-watermark {
+  opacity: 0;
+}
+.de-act[data-act-intro].is-engaged .de-act-headline {
+  font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+  opacity: 0.5;
+}
+.de-act[data-act-intro].is-engaged .de-act-tag {
+  opacity: 0.7;
+}
+
+/* ─── copy column: one big morphing line per beat ─── */
+.de-act-copy {
+  position: relative;
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  width: 100%;
+  max-width: 34rem;
+  min-width: 0;
+}
+
+.de-act-lines {
+  position: relative;
+  display: grid;
+}
+.de-act-line {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.85rem);
+  line-height: 1.18;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #fff;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(22px);
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
+}
+.de-act-line.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.de-act-line b {
+  color: var(--de-good);
+  font-weight: 800;
+}
+.de-act[data-phase="bad"] .de-act-line b {
+  color: var(--de-bad);
+}
+
+/* ─── stage column ─── */
+.de-act-stage {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+/* the controller adds .is-locked while the act is pinned fullscreen */
+.de-act.is-locked .de-act-stage {
+  opacity: 1;
+}
+
+.de-act-stage-sticky {
+  position: relative;
+  width: 100%;
+  height: min(62vh, 600px);
+  min-height: 430px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── stage beats ─── */
+.de-beat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  opacity: 0;
+  transform: scale(0.96) translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.de-beat.is-active {
+  opacity: 1;
+  transform: scale(var(--de-beat-fit-scale, 1)) translateY(0);
+  pointer-events: auto;
+}
+
+/* generic per-step reveal inside a beat (JS adds .is-in) */
+.de-beat [data-step] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.55s ease, background 0.55s ease;
+}
+.de-beat [data-step].is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── beat caption pill ─── */
+.de-beat-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  font-family: var(--de-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--de-mid);
+  padding: 8px 14px;
+  border: 1px solid var(--de-line-strong);
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+.de-beat-cap i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--de-good);
+  box-shadow: 0 0 12px var(--de-good);
+  flex: 0 0 auto;
+}
+.de-beat-cap--bad {
+  color: #fff;
+  border-color: rgba(238, 58, 57, 0.4);
+  background: rgba(238, 58, 57, 0.08);
+}
+.de-beat-cap--bad i {
+  background: var(--de-bad);
+  box-shadow: 0 0 12px var(--de-bad);
+}
+.de-beat-cap--good {
+  color: #fff;
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.08);
+}
+/* enlarged "takeaway" caption — the line that should land hardest */
+.de-beat-cap--takeaway {
+  font-size: clamp(1.05rem, 1.9vw, 1.55rem);
+  padding: 14px 26px;
+  gap: 14px;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+}
+.de-beat-cap--takeaway i {
+  width: 12px;
+  height: 12px;
+}
+@media (max-width: 700px) {
+  .de-beat-cap--takeaway {
+    font-size: clamp(0.92rem, 4.4vw, 1.2rem);
+    padding: 12px 16px;
+    letter-spacing: 0.03em;
+  }
+}
+
+/* ═══ mobile ≤1100px — scenes are 115vh each, single column inside the pin ═══ */
+@media (max-width: 1100px) {
+  .de-act--4 { height: 460vh; }
+  .de-act--5 { height: 575vh; }
+  .de-act--6 { height: 690vh; }
+  .de-act--7 { height: 805vh; }
+
+  .de-act-inner {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto max-content minmax(0, 1fr);
+    gap: 6px;
+    padding: calc(var(--nav-height, 72px) + 24px + env(safe-area-inset-top, 0px)) 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    align-content: start;
+    box-sizing: border-box;
+  }
+  @supports (height: 100dvh) {
+    .de-act-inner {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
+  }
+
+  .de-act-watermark {
+    display: none;
+  }
+
+  .de-act-head {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    max-width: none;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .de-act-tag {
+    font-size: 0.58rem;
+    padding: 6px 11px;
+  }
+  .de-act-headline {
+    font-size: clamp(1.6rem, 4.8vw, 2.15rem);
+    line-height: 1.08;
+  }
+  .de-act[data-act-intro]:not(.is-engaged) .de-act-headline {
+    font-size: clamp(1.9rem, 8vw, 2.9rem);
+    line-height: 1.04;
+  }
+  .de-act[data-act-intro].is-engaged .de-act-headline {
+    font-size: clamp(0.92rem, 3.6vw, 1.08rem);
+    opacity: 0.5;
+  }
+
+  .de-act-copy {
+    grid-column: 1;
+    grid-row: 2;
+    max-width: none;
+    align-self: start;
+    min-height: 0;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+  .de-act-line {
+    font-size: clamp(1.25rem, 5.2vw, 1.7rem);
+    line-height: 1.22;
+  }
+
+  .de-act-stage {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: stretch;
+    min-height: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    overflow: clip;
+  }
+  .de-act-stage-sticky {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: clip;
+  }
+
+  .de-beat {
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+    gap: 12px;
+    padding-top: 2px;
+    transform-origin: top center;
+  }
+  .de-beat > * {
+    flex-shrink: 0;
+  }
+
+  .de-beat-cap {
+    width: 100%;
+    justify-content: flex-start;
+    white-space: normal;
+    border-radius: 14px;
+    font-size: 0.62rem;
+    letter-spacing: 0.13em;
+    padding: 9px 12px;
+  }
+}

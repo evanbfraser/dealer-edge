@@ -6,61 +6,11 @@
   'use strict';
 
   /* ─────────────────────────────────────────────────────────────
-     LENIS smooth scroll + GSAP / ScrollTrigger init
+     shared engine (js/de-core.js): Lenis + cursor glow + nav state
      ───────────────────────────────────────────────────────────── */
-  const lenis = new Lenis({
-    duration: 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    smoothTouch: false,
-  });
-
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
-
-  gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.config({ limitCallbacks: true });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
-
-  // Safari's wheel momentum fights programmatic scrolls — snap-to-scene is
-  // disabled there (same detection as marketing.js).
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-  /* ─────────────────────────────────────────────────────────────
-     CUSTOM CURSOR + GLOW (shared with rest of site)
-     ───────────────────────────────────────────────────────────── */
-  const cursor = document.getElementById('custom-cursor');
-  const glow = document.getElementById('cursor-glow');
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if (finePointer && (cursor || glow)) {
-    let tx = window.innerWidth / 2,
-      ty = window.innerHeight / 2;
-    let gx = tx,
-      gy = ty;
-    document.addEventListener('mousemove', (e) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      if (cursor) cursor.style.transform = `translate(${tx}px, ${ty}px)`;
-      if (glow) glow.classList.add('visible');
-    });
-    document.addEventListener('mouseleave', () => glow && glow.classList.remove('visible'));
-    // glow trails the cursor with a lerp (same feel as the homepage), and the
-    // trailing translate keeps it centered — a bare translate(x, y) would
-    // drop the CSS -50%/-50% centering and park the glow 300px off-cursor.
-    if (glow) {
-      (function follow() {
-        gx += (tx - gx) * 0.1;
-        gy += (ty - gy) * 0.1;
-        glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
-        requestAnimationFrame(follow);
-      })();
-    }
-  }
+  const lenis = DE.createLenis();
+  DE.initCursorGlow();
+  DE.initNavScroll();
 
   /* ─────────────────────────────────────────────────────────────
      MOBILE NAV
@@ -90,24 +40,8 @@
     });
   }
 
-  /* ─────────────────────────────────────────────────────────────
-     [data-fade] reveal on scroll-into-view
-     ───────────────────────────────────────────────────────────── */
-  const faders = document.querySelectorAll('[data-fade]');
-  const faderObs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const delay = parseFloat(entry.target.dataset.delay || 0);
-          entry.target.style.transitionDelay = `${delay}s`;
-          entry.target.classList.add('is-visible');
-          faderObs.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.18, rootMargin: '0px 0px -8% 0px' }
-  );
-  faders.forEach((el) => faderObs.observe(el));
+  /* [data-fade] reveal — shared observer in js/de-core.js */
+  DE.initFade();
 
   /* ═════════════════════════════════════════════════════════════
      HERO + STATS  —  continuous 1,000-buyer cohort experience
@@ -1092,16 +1026,16 @@
   // setActiveBeat call which fires during the acts.forEach loop below.)
   let BEAT_ANIMS = {};
 
-  const acts = document.querySelectorAll('.s-act');
+  const acts = document.querySelectorAll('[data-act]');
   const actControllers = [];
 
   function createActController(act) {
-    const inner = act.querySelector('.s-act-inner');
-    const beats = act.querySelectorAll('.s-beat');
-    // line-mode copy (one .s-act-line per beat, like marketing) with a
+    const inner = act.querySelector('.de-act-inner');
+    const beats = act.querySelectorAll('.de-beat');
+    // line-mode copy (one .de-act-line per beat, like marketing) with a
     // fallback to the classic numbered beat rail if an act still uses it
-    const lineCopies = act.querySelectorAll('.s-act-line');
-    const beatCopies = lineCopies.length ? lineCopies : act.querySelectorAll('.s-act-beat');
+    const lineCopies = act.querySelectorAll('.de-act-line');
+    const beatCopies = lineCopies.length ? lineCopies : act.querySelectorAll('.de-act-beat');
     const totalBeats = beats.length;
     // Intro scene mode (ported from marketing): scene 0 holds the act headline
     // at display size (.is-engaged off), beats occupy scenes 1..N. Acts without
@@ -1123,9 +1057,9 @@
     function fitActiveBeatToStage() {
       const idx = act._currentBeat ?? 0;
       const beatEl = beats[idx];
-      const stageEl = act.querySelector('.s-act-stage-sticky');
+      const stageEl = act.querySelector('.de-act-stage-sticky');
 
-      beats.forEach((beat) => beat.style.removeProperty('--s-beat-fit-scale'));
+      beats.forEach((beat) => beat.style.removeProperty('--de-beat-fit-scale'));
       if (!mobileActMedia.matches || !beatEl || !stageEl) return;
 
       const children = Array.from(beatEl.children).filter((child) => {
@@ -1148,7 +1082,7 @@
       const bottomBuffer = mobileActMedia.matches ? 22 : 4;
       const minScale = mobileActMedia.matches ? 0.6 : 0.68;
       const scale = Math.min(1, Math.max(minScale, (availableHeight - bottomBuffer) / contentHeight));
-      beatEl.style.setProperty('--s-beat-fit-scale', scale.toFixed(3));
+      beatEl.style.setProperty('--de-beat-fit-scale', scale.toFixed(3));
     }
 
     function scheduleFitActiveBeat() {
@@ -1198,6 +1132,7 @@
     function lockActAnimations() {
       if (actLocked) return;
       actLocked = true;
+      act.classList.add('is-locked'); // shared chassis fades the stage in while pinned
       // during the intro scene there's no active beat to fire (-1)
       if ((act._currentBeat ?? 0) >= 0) fireBeatAnim(act._currentBeat ?? 0);
     }
@@ -1205,6 +1140,7 @@
     function unlockActAnimations() {
       if (!actLocked) return;
       actLocked = false;
+      act.classList.remove('is-locked');
       invalidateBeatAnims();
     }
 
@@ -2107,75 +2043,14 @@
   actLayoutMq.addEventListener('change', setupActs);
 
   /* ─────────────────────────────────────────────────────────────
-     SNAP-TO-SCENE  (ported from marketing.js — keep the tuned values
-     in sync between the two pages)
-     Once scrolling settles inside a fully-pinned section, ease to the
-     nearest scene center so we always rest cleanly on one beat.
-     Directional: a push >28% past the current scene's center advances
-     to the adjacent scene instead of recoiling backward. Desktop +
-     fine-pointer only; disabled on Safari and for reduced motion.
-     Attached ONCE per section — never inside setupActs(), which re-runs
-     on layout changes and would stack duplicate lenis listeners.
+     SNAP-TO-SCENE — shared tuned implementation in js/de-core.js.
+     Attached ONCE per pinned section — never inside setupActs(),
+     which re-runs on layout changes and would stack duplicate
+     lenis listeners.
      ───────────────────────────────────────────────────────────── */
-  const snapReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function attachSceneSnap(section, sceneCount) {
-    if (!section || !sceneCount) return;
-    const clampN = (v, min, max) => Math.min(max, Math.max(min, v));
-    let snapTimer = 0;
-    let snapping = false;
-    let lastDir = 0;
-    let lastY = window.scrollY;
-    const canSnap = () =>
-      !snapReduceMotion && !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
-    const isLocked = () => {
-      const rect = section.getBoundingClientRect();
-      return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
-    };
-    function trySnap() {
-      snapTimer = 0;
-      if (snapping || !canSnap() || !isLocked()) return;
-      // still coasting (wheel/trackpad momentum)? wait for a real settle —
-      // snapping mid-momentum fights the user's scroll.
-      if (Math.abs(lenis.velocity || 0) > 0.1) {
-        queueSnap();
-        return;
-      }
-      const travel = Math.max(1, section.offsetHeight - window.innerHeight);
-      const f = clampN((window.scrollY - section.offsetTop) / travel, 0, 0.9999) * sceneCount;
-      let scene = Math.floor(f);
-      const frac = f - scene;
-      // directional bias: tiny nudges still rest on the current beat, but a
-      // real push in the direction of travel hands the user to the next one
-      if (lastDir > 0 && frac > 0.78) scene += 1;
-      else if (lastDir < 0 && frac < 0.22) scene -= 1;
-      scene = clampN(scene, 0, sceneCount - 1);
-      const targetY = Math.round(section.offsetTop + ((scene + 0.5) / sceneCount) * travel);
-      if (Math.abs(window.scrollY - targetY) < 4) return;
-      snapping = true;
-      lenis.scrollTo(targetY, {
-        duration: 0.5,
-        easing: (t) => 1 - Math.pow(1 - t, 3),
-        onComplete: () => { snapping = false; },
-      });
-      // safety: clear the guard even if onComplete is pre-empted by user input
-      setTimeout(() => { snapping = false; }, 850);
-    }
-    function queueSnap() {
-      // direction from real position deltas — lenis.velocity isn't reliably
-      // populated at event-callback time, and deltas can't lie
-      const y = window.scrollY;
-      if (Math.abs(y - lastY) > 1) lastDir = y > lastY ? 1 : -1;
-      lastY = y;
-      if (snapping) return;
-      if (snapTimer) clearTimeout(snapTimer);
-      snapTimer = setTimeout(trySnap, 150);
-    }
-    lenis.on('scroll', queueSnap);
-  }
-
-  acts.forEach((act) => attachSceneSnap(act, act._sceneCount));
-  attachSceneSnap(
+  acts.forEach((act) => DE.attachSceneSnap(lenis, act, act._sceneCount));
+  DE.attachSceneSnap(
+    lenis,
     document.querySelector('.s-hero.s-stats-section'),
     document.querySelectorAll('.s-cohort-headline[data-stage]').length
   );
@@ -2440,21 +2315,4 @@
     });
   }
 
-  /* ─────────────────────────────────────────────────────────────
-     NAVBAR — same scroll-hide behavior as rest of site
-     ───────────────────────────────────────────────────────────── */
-  const navbar = document.getElementById('navbar');
-  let lastY = 0;
-  window.addEventListener(
-    'scroll',
-    () => {
-      const y = window.scrollY;
-      if (navbar) {
-        if (y > 80) navbar.classList.add('is-scrolled');
-        else navbar.classList.remove('is-scrolled');
-      }
-      lastY = y;
-    },
-    { passive: true }
-  );
 })();

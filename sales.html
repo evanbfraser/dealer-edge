@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sales | DealerEdge — The AI sales platform that never sleeps</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/de-act.css">
   <link rel="stylesheet" href="css/sales.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -145,32 +146,32 @@
        through 4 beats as you scroll: form submit → silence →
        Monday morning → buyer is gone.
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-act s-act--without" id="act1" data-act-intro>
-    <div class="s-act-inner">
-      <div class="s-act-watermark">WITHOUT&nbsp;&middot;&nbsp;DEALEREDGE</div>
+  <section class="de-act de-act--5 de-act--bad" id="act1" data-act data-act-intro data-phase="bad">
+    <div class="de-act-inner">
+      <div class="de-act-watermark">WITHOUT&nbsp;&middot;&nbsp;DEALEREDGE</div>
 
-      <header class="s-act-scene">
-        <span class="s-act-tag s-act-tag--bad">The old way</span>
-        <h2 class="s-act-headline">
-          Saturday, 11:17 PM. <span class="s-act-headline-faded">Your dealership is closed.</span>
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--bad">The old way</span>
+        <h2 class="de-act-headline">
+          Saturday, 11:17 PM. <span class="de-act-headline-faded">Your dealership is closed.</span>
         </h2>
       </header>
 
-      <div class="s-act-copy">
-        <div class="s-act-lines">
-          <p class="s-act-line" data-beat="1">A buyer fills out a form on your site about a 2022 Malibu Wakesetter. They've been on the listing <b>9 minutes</b>.</p>
-          <p class="s-act-line" data-beat="2">An auto-reply lands in their inbox — <b>"a representative will contact you Monday."</b> They open it. They close it.</p>
-          <p class="s-act-line" data-beat="3">By Sunday morning three other dealers have answered. They're knee-deep in financing — <b>with someone else</b>.</p>
-          <p class="s-act-line" data-beat="4">Monday, 9:42 AM, your sales manager finally dials. <b>"Oh hey — I went with North Lake actually."</b> 59 hours late. You never got a shot.</p>
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">A buyer fills out a form on your site about a 2022 Malibu Wakesetter. They've been on the listing <b>9 minutes</b>.</p>
+          <p class="de-act-line" data-beat="2">An auto-reply lands in their inbox — <b>"a representative will contact you Monday."</b> They open it. They close it.</p>
+          <p class="de-act-line" data-beat="3">By Sunday morning three other dealers have answered. They're knee-deep in financing — <b>with someone else</b>.</p>
+          <p class="de-act-line" data-beat="4">Monday, 9:42 AM, your sales manager finally dials. <b>"Oh hey — I went with North Lake actually."</b> 59 hours late. You never got a shot.</p>
         </div>
       </div>
 
       <!-- Right: media stage — animates per beat -->
-      <div class="s-act-stage">
-        <div class="s-act-stage-sticky">
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
 
           <!-- Beat 1: buyer on the listing page -->
-          <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="act1-beat1">
+          <div class="de-beat de-beat--1 is-active" data-beat="1" data-anim="act1-beat1">
             <div class="s-browser">
               <div class="s-browser-bar">
                 <span class="s-browser-dot"></span>
@@ -215,14 +216,14 @@
                 </div>
               </div>
             </div>
-            <div class="s-beat-cap">
+            <div class="de-beat-cap">
               <span class="s-cap-dot"></span>
               <span class="s-cap-text">11:17 PM Saturday · form submitted</span>
             </div>
           </div>
 
           <!-- Beat 2: auto-reply lands, gets buried, silence from us -->
-          <div class="s-beat s-beat--2" data-beat="2" data-anim="act1-beat2">
+          <div class="de-beat de-beat--2" data-beat="2" data-anim="act1-beat2">
             <div class="s-inbox">
               <div class="s-inbox-header">
                 <span class="s-inbox-title">John's inbox</span>
@@ -236,14 +237,14 @@
                 <span>Nothing further from your dealership.</span>
               </div>
             </div>
-            <div class="s-beat-cap">
+            <div class="de-beat-cap">
               <span class="s-cap-dot"></span>
               <span class="s-cap-text">Your auto-reply, buried by 9 AM</span>
             </div>
           </div>
 
           <!-- Beat 3: timeline — competitors active overnight, you silent -->
-          <div class="s-beat s-beat--3" data-beat="3" data-anim="act1-beat3">
+          <div class="de-beat de-beat--3" data-beat="3" data-anim="act1-beat3">
             <div class="s-timeline">
               <div class="s-timeline-header">
                 <span class="s-timeline-title">John's inbox · timeline</span>
@@ -256,14 +257,14 @@
                 </div>
               </div>
             </div>
-            <div class="s-beat-cap">
+            <div class="de-beat-cap">
               <span class="s-cap-dot"></span>
               <span class="s-cap-text">They reached out. You didn't.</span>
             </div>
           </div>
 
           <!-- Beat 4: the call. Lead 59 hrs old. Buyer rejects. -->
-          <div class="s-beat s-beat--4" data-beat="4" data-anim="act1-beat4">
+          <div class="de-beat de-beat--4" data-beat="4" data-anim="act1-beat4">
             <div class="s-lost">
               <div class="s-lost-header">
                 <div class="s-lost-header-left">
@@ -287,7 +288,7 @@
                 <div class="s-lost-stamp-line"></div>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--bad">
+            <div class="de-beat-cap de-beat-cap--bad">
               <span class="s-cap-dot s-cap-dot--bad"></span>
               <span class="s-cap-text">59 hours late. Already with a competitor.</span>
             </div>
@@ -369,32 +370,32 @@
        Mirror of Act 1. Same buyer, same time. AI intercepts in
        90 seconds, qualifies, books the showing, alerts the rep.
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-act s-act--with" id="act2" data-act-intro>
-    <div class="s-act-inner">
-      <div class="s-act-watermark s-act-watermark--with">WITH&nbsp;&middot;&nbsp;DEALEREDGE</div>
+  <section class="de-act de-act--5 de-act--good" id="act2" data-act data-act-intro data-phase="good">
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--good">WITH&nbsp;&middot;&nbsp;DEALEREDGE</div>
 
-      <header class="s-act-scene">
-        <span class="s-act-tag s-act-tag--good">The new way</span>
-        <h2 class="s-act-headline">
-          Saturday, 11:17 PM. <span class="s-act-headline-accent">The AI Sales Captain is on duty.</span>
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">The new way</span>
+        <h2 class="de-act-headline">
+          Saturday, 11:17 PM. <span class="de-act-headline-accent">The AI Sales Captain is on duty.</span>
         </h2>
       </header>
 
-      <div class="s-act-copy">
-        <div class="s-act-lines">
-          <p class="s-act-line" data-beat="1">Same form. Within <b>47 seconds</b>, John gets a text in your brand voice — about the exact boat he was looking at.</p>
-          <p class="s-act-line" data-beat="2">The AI asks the <b>three qualifying questions</b> your best rep would ask. John answers from his couch.</p>
-          <p class="s-act-line" data-beat="3">By 11:31 PM there's a confirmed showing for <b>Tuesday at 10 AM</b> — full lead profile attached.</p>
-          <p class="s-act-line" data-beat="4">Monday morning the dashboard shows a pre-qualified buyer walking in Tuesday. <b>Total rep time: 0 minutes</b>.</p>
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">Same form. Within <b>47 seconds</b>, John gets a text in your brand voice — about the exact boat he was looking at.</p>
+          <p class="de-act-line" data-beat="2">The AI asks the <b>three qualifying questions</b> your best rep would ask. John answers from his couch.</p>
+          <p class="de-act-line" data-beat="3">By 11:31 PM there's a confirmed showing for <b>Tuesday at 10 AM</b> — full lead profile attached.</p>
+          <p class="de-act-line" data-beat="4">Monday morning the dashboard shows a pre-qualified buyer walking in Tuesday. <b>Total rep time: 0 minutes</b>.</p>
         </div>
       </div>
 
       <!-- Right -->
-      <div class="s-act-stage">
-        <div class="s-act-stage-sticky">
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
 
           <!-- Beat 1: same form, AI engages — sequential reveal -->
-          <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="act2-beat1">
+          <div class="de-beat de-beat--1 is-active" data-beat="1" data-anim="act2-beat1">
             <div class="s-stack">
               <div class="s-stack-item s-stack-item--browser" data-stack-step="1">
                 <div class="s-browser-bar">
@@ -428,28 +429,28 @@
                 </div>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Speed to Lead &lt;90s · Boost conversions by 300%</span>
             </div>
           </div>
 
           <!-- Beat 2: live qualified conversation -->
-          <div class="s-beat s-beat--2" data-beat="2" data-anim="act2-beat2">
+          <div class="de-beat de-beat--2" data-beat="2" data-anim="act2-beat2">
             <div class="s-convo">
               <div class="s-convo-header">SMS · John Castillo · +1 (615) 555-0142</div>
               <div class="s-convo-body" id="act2-convo">
                 <!-- Populated by JS for the typing animation -->
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Qualified. In your voice. While John's in bed.</span>
             </div>
           </div>
 
           <!-- Beat 3: showing booked, lead enriched — sequential reveal -->
-          <div class="s-beat s-beat--3" data-beat="3" data-anim="act2-beat3">
+          <div class="de-beat de-beat--3" data-beat="3" data-anim="act2-beat3">
             <div class="s-card-stack">
               <div class="s-cal-card" data-reveal-step="1">
                 <div class="s-cal-header">
@@ -474,14 +475,14 @@
                 <div class="s-profile-row s-profile-row--hot" data-row="6"><span class="s-profile-k">Score</span><span class="s-profile-v">94 · Hot lead</span></div>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Showing booked. Profile auto-enriched. Hot.</span>
             </div>
           </div>
 
           <!-- Beat 4: Monday morning dashboard — cycles through 4 tabs -->
-          <div class="s-beat s-beat--4" data-beat="4" data-anim="act2-beat4">
+          <div class="de-beat de-beat--4" data-beat="4" data-anim="act2-beat4">
             <div class="s-dash s-dash--mini">
               <div class="s-dash-header">
                 <span class="s-dash-title">Monday · 7:02 AM</span>
@@ -522,7 +523,7 @@
                 Tuesday 10 AM — John Castillo, pre-qualified, walking in. Rep time so far: 0 min.
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Pre-qualified buyer walks in Tuesday. Boat sold.</span>
             </div>
@@ -626,34 +627,34 @@
        Six scroll-pinned beats: validation → ingestion → enrichment →
        concierge routing → ROI calculator → philosophy close.
        ────────────────────────────────────────────────────────────── -->
-  <section class="s-act s-act--with s-act--team" id="act4" data-act-intro>
-    <div class="s-act-inner">
-      <div class="s-act-watermark s-act-watermark--with">SALES&nbsp;TEAM&nbsp;&middot;&nbsp;ON DEALEREDGE</div>
+  <section class="de-act de-act--7 de-act--good s-act--team" id="act4" data-act data-act-intro data-phase="good">
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--good">SALES&nbsp;TEAM&nbsp;&middot;&nbsp;ON DEALEREDGE</div>
 
-      <header class="s-act-scene">
-        <span class="s-act-tag s-act-tag--good">What the team actually does now</span>
-        <h2 class="s-act-headline">
-          The bullshit, off your desk. <span class="s-act-headline-accent">The customer, back in front of you.</span>
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">What the team actually does now</span>
+        <h2 class="de-act-headline">
+          The bullshit, off your desk. <span class="de-act-headline-accent">The customer, back in front of you.</span>
         </h2>
       </header>
 
-      <div class="s-act-copy">
-        <div class="s-act-lines">
-          <p class="s-act-line" data-beat="1"><b>One funnel for every source.</b> Your site, Aimbase, BoatTrader, Facebook — all routed through one AI layer.</p>
-          <p class="s-act-line" data-beat="2"><b>Garbage never gets in.</b> Eight overnight forms, five never reach a rep — bots, dead phones, throwaway domains.</p>
-          <p class="s-act-line" data-beat="3"><b>Forensic enrichment.</b> Employer, neighborhood, prior visits, favorited boats — and one judgment line: capable of this purchase.</p>
-          <p class="s-act-line" data-beat="4"><b>Pre-qualified and routed.</b> 60-second response, qualifying questions asked, booked with the rep who actually sells the boat — Mike, not Bob.</p>
-          <p class="s-act-line" data-beat="5"><b>The math.</b> Same leads, faster response, smarter routing. What that does to your close rate isn't a guess — try the numbers.</p>
-          <p class="s-act-line" data-beat="6"><b>Your salespeople are people-people.</b> The admin work is off their desk so they can do the one thing that closes deals — be present.</p>
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1"><b>One funnel for every source.</b> Your site, Aimbase, BoatTrader, Facebook — all routed through one AI layer.</p>
+          <p class="de-act-line" data-beat="2"><b>Garbage never gets in.</b> Eight overnight forms, five never reach a rep — bots, dead phones, throwaway domains.</p>
+          <p class="de-act-line" data-beat="3"><b>Forensic enrichment.</b> Employer, neighborhood, prior visits, favorited boats — and one judgment line: capable of this purchase.</p>
+          <p class="de-act-line" data-beat="4"><b>Pre-qualified and routed.</b> 60-second response, qualifying questions asked, booked with the rep who actually sells the boat — Mike, not Bob.</p>
+          <p class="de-act-line" data-beat="5"><b>The math.</b> Same leads, faster response, smarter routing. What that does to your close rate isn't a guess — try the numbers.</p>
+          <p class="de-act-line" data-beat="6"><b>Your salespeople are people-people.</b> The admin work is off their desk so they can do the one thing that closes deals — be present.</p>
         </div>
       </div>
 
       <!-- Right media stage -->
-      <div class="s-act-stage">
-        <div class="s-act-stage-sticky">
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
 
           <!-- Beat 1: multi-source ingestion incl Aimbase (NEW ORDER) -->
-          <div class="s-beat s-beat--1 is-active" data-beat="1" data-anim="act4-beat1">
+          <div class="de-beat de-beat--1 is-active" data-beat="1" data-anim="act4-beat1">
             <div class="s-sources">
               <div class="s-sources-col s-sources-col--in">
                 <div class="s-src-tile s-src-tile--site" data-src="site">
@@ -706,14 +707,14 @@
               </div>
               <div class="s-sources-particles" data-funnel-particles></div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Every source. One funnel. One source of truth.</span>
             </div>
           </div>
 
           <!-- Beat 2: lead validation — 8 leads in, 5 get killed (NEW ORDER) -->
-          <div class="s-beat s-beat--2" data-beat="2" data-anim="act4-beat2">
+          <div class="de-beat de-beat--2" data-beat="2" data-anim="act4-beat2">
             <div class="s-bounce-scene" data-bounce-scene>
               <div class="s-bs-feed" data-bs-feed></div>
               <div class="s-bs-shield" data-bs-shield>
@@ -777,14 +778,14 @@
                 <span class="s-validator-stat"><strong>~4 hrs/week</strong> of filtering, returned to your team</span>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Garbage in. Never gets in.</span>
             </div>
           </div>
 
           <!-- Beat 3: forensic enrichment with the judgment line -->
-          <div class="s-beat s-beat--3" data-beat="3" data-anim="act4-beat3">
+          <div class="de-beat de-beat--3" data-beat="3" data-anim="act4-beat3">
             <div class="s-forensic">
               <div class="s-forensic-header" data-fr-reveal>
                 <span class="s-forensic-title">John Castillo</span>
@@ -807,14 +808,14 @@
                 <div class="s-judge-sub">Sources: LinkedIn, county records, prior-session behavior, public real estate</div>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Not just a name. A judgment.</span>
             </div>
           </div>
 
           <!-- Beat 4: AI concierge + rep specialty routing -->
-          <div class="s-beat s-beat--4" data-beat="4" data-anim="act4-beat4">
+          <div class="de-beat de-beat--4" data-beat="4" data-anim="act4-beat4">
             <div class="s-routing">
               <div class="s-routing-lead" data-routing-lead>
                 <div class="s-routing-lead-name">John Castillo</div>
@@ -852,14 +853,14 @@
                 <span class="s-routing-result-text">Showing booked on <strong>Mike's</strong> calendar · Tue 10 AM · invite sent to John</span>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">The right rep. The right boat. The right calendar slot.</span>
             </div>
           </div>
 
           <!-- Beat 5: ROI calculator (interactive) -->
-          <div class="s-beat s-beat--5" data-beat="5" data-anim="act4-beat5">
+          <div class="de-beat de-beat--5" data-beat="5" data-anim="act4-beat5">
             <div class="s-roi" id="roi-calc">
               <div class="s-roi-header">
                 <span class="s-roi-title">What this does to your bottom line</span>
@@ -918,14 +919,14 @@
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round"><path d="M5.5 3.5l11.7 9.2-5.6 0.9 3.5 6.6-2.7 1.5-3.5-6.6-3.4 4z"/></svg>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Same leads. 50% more boats. Same team.</span>
             </div>
           </div>
 
           <!-- Beat 6: philosophy close + foreshadow -->
-          <div class="s-beat s-beat--6" data-beat="6" data-anim="act4-beat6">
+          <div class="de-beat de-beat--6" data-beat="6" data-anim="act4-beat6">
             <div class="s-closer">
               <div class="s-closer-quote s-closer-reveal" data-cl-reveal>
                 "Your salespeople are people-people. That's why you hired them. We took the bullshit off their desk so they can be that."
@@ -956,7 +957,7 @@
                 </span>
               </div>
             </div>
-            <div class="s-beat-cap s-beat-cap--good">
+            <div class="de-beat-cap de-beat-cap--good">
               <span class="s-cap-dot s-cap-dot--good"></span>
               <span class="s-cap-text">Let salespeople sell. AI runs the rest.</span>
             </div>
@@ -1070,6 +1071,7 @@
   <script src="js/mobile-nav.js"></script>
   <script src="js/demo-modal.js"></script>
   <script src="js/section-video-boat.js"></script>
+  <script src="js/de-core.js"></script>
   <script src="js/sales.js"></script>
 </body>
 </html>
