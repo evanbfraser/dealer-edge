@@ -21,6 +21,7 @@
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initFade();
+  initImageCompareCursorRelief();
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
     window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
@@ -43,7 +44,7 @@
     'inv-stale': playStale,
     'inv-synd': playSynd,
     'inv-dash': playDash,
-    'inv-price': playPrice,
+    'inv-map': playMapGuard,
   };
 
   DE.initActs(lenis, { anims: BEAT_ANIMS, cleanups: animCleanups });
@@ -70,17 +71,36 @@
     els.forEach((el, i) => schedule(stillCurrent, start + i * step, () => el.classList.add(className)));
   }
 
-  function countUp(el, to, ms, stillCurrent, format) {
-    const start = performance.now();
-    const fmt = format || ((v) => Math.round(v).toLocaleString('en-US'));
-    function frame(now) {
-      if (typeof stillCurrent === 'function' && !stillCurrent()) return;
-      const p = Math.min(1, (now - start) / ms);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmt(to * eased);
-      if (p < 1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
+  function initImageCompareCursorRelief() {
+    const compares = [...document.querySelectorAll('[data-hero-wipe], [data-ba]')];
+    if (!compares.length) return;
+
+    const showImagesCleanly = () => document.body.classList.add('is-image-compare-hover');
+    const restoreGlow = () => document.body.classList.remove('is-image-compare-hover');
+
+    compares.forEach((compare) => {
+      let hovering = false;
+      let dragging = false;
+
+      compare.addEventListener('pointerenter', () => {
+        hovering = true;
+        showImagesCleanly();
+      });
+      compare.addEventListener('pointerleave', () => {
+        hovering = false;
+        if (!dragging) restoreGlow();
+      });
+      compare.addEventListener('pointerdown', () => {
+        dragging = true;
+        showImagesCleanly();
+      });
+      const endDrag = () => {
+        dragging = false;
+        if (!hovering) restoreGlow();
+      };
+      window.addEventListener('pointerup', endDrag);
+      window.addEventListener('pointercancel', endDrag);
+    });
   }
 
   /* ═════════════════════════════════════════════════════════════
@@ -195,16 +215,26 @@
       frame.style.setProperty('--ba', pct + '%');
     };
     frame.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
       frame.__baDragging = true;
+      frame.classList.add('is-dragging');
       frame.setPointerCapture?.(e.pointerId);
       setFromEvent(e);
     });
     frame.addEventListener('pointermove', (e) => {
-      if (frame.__baDragging) setFromEvent(e);
+      if (!frame.__baDragging) return;
+      e.preventDefault();
+      setFromEvent(e);
     });
-    const release = () => { frame.__baDragging = false; };
+    const release = () => {
+      frame.__baDragging = false;
+      frame.classList.remove('is-dragging');
+    };
     frame.addEventListener('pointerup', release);
     frame.addEventListener('pointercancel', release);
+    frame.addEventListener('dragstart', (e) => e.preventDefault());
+    frame.addEventListener('selectstart', (e) => e.preventDefault());
   }
 
   function playBeforeAfter(beatEl, stillCurrent) {
@@ -300,8 +330,8 @@
   /* ═════════════════════════════════════════════════════════════
      ACT 2 · BEAT 2 — category pages rank + AI answer types in
      ═════════════════════════════════════════════════════════════ */
-  const FOUND_ANSWER_PLAIN = 'Premier Watersports — the largest in-stock pontoon selection near Nashville, with transparent pricing and same-week showings.';
-  const FOUND_ANSWER_HTML = '<b>Premier Watersports</b> — the largest in-stock pontoon selection near Nashville, with transparent pricing and same-week showings.';
+  const FOUND_ANSWER_PLAIN = 'Premier Watersports — the largest in-stock pontoon selection near Nashville, with complete listings and same-week showings.';
+  const FOUND_ANSWER_HTML = '<b>Premier Watersports</b> — the largest in-stock pontoon selection near Nashville, with complete listings and same-week showings.';
 
   function playRank(beatEl, stillCurrent) {
     beatEl.classList.add('is-playing');
@@ -398,7 +428,6 @@
     const rows = [...beatEl.querySelectorAll('[data-dash-row]')];
     const checks = [...beatEl.querySelectorAll('[data-dash-check]')];
     const bulk = beatEl.querySelector('[data-dash-bulk]');
-    const prices = [...beatEl.querySelectorAll('[data-dash-price]')];
     const note = beatEl.querySelector('[data-dash-note]');
     if (!rows.length) return;
 
@@ -406,46 +435,41 @@
     checks.forEach((c) => c.classList.remove('is-checked'));
     bulk?.classList.remove('is-in');
     note?.classList.remove('is-in');
-    prices.forEach((p) => {
-      p.classList.remove('is-drop');
-      if (p.dataset.from) p.textContent = p.dataset.from;
-    });
 
     staggerIn(stillCurrent, rows, 250, 170);
     staggerIn(stillCurrent, checks, 1200, 180, 'is-checked');
     schedule(stillCurrent, 1900, () => bulk?.classList.add('is-in'));
-    prices.forEach((price, i) => {
-      if (!price.dataset.to) return;
-      schedule(stillCurrent, 2500 + i * 220, () => {
-        price.textContent = price.dataset.to;
-        price.classList.add('is-drop');
-      });
-    });
-    schedule(stillCurrent, 3400, () => note?.classList.add('is-in'));
+    schedule(stillCurrent, 2600, () => note?.classList.add('is-in'));
   }
 
   /* ═════════════════════════════════════════════════════════════
-     ACT 2 · BEAT 6 — territory-aware pricing engine
+     ACT 2 · BEAT 6 — MAP compliance by brand (new boats)
+     A rep lists below the brand's MAP floor → the platform holds
+     it before publish → advertised at the floor, compliant.
      ═════════════════════════════════════════════════════════════ */
-  function playPrice(beatEl, stillCurrent) {
+  function playMapGuard(beatEl, stillCurrent) {
     beatEl.classList.add('is-playing');
-    const rows = [...beatEl.querySelectorAll('[data-price-row]')];
-    const result = beatEl.querySelector('[data-price-result]');
-    const value = beatEl.querySelector('[data-price-value]');
-    const badge = beatEl.querySelector('[data-price-badge]');
-    if (!result || !value) return;
+    const rows = [...beatEl.querySelectorAll('[data-map-row]')];
+    const attempt = beatEl.querySelector('[data-map-attempt]');
+    const flag = beatEl.querySelector('[data-map-flag]');
+    const result = beatEl.querySelector('[data-map-result]');
+    const badge = beatEl.querySelector('[data-map-badge]');
+    if (!attempt || !result) return;
 
     rows.forEach((r) => r.classList.remove('is-in'));
+    attempt.classList.remove('is-in', 'is-blocked');
+    flag?.classList.remove('is-in');
     result.classList.remove('is-in');
     badge?.classList.remove('is-in');
-    value.textContent = '$0';
 
-    const target = Number(value.dataset.to) || 0;
     staggerIn(stillCurrent, rows, 300, 240);
-    schedule(stillCurrent, 1500, () => {
-      result.classList.add('is-in');
-      countUp(value, target, reduceMotion ? 60 : 900, stillCurrent, (v) => '$' + Math.round(v).toLocaleString('en-US'));
+    schedule(stillCurrent, 1050, () => attempt.classList.add('is-in'));
+    schedule(stillCurrent, 1750, () => {
+      attempt.classList.add('is-blocked');
+      flag?.classList.add('is-in');
     });
-    schedule(stillCurrent, 2700, () => badge?.classList.add('is-in'));
+    schedule(stillCurrent, 2650, () => result.classList.add('is-in'));
+    schedule(stillCurrent, 3300, () => badge?.classList.add('is-in'));
   }
+
 })();
