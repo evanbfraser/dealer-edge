@@ -264,7 +264,7 @@ body {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: clamp(18px, 2.3vw, 36px);
 }
 
 .nav-links a {
@@ -274,6 +274,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.01em;
   transition: color 0.2s;
+  white-space: nowrap;
 }
 
 .nav-links a:hover {

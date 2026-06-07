@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics | DealerEdge - Optimize to sold boats, not clicks</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/de-act.css">
+  <link rel="stylesheet" href="css/analytics.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="analytics-page">
+
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Scroll</span>
+    </div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="sales.html">Sales</a>
+        <a href="marketing.html" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="inventory.html" style="position:relative;">Inventory <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="analytics.html" class="nav-link--active" style="position:relative;">Analytics <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
+      <a href="features.html">Features</a>
+      <a href="sales.html">Sales</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="analytics.html" class="nav-link--active">Analytics</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="case-studies.html">Results</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="a-hero" id="analytics-proof" data-analytics-hero>
+      <div class="a-hero-bg" aria-hidden="true">
+        <div class="a-grid"></div>
+        <div class="a-glow a-glow--bad"></div>
+        <div class="a-glow a-glow--good"></div>
+      </div>
+
+      <div class="a-hero-pin">
+        <div class="a-hero-inner">
+          <div class="a-hero-copy" aria-live="polite">
+            <div class="a-hero-slide is-active" data-hero-stage="0">
+              <span class="a-kicker">DealerEdge Analytics</span>
+              <h1>Month-end reports<br class="a-mobile-break"> tell you what<br class="a-mobile-break"> happened <span>after the money<br class="a-mobile-break"> is gone.</span></h1>
+              <p>By the time the PDF lands, the ad spend is spent, the slow follow-up already cost you buyers, and nobody can say what actually sold boats.</p>
+            </div>
+            <div class="a-hero-slide" data-hero-stage="1">
+              <span class="a-kicker a-kicker--good">Live control room</span>
+              <h1>DealerEdge shows<br class="a-mobile-break"> what is working <span>while you can still<br class="a-mobile-break"> change it.</span></h1>
+              <p>Search, ads, website, calls, SMS, chat, inventory, and sales all flow into one live report your team can read without a data analyst.</p>
+            </div>
+            <div class="a-hero-slide" data-hero-stage="2">
+              <span class="a-kicker a-kicker--good">Optimization loop</span>
+              <h1>Then our AI optimizes<br class="a-mobile-break"> to <span>sold boats,<br class="a-mobile-break"> not clicks.</span></h1>
+              <p>The platform is built to map marketing and sales back to purchases, so budget shifts toward the channels, campaigns, and conversations that create real deals.</p>
+            </div>
+          </div>
+
+          <div class="a-hero-machine" data-analytics-machine>
+            <div class="a-source-ring" aria-hidden="true">
+              <span class="a-source a-source--ga" style="--i:0">Google Analytics</span>
+              <span class="a-source a-source--gsc" style="--i:1">Search Console</span>
+              <span class="a-source a-source--sem" style="--i:2">SEMrush</span>
+              <span class="a-source a-source--gads" style="--i:3">Google Ads</span>
+              <span class="a-source a-source--meta" style="--i:4">Meta Ads</span>
+              <span class="a-source a-source--calls" style="--i:5">Calls</span>
+              <span class="a-source a-source--sms" style="--i:6">SMS</span>
+              <span class="a-source a-source--chat" style="--i:7">Chat</span>
+              <span class="a-source a-source--inv" style="--i:8">Inventory</span>
+              <span class="a-source a-source--sales" style="--i:9">Sales</span>
+            </div>
+
+            <div class="a-dashboard-shell">
+              <div class="a-dashboard-bar">
+                <span></span><span></span><span></span>
+                <em data-hero-report-title>month-end-report.pdf</em>
+              </div>
+              <img src="assets/Analytics/DE-Analytics Report.png" alt="DealerEdge analytics report showing lead performance, source attribution, sales pipeline, revenue, ad spend, and recent lead activity">
+              <div class="a-report-scrim" aria-hidden="true"></div>
+              <div class="a-stage-badge a-stage-badge--old" data-stage-badge="old">
+                <span>Delivered late</span>
+                <b>Budget already spent</b>
+              </div>
+              <div class="a-stage-badge a-stage-badge--live" data-stage-badge="live">
+                <span>Live now</span>
+                <b>327 leads tracked</b>
+              </div>
+              <div class="a-stage-badge a-stage-badge--ai" data-stage-badge="ai">
+                <span>AI action</span>
+                <b>Shift spend to sold boats</b>
+              </div>
+              <div class="a-live-overlay" aria-hidden="true">
+                <span>Live source merge</span>
+                <b>All channels flowing into one report</b>
+                <i style="--w:92%"><em>Search + SEO</em></i>
+                <i style="--w:78%"><em>Ads + spend</em></i>
+                <i style="--w:86%"><em>Calls + SMS + chat</em></i>
+                <i style="--w:68%"><em>Inventory + sales</em></i>
+              </div>
+            </div>
+
+            <div class="a-hero-output" aria-hidden="true">
+              <span class="a-output-item a-output-item--bad">Clicks <b>?</b></span>
+              <span class="a-output-item a-output-item--mid">Pipeline <b>live</b></span>
+              <span class="a-output-item a-output-item--good">Sold boats <b>40</b></span>
+            </div>
+            <div class="a-hero-next" data-hero-next>Scroll to see the loop.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="de-includes" id="includes" data-fade>
+      <div class="de-includes-inner">
+        <header class="de-includes-head">
+          <span class="de-section-label">Everything included</span>
+          <h2>Everything you need to go from scattered data <span>to better decisions, automatically.</span></h2>
+          <p>No waiting for month-end. No spreadsheet stitching. No guessing which channel actually moved a boat.</p>
+        </header>
+        <div class="de-includes-grid">
+          <div class="de-includes-col">
+            <div class="de-includes-pillar"><span>Pull</span><b>Every source, in</b></div>
+            <ul>
+              <li style="--i:0">Google Analytics, Search Console, SEMrush, Google Ads, and Meta Ads</li>
+              <li style="--i:1">SMS, calls, chat, form, and lead activity</li>
+              <li style="--i:2">Inventory, campaign, pipeline, and revenue data in one view</li>
+              <li style="--i:3">Live refresh instead of end-of-month PDFs</li>
+            </ul>
+          </div>
+          <div class="de-includes-col">
+            <div class="de-includes-pillar"><span>Prove</span><b>Every result, connected</b></div>
+            <ul>
+              <li style="--i:0">Lead source performance by channel and campaign</li>
+              <li style="--i:1">Cost per lead, conversion rate, pipeline stage, and revenue attribution</li>
+              <li style="--i:2">Communication analytics from first response to won deal</li>
+              <li style="--i:3">Built to map marketing and sales back to purchases</li>
+            </ul>
+          </div>
+          <div class="de-includes-col">
+            <div class="de-includes-pillar"><span>Improve</span><b>Every day, optimized</b></div>
+            <ul>
+              <li style="--i:0">AI flags leaks while there is still time to fix them</li>
+              <li style="--i:1">Budget shifts toward campaigns producing qualified buyers</li>
+              <li style="--i:2">Sales managers see response, appointment, and show-rate problems fast</li>
+              <li style="--i:3">Plain-English priorities for owners and operators</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="de-compare" id="compare" data-fade style="--de-compare-label-old: 'WITHOUT DEALEREDGE'; --de-compare-label-new: 'WITH DEALEREDGE';">
+      <div class="de-compare-inner">
+        <header class="de-compare-head">
+          <span class="de-section-label">Before &amp; after</span>
+          <h2>Same dealership. Same budget. <span>Completely different visibility.</span></h2>
+          <p>Analytics should tell you what to do next, not just what happened last month.</p>
+        </header>
+
+        <div class="de-compare-grid" role="table" aria-label="Without DealerEdge versus with DealerEdge analytics">
+          <div class="de-compare-cell de-compare-cell--head de-compare-col-service" role="columnheader">What you get</div>
+          <div class="de-compare-cell de-compare-cell--head de-compare-col-old" role="columnheader">Without DealerEdge</div>
+          <div class="de-compare-cell de-compare-cell--head de-compare-col-new" role="columnheader">With DealerEdge</div>
+
+          <div class="de-compare-cell de-compare-service" style="--i:0"><b>Reporting speed</b></div>
+          <div class="de-compare-cell de-compare-old" style="--i:1">A month-end PDF after the spend is already gone.</div>
+          <div class="de-compare-cell de-compare-new" style="--i:2">Live reporting while the month is still happening.</div>
+
+          <div class="de-compare-cell de-compare-service" style="--i:3"><b>Data sources</b></div>
+          <div class="de-compare-cell de-compare-old" style="--i:4">Google, Meta, SEO, calls, SMS, CRM, and inventory all tell separate stories.</div>
+          <div class="de-compare-cell de-compare-new" style="--i:5">One dashboard pulls the sources together and uses shared definitions.</div>
+
+          <div class="de-compare-cell de-compare-service" style="--i:6"><b>Attribution</b></div>
+          <div class="de-compare-cell de-compare-old" style="--i:7">Clicks, impressions, and leads. Then the trail goes cold.</div>
+          <div class="de-compare-cell de-compare-new" style="--i:8">Traffic to lead, lead to appointment, appointment to won deal.</div>
+
+          <div class="de-compare-cell de-compare-service" style="--i:9"><b>Sales visibility</b></div>
+          <div class="de-compare-cell de-compare-old" style="--i:10">Response problems show up after the buyer has already moved on.</div>
+          <div class="de-compare-cell de-compare-new" style="--i:11">Speed-to-lead, contact rate, show rate, and handoffs update live.</div>
+
+          <div class="de-compare-cell de-compare-service" style="--i:12"><b>Optimization</b></div>
+          <div class="de-compare-cell de-compare-old" style="--i:13">Humans review the report later and guess what to change.</div>
+          <div class="de-compare-cell de-compare-new" style="--i:14">AI flags leaks and optimizes spend toward qualified buyers multiple times a day.</div>
+
+          <div class="de-compare-cell de-compare-service" style="--i:15"><b>Owner view</b></div>
+          <div class="de-compare-cell de-compare-old" style="--i:16">Too many dashboards. No single answer.</div>
+          <div class="de-compare-cell de-compare-new" style="--i:17">Plain-English priorities: what worked, what broke, and what to do today.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="de-act de-act--7 de-act--good" id="month-end" data-act data-act-intro>
+      <div class="de-act-inner">
+        <div class="de-act-watermark de-act-watermark--bad">THE MONTH-END GUESS</div>
+        <div class="de-act-watermark de-act-watermark--good">THE LIVE CONTROL ROOM</div>
+        <header class="de-act-head">
+          <span class="de-act-tag de-act-tag--good">Pull + prove</span>
+          <h2 class="de-act-headline">Stop learning after the money is spent. <span class="de-act-headline-faded">See the month while it is still moving.</span></h2>
+        </header>
+        <div class="de-act-copy">
+          <div class="de-act-lines">
+            <p class="de-act-line" data-beat="1">Your report arrives after the budget is gone. It explains last month, but it cannot <b>save this month</b>.</p>
+            <p class="de-act-line" data-beat="2">DealerEdge updates while buyers are still shopping, so you can see <b>what is working today</b>.</p>
+            <p class="de-act-line" data-beat="3">Your data lives in separate platforms. Each one counts something different, and none of them sees the <b>whole deal</b>.</p>
+            <p class="de-act-line" data-beat="4">DealerEdge pulls every source into one platform: search, ads, site, calls, SMS, chat, inventory, and sales.</p>
+            <p class="de-act-line" data-beat="5">Most attribution stops at the click. You paid for a lead, but nobody can prove whether it became a <b>sold boat</b>.</p>
+            <p class="de-act-line" data-beat="6">Now the path is visible: search to listing, listing to conversation, conversation to appointment, appointment to <b>won deal</b>.</p>
+          </div>
+        </div>
+        <div class="de-act-stage">
+          <div class="de-act-stage-sticky">
+            <div class="de-beat is-active" data-beat="1" data-anim="ana-late-report" data-phase="bad">
+              <div class="a-late-report">
+                <div class="a-paper" data-step>
+                  <span>Month-end PDF</span>
+                  <b>Delivered Jun 4</b>
+                  <em>May 1 - May 31</em>
+                </div>
+                <div class="a-spend-meter" data-step>
+                  <span>Budget spent</span>
+                  <strong>$9,301.60</strong>
+                  <i><b></b></i>
+                </div>
+                <div class="a-question-stack">
+                  <span data-step>Which campaign sold boats?</span>
+                  <span data-step>Which leads were qualified?</span>
+                  <span data-step>Where did buyers disappear?</span>
+                </div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Too late to change the month.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="2" data-anim="ana-live-report" data-phase="good">
+              <div class="a-live-report">
+                <div class="a-live-head" data-step><span>Live report</span><b>Updated 2 min ago</b></div>
+                <div class="a-live-grid">
+                  <div class="a-live-card" data-step><span>Total leads</span><b data-count-to="327">0</b><em>+18.4%</em></div>
+                  <div class="a-live-card" data-step><span>Cost / lead</span><b data-count-prefix="$" data-count-to="28">0</b><em>-12.7%</em></div>
+                  <div class="a-live-card" data-step><span>Won deals</span><b data-count-to="40">0</b><em>+3.6pp</em></div>
+                  <div class="a-live-card" data-step><span>Attributed revenue</span><b data-count-prefix="$" data-count-to="612" data-count-suffix="k">0</b><em>+26.3%</em></div>
+                </div>
+                <div class="a-live-chart" data-step aria-label="Live lead trend rising through the month">
+                  <div class="a-live-chart-head"><span>Lead trend</span><b>live month</b></div>
+                  <svg viewBox="0 0 640 132" role="img" aria-hidden="true" focusable="false">
+                    <g class="a-chart-grid" aria-hidden="true">
+                      <path d="M42 24H606 M42 52H606 M42 80H606 M42 108H606"/>
+                      <path d="M42 18V112 M154 18V112 M266 18V112 M378 18V112 M490 18V112 M606 18V112"/>
+                    </g>
+                    <path class="a-chart-area" d="M42 108 L42 88 C72 85 92 76 124 77 C152 78 178 83 210 69 C238 57 260 62 292 61 C326 60 346 44 378 47 C408 50 430 45 462 36 C492 28 520 35 548 25 C570 17 588 20 606 15 L606 108 Z"/>
+                    <path class="a-chart-line" pathLength="1" d="M42 88 C72 85 92 76 124 77 C152 78 178 83 210 69 C238 57 260 62 292 61 C326 60 346 44 378 47 C408 50 430 45 462 36 C492 28 520 35 548 25 C570 17 588 20 606 15"/>
+                    <g class="a-chart-points" aria-hidden="true">
+                      <circle cx="42" cy="88" r="4"/><circle cx="124" cy="77" r="4"/><circle cx="210" cy="69" r="4"/><circle cx="292" cy="61" r="4"/><circle cx="378" cy="47" r="4"/><circle cx="462" cy="36" r="4"/><circle cx="548" cy="25" r="4"/><circle cx="606" cy="15" r="5"/>
+                    </g>
+                  </svg>
+                  <div class="a-live-chart-labels"><span>May 18</span><span>Today</span></div>
+                </div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>The month is still alive.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="3" data-anim="ana-scattered" data-phase="bad">
+              <div class="a-scattered">
+                <span data-step>Google Analytics <b>sessions</b></span>
+                <span data-step>Google Ads <b>clicks</b></span>
+                <span data-step>Meta Ads <b>impressions</b></span>
+                <span data-step>Search Console <b>queries</b></span>
+                <span data-step>SMS <b>threads</b></span>
+                <span data-step>CRM <b>stages</b></span>
+                <div class="a-scattered-export" data-step>export CSV &rarr; spreadsheet &rarr; guess</div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Every source has a different scoreboard.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="4" data-anim="ana-unify" data-phase="good">
+              <div class="a-unify">
+                <div class="a-unify-sources">
+                  <span data-step>GA4</span><span data-step>GSC</span><span data-step>SEMrush</span><span data-step>Ads</span><span data-step>Meta</span><span data-step>Calls</span><span data-step>SMS</span><span data-step>Chat</span>
+                </div>
+                <div class="a-unify-core" data-step>
+                  <b>DealerEdge Analytics</b>
+                  <span>shared definitions</span>
+                </div>
+                <div class="a-unify-output" data-step>
+                  <span>Leads</span><span>Pipeline</span><span>Revenue</span><span>Won deals</span>
+                </div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>All the data. One operating view.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="5" data-anim="ana-clicks" data-phase="bad">
+              <div class="a-click-path">
+                <div class="a-path-node" data-step><span>Ad click</span><b>$28.41 CPL</b></div>
+                <div class="a-path-line" data-step></div>
+                <div class="a-path-node" data-step><span>Lead</span><b>source known</b></div>
+                <div class="a-path-line a-path-line--broken" data-step></div>
+                <div class="a-path-node a-path-node--unknown" data-step><span>Sold boat?</span><b>?</b></div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Clicks are not a business outcome.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="6" data-anim="ana-sold-path" data-phase="good">
+              <div class="a-sold-path">
+                <div class="a-path-node" data-step><span>Search</span><b>Wakesetter near me</b></div>
+                <div class="a-path-line" data-step></div>
+                <div class="a-path-node" data-step><span>Listing</span><b>viewed 4x</b></div>
+                <div class="a-path-line" data-step></div>
+                <div class="a-path-node" data-step><span>Conversation</span><b>qualified</b></div>
+                <div class="a-path-line" data-step></div>
+                <div class="a-path-node a-path-node--won" data-step><span>Won deal</span><b>$162,900</b></div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>Marketing finally connects to sold boats.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="de-act de-act--7 de-act--good" id="data-that-changes-day" data-act data-act-intro>
+      <div class="de-act-inner">
+        <div class="de-act-watermark de-act-watermark--bad">DATA THAT SITS</div>
+        <div class="de-act-watermark de-act-watermark--good">DATA THAT ACTS</div>
+        <header class="de-act-head">
+          <span class="de-act-tag de-act-tag--good">Improve</span>
+          <h2 class="de-act-headline">The dashboard is not the finish line. <span class="de-act-headline-faded">It is the feedback loop.</span></h2>
+        </header>
+        <div class="de-act-copy">
+          <div class="de-act-lines">
+            <p class="de-act-line" data-beat="1">A lead waits hours for a reply, then buys from the dealer who answered first. The report calls it a <b>missed opportunity</b>.</p>
+            <p class="de-act-line" data-beat="2">DealerEdge sees the handoff live: <b>42-second</b> speed-to-lead, 100% validated contact rate, and appointments moving.</p>
+            <p class="de-act-line" data-beat="3">Not every lead source is equal. The dashboard shows which channels bring shoppers, and which bring <b>buyers</b>.</p>
+            <p class="de-act-line" data-beat="4">Funnel leaks show up early: contact rate, appointment set rate, show rate, and won deals by channel.</p>
+            <p class="de-act-line" data-beat="5">The AI shifts budget toward what is producing qualified buyers, not what is producing cheap clicks.</p>
+            <p class="de-act-line" data-beat="6">Owners get the only report that matters: what worked, what broke, and what to fix <b>today</b>.</p>
+          </div>
+        </div>
+        <div class="de-act-stage">
+          <div class="de-act-stage-sticky">
+            <div class="de-beat is-active" data-beat="1" data-anim="ana-slow-response" data-phase="bad">
+              <div class="a-response-risk">
+                <div class="a-lead-card" data-step>
+                  <span>New lead</span>
+                  <b>John Castillo</b>
+                  <em>Interested in 2022 Malibu Wakesetter</em>
+                </div>
+                <div class="a-clock-card" data-step>
+                  <span>First reply</span>
+                  <b>3h 18m</b>
+                  <em>buyer already shopping elsewhere</em>
+                </div>
+                <div class="a-risk-alert" data-step>Report finding: missed opportunity</div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Insight after the buyer is gone.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="2" data-anim="ana-comms" data-phase="good">
+              <div class="a-comms-proof">
+                <img src="assets/Analytics/DE-Comms Report.png" alt="DealerEdge AI communications analytics report with speed-to-lead, contact rate, appointment set rate, show rate, and conversation funnel" loading="lazy">
+                <div class="a-comms-chip a-comms-chip--speed" data-step><span>Speed-to-lead</span><b>42 sec</b></div>
+                <div class="a-comms-chip a-comms-chip--contact" data-step><span>Validated contact rate</span><b>100%</b></div>
+                <div class="a-comms-chip a-comms-chip--ai" data-step><span>AI-assisted conversations</span><b>78%</b></div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>Sales performance is visible while it is happening.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="3" data-anim="ana-quality" data-phase="good">
+              <div class="a-quality-board">
+                <div class="a-quality-row" data-step><span>Google Ads</span><b>120 leads</b><em>16.2% conv.</em></div>
+                <div class="a-quality-row" data-step><span>Meta</span><b>88 leads</b><em>14.8% conv.</em></div>
+                <div class="a-quality-row" data-step><span>Organic Search</span><b>58 leads</b><em>qualified buyers</em></div>
+                <div class="a-quality-row" data-step><span>Direct / Referral</span><b>36 leads</b><em>10.15x ROAS</em></div>
+                <div class="a-quality-note" data-step>Now source quality is visible, not just volume.</div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>Volume matters. Quality closes.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="4" data-anim="ana-funnel" data-phase="good">
+              <div class="a-funnel-board">
+                <div class="a-funnel-step" data-step><span>New leads</span><b>279</b></div>
+                <div class="a-funnel-step" data-step><span>Contacted</span><b>184</b></div>
+                <div class="a-funnel-step a-funnel-step--warn" data-step><span>Qualified</span><b>96</b></div>
+                <div class="a-funnel-step" data-step><span>Appointments</span><b>52</b></div>
+                <div class="a-funnel-step a-funnel-step--won" data-step><span>Won deals</span><b>40</b></div>
+                <div class="a-funnel-alert" data-step>Leak found: qualified buyers need faster appointment routing.</div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>Find the leak before month-end.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="5" data-anim="ana-optimize" data-phase="good">
+              <div class="a-opt-board">
+                <div class="a-budget-row" data-step><span>Cheap clicks</span><b>$2,100</b><i></i></div>
+                <div class="a-budget-row a-budget-row--good" data-step><span>Qualified buyers</span><b>$5,800</b><i></i></div>
+                <div class="a-budget-shift" data-step>
+                  <span>AI action</span>
+                  <b>Move budget toward campaigns producing appointments and won deals.</b>
+                </div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>Optimize to buyers, not bargain traffic.</span></div>
+            </div>
+
+            <div class="de-beat" data-beat="6" data-anim="ana-brief" data-phase="good">
+              <div class="a-brief-board">
+                <div class="a-brief-head" data-step><span>Owner brief</span><b>Today at 8:00 AM</b></div>
+                <div class="a-brief-item" data-step><b>Double down</b><span>Google Ads is producing the highest ROAS.</span></div>
+                <div class="a-brief-item" data-step><b>Fix today</b><span>Appointment routing slowed after 6 PM.</span></div>
+                <div class="a-brief-item" data-step><b>Watch</b><span>Organic search is driving higher-quality inventory leads.</span></div>
+              </div>
+              <div class="de-beat-cap de-beat-cap--good"><i></i><span>The report becomes the operating plan.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="boat-section" id="boat-section">
+      <div class="boat-sticky">
+        <div class="boat-left">
+          <div class="section-label">The Competitive Edge</div>
+          <div class="boat-headline-wrap">
+            <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
+            <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
+          </div>
+          <p class="boat-sub" id="boat-sub">Analytics is the feedback loop behind the platform: see what worked, fix what broke, and keep optimizing toward sold boats.</p>
+          <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your demo today</button>
+        </div>
+        <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="sales.html">Sales</a>
+            <a href="marketing.html">Marketing</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI analytics, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">&copy; 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Schedule a Demo</span>
+        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+        <div class="form-group"><input type="text" id="ms-name" placeholder="Your name" autocomplete="name"></div>
+        <div class="form-group"><input type="email" id="ms-email" placeholder="Email address" autocomplete="email"></div>
+        <div class="form-group"><input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel"></div>
+        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/mobile-nav.js"></script>
+  <script src="js/demo-modal.js"></script>
+  <script src="js/section-video-boat.js"></script>
+  <script src="js/de-core.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

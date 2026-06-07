@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics | DealerEdge — Know what's working. While it's still working.</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/de-act.css">
+  <link rel="stylesheet" href="css/analytics-2.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="analytics2-page">
+
+  <!-- Cursor -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="custom-cursor" id="custom-cursor">
+    <div class="custom-cursor-inner">
+      <span class="cursor-label cursor-label--journey">Scroll</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+      </div>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="sales.html" style="position:relative;">Sales <sup style="font-size:0.55em;color:#ee3a39;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="marketing.html" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="inventory.html" style="position:relative;">Inventory <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="analytics-2.html" class="nav-link--active" style="position:relative;">Analytics <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Results</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#" class="btn-nav js-modal">Get Started</a>
+      </div>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
+      <a href="features.html">Features</a>
+      <a href="sales.html">Sales</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="analytics-2.html" class="nav-link--active">Analytics</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="case-studies.html">Results</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
+    </div>
+  </nav>
+
+  <main>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       HERO — the live report IS the promise. The real DealerEdge
+       Reports dashboard, ticking, with the month-end PDF it
+       replaces dimmed behind it.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="a2-hero" id="hero">
+    <div class="a2-hero-bg" aria-hidden="true">
+      <div class="a2-hero-grid"></div>
+      <div class="a2-hero-glow"></div>
+    </div>
+    <div class="a2-hero-inner">
+      <div class="a2-hero-copy" data-fade>
+        <span class="de-section-label">DealerEdge Analytics</span>
+        <h1>Know what's working. <span class="a2-accent">While it's still working.</span></h1>
+        <p>Google, Meta, search, SEO, calls, texts, and sales &mdash; DealerEdge wires every data source into one live platform, tells you what's working in plain English, and optimizes continuously on real data. To sold boats, not clicks.</p>
+        <div class="a2-hero-ctas">
+          <button type="button" class="btn-primary js-modal">Show me my numbers</button>
+          <a href="#includes" class="a2-hero-more">See how it works ↓</a>
+        </div>
+      </div>
+      <div class="a2-hero-visual" data-fade data-delay="0.15">
+        <div class="a2-hero-stack">
+          <div class="a2-pdf-ghost" aria-hidden="true">
+            <span class="a2-pdf-ghost-icon">PDF</span>
+            <div class="a2-pdf-ghost-info">
+              <b>MARCH PERFORMANCE SUMMARY.pdf</b>
+              <span>from your agency &middot; delivered April 18</span>
+            </div>
+            <em>34 days late</em>
+          </div>
+          <div class="a2-window a2-hero-report" data-hero-report>
+            <div class="a2-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; Reports</em></div>
+            <div class="a2-hero-shot">
+              <img src="assets/Analytics/report-overview.png" alt="The real DealerEdge Reports dashboard — live leads, cost per lead, conversion, channels and revenue">
+            </div>
+            <div class="a2-live-chip"><i></i>LIVE</div>
+            <div class="a2-live-tick">updated <b data-live-seconds>12</b>s ago</div>
+          </div>
+        </div>
+        <p class="a2-hero-visual-note">Real platform &middot; real report &middot; <b>live data</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       EVERYTHING INCLUDED — shared .de-includes chassis (de-act.css)
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-includes" id="includes" data-fade>
+    <div class="de-includes-inner">
+      <header class="de-includes-head">
+        <span class="de-section-label">Everything included</span>
+        <h2>Every number you're paying for, <span>finally in one place.</span></h2>
+        <p>No month-end mystery. No seven logins. No analyst required. DealerEdge connects every data source, shows you the whole picture live, and puts the AI to work on what it finds.</p>
+      </header>
+
+      <div class="de-includes-grid">
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>Connect</span><b>Every source, wired in</b></div>
+          <ul>
+            <li style="--i:0">Google Analytics + Search Console, connected direct</li>
+            <li style="--i:1">Google Ads + Meta Ads &mdash; spend, clicks, conversions</li>
+            <li style="--i:2">SEO data &mdash; rankings, keywords, site health</li>
+            <li style="--i:3">Every call, text, chat, and form in one timeline</li>
+            <li style="--i:4">Website behavior, down to the boat each buyer viewed</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>See</span><b>Every answer, live</b></div>
+          <ul>
+            <li style="--i:0">Up-to-the-minute dashboards &mdash; not month-end reports</li>
+            <li style="--i:1">Plain English: what's working, what's not, what it costs</li>
+            <li style="--i:2">The full funnel &mdash; leads to appointments to showings to sold</li>
+            <li style="--i:3">Cost per lead and return on ad spend, channel by channel</li>
+            <li style="--i:4">Speed-to-lead, show rate, AI-vs-human &mdash; conversations measured too</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>Optimize</span><b>Every dollar, working harder</b></div>
+          <ul>
+            <li style="--i:0">The AI optimizes continuously, on real data</li>
+            <li style="--i:1">Budget flows to what sells boats &mdash; not what gets clicks</li>
+            <li style="--i:2">Every sold boat traced to the campaign that produced it</li>
+            <li style="--i:3">One platform &mdash; nothing to export, assemble, or reconcile</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       WITHOUT vs WITH — shared .de-compare chassis (de-act.css)
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-compare" id="compare" data-fade style="--de-compare-label-old: 'WITHOUT DEALEREDGE'; --de-compare-label-new: 'WITH DEALEREDGE';">
+    <div class="de-compare-inner">
+      <header class="de-compare-head">
+        <span class="de-section-label">Before &amp; after</span>
+        <h2>Same spend. Same channels. <span>A completely different picture.</span></h2>
+        <p>Here is where reporting breaks today &mdash; and what changes when every source feeds one platform that optimizes to sold boats.</p>
+      </header>
+
+      <div class="de-compare-grid" role="table" aria-label="Without DealerEdge versus with DealerEdge">
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-service" role="columnheader">What you get</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-old" role="columnheader">Without DealerEdge</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-new" role="columnheader">With DealerEdge</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:0"><b>Connect: your data</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:1">Scattered across seven logins that never agree.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:2">Every source feeds one platform, automatically. One login. One truth.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:3"><b>See: when you find out</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:4">A month-end report &mdash; weeks after the budget is spent.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:5">Up to the minute. Know by lunch, not next month.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:6"><b>See: who can read it</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:7">An analyst to decode it &mdash; or a vendor explaining why the numbers are "actually good."</div>
+        <div class="de-compare-cell de-compare-new" style="--i:8">Plain English: what's working, what's not, and what it costs per lead.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:9"><b>See: the funnel</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:10">Clicks and impressions. The story ends at the website.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:11">Lead &rarr; conversation &rarr; appointment &rarr; showing &rarr; sold. One view.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:12"><b>Optimize: what gets optimized</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:13">Your vendor optimizes to clicks &mdash; that's what they're graded on.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:14">The AI optimizes to sold boats &mdash; the only number that pays your payroll.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:15"><b>Optimize: when it adjusts</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:16">At next month's meeting. Maybe.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:17">Continuously, on real data &mdash; budget, bids, content, SEO.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:18"><b>Optimize: attribution</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:19">Last click and a shrug.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:20">Every sold boat traced back to the campaign, the channel, and the dollar.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 1 — ONE SOURCE OF TRUTH
+       Scroll-pinned, red→green couplets. The month-end mystery
+       becomes one live platform: PDF arrives late → seven tabs
+       disagree → wired in → the live report → plain English →
+       the full funnel.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-act de-act--7 de-act--good" id="one-truth" data-act data-act-intro>
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--bad">THE MONTH-END MYSTERY</div>
+      <div class="de-act-watermark de-act-watermark--good">ONE SOURCE OF TRUTH</div>
+
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">Connect + see</span>
+        <h2 class="de-act-headline">Your data already knows what's working. <span class="de-act-headline-faded">You find out next month.</span></h2>
+      </header>
+
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">The verdict on March arrives in April &mdash; <b>after every dollar is already spent</b>.</p>
+          <p class="de-act-line" data-beat="2">The rest lives in <b>seven dashboards that have never met</b> &mdash; and none of them agree.</p>
+          <p class="de-act-line" data-beat="3">DealerEdge connects to every source directly, so <b>every number lands in one platform</b> &mdash; automatically.</p>
+          <p class="de-act-line" data-beat="4">Everything those seven tabs knew, <b>on one screen, up to the minute</b>.</p>
+          <p class="de-act-line" data-beat="5">No analyst required. The platform says it straight: <b>what's working, what's not, what it costs</b>.</p>
+          <p class="de-act-line" data-beat="6">And the story doesn't end at the click &mdash; <b>the funnel runs all the way to sold</b>.</p>
+        </div>
+      </div>
+
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
+
+          <!-- Beat 1 · bad — the month-end PDF arrives late -->
+          <div class="de-beat is-active" data-beat="1" data-anim="an-late" data-phase="bad">
+            <div class="a2-pdf" data-pdf>
+              <div class="a2-pdf-doc" data-pdf-doc>
+                <div class="a2-pdf-head">
+                  <span class="a2-pdf-icon">PDF</span>
+                  <div>
+                    <b>MARCH PERFORMANCE SUMMARY</b>
+                    <span>Prepared by your marketing vendor &middot; 14 pages</span>
+                  </div>
+                </div>
+                <div class="a2-pdf-lines" aria-hidden="true"><i></i><i></i><i></i><i style="width:62%"></i></div>
+                <em class="a2-pdf-stamp" data-pdf-stamp>Delivered April 18 &middot; 34 days late</em>
+              </div>
+              <div class="a2-pdf-budget" data-pdf-budget>
+                <div class="a2-pdf-budget-head">
+                  <span>March ad budget while you waited</span>
+                  <b data-pdf-amount>$0</b>
+                </div>
+                <div class="a2-pdf-bar" aria-hidden="true"><i data-pdf-bar></i></div>
+                <em data-pdf-gone>already spent &middot; nothing left to adjust</em>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>The report shows up after the money is gone.</span></div>
+          </div>
+
+          <!-- Beat 2 · bad — seven dashboards that have never met -->
+          <div class="de-beat" data-beat="2" data-anim="an-tabs" data-phase="bad">
+            <div class="a2-tabs" data-tabs>
+              <div class="a2-tabs-q" data-tabs-q>"How many leads did marketing get this month?"</div>
+              <div class="a2-tabs-grid">
+                <div class="a2-tab" data-tab><b>Google Analytics</b><span>key events</span><i>348</i></div>
+                <div class="a2-tab" data-tab><b>Google Ads</b><span>conversions</span><i>214</i></div>
+                <div class="a2-tab" data-tab><b>Meta Ads</b><span>leads</span><i>187</i></div>
+                <div class="a2-tab" data-tab><b>Search Console</b><span>clicks, not leads</span><i>1,206</i></div>
+                <div class="a2-tab" data-tab><b>SEO tool</b><span>rankings only</span><i>&mdash;</i></div>
+                <div class="a2-tab" data-tab><b>Call log</b><span>inbound calls</span><i>96</i></div>
+                <div class="a2-tab" data-tab><b>SMS inbox</b><span>text threads</span><i>71</i></div>
+              </div>
+              <div class="a2-tabs-verdict" data-tabs-verdict>Seven logins. Seven answers. <b>Zero agreement.</b></div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>The average dealer pays for 5&ndash;7 separate tools to stay this confused.</span></div>
+          </div>
+
+          <!-- Beat 3 · good — every source, wired in -->
+          <div class="de-beat" data-beat="3" data-anim="an-connect" data-phase="good">
+            <div class="a2-connect" data-connect>
+              <div class="a2-connect-sources">
+                <span class="a2-connect-source" data-connect-source>Google Analytics</span>
+                <span class="a2-connect-source" data-connect-source>Search Console</span>
+                <span class="a2-connect-source" data-connect-source>Google Ads</span>
+                <span class="a2-connect-source" data-connect-source>Meta Ads</span>
+                <span class="a2-connect-source" data-connect-source>SEO data</span>
+                <span class="a2-connect-source" data-connect-source>Calls &amp; texts</span>
+                <span class="a2-connect-source" data-connect-source>Website activity</span>
+              </div>
+              <div class="a2-connect-stream" data-connect-stream aria-hidden="true">
+                <span data-connect-token>sessions</span><span data-connect-token>spend</span><span data-connect-token>clicks</span><span data-connect-token>rankings</span><span data-connect-token>conversions</span><span data-connect-token>calls</span><span data-connect-token>texts</span><span data-connect-token>forms</span><span data-connect-token>showings</span><span data-connect-token>sales</span>
+              </div>
+              <div class="a2-window a2-connect-core" data-connect-core>
+                <div class="a2-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; one platform</em></div>
+                <div class="a2-connect-core-body">
+                  <div class="a2-connect-stat"><span>Sources connected</span><b data-connect-count>0</b></div>
+                  <div class="a2-connect-stat"><span>Logins required</span><b class="a2-connect-good">1</b></div>
+                  <div class="a2-connect-stat"><span>Reports to assemble</span><b class="a2-connect-good">0</b></div>
+                </div>
+                <div class="a2-connect-badge" data-connect-badge>direct integrations &middot; first-party &middot; automatic</div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Every source feeds one platform. One login. One truth.</span></div>
+          </div>
+
+          <!-- Beat 4 · good — the live report (real screenshot, auto-pans) -->
+          <div class="de-beat" data-beat="4" data-anim="an-live" data-phase="good">
+            <div class="a2-live" data-live>
+              <div class="a2-window a2-live-window" data-live-window>
+                <div class="a2-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; Reports &middot; live</em></div>
+                <div class="a2-live-viewport" data-live-viewport>
+                  <img src="assets/Analytics/report-overview.png" alt="The real DealerEdge Reports dashboard — leads, pipeline, channels, revenue" loading="lazy" data-live-shot>
+                </div>
+                <div class="a2-live-chip a2-live-chip--beat" data-live-chip><i></i>LIVE</div>
+              </div>
+              <div class="a2-live-meta" data-live-meta>leads &middot; spend &middot; cost per lead &middot; conversion &middot; revenue &middot; ROAS &middot; channels &middot; campaigns</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>What used to take a month is on screen right now.</span></div>
+          </div>
+
+          <!-- Beat 5 · good — plain English: working vs not -->
+          <div class="de-beat" data-beat="5" data-anim="an-clarity" data-phase="good">
+            <div class="a2-clarity" data-clarity>
+              <div class="a2-clarity-col a2-clarity-col--good">
+                <div class="a2-clarity-head">What's working</div>
+                <div class="a2-clarity-row" data-clarity-row><b>Memorial Day Sales Event</b><span>$24.12 /lead &middot; 16.2% conv</span><em>&#10003; scale it</em></div>
+                <div class="a2-clarity-row" data-clarity-row><b>Summer Boat Showcase</b><span>$22.91 /lead &middot; 14.8% conv</span><em>&#10003; scale it</em></div>
+              </div>
+              <div class="a2-clarity-col a2-clarity-col--bad">
+                <div class="a2-clarity-head">What's not</div>
+                <div class="a2-clarity-row" data-clarity-row><b>Display remarketing</b><span>$86.40 /lead &middot; 1.9% conv</span><em>&#10007; paused</em></div>
+                <div class="a2-clarity-row" data-clarity-row><b>Generic "boat dealer" keywords</b><span>$57.20 /lead &middot; 3.1% conv</span><em>&#10007; budget moved</em></div>
+              </div>
+              <div class="a2-clarity-note" data-clarity-note>No analyst. No decoder ring. The numbers, in plain English.</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>What's working, what's not, what it costs &mdash; at a glance.</span></div>
+          </div>
+
+          <!-- Beat 6 · good — the full funnel, to sold -->
+          <div class="de-beat" data-beat="6" data-anim="an-funnel" data-phase="good">
+            <div class="a2-funnel" data-funnel>
+              <div class="a2-funnel-stages">
+                <div class="a2-funnel-stage" data-funnel-stage><b data-funnel-num data-target="279">0</b><span>new leads</span></div>
+                <div class="a2-funnel-stage" data-funnel-stage><b data-funnel-num data-target="184">0</b><span>contacted &middot; 66.0%</span></div>
+                <div class="a2-funnel-stage" data-funnel-stage><b data-funnel-num data-target="96">0</b><span>qualified &middot; 34.4%</span></div>
+                <div class="a2-funnel-stage" data-funnel-stage><b data-funnel-num data-target="52">0</b><span>appointments &middot; 18.6%</span></div>
+                <div class="a2-funnel-stage a2-funnel-stage--won" data-funnel-stage><b data-funnel-num data-target="40">0</b><span>won deals &middot; 12.2%</span></div>
+              </div>
+              <div class="a2-funnel-note" data-funnel-note>The same pipeline your vendor's report ends before. <b>DealerEdge follows it to sold.</b></div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Leads &rarr; appointments &rarr; showings &rarr; sold. One view.</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT 2 — OPTIMIZED TO SOLD BOATS
+       Scroll-pinned couplets: vanity slide → the lag → AI on real
+       data → the chain to the boat → comms measured → the close.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-act de-act--7 de-act--good" id="sold-not-clicks" data-act data-act-intro>
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--bad">OPTIMIZED TO CLICKS</div>
+      <div class="de-act-watermark de-act-watermark--good">OPTIMIZED TO SOLD BOATS</div>
+
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">Optimize</span>
+        <h2 class="de-act-headline">Everyone optimizes your marketing. <span class="de-act-headline-faded">To the wrong number.</span></h2>
+      </header>
+
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">Your vendor's deck celebrates impressions and clicks &mdash; <b>because clicks are all they can see</b>.</p>
+          <p class="de-act-line" data-beat="2">By the time the report lands and the meeting happens, <b>two more months of budget are gone</b>.</p>
+          <p class="de-act-line" data-beat="3">DealerEdge adjusts <b>continuously, on real data</b> &mdash; budget, bids, content, SEO. Not at next month's meeting.</p>
+          <p class="de-act-line" data-beat="4">And because every sale traces back to its source, DealerEdge is <b>the only platform in the industry that optimizes to sold boats</b>.</p>
+          <p class="de-act-line" data-beat="5">The conversations get measured too: <b>every call, text, and AI reply</b> &mdash; speed, appointments, show rate.</p>
+          <p class="de-act-line" data-beat="6">Clicks don't pay your payroll. <b>Sold boats do.</b> That's the number we optimize.</p>
+        </div>
+      </div>
+
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
+
+          <!-- Beat 1 · bad — the vanity slide -->
+          <div class="de-beat is-active" data-beat="1" data-anim="an-vanity" data-phase="bad">
+            <div class="a2-vanity" data-vanity>
+              <div class="a2-vanity-head">
+                <span>Your vendor &middot; quarterly review &middot; slide 4 of 31</span>
+                <b>"Another great quarter!"</b>
+              </div>
+              <div class="a2-vanity-stats">
+                <div class="a2-vanity-stat" data-vanity-stat><b>1.2M</b><span>impressions &uarr;</span></div>
+                <div class="a2-vanity-stat" data-vanity-stat><b>38,400</b><span>clicks &uarr;</span></div>
+                <div class="a2-vanity-stat" data-vanity-stat><b>3.2%</b><span>CTR &uarr;</span></div>
+              </div>
+              <div class="a2-vanity-missing" data-vanity-missing>
+                <span>Boats sold attributed</span>
+                <b>&mdash;</b>
+                <em>not tracked</em>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>Graded on clicks, because clicks are all they can see.</span></div>
+          </div>
+
+          <!-- Beat 2 · bad — too late to matter -->
+          <div class="de-beat" data-beat="2" data-anim="an-lag" data-phase="bad">
+            <div class="a2-lag" data-lag>
+              <div class="a2-lag-track" aria-hidden="true"><i data-lag-fill></i></div>
+              <div class="a2-lag-stops">
+                <div class="a2-lag-stop" data-lag-stop><b>Day 1&ndash;30</b><span>budget spends</span></div>
+                <div class="a2-lag-stop" data-lag-stop><b>Day 45</b><span>report lands</span></div>
+                <div class="a2-lag-stop" data-lag-stop><b>Day 60</b><span>"let's discuss next steps"</span></div>
+                <div class="a2-lag-stop a2-lag-stop--end" data-lag-stop><b>Day 75</b><span>something finally changes</span></div>
+              </div>
+              <div class="a2-lag-cost" data-lag-cost>Two and a half months of spend before a single adjustment.</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--bad"><i></i><span>The feedback loop is longer than your sales cycle.</span></div>
+          </div>
+
+          <!-- Beat 3 · good — the AI optimization log -->
+          <div class="de-beat" data-beat="3" data-anim="an-optimize" data-phase="good">
+            <div class="a2-window a2-optimize" data-optimize>
+              <div class="a2-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; AI optimization log</em></div>
+              <div class="a2-optimize-rows">
+                <div class="a2-opt-row" data-opt-row>
+                  <span class="a2-opt-time">Tue 06:12</span>
+                  <div><b>Budget shifted: Meta &rarr; Google Search</b><span>$61 vs $28 cost per lead &middot; +$40/day to the winner</span></div>
+                  <em>auto</em>
+                </div>
+                <div class="a2-opt-row" data-opt-row>
+                  <span class="a2-opt-time">Tue 09:40</span>
+                  <div><b>Bid raised on "wake boat financing"</b><span>converting at 2x the account average</span></div>
+                  <em>auto</em>
+                </div>
+                <div class="a2-opt-row" data-opt-row>
+                  <span class="a2-opt-time">Wed 09:05</span>
+                  <div><b>3 inventory pages re-titled</b><span>ranking #9 &rarr; #4 on real search data</span></div>
+                  <em>auto</em>
+                </div>
+                <div class="a2-opt-row" data-opt-row>
+                  <span class="a2-opt-time">Thu 07:30</span>
+                  <div><b>Underperforming ad set paused</b><span>$86 cost per lead &middot; budget reallocated</span></div>
+                  <em>auto</em>
+                </div>
+              </div>
+              <div class="a2-optimize-note" data-optimize-note>Continuously, on real data &mdash; not at next month's meeting.</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>The AI works your numbers while they're still warm.</span></div>
+          </div>
+
+          <!-- Beat 4 · good — the chain to the boat -->
+          <div class="de-beat" data-beat="4" data-anim="an-chain" data-phase="good">
+            <div class="a2-chain" data-chain>
+              <div class="a2-chain-links">
+                <div class="a2-chain-link" data-chain-link>
+                  <span class="a2-chain-ico">AD</span>
+                  <div><b>Google Search &middot; "wake boats nashville"</b><span>Wake Boats campaign &middot; $38.50 of ad spend</span></div>
+                </div>
+                <div class="a2-chain-link" data-chain-link>
+                  <span class="a2-chain-ico">FORM</span>
+                  <div><b>John Castillo submits an inquiry</b><span>Saturday &middot; 11:17 PM</span></div>
+                </div>
+                <div class="a2-chain-link" data-chain-link>
+                  <span class="a2-chain-ico">AI</span>
+                  <div><b>AI responds &middot; 47 seconds later</b><span>qualified &middot; routed to Mike</span></div>
+                </div>
+                <div class="a2-chain-link" data-chain-link>
+                  <span class="a2-chain-ico">CAL</span>
+                  <div><b>Showing booked &middot; Tuesday 10 AM</b><span>confirmed &middot; reminders on</span></div>
+                </div>
+                <div class="a2-chain-link a2-chain-link--sold" data-chain-link>
+                  <span class="a2-chain-ico">SOLD</span>
+                  <div><b>2022 Malibu Wakesetter 23 LSV &middot; $162,900</b><span>attributed: Google Search &middot; Wake Boats campaign</span></div>
+                </div>
+              </div>
+              <div class="a2-chain-note" data-chain-note>$38.50 of ad spend &rarr; a $162,900 boat. <b>Provable, end to end.</b></div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>The only platform in the industry that maps marketing back to a sold boat.</span></div>
+          </div>
+
+          <!-- Beat 5 · good — the conversations are measured too (real screenshot) -->
+          <div class="de-beat" data-beat="5" data-anim="an-comms" data-phase="good">
+            <div class="a2-comms" data-comms>
+              <div class="a2-window a2-comms-window" data-comms-window>
+                <div class="a2-window-bar"><span></span><span></span><span></span><em>DealerEdge &middot; AI communications analytics</em></div>
+                <div class="a2-comms-shot">
+                  <img src="assets/Analytics/report-comms.png" alt="The real DealerEdge AI Communications Analytics dashboard — speed to lead, appointment set rate, show rate" loading="lazy">
+                </div>
+              </div>
+              <div class="a2-comms-chips">
+                <div class="a2-comms-chip" data-comms-chip><b>42 sec</b><span>speed to lead</span></div>
+                <div class="a2-comms-chip" data-comms-chip><b>18.9%</b><span>appointment set rate</span></div>
+                <div class="a2-comms-chip" data-comms-chip><b>71.8%</b><span>show rate</span></div>
+              </div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Marketing data AND conversation data &mdash; one platform measures both.</span></div>
+          </div>
+
+          <!-- Beat 6 · good — sold boats, not clicks -->
+          <div class="de-beat" data-beat="6" data-anim="an-close" data-phase="good">
+            <div class="a2-close" data-close>
+              <div class="a2-close-dim">
+                <div class="a2-close-stat" data-close-dim><b>1.2M</b><span>impressions</span></div>
+                <div class="a2-close-stat" data-close-dim><b>38,400</b><span>clicks</span></div>
+              </div>
+              <div class="a2-close-win" data-close-win>
+                <b><i data-close-num>0</i> more boats</b>
+                <span>sold in one quarter by a real dealer who fixed this</span>
+              </div>
+              <div class="a2-close-margin" data-close-margin>at ~$14,000 margin per boat, that's <b>$168,000</b> the clicks never showed</div>
+            </div>
+            <div class="de-beat-cap de-beat-cap--good"><i></i><span>Sold boats. Not clicks. The only number that matters.</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="boat-section" id="boat-section">
+    <div class="boat-sticky">
+      <div class="boat-left">
+        <div class="section-label">The Competitive Edge</div>
+        <div class="boat-headline-wrap">
+          <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
+          <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
+        </div>
+        <p class="boat-sub" id="boat-sub">Your numbers can start working harder this week. We'll show you what DealerEdge sees in your actual data.</p>
+        <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your demo today</button>
+      </div>
+      <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
+    </div>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-body">
+      <div class="footer-inner">
+        <div class="footer-col footer-col--brand">
+          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Platform</p>
+          <nav class="footer-nav">
+            <a href="features.html">Features</a>
+            <a href="sales.html">Sales</a>
+            <a href="marketing.html">Marketing</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="analytics-2.html">Analytics</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="case-studies.html">Results</a>
+          </nav>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">News &amp; Updates</p>
+          <p class="footer-newsletter-sub">Get the latest on AI sales, dealership trends, and platform updates.</p>
+          <form class="footer-newsletter-form" onsubmit="return false">
+            <input type="email" placeholder="Your email address" class="footer-email-input">
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
+        <span class="footer-copy">© 2026 DealerEdge. All rights reserved.</span>
+        <span class="footer-copy">Built for dealers who move fast.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Demo request modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-step" id="ms-step-1">
+        <span class="modal-eyebrow">Schedule a Demo</span>
+        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+        <div class="form-group">
+          <input type="text" id="ms-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <input type="email" id="ms-email" placeholder="Email address" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="ms-step-2">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="ms-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/mobile-nav.js"></script>
+  <script src="js/demo-modal.js"></script>
+  <script src="js/section-video-boat.js"></script>
+  <script src="js/de-core.js"></script>
+  <script src="js/analytics-2.js"></script>
+</body>
+</html>
