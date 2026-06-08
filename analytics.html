@@ -31,11 +31,18 @@
         <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
       </div>
       <div class="nav-links">
-        <a href="features.html">Features</a>
-        <a href="sales.html" style="position:relative;">Sales <sup style="font-size:0.55em;color:#ee3a39;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
-        <a href="marketing.html" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
-        <a href="inventory.html" style="position:relative;">Inventory <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
-        <a href="analytics.html" class="nav-link--active" style="position:relative;">Analytics <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-trigger nav-link--active" aria-haspopup="true" aria-expanded="false">Platform
+            <svg class="nav-dropdown-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-dropdown-menu" role="menu">
+            <a href="features.html" role="menuitem">Overview</a>
+            <a href="sales.html" role="menuitem">Sales <i class="nav-dot nav-dot--red"></i></a>
+            <a href="marketing.html" role="menuitem">Marketing <i class="nav-dot"></i></a>
+            <a href="inventory.html" role="menuitem">Inventory <i class="nav-dot"></i></a>
+            <a href="analytics.html" role="menuitem" class="nav-link--active">Analytics <i class="nav-dot"></i></a>
+          </div>
+        </div>
         <a href="pricing.html">Pricing</a>
         <a href="case-studies.html">Results</a>
       </div>
@@ -47,11 +54,16 @@
       </button>
     </div>
     <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
-      <a href="features.html">Features</a>
-      <a href="sales.html">Sales</a>
-      <a href="marketing.html">Marketing</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="analytics.html" class="nav-link--active">Analytics</a>
+      <button type="button" class="nav-mobile-group-trigger nav-link--active" aria-expanded="false">Platform
+        <svg class="nav-mobile-group-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-mobile-sub">
+        <a href="features.html">Overview</a>
+        <a href="sales.html">Sales</a>
+        <a href="marketing.html">Marketing</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="analytics.html" class="nav-link--active">Analytics</a>
+      </div>
       <a href="pricing.html">Pricing</a>
       <a href="case-studies.html">Results</a>
       <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>

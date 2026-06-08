@@ -3,22 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Features | DealerEdge</title>
+  <title>Features | DealerEdge — One platform, from DMS record to sold boat.</title>
+  <meta name="description" content="DealerEdge connects inventory, marketing, sales, and analytics into one platform — so every listing, lead, conversation, and campaign improves the next one.">
+  <meta property="og:title" content="One platform, from DMS record to sold boat.">
+  <meta property="og:description" content="DealerEdge connects inventory, marketing, sales, and analytics into one platform — one data layer, one buyer record, one feedback loop.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://mantra-harbor-8vkd.here.now/assets/features/system-loop-og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mantra-harbor-8vkd.here.now/assets/features/system-loop-og.png">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/de-act.css">
+  <link rel="stylesheet" href="css/features.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
-<body>
+<body class="features-page">
 
   <!-- Cursor -->
   <div class="cursor-glow" id="cursor-glow"></div>
   <div class="custom-cursor" id="custom-cursor">
     <div class="custom-cursor-inner">
-      <span class="cursor-label cursor-label--journey">Explore</span>
+      <span class="cursor-label cursor-label--journey">Scroll</span>
     </div>
   </div>
 
@@ -29,11 +38,18 @@
         <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
       </div>
       <div class="nav-links">
-        <a href="features.html" class="nav-link--active">Features</a>
-        <a href="sales.html" style="position:relative;">Sales <sup style="font-size:0.55em;color:#ee3a39;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
-        <a href="marketing.html" style="position:relative;">Marketing <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
-        <a href="inventory.html" style="position:relative;">Inventory <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
-        <a href="analytics.html" style="position:relative;">Analytics <sup style="font-size:0.55em;color:#4ade80;font-weight:700;letter-spacing:0.1em;margin-left:2px;">NEW</sup></a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-trigger nav-link--active" aria-haspopup="true" aria-expanded="false">Platform
+            <svg class="nav-dropdown-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-dropdown-menu" role="menu">
+            <a href="features.html" role="menuitem" class="nav-link--active">Overview</a>
+            <a href="sales.html" role="menuitem">Sales <i class="nav-dot nav-dot--red"></i></a>
+            <a href="marketing.html" role="menuitem">Marketing <i class="nav-dot"></i></a>
+            <a href="inventory.html" role="menuitem">Inventory <i class="nav-dot"></i></a>
+            <a href="analytics.html" role="menuitem">Analytics <i class="nav-dot"></i></a>
+          </div>
+        </div>
         <a href="pricing.html">Pricing</a>
         <a href="case-studies.html">Results</a>
       </div>
@@ -45,72 +61,293 @@
       </button>
     </div>
     <div class="nav-mobile-panel" id="nav-mobile-panel" aria-hidden="true">
-      <a href="features.html" class="nav-link--active">Features</a>
-      <a href="sales.html">Sales</a>
-      <a href="marketing.html">Marketing</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="analytics.html">Analytics</a>
+      <button type="button" class="nav-mobile-group-trigger nav-link--active" aria-expanded="false">Platform
+        <svg class="nav-mobile-group-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-mobile-sub">
+        <a href="features.html" class="nav-link--active">Overview</a>
+        <a href="sales.html">Sales</a>
+        <a href="marketing.html">Marketing</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="analytics.html">Analytics</a>
+      </div>
       <a href="pricing.html">Pricing</a>
       <a href="case-studies.html">Results</a>
       <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Get Started</a>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="fp-hero" id="fp-hero">
-    <div class="fp-hero-orb fp-hero-orb--1"></div>
-    <div class="fp-hero-orb fp-hero-orb--2"></div>
-    <div class="section-container fp-hero-inner">
-      <span class="section-label" data-fade data-delay="0.05">Platform Features</span>
-      <h1 class="fp-hero-headline" data-fade data-delay="0.12">
-        Everything Your Dealership Needs.<br>
-        <span class="headline-accent">One Intelligent System.</span>
-      </h1>
-      <p class="fp-hero-sub" data-fade data-delay="0.2">
-        DealerEdge gives every department in your dealership an unfair advantage, from the first ad impression to the final sale and long after.
-      </p>
-    </div>
-    <div class="fp-hero-scroll">
-      <div class="scroll-line"></div>
+  <main>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       ACT — THE SYSTEM LOOP. One persistent scene (the flywheel) that
+       builds as you scroll: disconnected red vendors → DMS → Inventory
+       → Marketing → Sales → Analytics → AI core → loop closes.
+       The scene is a persistent base layer; the .de-beat placeholders
+       just advance setLoopStage(N). de-act--7 = 6 beats + intro.
+       ────────────────────────────────────────────────────────────── -->
+  <section class="de-act de-act--7" id="system-loop" data-act data-act-intro>
+    <div class="de-act-inner">
+      <div class="de-act-watermark de-act-watermark--bad">DISCONNECTED VENDORS</div>
+      <div class="de-act-watermark de-act-watermark--good">ONE CONNECTED PLATFORM</div>
+
+      <header class="de-act-head">
+        <span class="de-act-tag de-act-tag--good">The connected platform</span>
+        <h2 class="de-act-headline">One platform, <span class="de-act-headline-faded">from DMS record to sold boat.</span></h2>
+        <p class="f-hero-sub">DealerEdge connects inventory, marketing, sales, and analytics so every listing, lead, conversation, and campaign improves the next one. Scroll to see how it works together.</p>
+      </header>
+
+      <div class="de-act-copy">
+        <div class="de-act-lines">
+          <p class="de-act-line" data-beat="1">Today your dealership runs on a stack of <b>disconnected tools</b> — and none of them talk to each other.</p>
+          <p class="de-act-line" data-beat="2">It starts with your DMS. DealerEdge makes <b>every boat sales-ready</b> — clean photos, full specs, ready to list.</p>
+          <p class="de-act-line" data-beat="3">Sales-ready inventory gives marketing <b>better content</b> — so it drives more qualified demand in.</p>
+          <p class="de-act-line" data-beat="4">More demand means more leads — answered in seconds. <b>Faster response out</b>, every buyer's context captured.</p>
+          <p class="de-act-line" data-beat="5">Every conversation and deal traces back to the campaign that produced it — so you <b>optimize to sold boats</b>, not clicks.</p>
+          <p class="de-act-line" data-beat="6">Then the AI improves the whole loop — every day. <b>That's the part no vendor can do.</b></p>
+        </div>
+      </div>
+
+      <div class="de-act-stage">
+        <div class="de-act-stage-sticky">
+
+          <!-- PERSISTENT SCENE (not a .de-beat — survives clearBeats) -->
+          <div class="f-loop-stage is-broken" data-loop-stage>
+            <svg class="f-traces" viewBox="0 0 1000 640" preserveAspectRatio="none" aria-hidden="true">
+              <path class="f-arc" data-arc data-order="1" pathLength="1" d="M188,185 Q330,40 500,70"/>
+              <path class="f-arc" data-arc data-order="2" pathLength="1" d="M500,70 Q740,95 826,203"/>
+              <path class="f-arc" data-arc data-order="3" pathLength="1" d="M826,203 Q905,315 812,415"/>
+              <path class="f-arc" data-arc data-order="4" pathLength="1" d="M812,415 Q650,580 437,526"/>
+              <path class="f-arc" data-arc data-order="5" pathLength="1" d="M437,526 Q455,405 500,300"/>
+              <path class="f-arc f-arc--return" data-arc data-order="5" pathLength="1" d="M500,300 Q300,300 188,185"/>
+            </svg>
+
+            <!-- center: AI core + boat -->
+            <img class="f-boat" src="assets/inventory/supra-studio-dark.png" alt="" loading="lazy">
+            <div class="f-core" data-node="ai" data-order="5">
+              <div class="f-core-chip"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <span class="f-node-label">AI optimization</span>
+            </div>
+
+            <!-- orbiting nodes -->
+            <div class="f-node f-node--icon f-node--dms" data-node="dms" data-order="1">
+              <div class="f-node-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+              </div>
+              <span class="f-node-label">Your DMS</span>
+            </div>
+
+            <div class="f-node f-node--panel f-node--inventory" data-node="inventory" data-order="1">
+              <figure class="f-win">
+                <div class="f-win-bar"><span></span><span></span><span></span><em>Inventory · listing</em></div>
+                <img src="assets/inventory/supra-studio.png" alt="" loading="lazy">
+              </figure>
+              <span class="f-node-label">Inventory</span>
+            </div>
+
+            <div class="f-node f-node--panel f-node--marketing" data-node="marketing" data-order="2">
+              <figure class="f-win">
+                <div class="f-win-bar"><span></span><span></span><span></span><em>Marketing · AI ad</em></div>
+                <img src="assets/marketing/searay-ai-ad.png" alt="" loading="lazy">
+              </figure>
+              <span class="f-node-label">Marketing</span>
+            </div>
+
+            <div class="f-node f-node--panel f-node--sales" data-node="sales" data-order="3">
+              <figure class="f-win">
+                <div class="f-win-bar"><span></span><span></span><span></span><em>Sales · conversations</em></div>
+                <img src="assets/Analytics/report-comms.png" alt="" loading="lazy">
+              </figure>
+              <span class="f-node-label">Sales</span>
+            </div>
+
+            <div class="f-node f-node--panel f-node--analytics" data-node="analytics" data-order="4">
+              <figure class="f-win">
+                <div class="f-win-bar"><span></span><span></span><span></span><em>Analytics · report</em></div>
+                <img src="assets/Analytics/report-overview.png" alt="" loading="lazy">
+              </figure>
+              <span class="f-node-label">Analytics</span>
+            </div>
+
+            <!-- red broken-vendor cluster (beat 1 only) -->
+            <div class="f-broken" data-broken aria-hidden="true">
+              <span class="f-broken-tile" style="--d:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                <i></i>
+              </span>
+              <span class="f-broken-tile" style="--d:1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg>
+                <i></i>
+              </span>
+              <span class="f-broken-tile" style="--d:2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <i></i>
+              </span>
+              <span class="f-broken-tile" style="--d:3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <i></i>
+              </span>
+              <span class="f-broken-tile" style="--d:4">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <i></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- transparent beat placeholders: state triggers only -->
+          <div class="de-beat is-active" data-beat="1" data-anim="f-loop-broken" data-phase="bad"></div>
+          <div class="de-beat" data-beat="2" data-anim="f-loop-1" data-phase="good"></div>
+          <div class="de-beat" data-beat="3" data-anim="f-loop-2" data-phase="good"></div>
+          <div class="de-beat" data-beat="4" data-anim="f-loop-3" data-phase="good"></div>
+          <div class="de-beat" data-beat="5" data-anim="f-loop-4" data-phase="good"></div>
+          <div class="de-beat" data-beat="6" data-anim="f-loop-5" data-phase="good"></div>
+
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Features Explorer -->
-  <section class="fp-explorer" id="fp-explorer">
-    <div class="fp-explorer-lead" data-fade>
-      <div class="fp-explorer-lead-left">
-        <p class="fp-explorer-lead-desc">Features across all departments, everything your dealership needs in one platform.</p>
-      </div>
-      <div class="fp-explorer-lead-cta">
-        <p class="fp-explorer-cta-label">Not sure where to start?</p>
-        <h3 class="fp-explorer-cta-headline">Ask how DealerEdge helps<br>your specific department.</h3>
-        <p class="fp-explorer-cta-body">Tell us which part of your dealership you want to improve and we'll walk you through exactly how it works.</p>
-        <a href="#" class="btn-primary js-dept-modal">Chat with us</a>
-      </div>
+  <!-- ─── FOUR ENGINES (+ go-deeper routes) ─── -->
+  <section class="f-engines" id="engines" data-fade>
+    <header class="f-engines-head">
+      <span class="de-section-label">Four engines, one platform</span>
+      <h2>Each pillar is strong on its own. <span>Connected, they compound.</span></h2>
+      <p>Inventory feeds marketing. Marketing feeds sales. Sales feeds analytics. Analytics feeds the AI that improves all four — every day.</p>
+    </header>
+    <div class="f-engines-grid">
+      <a class="f-engine" href="inventory.html">
+        <span class="f-engine-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg></span>
+        <h3>Inventory</h3>
+        <p class="f-engine-line">Every boat becomes <b>sales-ready</b> — clean photos, full specs, listed everywhere.</p>
+        <span class="f-engine-go">Go deeper <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a class="f-engine" href="marketing.html">
+        <span class="f-engine-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+        <h3>Marketing</h3>
+        <p class="f-engine-line">More qualified demand <b>in</b> — AI ads, content, and SEO built on your real inventory.</p>
+        <span class="f-engine-go">Go deeper <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a class="f-engine" href="sales.html">
+        <span class="f-engine-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+        <h3>Sales</h3>
+        <p class="f-engine-line">Faster response <b>out</b> — every lead answered in seconds, every conversation captured.</p>
+        <span class="f-engine-go">Go deeper <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a class="f-engine" href="analytics.html">
+        <span class="f-engine-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+        <h3>Analytics</h3>
+        <p class="f-engine-line">Optimize to <b>sold boats</b> — every dollar traced from campaign to closed deal.</p>
+        <span class="f-engine-go">Go deeper <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
     </div>
-    <div class="fp-explorer-inner">
-
-      <!-- Left: Department Nav (populated by JS) -->
-      <aside class="fp-dept-nav" id="fp-dept-nav" aria-label="Departments"></aside>
-
-      <!-- Right: Content Panels (populated by JS) -->
-      <div class="fp-content" id="fp-content"></div>
-
+    <div class="f-engines-foot">
+      <p class="f-engines-foot-label">Not sure where to start?</p>
+      <a href="#" class="btn-primary js-dept-modal">Chat with us about your dealership</a>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="cta-section">
-    <div class="cta-glow"></div>
-    <div class="section-container cta-inner">
-      <div class="cta-tag" data-fade>Ready to grow?</div>
-      <h2 class="cta-title" data-fade data-delay="0.1">Give your dealership<br>the edge it deserves.</h2>
-      <p class="cta-sub" data-fade data-delay="0.2">Join 500+ dealers already using DealerEdge to win more customers, close more deals, and grow faster.</p>
-      <div data-fade data-delay="0.3">
-        <a href="#" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+  <!-- ─── WHY CONNECTED BEATS SEPARATE VENDORS ─── -->
+  <section class="de-compare" id="compare" data-fade style="--de-compare-label-old: 'SEPARATE VENDORS'; --de-compare-label-new: 'DEALEREDGE';">
+    <div class="de-compare-inner">
+      <header class="de-compare-head">
+        <span class="de-section-label">Why connected wins</span>
+        <h2>Same departments. <span>A completely different result.</span></h2>
+        <p>A pile of vendors can each do their one job. Only a connected platform lets each job make the next one better.</p>
+      </header>
+      <div class="de-compare-grid" role="table" aria-label="Separate vendors versus DealerEdge">
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-service" role="columnheader">What it means</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-old" role="columnheader">Separate vendors</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-new" role="columnheader">DealerEdge</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:0"><b>Your data</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:1">Scattered across logins that never agree — handoffs, exports, stale copies.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:2">One data layer. Every source feeds the same platform, automatically.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:3"><b>The buyer</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:4">A fragment in each tool — the ad vendor, the CRM, and the phone log never meet.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:5">One buyer record, from first impression to the boat they drive home.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:6"><b>Accountability</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:7">Finger-pointing. Everyone hit their metric; the boat still didn't sell.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:8">One platform, one number that matters — boats sold.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:9"><b>What improves what</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:10">Nothing. Each vendor optimizes its silo, blind to the rest.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:11">Each pillar makes the next better — inventory → marketing → sales → analytics.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:12"><b>The feedback loop</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:13">There isn't one. You find out what worked next month, after the budget is gone.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:14">The AI optimizes the whole loop continuously, on real data.</div>
       </div>
     </div>
   </section>
+
+  <!-- ─── CAPABILITY MAP (pieces & parts, grouped by engine) ─── -->
+  <section class="de-includes" id="includes" data-fade>
+    <div class="de-includes-inner">
+      <header class="de-includes-head">
+        <span class="de-section-label">Everything in the platform</span>
+        <h2>All the pieces and parts — <span>grouped under the four engines they power.</span></h2>
+        <p>One platform replaces the stack. Here's what lives inside each engine.</p>
+      </header>
+      <div class="de-includes-grid">
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>Inventory</span><b>Every boat, sales-ready</b></div>
+          <ul>
+            <li style="--i:0">Synced from your DMS — specs auto-populated per unit</li>
+            <li style="--i:1">AI-written listing descriptions for every boat</li>
+            <li style="--i:2">Studio-grade photo enhancement from real lot shots</li>
+            <li style="--i:3">Syndicated to Boat Trader, YachtWorld, Facebook Marketplace &amp; more</li>
+            <li style="--i:4">MAP compliance held by brand on new boats before publish</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>Marketing</span><b>More qualified demand in</b></div>
+          <ul>
+            <li style="--i:0">AI ad creative for Google, Meta &amp; YouTube, tested continuously</li>
+            <li style="--i:1">SEO &amp; AI-overview content that ranks for what buyers search</li>
+            <li style="--i:2">Email &amp; SMS nurture that brings cold leads back</li>
+            <li style="--i:3">Campaigns built on your real, in-stock inventory</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>Sales</span><b>Faster response out</b></div>
+          <ul>
+            <li style="--i:0">Every inquiry answered in seconds — 24/7, including weekends</li>
+            <li style="--i:1">AI that knows your inventory, pricing &amp; availability</li>
+            <li style="--i:2">Smart follow-up that adapts to each buyer</li>
+            <li style="--i:3">Appointments booked straight into your team's calendar</li>
+          </ul>
+        </div>
+        <div class="de-includes-col">
+          <div class="de-includes-pillar"><span>Analytics</span><b>Optimize to sold boats</b></div>
+          <ul>
+            <li style="--i:0">One live dashboard — leads, response time, conversion, revenue</li>
+            <li style="--i:1">Full attribution from campaign to closed deal</li>
+            <li style="--i:2">Speed-to-lead, show rate &amp; conversations, measured</li>
+            <li style="--i:3">The AI acts on it continuously, on real data</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── BOAT CTA ─── -->
+  <section class="boat-section" id="boat-section">
+    <div class="boat-sticky">
+      <div class="boat-left">
+        <div class="section-label">The Competitive Edge</div>
+        <div class="boat-headline-wrap">
+          <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
+          <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
+        </div>
+        <p class="boat-sub" id="boat-sub">One platform, working as one. We'll show you exactly how DealerEdge connects your dealership end to end.</p>
+        <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your demo today</button>
+      </div>
+      <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
+    </div>
+  </section>
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
@@ -118,7 +355,7 @@
       <div class="footer-inner">
         <div class="footer-col footer-col--brand">
           <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
-          <p class="footer-tagline">Built for dealers who move fast.</p>
+          <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
         </div>
         <div class="footer-col">
           <p class="footer-col-label">Platform</p>
@@ -214,14 +451,12 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
 
-      <!-- Step 1: Department selection -->
       <div class="ms-step" id="dm-step-1">
         <span class="modal-eyebrow">Let's find your fit</span>
         <h2 class="ms-headline">Which department are you looking to improve?</h2>
         <div class="dm-dept-list" id="dm-dept-list"></div>
       </div>
 
-      <!-- Step 2: Department insight -->
       <div class="ms-step ms-step--hidden" id="dm-step-2">
         <button class="dm-back-btn" id="dm-back">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -234,7 +469,6 @@
         </button>
       </div>
 
-      <!-- Step 3: Chat -->
       <div class="ms-step ms-step--hidden" id="dm-step-3">
         <div class="dm-chat-window">
           <div class="dm-chat-messages" id="dm-chat-messages"></div>
@@ -247,7 +481,6 @@
         </div>
       </div>
 
-      <!-- Step 4: Name -->
       <div class="ms-step ms-step--hidden" id="dm-step-4">
         <span class="modal-eyebrow" id="dm-dept-eyebrow"></span>
         <h2 class="ms-headline">What's your name?</h2>
@@ -260,7 +493,6 @@
         </button>
       </div>
 
-      <!-- Step 5: Contact -->
       <div class="ms-step ms-step--hidden" id="dm-step-5">
         <span class="modal-eyebrow" id="dm-dept-eyebrow-2"></span>
         <h2 class="ms-headline">Great <span id="dm-name-display"></span>. How should we reach you?</h2>
@@ -276,7 +508,6 @@
         </button>
       </div>
 
-      <!-- Step 6: Confirmation -->
       <div class="ms-step ms-step--hidden" id="dm-step-6">
         <div class="ms-confirm">
           <div class="ms-confirm-icon">
@@ -292,6 +523,8 @@
   </div>
 
   <script src="js/mobile-nav.js"></script>
+  <script src="js/section-video-boat.js"></script>
+  <script src="js/de-core.js"></script>
   <script src="js/features.js"></script>
 </body>
 </html>
