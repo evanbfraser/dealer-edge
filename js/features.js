@@ -274,8 +274,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // ─── SCROLL FADE ───
   document.querySelectorAll('[data-fade]').forEach(el => {
-    gsap.from(el, {
-      opacity: 0, y: 28, duration: 0.75,
+    gsap.fromTo(el, {
+      opacity: 0,
+      y: 28,
+    }, {
+      opacity: 1,
+      y: 0,
+      duration: 0.75,
       delay: parseFloat(el.dataset.delay || 0),
       ease: 'power2.out',
       scrollTrigger: { trigger: el, start: 'top 88%' },
