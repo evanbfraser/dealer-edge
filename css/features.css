@@ -460,6 +460,34 @@
   color: var(--f-good);
 }
 
+/* capability-map cards are links to their pillar deep-dive */
+.features-page a.de-includes-col {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.features-page a.de-includes-col:hover {
+  border-color: rgba(74, 222, 128, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4), 0 0 24px rgba(74, 222, 128, 0.14);
+}
+.f-col-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 18px;
+  font-family: var(--de-mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--f-good);
+}
+.f-col-go svg { transition: transform 0.25s ease; }
+.features-page a.de-includes-col:hover .f-col-go svg { transform: translateX(4px); }
+
 /* ════════════════════════════════════════════════════════════════════
    MOBILE — vertical-stack fallback for the loop scene (≤1100px)
    ════════════════════════════════════════════════════════════════════ */
