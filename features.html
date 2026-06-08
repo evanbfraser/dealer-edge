@@ -104,7 +104,7 @@
           <p class="de-act-line" data-beat="3">Sales-ready inventory gives marketing <b>better content</b> — so it drives more qualified demand in.</p>
           <p class="de-act-line" data-beat="4">More demand means more leads — answered in seconds. <b>Faster response out</b>, every buyer's context captured.</p>
           <p class="de-act-line" data-beat="5">Every conversation and deal traces back to the campaign that produced it — so you <b>optimize to sold boats</b>, not clicks.</p>
-          <p class="de-act-line" data-beat="6">Then the AI improves the whole loop — every day. <b>That's the part no vendor can do.</b></p>
+          <p class="de-act-line" data-beat="6">Analytics feeds marketing, the loop closes, and the AI optimizes all of it — every day. <b>That's the part no vendor can do.</b></p>
         </div>
       </div>
 
@@ -114,12 +114,20 @@
           <!-- PERSISTENT SCENE (not a .de-beat — survives clearBeats) -->
           <div class="f-loop-stage is-broken" data-loop-stage>
             <svg class="f-traces" viewBox="0 0 1000 640" preserveAspectRatio="none" aria-hidden="true">
-              <path class="f-arc" data-arc data-order="1" pathLength="1" d="M188,185 Q330,40 500,70"/>
-              <path class="f-arc" data-arc data-order="2" pathLength="1" d="M500,70 Q740,95 826,203"/>
-              <path class="f-arc" data-arc data-order="3" pathLength="1" d="M826,203 Q905,315 812,415"/>
-              <path class="f-arc" data-arc data-order="4" pathLength="1" d="M812,415 Q650,580 437,526"/>
-              <path class="f-arc" data-arc data-order="5" pathLength="1" d="M437,526 Q455,405 500,300"/>
-              <path class="f-arc f-arc--return" data-arc data-order="5" pathLength="1" d="M500,300 Q300,300 188,185"/>
+              <!-- the closed-loop track (the cycle the nodes sit on) -->
+              <circle class="f-loop-ring" cx="660" cy="320" r="200"/>
+              <!-- feed: DMS → Inventory → into the loop at Marketing -->
+              <path class="f-arc" data-arc data-order="1" pathLength="1" d="M110,180 Q200,138 290,150"/>
+              <path class="f-arc" data-arc data-order="2" pathLength="1" d="M290,150 Q480,78 660,120"/>
+              <!-- closed loop, clockwise: Marketing → Sales → Analytics → Marketing -->
+              <path class="f-arc" data-arc data-order="3" pathLength="1" d="M660,120 A200,200 0 0 1 833,420"/>
+              <path class="f-arc" data-arc data-order="4" pathLength="1" d="M833,420 A200,200 0 0 1 487,420"/>
+              <path class="f-arc f-arc--close" data-arc data-order="5" pathLength="1" d="M487,420 A200,200 0 0 1 660,120"/>
+              <!-- AI core spokes to every node -->
+              <path class="f-spoke" data-order="5" d="M660,320 L660,120"/>
+              <path class="f-spoke" data-order="5" d="M660,320 L833,420"/>
+              <path class="f-spoke" data-order="5" d="M660,320 L487,420"/>
+              <path class="f-spoke" data-order="5" d="M660,320 L290,150"/>
             </svg>
 
             <!-- center: AI core + boat -->
@@ -154,10 +162,14 @@
             </div>
 
             <div class="f-node f-node--panel f-node--sales" data-node="sales" data-order="3">
-              <figure class="f-win">
-                <div class="f-win-bar"><span></span><span></span><span></span><em>Sales · conversations</em></div>
-                <img src="assets/Analytics/report-comms.png" alt="" loading="lazy">
-              </figure>
+              <div class="f-win f-sms">
+                <div class="f-win-bar"><span></span><span></span><span></span><em>Sales · AI text</em></div>
+                <div class="f-sms-body">
+                  <div class="f-sms-bubble f-sms-in">Is the 2022 Wakesetter still available?</div>
+                  <div class="f-sms-bubble f-sms-out">Yes — it's ready to see. Can I get you in Tuesday at 10?</div>
+                  <div class="f-sms-stamp">AI replied in 47s</div>
+                </div>
+              </div>
               <span class="f-node-label">Sales</span>
             </div>
 

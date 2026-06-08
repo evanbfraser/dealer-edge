@@ -87,9 +87,9 @@
 /* ─── center boat + AI core ─── */
 .f-boat {
   position: absolute;
-  left: 50%;
-  top: 52%;
-  width: clamp(190px, 27%, 300px);
+  left: 60%;
+  top: 53%;
+  width: clamp(180px, 25%, 280px);
   transform: translate(-50%, -50%);
   opacity: 0.16;
   filter: grayscale(0.3) brightness(0.85);
@@ -103,8 +103,8 @@
 
 .f-core {
   position: absolute;
-  left: 50%;
-  top: 46.9%;
+  left: 66%;
+  top: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -184,12 +184,13 @@
   color: var(--f-good);
 }
 
-/* node positions (match SVG arc endpoints; preserveAspectRatio=none) */
-.f-node--dms        { left: 18.8%; top: 28.9%; }
-.f-node--inventory  { left: 50%;   top: 10.9%; }
-.f-node--marketing  { left: 82.6%; top: 31.7%; }
-.f-node--sales      { left: 81.2%; top: 64.8%; }
-.f-node--analytics  { left: 43.7%; top: 82.2%; }
+/* node positions (match SVG endpoints; preserveAspectRatio=none).
+   Left = feed (DMS → Inventory); right = closed loop (Marketing → Sales → Analytics). */
+.f-node--dms        { left: 11%;   top: 28.1%; }
+.f-node--inventory  { left: 29%;   top: 23.4%; }
+.f-node--marketing  { left: 66%;   top: 18.8%; }
+.f-node--sales      { left: 83.3%; top: 65.6%; }
+.f-node--analytics  { left: 48.7%; top: 65.6%; }
 
 /* icon node (DMS) */
 .f-node-badge {
@@ -537,6 +538,15 @@
   stroke-width: 1.4;
 }
 
+/* the closed-loop track the cycle rides on */
+.f-loop-ring {
+  fill: none;
+  stroke: rgba(74, 222, 128, 0.1);
+  stroke-width: 1.2;
+  transition: stroke 0.6s ease;
+}
+.f-loop-stage.is-flywheel .f-loop-ring { stroke: rgba(74, 222, 128, 0.32); }
+
 /* richer bloom on the lit bright arcs */
 .f-arc.is-lit {
   filter: drop-shadow(0 0 2px rgba(74, 222, 128, 0.9))
@@ -623,6 +633,60 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 26px rgba(74, 222, 128, 0.32);
 }
 
+/* Sales node — AI SMS thread (replaces the dashboard screenshot) */
+.f-win.f-sms { width: clamp(150px, 16vw, 178px); }
+.f-sms-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 9px 9px 8px;
+  background: #0a0e10;
+}
+.f-sms-bubble {
+  max-width: 90%;
+  padding: 5px 8px;
+  border-radius: 10px;
+  font-size: 0.54rem;
+  line-height: 1.28;
+}
+.f-sms-in {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+  border-bottom-left-radius: 3px;
+}
+.f-sms-out {
+  align-self: flex-end;
+  background: rgba(74, 222, 128, 0.18);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: #eafff1;
+  border-bottom-right-radius: 3px;
+}
+.f-sms-stamp {
+  align-self: flex-end;
+  margin-top: 2px;
+  font-family: var(--de-mono, monospace);
+  font-size: 0.46rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--f-good);
+}
+
+/* AI-core spokes — wired to every node, energized on the final beat */
+.f-spoke {
+  fill: none;
+  stroke: rgba(74, 222, 128, 0.5);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.f-spoke.is-lit {
+  opacity: 0.5;
+  animation: f-spoke-flow 3s linear infinite;
+}
+@keyframes f-spoke-flow { to { stroke-dashoffset: -32; } }
+
 /* ════════════════════════════════════════════════════════════════════
    MOBILE — vertical-stack fallback for the loop scene (≤1100px)
    ════════════════════════════════════════════════════════════════════ */
@@ -667,6 +731,8 @@
   .f-win { width: 56px; flex: 0 0 auto; }
   .f-win img { height: 34px; }
   .f-win-bar { display: none; }
+  .f-win.f-sms { width: 150px; flex: 0 0 auto; }
+  .f-sms-body { padding: 6px; gap: 3px; }
   .f-node-label { font-size: 0.66rem; }
   .f-node-badge { width: 36px; height: 36px; flex: 0 0 auto; }
 
@@ -699,6 +765,7 @@
   .f-loop-stage.is-flywheel .f-core-chip::after,
   .f-loop-stage.is-flywheel .f-arc.is-lit,
   .f-arc-flow.is-lit,
+  .f-spoke.is-lit,
   .f-loop-stage.is-broken .f-broken-tile {
     animation: none !important;
   }
