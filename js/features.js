@@ -24,7 +24,38 @@
   // everything with data-order <= n, dims the rest), so scrolling up
   // reverses cleanly. n: 0 = broken, 1..4 = build, 5 = closed flywheel.
   const loopStage = document.querySelector('[data-loop-stage]');
+  if (loopStage) buildLoopFX(loopStage);
   const loopEls = loopStage ? [...loopStage.querySelectorAll('[data-order]')] : [];
+
+  // Premium FX: a faint always-on base circuit behind each arc, a bright
+  // "packet" layer that flows along it once lit, and ambient particles.
+  // Base layers drop data-order (always faint); flow layers keep it so
+  // setLoopStage lights them in step with the arc they trace.
+  function buildLoopFX(stage) {
+    const svg = stage.querySelector('.f-traces');
+    if (svg) {
+      [...svg.querySelectorAll('.f-arc')].forEach((arc) => {
+        const base = arc.cloneNode();
+        base.removeAttribute('data-order');
+        base.setAttribute('class', 'f-arc-base');
+        svg.insertBefore(base, svg.firstChild);
+        const flow = arc.cloneNode();
+        flow.setAttribute('class', 'f-arc-flow'); // keeps data-order → lights with its arc
+        svg.appendChild(flow);
+      });
+    }
+    const field = document.createElement('div');
+    field.className = 'f-particles';
+    field.setAttribute('aria-hidden', 'true');
+    [[12, 22], [27, 68], [44, 14], [63, 82], [78, 30], [88, 58], [8, 46], [70, 12], [34, 88], [92, 26], [54, 38], [20, 80]]
+      .forEach(([x, y], i) => {
+        const d = document.createElement('span');
+        d.className = 'f-particle';
+        d.style.cssText = `left:${x}%;top:${y}%;--dur:${7 + (i % 5)}s;--dly:-${(i * 0.7).toFixed(1)}s`;
+        field.appendChild(d);
+      });
+    stage.insertBefore(field, stage.firstChild);
+  }
 
   function setLoopStage(n) {
     if (!loopStage) return;

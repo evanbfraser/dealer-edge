@@ -489,9 +489,147 @@
 .features-page a.de-includes-col:hover .f-col-go svg { transform: translateX(4px); }
 
 /* ════════════════════════════════════════════════════════════════════
+   PREMIUM FX — depth, bloom, flowing current, reactor core
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ambient green wash + vignette behind the loop */
+.f-loop-stage::before {
+  content: '';
+  position: absolute;
+  inset: -16%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 58% 54% at 50% 47%, rgba(74, 222, 128, 0.12), transparent 62%),
+    radial-gradient(ellipse 90% 80% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55));
+  opacity: 0.55;
+  transition: opacity 0.7s ease;
+}
+.f-loop-stage.is-flywheel::before { opacity: 1; }
+
+/* drifting ambient particles */
+.f-particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.f-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 7px rgba(74, 222, 128, 0.65);
+  opacity: 0;
+  animation: f-drift var(--dur, 8s) ease-in-out var(--dly, 0s) infinite;
+}
+@keyframes f-drift {
+  0% { opacity: 0; transform: translateY(10px) scale(0.5); }
+  35% { opacity: 0.7; }
+  70% { opacity: 0.45; }
+  100% { opacity: 0; transform: translateY(-22px) scale(1); }
+}
+
+/* traces: keep them above the wash, below the nodes */
+.f-traces { z-index: 1; }
+.f-boat { z-index: 1; }
+
+/* faint always-on base circuit (the "unpowered" wiring) */
+.f-arc-base {
+  fill: none;
+  stroke: rgba(74, 222, 128, 0.13);
+  stroke-width: 1.4;
+}
+
+/* richer bloom on the lit bright arcs */
+.f-arc.is-lit {
+  filter: drop-shadow(0 0 2px rgba(74, 222, 128, 0.9))
+          drop-shadow(0 0 7px rgba(74, 222, 128, 0.65))
+          drop-shadow(0 0 16px rgba(74, 222, 128, 0.4));
+}
+
+/* flowing light packet along each lit trace */
+.f-arc-flow {
+  fill: none;
+  stroke: #d8ffe8;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0.06 0.94;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.95));
+  transition: opacity 0.4s ease;
+}
+.f-arc-flow.is-lit {
+  opacity: 1;
+  animation: f-flow 2.2s linear infinite;
+}
+@keyframes f-flow {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* reactor core — halo + rotating ring around the chip */
+.f-core-chip { position: relative; }
+.f-core-chip::before {
+  content: '';
+  position: absolute;
+  inset: -42px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.32), transparent 70%);
+  opacity: 0.45;
+  transition: opacity 0.6s ease;
+}
+.f-core-chip::after {
+  content: '';
+  position: absolute;
+  inset: -13px;
+  border-radius: 15px;
+  border: 1px dashed rgba(74, 222, 128, 0.35);
+}
+.f-loop-stage.is-flywheel .f-core-chip::before { opacity: 1; }
+.f-loop-stage.is-flywheel .f-core-chip::after {
+  border-color: rgba(74, 222, 128, 0.6);
+  animation: f-ring-spin 9s linear infinite;
+}
+@keyframes f-ring-spin { to { transform: rotate(360deg); } }
+
+/* boat: bring it forward as the heart, with a rim-light */
+.f-boat {
+  opacity: 0.2;
+  filter: grayscale(0.2) brightness(0.9);
+}
+.f-loop-stage.is-flywheel .f-boat {
+  opacity: 0.5;
+  filter: brightness(1.02) drop-shadow(0 8px 32px rgba(74, 222, 128, 0.32));
+}
+
+/* glass panels — gradient border + sheen + richer lit glow */
+.f-win {
+  position: relative;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#0a0e10, #0a0e10) padding-box,
+    linear-gradient(150deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.03)) border-box;
+}
+.f-win::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.1), transparent 42%);
+}
+.f-node.is-lit .f-win {
+  background:
+    linear-gradient(#0a0e10, #0a0e10) padding-box,
+    linear-gradient(150deg, rgba(74, 222, 128, 0.75), rgba(74, 222, 128, 0.12)) border-box;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 26px rgba(74, 222, 128, 0.32);
+}
+
+/* ════════════════════════════════════════════════════════════════════
    MOBILE — vertical-stack fallback for the loop scene (≤1100px)
    ════════════════════════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
+  .f-particles { display: none; }
+  .f-core-chip::before, .f-core-chip::after { display: none; }
+  .f-loop-stage::before { display: none; }
   .f-traces { display: none; }
   .f-boat { display: none; }
 
@@ -558,9 +696,13 @@
    ════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   .f-loop-stage.is-flywheel .f-core-chip,
+  .f-loop-stage.is-flywheel .f-core-chip::after,
   .f-loop-stage.is-flywheel .f-arc.is-lit,
+  .f-arc-flow.is-lit,
   .f-loop-stage.is-broken .f-broken-tile {
     animation: none !important;
   }
   .f-arc { transition: stroke-dashoffset 0.01s, opacity 0.01s; }
+  .f-particles { display: none; }
+  .f-arc-flow { display: none; }
 }
