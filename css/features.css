@@ -36,6 +36,7 @@
 .features-page #system-loop:not(.is-engaged) .de-act-stage-sticky {
   min-height: 0;
   height: 0;
+  overflow: hidden;
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -769,6 +770,9 @@
   color: var(--text-mid, rgba(255, 255, 255, 0.75));
 }
 
+/* active-node detail card — mobile only (desktop nodes show their own panels) */
+.f-detail { display: none; }
+
 /* ════════════════════════════════════════════════════════════════════
    MOBILE (portrait) — keep the FULL animated flywheel. Nodes become
    glowing icon-badges (screenshot panels can't orbit a phone-width ring);
@@ -776,18 +780,30 @@
    wash, bloom) stay on. The copy rail above narrates each beat.
    ════════════════════════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
-  .f-hero-sub { display: none; }   /* drop the paragraph on mobile */
   .f-flow-label { display: none; } /* too dense on the small wheel — the copy carries it */
   .f-boat { display: none; }       /* faint backdrop muddies at this size */
 
-  /* a proportional, full-width box so the loop renders as a wheel, not a stack */
+  /* INTRO: big hero header + paragraph; both shrink/hide as the wheel engages.
+     (.f-hero-sub shows at intro and hides on engage via the base .is-engaged rule.) */
+  .features-page #system-loop:not(.is-engaged) .de-act-headline { font-size: clamp(2.8rem, 10vw, 3.6rem); }
+  .f-hero-sub { font-size: 1.06rem; }
+
+  /* stage = animated wheel on top + active-node detail card below */
   .features-page .de-act-stage-sticky {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     width: 100%;
     height: auto;
-    aspect-ratio: 1.42 / 1;
     min-height: 0;
-    max-height: 56vh;
+    max-height: none;
     margin: 0 auto;
+  }
+  .f-loop-stage {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    aspect-ratio: 1.42 / 1;
   }
 
   /* nodes → icon badges on the ring */
@@ -802,9 +818,23 @@
   .f-core-chip { width: 42px; height: 42px; padding: 7px; }
 
   /* compounding metric: compact, anchored lower-left of the wheel */
-  .f-metric { left: 2%; top: 58%; padding: 8px 11px; gap: 2px; }
+  .f-metric { left: 2%; top: 56%; padding: 8px 11px; gap: 2px; }
   .f-metric-num { font-size: 1.4rem; }
-  .f-metric-label { font-size: 0.44rem; max-width: 88px; }
+  .f-metric-label { font-size: 0.44rem; max-width: 92px; }
+
+  /* active-node detail card — the real screenshot for the current beat */
+  .f-detail {
+    display: block;
+    width: 100%;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.45s ease, opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(8px);
+  }
+  .f-detail.is-shown { max-height: 200px; opacity: 1; transform: none; }
+  .f-detail .f-win { display: block; width: 100%; margin: 0; }
+  .f-detail .f-win img { width: 100%; height: auto; max-height: 132px; object-fit: cover; object-position: top center; }
 }
 
 /* ════════════════════════════════════════════════════════════════════

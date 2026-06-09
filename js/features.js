@@ -66,6 +66,21 @@
       const lit = n >= 1 && Number(el.dataset.order) <= n;
       el.classList.toggle('is-lit', lit);
     });
+    setDetail(n);
+  }
+
+  // active-node detail (mobile): mirror the current node's screenshot/SMS into a card
+  const detailEl = document.querySelector('[data-detail]');
+  function setDetail(n) {
+    if (!detailEl || !loopStage) return;
+    const key = { 1: 'inventory', 2: 'marketing', 3: 'sales', 4: 'analytics' }[n];
+    const win = key && loopStage.querySelector('.f-node--' + key + ' .f-win');
+    if (!win) { detailEl.classList.remove('is-shown'); detailEl.removeAttribute('data-node'); return; }
+    if (detailEl.dataset.node !== key) {
+      detailEl.innerHTML = win.outerHTML;
+      detailEl.dataset.node = key;
+    }
+    detailEl.classList.add('is-shown');
   }
 
   // the compounding payoff: count the metric up as the wheel spins (final beat)
