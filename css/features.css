@@ -262,6 +262,10 @@
   object-fit: cover;
   object-position: top center;
 }
+/* the Marketing ad is square (1:1) — show it whole instead of the cropped band */
+.f-node--marketing .f-win img { height: auto; }
+/* the Analytics report is tall — keep a legible band, just past the header bar */
+.f-node--analytics .f-win img { object-position: center 16%; }
 
 /* ─── red broken-vendor cluster (beat 1 only) ─── */
 .f-broken {
