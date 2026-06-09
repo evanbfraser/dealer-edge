@@ -68,6 +68,12 @@
       const lit = n >= 1 && Number(el.dataset.order) <= n;
       el.classList.toggle('is-lit', lit);
     });
+    // safety: once we're past the Sales beat, make sure its SMS is shown even if
+    // the type-in handler didn't run (e.g. a scroll jump straight to the end)
+    if (n >= 4) {
+      document.querySelectorAll('.f-node--sales .f-sms-bubble, .f-node--sales .f-sms-stamp')
+        .forEach((el) => el.classList.add('is-in'));
+    }
     setDetail(n);
   }
 
