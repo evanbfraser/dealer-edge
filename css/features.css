@@ -42,6 +42,12 @@
    (chassis caps it at 600px; the mobile @media block overrides this back to auto) */
 .features-page .de-act-stage-sticky { height: min(74vh, 700px); max-height: 720px; }
 
+/* desktop: widen the stage column so the loop uses the horizontal space too
+   (the copy rail keeps enough room; scoped to desktop so mobile stays single-column) */
+@media (min-width: 1101px) {
+  .features-page .de-act-inner { grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.52fr); }
+}
+
 /* ════════════════════════════════════════════════════════════════════
    THE SYSTEM LOOP — persistent scene inside .de-act-stage-sticky.
    Sits behind the (empty) .de-beat placeholders that drive setLoopStage.
