@@ -210,6 +210,8 @@
   color: var(--f-good);
   box-shadow: 0 0 22px rgba(74, 222, 128, 0.4);
 }
+/* panel nodes use their screenshot on desktop; the badge is the mobile face */
+.f-node--panel .f-node-badge { display: none; }
 
 /* panel node (window chrome + real screenshot) */
 .f-win {
@@ -768,75 +770,41 @@
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   MOBILE — vertical-stack fallback for the loop scene (≤1100px)
+   MOBILE (portrait) — keep the FULL animated flywheel. Nodes become
+   glowing icon-badges (screenshot panels can't orbit a phone-width ring);
+   all the FX (traces, packets, spin comet, spokes, core halo, particles,
+   wash, bloom) stay on. The copy rail above narrates each beat.
    ════════════════════════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
-  .f-particles { display: none; }
-  .f-core-chip::before, .f-core-chip::after { display: none; }
-  .f-loop-stage::before { display: none; }
-  .f-traces { display: none; }
-  .f-boat { display: none; }
-  .f-flow-label { display: none; }
-  .f-metric { position: static; order: 7; align-self: center; margin-top: 6px; }
+  .f-hero-sub { display: none; }   /* drop the paragraph on mobile */
+  .f-flow-label { display: none; } /* too dense on the small wheel — the copy carries it */
+  .f-boat { display: none; }       /* faint backdrop muddies at this size */
 
-  .f-loop-stage {
-    position: relative;
-    inset: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: 8px;
-    height: 100%;
-    padding: 6px 4px;
-  }
-
-  .f-node,
-  .f-core {
-    position: static;
-    transform: none;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
+  /* a proportional, full-width box so the loop renders as a wheel, not a stack */
+  .features-page .de-act-stage-sticky {
     width: 100%;
-    padding: 8px 12px;
-    border-radius: 12px;
-    border: 1px solid var(--f-line);
-    background: rgba(255, 255, 255, 0.02);
+    height: auto;
+    aspect-ratio: 1.42 / 1;
+    min-height: 0;
+    max-height: 56vh;
+    margin: 0 auto;
   }
-  .f-node { opacity: 0.4; }
-  .f-node.is-lit {
-    opacity: 1;
-    border-color: rgba(74, 222, 128, 0.45);
-    background: rgba(74, 222, 128, 0.06);
-  }
-  .f-win { width: 56px; flex: 0 0 auto; }
-  .f-win img { height: 34px; }
-  .f-win-bar { display: none; }
-  .f-win.f-sms { width: 150px; flex: 0 0 auto; }
-  .f-sms-body { padding: 6px; gap: 3px; }
-  .f-node-label { font-size: 0.66rem; }
-  .f-node-badge { width: 36px; height: 36px; flex: 0 0 auto; }
 
-  /* sequence the rows top→bottom */
-  .f-node--dms       { order: 1; }
-  .f-node--inventory { order: 2; }
-  .f-node--marketing { order: 3; }
-  .f-node--sales     { order: 4; }
-  .f-node--analytics { order: 5; }
-  .f-core            { order: 6; justify-content: flex-start; }
-  .f-core-chip { width: 36px; height: 36px; padding: 6px; flex: 0 0 auto; }
-
-  /* broken cluster becomes a banner row above the stack */
-  .f-broken {
-    position: static;
-    transform: none;
-    order: 0;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
+  /* nodes → icon badges on the ring */
+  .f-node--panel .f-win { display: none; }
+  .f-node--panel .f-node-badge { display: flex; }
+  .f-node-badge {
+    width: clamp(30px, 9.5vw, 42px);
+    height: clamp(30px, 9.5vw, 42px);
   }
+  .f-node-badge svg { width: 54%; height: 54%; }
+  .f-node-label { font-size: 0.5rem; letter-spacing: 0.1em; }
+  .f-core-chip { width: 42px; height: 42px; padding: 7px; }
+
+  /* compounding metric: compact, anchored lower-left of the wheel */
+  .f-metric { left: 2%; top: 58%; padding: 8px 11px; gap: 2px; }
+  .f-metric-num { font-size: 1.4rem; }
+  .f-metric-label { font-size: 0.44rem; max-width: 88px; }
 }
 
 /* ════════════════════════════════════════════════════════════════════
