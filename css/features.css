@@ -817,21 +817,36 @@
   .f-node-label { font-size: 0.5rem; letter-spacing: 0.1em; }
   .f-core-chip { width: 42px; height: 42px; padding: 7px; }
 
-  /* compounding payoff: larger + centered at the bottom of the wheel */
+  /* compounding payoff: its own row below the wheel (flows, so it never overlaps),
+     collapsed until the final beat, then large + centered */
   .f-metric {
-    left: 50%;
+    position: static;
+    order: 9;
+    align-self: center;
+    left: auto;
     right: auto;
     top: auto;
-    bottom: 5%;
-    transform: translateX(-50%) translateY(10px) scale(0.96);
+    bottom: auto;
     align-items: center;
     text-align: center;
-    padding: 12px 24px;
-    gap: 4px;
+    gap: 5px;
+    max-height: 0;
+    margin: 0;
+    padding: 0 28px;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(8px);
+    transition: max-height 0.5s ease, opacity 0.5s ease, transform 0.5s ease, padding 0.4s ease, margin 0.4s ease;
   }
-  .f-metric.is-lit { transform: translateX(-50%); }
-  .f-metric-num { font-size: 2.3rem; }
-  .f-metric-label { font-size: 0.52rem; max-width: none; }
+  .f-metric.is-lit {
+    max-height: 140px;
+    margin-top: 10px;
+    padding: 14px 30px;
+    opacity: 1;
+    transform: none;
+  }
+  .f-metric-num { font-size: 2.5rem; }
+  .f-metric-label { font-size: 0.54rem; max-width: none; }
 
   /* active-node detail card — the real screenshot for the current beat */
   .f-detail {

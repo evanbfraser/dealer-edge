@@ -25,7 +25,9 @@
   // reverses cleanly. n: 0 = broken, 1..4 = build, 5 = closed flywheel.
   const loopStage = document.querySelector('[data-loop-stage]');
   if (loopStage) buildLoopFX(loopStage);
-  const loopEls = loopStage ? [...loopStage.querySelectorAll('[data-order]')] : [];
+  // scope spans the sticky so the metric (a sibling of the loop stage) still lights
+  const loopScope = loopStage ? (loopStage.closest('.de-act-stage-sticky') || loopStage) : null;
+  const loopEls = loopScope ? [...loopScope.querySelectorAll('[data-order]')] : [];
 
   // Premium FX: a faint always-on base circuit behind each arc, a bright
   // "packet" layer that flows along it once lit, and ambient particles.
@@ -111,7 +113,7 @@
 
   // the compounding payoff: count the metric up as the wheel spins (final beat)
   function runMetric(stillCurrent) {
-    const el = loopStage && loopStage.querySelector('[data-count]');
+    const el = document.querySelector('.f-metric [data-count]');
     if (!el) return;
     const end = Number(el.dataset.count) || 0;
     if (DE.reduceMotion) { el.textContent = '+' + end; return; }

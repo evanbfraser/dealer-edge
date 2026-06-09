@@ -13,7 +13,7 @@
   <meta name="twitter:image" content="https://mantra-harbor-8vkd.here.now/assets/features/system-loop-og.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/de-act.css">
-  <link rel="stylesheet" href="css/features.css?v=6">
+  <link rel="stylesheet" href="css/features.css?v=7">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -219,14 +219,16 @@
             <span class="f-flow-label f-flow-label--5" data-order="5">what sold &amp; reviews &#8634;</span>
 
             <!-- the compounding payoff: one number that climbs as the wheel turns -->
-            <div class="f-metric" data-order="5">
-              <span class="f-metric-num"><b data-count="12">+0</b></span>
-              <span class="f-metric-label">more boats sold / quarter — same lot</span>
-            </div>
           </div>
 
           <!-- active-node detail (mobile): the real screenshot for the current beat -->
           <div class="f-detail" data-detail aria-hidden="true"></div>
+
+          <!-- compounding payoff — positioned on desktop; its own row below the wheel on mobile -->
+          <div class="f-metric" data-order="5">
+            <span class="f-metric-num"><b data-count="12">+0</b></span>
+            <span class="f-metric-label">more boats sold / quarter — same lot</span>
+          </div>
 
           <!-- transparent beat placeholders: state triggers only -->
           <div class="de-beat is-active" data-beat="1" data-anim="f-loop-broken" data-phase="bad"></div>
@@ -563,6 +565,6 @@
   <script src="js/mobile-nav.js"></script>
   <script src="js/section-video-boat.js"></script>
   <script src="js/de-core.js"></script>
-  <script src="js/features.js?v=6"></script>
+  <script src="js/features.js?v=7"></script>
 </body>
 </html>
