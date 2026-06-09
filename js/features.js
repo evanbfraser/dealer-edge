@@ -68,6 +68,25 @@
     });
   }
 
+  // the compounding payoff: count the metric up as the wheel spins (final beat)
+  function runMetric(stillCurrent) {
+    const el = loopStage && loopStage.querySelector('[data-count]');
+    if (!el) return;
+    const end = Number(el.dataset.count) || 0;
+    if (DE.reduceMotion) { el.textContent = '+' + end; return; }
+    const dur = 2200;
+    let startT = null;
+    el.textContent = '+0';
+    function step(now) {
+      if (typeof stillCurrent === 'function' && !stillCurrent()) return;
+      if (startT === null) startT = now;
+      const t = Math.min(1, (now - startT) / dur);
+      el.textContent = '+' + Math.round((1 - Math.pow(1 - t, 3)) * end);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
   const animCleanups = new WeakMap();
 
   const BEAT_ANIMS = {
@@ -76,7 +95,7 @@
     'f-loop-2': () => setLoopStage(2),
     'f-loop-3': () => setLoopStage(3),
     'f-loop-4': () => setLoopStage(4),
-    'f-loop-5': () => setLoopStage(5),
+    'f-loop-5': (beatEl, stillCurrent) => { setLoopStage(5); runMetric(stillCurrent); },
   };
 
   // Must run AFTER the BEAT_ANIMS declaration (TDZ).
