@@ -770,6 +770,31 @@
   color: var(--text-mid, rgba(255, 255, 255, 0.75));
 }
 
+/* ─── before/after crossfade (Inventory node + its mobile detail card) ─── */
+.f-ba-stage { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; }
+.f-win .f-ba-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.f-ba-before { animation: f-ba-rev 4.4s ease-in-out infinite; }
+.f-ba-after { opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
+@keyframes f-ba-fwd { 0%, 38% { opacity: 0; } 52%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes f-ba-rev { 0%, 38% { opacity: 1; } 52%, 90% { opacity: 0; } 100% { opacity: 1; } }
+.f-ba-tag {
+  position: absolute;
+  left: 7px;
+  bottom: 7px;
+  font-family: var(--de-mono, monospace);
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 100px;
+}
+.f-ba-tag--before { background: rgba(238, 58, 57, 0.85); color: #fff; animation: f-ba-rev 4.4s ease-in-out infinite; }
+.f-ba-tag--after { background: rgba(74, 222, 128, 0.92); color: #04140b; opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
+
+/* ─── SMS bubbles type in (Sales node + its mobile detail card) ─── */
+.f-sms-bubble, .f-sms-stamp { opacity: 0; transform: translateY(7px); transition: opacity 0.35s ease, transform 0.35s ease; }
+.f-sms-bubble.is-in, .f-sms-stamp.is-in { opacity: 1; transform: none; }
+
 /* active-node detail card — mobile only (desktop nodes show their own panels) */
 .f-detail { display: none; }
 
@@ -869,34 +894,9 @@
   .f-detail[data-node="analytics"] .f-win { width: min(100%, 300px); }
   .f-detail[data-node="analytics"] .f-win img { height: 138px; object-fit: cover; object-position: center 16%; }
 
-  /* sales: comfortable SMS width + bubbles that type in */
+  /* detail card widths (the type-in + crossfade animations are global) */
   .f-detail .f-win.f-sms { width: min(100%, 320px); }
-  .f-detail .f-sms-bubble,
-  .f-detail .f-sms-stamp { opacity: 0; transform: translateY(7px); transition: opacity 0.35s ease, transform 0.35s ease; }
-  .f-detail .f-sms-bubble.is-in,
-  .f-detail .f-sms-stamp.is-in { opacity: 1; transform: none; }
-
-  /* inventory: before → after crossfade loop */
   .f-detail[data-node="inventory"] .f-win { width: min(100%, 252px); }
-  .f-ba-stage { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; }
-  .f-ba-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .f-ba-before { animation: f-ba-rev 4.4s ease-in-out infinite; }
-  .f-ba-after { opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
-  @keyframes f-ba-fwd { 0%, 38% { opacity: 0; } 52%, 90% { opacity: 1; } 100% { opacity: 0; } }
-  @keyframes f-ba-rev { 0%, 38% { opacity: 1; } 52%, 90% { opacity: 0; } 100% { opacity: 1; } }
-  .f-ba-tag {
-    position: absolute;
-    left: 8px;
-    bottom: 8px;
-    font-family: var(--de-mono, monospace);
-    font-size: 0.5rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 100px;
-  }
-  .f-ba-tag--before { background: rgba(238, 58, 57, 0.85); color: #fff; animation: f-ba-rev 4.4s ease-in-out infinite; }
-  .f-ba-tag--after { background: rgba(74, 222, 128, 0.92); color: #04140b; opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -918,5 +918,5 @@
   /* detail cards: rest on the resolved state instead of looping */
   .f-ba-before, .f-ba-after, .f-ba-tag--before, .f-ba-tag--after { animation: none !important; }
   .f-ba-after, .f-ba-tag--after { opacity: 1 !important; }
-  .f-detail .f-sms-bubble, .f-detail .f-sms-stamp { opacity: 1 !important; transform: none !important; }
+  .f-sms-bubble, .f-sms-stamp { opacity: 1 !important; transform: none !important; }
 }

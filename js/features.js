@@ -74,39 +74,28 @@
   // active-node detail (mobile): the real proof for the current beat. Per node:
   // inventory = before→after loop, sales = SMS that types in, others = the screenshot.
   const detailEl = document.querySelector('[data-detail]');
-  const BA_HTML =
-    '<div class="f-win f-ba">' +
-      '<div class="f-win-bar"><span></span><span></span><span></span><em>Inventory &middot; raw &rarr; sales-ready</em></div>' +
-      '<div class="f-ba-stage">' +
-        '<img class="f-ba-img f-ba-before" src="assets/inventory/supra-raw.jpg" alt="">' +
-        '<img class="f-ba-img f-ba-after" src="assets/inventory/supra-studio.png" alt="">' +
-        '<span class="f-ba-tag f-ba-tag--before">Before</span>' +
-        '<span class="f-ba-tag f-ba-tag--after">After</span>' +
-      '</div>' +
-    '</div>';
 
-  function animateSMS() {
-    const items = [...detailEl.querySelectorAll('.f-sms-bubble, .f-sms-stamp')];
+  // type the SMS bubbles in — used by the Sales NODE on desktop and its detail card on mobile
+  function animateSMS(scope) {
+    if (!scope) return;
+    const items = [...scope.querySelectorAll('.f-sms-bubble, .f-sms-stamp')];
+    if (!items.length) return;
     items.forEach((el) => el.classList.remove('is-in'));
     const delays = DE.reduceMotion ? [0, 0, 0] : [250, 1150, 1700];
-    items.forEach((el, i) => setTimeout(() => {
-      if (detailEl.dataset.node === 'sales') el.classList.add('is-in');
-    }, delays[i] != null ? delays[i] : 250 + i * 500));
+    items.forEach((el, i) => setTimeout(() => el.classList.add('is-in'), delays[i] != null ? delays[i] : 250 + i * 500));
   }
 
+  // mobile detail card: clone the active node's panel (inventory = before/after,
+  // sales = SMS, etc.). Desktop shows the nodes' own panels, so this is mobile-only.
   function setDetail(n) {
     if (!detailEl || !loopStage) return;
     const key = { 1: 'inventory', 2: 'marketing', 3: 'sales', 4: 'analytics' }[n];
     if (!key) { detailEl.classList.remove('is-shown'); detailEl.removeAttribute('data-node'); return; }
     if (detailEl.dataset.node !== key) {
       detailEl.dataset.node = key;
-      if (key === 'inventory') {
-        detailEl.innerHTML = BA_HTML;
-      } else {
-        const win = loopStage.querySelector('.f-node--' + key + ' .f-win');
-        detailEl.innerHTML = win ? win.outerHTML : '';
-        if (key === 'sales') animateSMS();
-      }
+      const win = loopStage.querySelector('.f-node--' + key + ' .f-win');
+      detailEl.innerHTML = win ? win.outerHTML : '';
+      if (key === 'sales') animateSMS(detailEl);
     }
     detailEl.classList.add('is-shown');
   }
@@ -136,7 +125,7 @@
     'f-loop-broken': () => setLoopStage(0),
     'f-loop-1': () => setLoopStage(1),
     'f-loop-2': () => setLoopStage(2),
-    'f-loop-3': () => setLoopStage(3),
+    'f-loop-3': () => { setLoopStage(3); animateSMS(document.querySelector('.f-node--sales')); },
     'f-loop-4': () => setLoopStage(4),
     'f-loop-5': (beatEl, stillCurrent) => { setLoopStage(5); runMetric(stillCurrent); },
   };
