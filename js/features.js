@@ -80,6 +80,13 @@
       detailEl.innerHTML = win.outerHTML;
       detailEl.dataset.node = key;
     }
+    // size the chrome to the screenshot's aspect (≈150px tall) so the frame + bar
+    // hug the image. Use known aspect ratios — cloned imgs report 0 until they load.
+    const ar = { inventory: 1376 / 768, marketing: 1, analytics: 941 / 1672 }[key];
+    const dwin = detailEl.querySelector('.f-win');
+    if (dwin) {
+      dwin.style.width = ar ? Math.min(detailEl.clientWidth || 360, Math.round(150 * ar)) + 'px' : '';
+    }
     detailEl.classList.add('is-shown');
   }
 

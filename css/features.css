@@ -829,21 +829,17 @@
     max-height: 0;
     opacity: 0;
     overflow: hidden;
+    text-align: center;
     transition: max-height 0.45s ease, opacity 0.4s ease, transform 0.4s ease;
     transform: translateY(8px);
   }
   .f-detail.is-shown { max-height: 230px; opacity: 1; transform: none; }
-  .f-detail .f-win { display: block; width: 100%; margin: 0; }
-  /* show each screenshot fully at its own aspect (square / landscape / tall),
-     capped + centered — never cropped */
-  .f-detail .f-win img {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 150px;
-    margin: 0 auto;
-    display: block;
-  }
+  /* JS sets .f-win width to the screenshot's aspect (≈150px tall) so the whole
+     window chrome — bar + frame — hugs the image, centered. */
+  .f-detail .f-win { display: block; max-width: 100%; margin: 0 auto; text-align: left; }
+  .f-detail .f-win img { display: block; width: 100%; height: auto; }
+  /* the SMS thread keeps a comfortable reading width */
+  .f-detail .f-win.f-sms { width: min(100%, 320px); }
 }
 
 /* ════════════════════════════════════════════════════════════════════
