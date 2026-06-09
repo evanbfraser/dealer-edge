@@ -817,10 +817,21 @@
   .f-node-label { font-size: 0.5rem; letter-spacing: 0.1em; }
   .f-core-chip { width: 42px; height: 42px; padding: 7px; }
 
-  /* compounding metric: compact, anchored lower-left of the wheel */
-  .f-metric { left: 2%; top: 56%; padding: 8px 11px; gap: 2px; }
-  .f-metric-num { font-size: 1.4rem; }
-  .f-metric-label { font-size: 0.44rem; max-width: 92px; }
+  /* compounding payoff: larger + centered at the bottom of the wheel */
+  .f-metric {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 5%;
+    transform: translateX(-50%) translateY(10px) scale(0.96);
+    align-items: center;
+    text-align: center;
+    padding: 12px 24px;
+    gap: 4px;
+  }
+  .f-metric.is-lit { transform: translateX(-50%); }
+  .f-metric-num { font-size: 2.3rem; }
+  .f-metric-label { font-size: 0.52rem; max-width: none; }
 
   /* active-node detail card — the real screenshot for the current beat */
   .f-detail {
@@ -833,13 +844,44 @@
     transition: max-height 0.45s ease, opacity 0.4s ease, transform 0.4s ease;
     transform: translateY(8px);
   }
-  .f-detail.is-shown { max-height: 230px; opacity: 1; transform: none; }
-  /* JS sets .f-win width to the screenshot's aspect (≈150px tall) so the whole
-     window chrome — bar + frame — hugs the image, centered. */
-  .f-detail .f-win { display: block; max-width: 100%; margin: 0 auto; text-align: left; }
+  .f-detail.is-shown { max-height: 240px; opacity: 1; transform: none; }
+  .f-detail .f-win { display: block; max-width: 100%; margin: 0 auto; text-align: left; overflow: hidden; }
   .f-detail .f-win img { display: block; width: 100%; height: auto; }
-  /* the SMS thread keeps a comfortable reading width */
+
+  /* marketing: square ad */
+  .f-detail[data-node="marketing"] .f-win { width: 170px; }
+  /* analytics: crop the tall report to a legible, well-merchandised top band */
+  .f-detail[data-node="analytics"] .f-win { width: min(100%, 300px); }
+  .f-detail[data-node="analytics"] .f-win img { height: 138px; object-fit: cover; object-position: center 16%; }
+
+  /* sales: comfortable SMS width + bubbles that type in */
   .f-detail .f-win.f-sms { width: min(100%, 320px); }
+  .f-detail .f-sms-bubble,
+  .f-detail .f-sms-stamp { opacity: 0; transform: translateY(7px); transition: opacity 0.35s ease, transform 0.35s ease; }
+  .f-detail .f-sms-bubble.is-in,
+  .f-detail .f-sms-stamp.is-in { opacity: 1; transform: none; }
+
+  /* inventory: before → after crossfade loop */
+  .f-detail[data-node="inventory"] .f-win { width: min(100%, 252px); }
+  .f-ba-stage { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; }
+  .f-ba-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .f-ba-before { animation: f-ba-rev 4.4s ease-in-out infinite; }
+  .f-ba-after { opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
+  @keyframes f-ba-fwd { 0%, 38% { opacity: 0; } 52%, 90% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes f-ba-rev { 0%, 38% { opacity: 1; } 52%, 90% { opacity: 0; } 100% { opacity: 1; } }
+  .f-ba-tag {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    font-family: var(--de-mono, monospace);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .f-ba-tag--before { background: rgba(238, 58, 57, 0.85); color: #fff; animation: f-ba-rev 4.4s ease-in-out infinite; }
+  .f-ba-tag--after { background: rgba(74, 222, 128, 0.92); color: #04140b; opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -858,4 +900,8 @@
   .f-particles { display: none; }
   .f-arc-flow { display: none; }
   .f-loop-spin { display: none; }
+  /* detail cards: rest on the resolved state instead of looping */
+  .f-ba-before, .f-ba-after, .f-ba-tag--before, .f-ba-tag--after { animation: none !important; }
+  .f-ba-after, .f-ba-tag--after { opacity: 1 !important; }
+  .f-detail .f-sms-bubble, .f-detail .f-sms-stamp { opacity: 1 !important; transform: none !important; }
 }

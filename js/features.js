@@ -69,23 +69,42 @@
     setDetail(n);
   }
 
-  // active-node detail (mobile): mirror the current node's screenshot/SMS into a card
+  // active-node detail (mobile): the real proof for the current beat. Per node:
+  // inventory = before→after loop, sales = SMS that types in, others = the screenshot.
   const detailEl = document.querySelector('[data-detail]');
+  const BA_HTML =
+    '<div class="f-win f-ba">' +
+      '<div class="f-win-bar"><span></span><span></span><span></span><em>Inventory &middot; raw &rarr; sales-ready</em></div>' +
+      '<div class="f-ba-stage">' +
+        '<img class="f-ba-img f-ba-before" src="assets/inventory/supra-raw.jpg" alt="">' +
+        '<img class="f-ba-img f-ba-after" src="assets/inventory/supra-studio.png" alt="">' +
+        '<span class="f-ba-tag f-ba-tag--before">Before</span>' +
+        '<span class="f-ba-tag f-ba-tag--after">After</span>' +
+      '</div>' +
+    '</div>';
+
+  function animateSMS() {
+    const items = [...detailEl.querySelectorAll('.f-sms-bubble, .f-sms-stamp')];
+    items.forEach((el) => el.classList.remove('is-in'));
+    const delays = DE.reduceMotion ? [0, 0, 0] : [250, 1150, 1700];
+    items.forEach((el, i) => setTimeout(() => {
+      if (detailEl.dataset.node === 'sales') el.classList.add('is-in');
+    }, delays[i] != null ? delays[i] : 250 + i * 500));
+  }
+
   function setDetail(n) {
     if (!detailEl || !loopStage) return;
     const key = { 1: 'inventory', 2: 'marketing', 3: 'sales', 4: 'analytics' }[n];
-    const win = key && loopStage.querySelector('.f-node--' + key + ' .f-win');
-    if (!win) { detailEl.classList.remove('is-shown'); detailEl.removeAttribute('data-node'); return; }
+    if (!key) { detailEl.classList.remove('is-shown'); detailEl.removeAttribute('data-node'); return; }
     if (detailEl.dataset.node !== key) {
-      detailEl.innerHTML = win.outerHTML;
       detailEl.dataset.node = key;
-    }
-    // size the chrome to the screenshot's aspect (≈150px tall) so the frame + bar
-    // hug the image. Use known aspect ratios — cloned imgs report 0 until they load.
-    const ar = { inventory: 1376 / 768, marketing: 1, analytics: 941 / 1672 }[key];
-    const dwin = detailEl.querySelector('.f-win');
-    if (dwin) {
-      dwin.style.width = ar ? Math.min(detailEl.clientWidth || 360, Math.round(150 * ar)) + 'px' : '';
+      if (key === 'inventory') {
+        detailEl.innerHTML = BA_HTML;
+      } else {
+        const win = loopStage.querySelector('.f-node--' + key + ' .f-win');
+        detailEl.innerHTML = win ? win.outerHTML : '';
+        if (key === 'sales') animateSMS();
+      }
     }
     detailEl.classList.add('is-shown');
   }
