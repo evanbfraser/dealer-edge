@@ -173,22 +173,31 @@ window.DE = (() => {
   }
 
   /* ─────────────────────────────────────────────────────────────
-     ACT CONTROLLER — the marketing-style scroll-pinned act engine
-     (per-beat data-phase couplets + data-anim dispatch + intro
-     scenes). Used by marketing.js and inventory.js; sales.js still
-     runs its own controller (Phase 2 = merge it into this one).
+     ACT CONTROLLER — the scroll-pinned act engine shared by ALL
+     act pages (marketing, inventory, analytics, features, sales):
+     per-beat data-phase couplets + data-anim dispatch + intro
+     scenes.
 
-       DE.initActs(lenis, { anims: BEAT_ANIMS, cleanups: weakMap });
+       DE.initActs(lenis, { anims: BEAT_ANIMS, cleanups: weakMap, fitBeats: true });
 
-     `anims` maps data-anim keys → fn(beatEl, stillCurrent).
+     `anims` maps data-anim keys → fn(beatEl, stillCurrent). Every
+     anim fn must add .is-playing to its beat as its FIRST statement
+     — that class is the replay gate (without it the engine force-
+     replays the anim on every scroll update inside the beat).
      `cleanups` is the page's WeakMap of per-beat cleanup fns (the
      page's storeCleanup() writes into it; the controller runs the
-     previous beat's cleanup on every transition). Scene math: one
+     previous beat's cleanup on every transition). `fitBeats` opts
+     into the mobile beat-fit pass (≤1100px): an active beat whose
+     content overflows the pinned stage is scaled down via
+     --de-beat-fit-scale (consumed by de-act.css). Sales uses it.
+     Phase: a stage beat's data-phase drives the act's accent
+     couplet; beats without one fall back to the act's own static
+     data-phase from the HTML (sales), then 'good'. Scene math: one
      scene per .de-act-line (fallback .de-act-beat), +1 when the act
      carries data-act-intro. Heights come from the de-act--N classes
      in css/de-act.css — never hand-write them.
      ───────────────────────────────────────────────────────────── */
-  function initActs(lenis, { anims = {}, cleanups = new WeakMap() } = {}) {
+  function initActs(lenis, { anims = {}, cleanups = new WeakMap(), fitBeats = false } = {}) {
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
     const tick = (stillCurrent, fn) => {
       if (typeof stillCurrent === 'function' && !stillCurrent()) return;
@@ -207,11 +216,61 @@ window.DE = (() => {
       const beatCount = Math.min(copyBeats.length || stageBeats.length, stageBeats.length);
       if (!beatCount) return;
       const sceneCount = beatCount + (hasIntro ? 1 : 0);
+      // captured before any applyScene mutates it — beats without their own
+      // data-phase resolve to the act's static phase from the HTML
+      const basePhase = act.dataset.phase || 'good';
 
       let activeBeat = -1;
       let introActive = false;
       let runToken = 0;
       let entered = false;
+
+      /* Mobile beat-fit (opt-in via fitBeats — ported from sales' old
+         controller): scale an overflowing active beat down so the full
+         card fits the pinned stage. No-op above 1100px and on pages
+         that don't pass fitBeats. */
+      const mobileActMedia = window.matchMedia('(max-width: 1100px)');
+      function fitActiveBeatToStage() {
+        if (!fitBeats) return;
+        const beatEl = stageBeats[activeBeat];
+        const stageEl = act.querySelector('.de-act-stage-sticky');
+
+        stageBeats.forEach((beat) => beat.style.removeProperty('--de-beat-fit-scale'));
+        if (!mobileActMedia.matches || !beatEl || !stageEl) return;
+
+        const children = Array.from(beatEl.children).filter((child) => {
+          const childStyle = window.getComputedStyle(child);
+          return childStyle.display !== 'none';
+        });
+        if (!children.length) return;
+
+        const beatStyle = window.getComputedStyle(beatEl);
+        const gap = Number.parseFloat(beatStyle.rowGap || beatStyle.gap) || 0;
+        const paddingY =
+          (Number.parseFloat(beatStyle.paddingTop) || 0) +
+          (Number.parseFloat(beatStyle.paddingBottom) || 0);
+        const contentHeight = children.reduce((sum, child) => {
+          return sum + Math.max(child.scrollHeight, child.getBoundingClientRect().height);
+        }, paddingY + gap * Math.max(0, children.length - 1));
+        const availableHeight = stageEl.clientHeight;
+        if (!contentHeight || !availableHeight) return;
+
+        const bottomBuffer = 22;
+        const minScale = 0.6;
+        const scale = Math.min(1, Math.max(minScale, (availableHeight - bottomBuffer) / contentHeight));
+        beatEl.style.setProperty('--de-beat-fit-scale', scale.toFixed(3));
+      }
+      function scheduleFitActiveBeat() {
+        if (!fitBeats) return;
+        requestAnimationFrame(() => {
+          fitActiveBeatToStage();
+          requestAnimationFrame(fitActiveBeatToStage);
+        });
+      }
+      if (fitBeats) {
+        window.addEventListener('resize', scheduleFitActiveBeat);
+        mobileActMedia.addEventListener('change', scheduleFitActiveBeat);
+      }
 
       const enterObs = new IntersectionObserver(
         (entries) => {
@@ -231,6 +290,7 @@ window.DE = (() => {
           beat.classList.remove('is-active', 'is-playing');
           beat.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('is-in'));
           beat.querySelectorAll('video').forEach((video) => video.pause?.());
+          if (fitBeats) beat.style.removeProperty('--de-beat-fit-scale');
         });
         activeBeat = -1;
       }
@@ -260,8 +320,12 @@ window.DE = (() => {
         });
 
         // diptych phase: red "pain" beats vs green "fix" beats recolor the
-        // left rail + crossfade the act watermark (data-phase on the stage beat)
-        act.dataset.phase = stageBeats[next]?.dataset.phase || 'good';
+        // left rail + crossfade the act watermark (data-phase on the stage beat;
+        // beats without one inherit the act's static phase)
+        act.dataset.phase = stageBeats[next]?.dataset.phase || basePhase;
+
+        fitActiveBeatToStage();
+        scheduleFitActiveBeat();
 
         if (!animate) return;
 
@@ -269,7 +333,17 @@ window.DE = (() => {
         const anim = anims[beatEl?.dataset.anim];
         if (anim) {
           requestAnimationFrame(() => {
-            tick(() => token === runToken, () => anim(beatEl, () => token === runToken));
+            tick(() => token === runToken, () => {
+              anim(beatEl, () => token === runToken);
+              // anims grow beats over several seconds — re-fit as they land
+              if (fitBeats && mobileActMedia.matches) {
+                [120, 520, 1000, 1800, 2800, 4200, 6200].forEach((delay) => {
+                  setTimeout(() => {
+                    if (token === runToken) scheduleFitActiveBeat();
+                  }, delay);
+                });
+              }
+            });
           });
         }
       }
@@ -282,7 +356,7 @@ window.DE = (() => {
             introActive = true;
             act.classList.remove('is-engaged');
             clearBeats();
-            act.dataset.phase = stageBeats[0]?.dataset.phase || 'good';
+            act.dataset.phase = stageBeats[0]?.dataset.phase || basePhase;
           }
           return;
         }

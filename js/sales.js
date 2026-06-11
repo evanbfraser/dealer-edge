@@ -1015,212 +1015,18 @@
 
   /* ─────────────────────────────────────────────────────────────
      ACT 1 + ACT 2 + ACT 4  —  scroll-pinned beat sequence + per-beat anim
-     Pin the inner section, advance through N beats as user scrolls.
-     Each beat with [data-anim] fires its choreographed animation when
-     it becomes active — so left text + right visual stay in lockstep
-     with scroll position.
+     The act engine is shared (DE.initActs in js/de-core.js); this
+     file only declares the per-beat animations and registers them
+     via BEAT_ANIMS at the bottom. Engine contract: every anim adds
+     .is-playing to its beat as its first statement (the replay
+     gate) and resets its own DOM state so re-entry replays clean.
+     Sales passes fitBeats: true for the mobile beat-fit pass.
      ───────────────────────────────────────────────────────────── */
 
-  // Dispatch map populated lazily so function declarations are hoisted by the
-  // time the closure here runs. (Keeping it as a let avoids TDZ on first
-  // setActiveBeat call which fires during the acts.forEach loop below.)
+  // Dispatch map assigned after the play* function declarations below, then
+  // handed to DE.initActs (call it AFTER the assignment — the engine keeps
+  // the object reference and reads it at activation time).
   let BEAT_ANIMS = {};
-
-  const acts = document.querySelectorAll('[data-act]');
-  const actControllers = [];
-
-  function createActController(act) {
-    const inner = act.querySelector('.de-act-inner');
-    const beats = act.querySelectorAll('.de-beat');
-    // line-mode copy (one .de-act-line per beat, like marketing) with a
-    // fallback to the classic numbered beat rail if an act still uses it
-    const lineCopies = act.querySelectorAll('.de-act-line');
-    const beatCopies = lineCopies.length ? lineCopies : act.querySelectorAll('.de-act-beat');
-    const totalBeats = beats.length;
-    // Intro scene mode (ported from marketing): scene 0 holds the act headline
-    // at display size (.is-engaged off), beats occupy scenes 1..N. Acts without
-    // the attribute keep the classic scene == beat mapping.
-    const hasIntro = act.hasAttribute('data-act-intro');
-    const sceneCount = totalBeats + (hasIntro ? 1 : 0);
-    const cleanup = { scrollTrigger: null, beatObs: [] };
-
-    if (!inner || !beats.length) {
-      return { destroy() {} };
-    }
-
-    act._sceneCount = sceneCount;
-    const animTokens = new Array(totalBeats).fill(0);
-    let actLocked = false;
-    act._currentBeat = hasIntro ? -1 : 0; // -1 = intro scene, no active beat
-    const mobileActMedia = window.matchMedia('(max-width: 1100px)');
-
-    function fitActiveBeatToStage() {
-      const idx = act._currentBeat ?? 0;
-      const beatEl = beats[idx];
-      const stageEl = act.querySelector('.de-act-stage-sticky');
-
-      beats.forEach((beat) => beat.style.removeProperty('--de-beat-fit-scale'));
-      if (!mobileActMedia.matches || !beatEl || !stageEl) return;
-
-      const children = Array.from(beatEl.children).filter((child) => {
-        const childStyle = window.getComputedStyle(child);
-        return childStyle.display !== 'none';
-      });
-      if (!children.length) return;
-
-      const beatStyle = window.getComputedStyle(beatEl);
-      const gap = Number.parseFloat(beatStyle.rowGap || beatStyle.gap) || 0;
-      const paddingY =
-        (Number.parseFloat(beatStyle.paddingTop) || 0) +
-        (Number.parseFloat(beatStyle.paddingBottom) || 0);
-      const contentHeight = children.reduce((sum, child) => {
-        return sum + Math.max(child.scrollHeight, child.getBoundingClientRect().height);
-      }, paddingY + gap * Math.max(0, children.length - 1));
-      const availableHeight = stageEl.clientHeight;
-      if (!contentHeight || !availableHeight) return;
-
-      const bottomBuffer = mobileActMedia.matches ? 22 : 4;
-      const minScale = mobileActMedia.matches ? 0.6 : 0.68;
-      const scale = Math.min(1, Math.max(minScale, (availableHeight - bottomBuffer) / contentHeight));
-      beatEl.style.setProperty('--de-beat-fit-scale', scale.toFixed(3));
-    }
-
-    function scheduleFitActiveBeat() {
-      requestAnimationFrame(() => {
-        fitActiveBeatToStage();
-        requestAnimationFrame(fitActiveBeatToStage);
-      });
-    }
-
-    function setActiveBeatClass(idx) {
-      beats.forEach((b, i) => {
-        const wasActive = b.classList.contains('is-active');
-        b.classList.toggle('is-active', i === idx);
-        if (wasActive && i !== idx) animTokens[i] += 1;
-      });
-      beatCopies.forEach((b, i) => b.classList.toggle('is-active', i === idx));
-    }
-
-    function fireBeatAnim(idx) {
-      const beatEl = beats[idx];
-      if (!beatEl) return;
-      animTokens[idx] += 1;
-      const token = animTokens[idx];
-      const key = beatEl.dataset.anim;
-      const fn = BEAT_ANIMS[key];
-      if (typeof fn === 'function') {
-        setTimeout(() => {
-          if (animTokens[idx] !== token) return;
-          fn(beatEl, () => animTokens[idx] === token);
-          if (mobileActMedia.matches) {
-            [120, 520, 1000, 1800, 2800, 4200, 6200].forEach((delay) => {
-              setTimeout(() => {
-                if (animTokens[idx] === token) scheduleFitActiveBeat();
-              }, delay);
-            });
-          }
-        }, 220);
-      }
-    }
-
-    function invalidateBeatAnims() {
-      animTokens.forEach((_, i) => {
-        animTokens[i] += 1;
-      });
-    }
-
-    function lockActAnimations() {
-      if (actLocked) return;
-      actLocked = true;
-      act.classList.add('is-locked'); // shared chassis fades the stage in while pinned
-      // during the intro scene there's no active beat to fire (-1)
-      if ((act._currentBeat ?? 0) >= 0) fireBeatAnim(act._currentBeat ?? 0);
-    }
-
-    function unlockActAnimations() {
-      if (!actLocked) return;
-      actLocked = false;
-      act.classList.remove('is-locked');
-      invalidateBeatAnims();
-    }
-
-    function setActiveBeat(idx) {
-      act._currentBeat = idx;
-      setActiveBeatClass(idx);
-      fitActiveBeatToStage();
-      scheduleFitActiveBeat();
-      if (actLocked) fireBeatAnim(idx);
-    }
-
-    // map a scene index → intro or beat (intro acts shift beats up by one)
-    function applyScene(scene) {
-      if (hasIntro && scene === 0) {
-        if (act._currentBeat !== -1) {
-          act._currentBeat = -1;
-          act.classList.remove('is-engaged');
-          setActiveBeatClass(-1);
-          invalidateBeatAnims();
-        }
-        return;
-      }
-      if (hasIntro) act.classList.add('is-engaged');
-      const idx = hasIntro ? scene - 1 : scene;
-      if (act._currentBeat !== idx) setActiveBeat(idx);
-    }
-
-    cleanup.scrollTrigger = ScrollTrigger.create({
-      trigger: act,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: false,
-      onEnter: lockActAnimations,
-      onEnterBack: lockActAnimations,
-      onLeave: unlockActAnimations,
-      onLeaveBack: () => {
-        unlockActAnimations();
-        if (hasIntro) applyScene(0); // re-entry from above replays the intro
-      },
-      onRefresh: (self) => {
-        if (self.isActive) lockActAnimations();
-        else unlockActAnimations();
-      },
-      onUpdate: (self) => {
-        applyScene(Math.min(sceneCount - 1, Math.floor(self.progress * sceneCount)));
-      },
-    });
-
-    if (hasIntro) {
-      act.classList.remove('is-engaged');
-      setActiveBeatClass(-1);
-    } else {
-      setActiveBeatClass(0);
-    }
-    fitActiveBeatToStage();
-    scheduleFitActiveBeat();
-    window.addEventListener('resize', scheduleFitActiveBeat);
-    mobileActMedia.addEventListener('change', scheduleFitActiveBeat);
-
-    return {
-      destroy() {
-        cleanup.scrollTrigger?.kill();
-        cleanup.beatObs.forEach((obs) => obs.disconnect());
-        window.removeEventListener('resize', scheduleFitActiveBeat);
-        mobileActMedia.removeEventListener('change', scheduleFitActiveBeat);
-        unlockActAnimations();
-        act._currentBeat = 0;
-        setActiveBeatClass(0);
-      },
-    };
-  }
-
-  function setupActs() {
-    actControllers.forEach((c) => c.destroy());
-    actControllers.length = 0;
-    acts.forEach((act) => {
-      actControllers.push(createActController(act));
-    });
-    ScrollTrigger.refresh();
-  }
 
   /* ─────────────────────────────────────────────────────────────
      PER-BEAT ANIMATION HELPERS
@@ -1246,6 +1052,7 @@
 
   /* ----- ACT 1 BEAT 1 — animated form fill + submit + confirm ----- */
   function playAct1Beat1(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing'); // replay gate — see the engine contract above
     const form = beatEl.querySelector('[data-form]');
     if (!form) return;
     const nameField = form.querySelector('[data-field="name"]');
@@ -1299,6 +1106,7 @@
   ];
 
   function playAct1Beat2(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const list = beatEl.querySelector('[data-inbox-list]');
     const count = beatEl.querySelector('[data-inbox-count]');
     const silence = beatEl.querySelector('[data-inbox-silence]');
@@ -1349,6 +1157,7 @@
   ];
 
   function playAct1Beat3(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const list = beatEl.querySelector('[data-timeline-events]');
     if (!list) return;
 
@@ -1382,6 +1191,7 @@
   ];
 
   function playAct1Beat4(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const convo = beatEl.querySelector('[data-lost-convo]');
     const stamp = beatEl.querySelector('[data-lost-stamp]');
     const ageEl = beatEl.querySelector('[data-age]');
@@ -1433,6 +1243,7 @@
 
   /* ----- ACT 2 BEAT 1 — sequential stack reveal ----- */
   function playAct2Beat1(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const steps = beatEl.querySelectorAll('[data-stack-step]');
     if (!steps.length) return;
     steps.forEach((s) => s.classList.remove('is-in'));
@@ -1442,7 +1253,8 @@
   }
 
   /* ----- ACT 2 BEAT 2 — SMS conversation (existing playAct2Convo) ----- */
-  function playAct2Beat2() {
+  function playAct2Beat2(beatEl) {
+    beatEl.classList.add('is-playing');
     // delegate to existing implementation
     act2Played = false; // allow replay on re-entry
     playAct2Convo();
@@ -1450,6 +1262,7 @@
 
   /* ----- ACT 2 BEAT 3 — appointment first, then profile rows ----- */
   function playAct2Beat3(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const cards = beatEl.querySelectorAll('[data-reveal-step]');
     const rows = beatEl.querySelectorAll('[data-row]');
     cards.forEach((c) => c.classList.remove('is-in'));
@@ -1467,6 +1280,7 @@
 
   /* ----- ACT 2 BEAT 4 — auto-cycle through dashboard tabs ----- */
   function playAct2Beat4(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const tabs = beatEl.querySelectorAll('[data-dash-tabs] .s-dash-tab');
     const panels = beatEl.querySelectorAll('[data-dash-panels] .s-dash-panel');
     if (!tabs.length || !panels.length) return;
@@ -1494,6 +1308,7 @@
   // We spawn small dots from each source tile, fly them to the validator
   // node, briefly hold, then route ~30% to trash and ~70% to sales team.
   function playAct4Beat1OneFunnel(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const particles = beatEl.querySelector('[data-funnel-particles]');
     const funnelNode = beatEl.querySelector('[data-funnel-node]');
     const trash = beatEl.querySelector('[data-funnel-trash]');
@@ -1572,6 +1387,7 @@
   ];
 
   function playAct4Beat2Garbage(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const scene = beatEl.querySelector('[data-bounce-scene]');
     const feed = beatEl.querySelector('[data-bs-feed]');
     const shield = beatEl.querySelector('[data-bs-shield]');
@@ -1670,6 +1486,7 @@
 
   /* ----- ACT 4 BEAT 3 — Forensic enrichment, sequential reveal ----- */
   function playAct4Beat3Forensic(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const header = beatEl.querySelector('[data-fr-reveal]');
     const judge = beatEl.querySelector('[data-fr-judge]');
     const rows = beatEl.querySelectorAll('[data-row]');
@@ -1694,6 +1511,7 @@
 
   /* ----- ACT 4 BEAT 4 — Routing simulation ----- */
   function playAct4Beat4Routing(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const lead = beatEl.querySelector('[data-routing-lead]');
     const router = beatEl.querySelector('[data-routing-router]');
     const reps = beatEl.querySelectorAll('[data-rep]');
@@ -1845,6 +1663,7 @@
 
   /* ----- ACT 4 BEAT 5 — ROI cursor demo + hint ----- */
   function playAct4Beat5RoiDemo(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const hint = beatEl.querySelector('[data-roi-hint]');
     const cursor = beatEl.querySelector('[data-roi-cursor]');
     const leadsSlider = beatEl.querySelector('#roi-leads');
@@ -1958,6 +1777,7 @@
 
   /* ----- ACT 4 BEAT 6 — Philosophy: reveal + counter + roadmap ----- */
   function playAct4Beat6Philosophy(beatEl, stillCurrent) {
+    beatEl.classList.add('is-playing');
     const reveals = beatEl.querySelectorAll('[data-cl-reveal]');
     const counters = beatEl.querySelectorAll('[data-counter]');
     const roadmapItems = beatEl.querySelectorAll('[data-roadmap-item]');
@@ -2038,17 +1858,14 @@
     'act4-beat6': playAct4Beat6Philosophy,
   };
 
-  setupActs();
-  const actLayoutMq = window.matchMedia('(min-width: 1100px)');
-  actLayoutMq.addEventListener('change', setupActs);
+  // Shared act engine (js/de-core.js) — attaches the acts' snap-to-scene
+  // itself; fitBeats opts into the mobile beat-fit pass (--de-beat-fit-scale).
+  DE.initActs(lenis, { anims: BEAT_ANIMS, fitBeats: true });
 
   /* ─────────────────────────────────────────────────────────────
-     SNAP-TO-SCENE — shared tuned implementation in js/de-core.js.
-     Attached ONCE per pinned section — never inside setupActs(),
-     which re-runs on layout changes and would stack duplicate
-     lenis listeners.
+     SNAP-TO-SCENE for the pinned hero — shared tuned implementation
+     in js/de-core.js. Attached ONCE per pinned section.
      ───────────────────────────────────────────────────────────── */
-  acts.forEach((act) => DE.attachSceneSnap(lenis, act, act._sceneCount));
   DE.attachSceneSnap(
     lenis,
     document.querySelector('.s-hero.s-stats-section'),
