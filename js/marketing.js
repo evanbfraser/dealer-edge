@@ -1,8 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════
    MARKETING PAGE - scroll choreography
+   ═══════════════════════════════════════════════════════════════
+   Lifecycle: registered as DE.pages.marketing, booted by the
+   DE.boot('marketing') call at the bottom (see js/de-core.js).
    ═══════════════════════════════════════════════════════════════ */
 
-(() => {
+DE.pages.marketing = { boot() {
   'use strict';
 
   const reduceMotion = DE.reduceMotion;
@@ -20,7 +23,7 @@
   // act engine: DE.initActs — invoked below, after BEAT_ANIMS is declared
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
-    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+    DE.on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', initVideoBoatSections);
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -1472,4 +1475,6 @@
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
   }
-})();
+} };
+
+DE.boot('marketing');

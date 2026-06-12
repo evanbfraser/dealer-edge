@@ -6,9 +6,11 @@
    scrub slider. Conventions (see CLAUDE.md): every handler resets
    its own state first, guards async steps with stillCurrent, and
    marks the beat is-playing.
+   Lifecycle: registered as DE.pages.inventory, booted by the
+   DE.boot('inventory') call at the bottom (see js/de-core.js).
    ─────────────────────────────────────────────────────────────── */
 
-(() => {
+DE.pages.inventory = { boot() {
   'use strict';
 
   const reduceMotion = DE.reduceMotion;
@@ -24,7 +26,7 @@
   initImageCompareCursorRelief();
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
-    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+    DE.on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', initVideoBoatSections);
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -98,8 +100,8 @@
         dragging = false;
         if (!hovering) restoreGlow();
       };
-      window.addEventListener('pointerup', endDrag);
-      window.addEventListener('pointercancel', endDrag);
+      DE.on(window, 'pointerup', endDrag);
+      DE.on(window, 'pointercancel', endDrag);
     });
   }
 
@@ -472,4 +474,6 @@
     schedule(stillCurrent, 3300, () => badge?.classList.add('is-in'));
   }
 
-})();
+} };
+
+DE.boot('inventory');

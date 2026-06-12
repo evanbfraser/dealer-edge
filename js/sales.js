@@ -1,8 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════
    SALES PAGE  —  scroll choreography + interactive SMS demo
+   ═══════════════════════════════════════════════════════════════
+   Lifecycle: registered as DE.pages.sales and booted by the
+   DE.boot('sales') call at the bottom — identical to the old
+   self-executing IIFE on the static site; an SPA host can call
+   DE.destroy() / DE.boot('sales') across soft navigations.
    ═══════════════════════════════════════════════════════════════ */
 
-(() => {
+DE.pages.sales = { boot() {
   'use strict';
 
   /* ─────────────────────────────────────────────────────────────
@@ -23,7 +28,7 @@
   initDemoModal(lenis);
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
-    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+    DE.on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', initVideoBoatSections);
   }
 
   const marineModal = document.querySelector('[data-marine-modal]');
@@ -592,7 +597,7 @@
     currentBeat = 0;
     enterBeat(1);
 
-    window.addEventListener('resize', () => {
+    DE.on(window, 'resize', () => {
       if (prefersReducedMotion) {
         playSceneStatic(currentBeat);
       } else if (sectionVisible && currentBeat >= 1) {
@@ -1010,7 +1015,7 @@
 
     setStage(0);
     syncHeadlineSlot();
-    window.addEventListener('resize', syncHeadlineSlot);
+    DE.on(window, 'resize', syncHeadlineSlot);
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -2132,4 +2137,6 @@
     });
   }
 
-})();
+} };
+
+DE.boot('sales');

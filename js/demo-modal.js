@@ -89,6 +89,26 @@ function initDemoModal(lenis) {
     if (!email) return emailInput.focus();
     if (!phone) return phoneInput.focus();
 
+    // Platform bridge: when hosted as an island, the route shell wraps the
+    // fragment in [data-de-page] carrying the persistent visitor id — POST a
+    // real lead into the platform pipeline (fire-and-forget; the in-modal
+    // confirmation below runs either way). On the static here.now instance
+    // the wrapper doesn't exist and this block is a no-op. NEVER set the
+    // x-website-hp header — it's the honeypot.
+    const bridge = document.querySelector('[data-de-page]');
+    if (bridge) {
+      fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitor_id: bridge.dataset.visitorId || undefined,
+          form_type: 'request_demo',
+          form_data: { name, email, phone },
+          page_url: window.location.pathname,
+        }),
+      }).catch(() => {});
+    }
+
     if (confirmText) {
       confirmText.textContent = `Thanks, ${name}! We'll reach out at ${email} or ${phone} within one business day to schedule your demo.`;
     }
@@ -132,7 +152,9 @@ function initDemoModal(lenis) {
   backdrop.addEventListener('click', (e) => {
     if (e.target === backdrop) closeModal();
   });
-  document.addEventListener('keydown', (e) => {
+  // long-lived document listener: route through the DE lifecycle when present
+  // so an SPA host's DE.destroy() detaches it (fallback = plain listener)
+  (window.DE?.on || ((t, e, f) => t.addEventListener(e, f)))(document, 'keydown', (e) => {
     if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal();
   });
 }

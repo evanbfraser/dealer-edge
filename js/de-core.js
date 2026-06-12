@@ -14,6 +14,14 @@
      DE.initCursorGlow(); DE.initNavScroll(); DE.initFade();
      DE.attachSceneSnap(lenis, sectionEl, sceneCount);
      DE.initActs(lenis, { anims: BEAT_ANIMS, cleanups: weakMap });
+
+   Lifecycle (added 2026-06-11 for the platform-island migration):
+   page scripts register DE.pages['<key>'] = { boot() {...} } and end
+   with DE.boot('<key>') — identical behavior on the static site. An
+   SPA host calls DE.destroy() before unmounting, then DE.boot(key)
+   again on remount. Long-lived window/document/matchMedia listeners,
+   intervals and rAF self-loops inside page scripts must go through
+   DE.on() / DE.interval() / DE.rafLoop() so destroy can reach them.
    ─────────────────────────────────────────────────────────────── */
 window.DE = (() => {
   'use strict';
@@ -24,6 +32,74 @@ window.DE = (() => {
   // fight the user ("stick, then zoom past"). Leave Safari un-snapped.
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+  /* ─────────────────────────────────────────────────────────────
+     LIFECYCLE — boot/destroy contract for hosting these pages
+     inside an SPA (the DealerEdge platform islands). On the static
+     site nothing changes: each page script registers itself in
+     DE.pages and calls DE.boot('<key>') as its last line, which
+     runs the page exactly as the old self-executing IIFE did.
+     A host calls DE.destroy() before unmounting the island:
+     listeners registered through DE.on()/DE.interval()/DE.rafLoop()
+     are torn down via one AbortController + disposer list, every
+     ScrollTrigger is killed, Lenis is destroyed, and the act
+     engine's runTokens are bumped so stillCurrent-guarded timer
+     chains go inert. Element-level listeners need no registry —
+     they die with the island DOM.
+     ───────────────────────────────────────────────────────────── */
+  const pages = {};
+  let lc = null;          // current lifecycle: { ac, disposers, lenis }
+  let currentPage = null;
+
+  function lifecycle() {
+    if (!lc) lc = { ac: new AbortController(), disposers: [], lenis: null };
+    return lc;
+  }
+  /* addEventListener that auto-detaches on DE.destroy(). Use for
+     window/document/matchMedia targets; element listeners don't need it. */
+  function on(target, type, handler, opts = {}) {
+    target.addEventListener(type, handler, { ...opts, signal: lifecycle().ac.signal });
+  }
+  function addDisposer(fn) {
+    lifecycle().disposers.push(fn);
+  }
+  function interval(fn, ms) {
+    const id = setInterval(fn, ms);
+    addDisposer(() => clearInterval(id));
+    return id;
+  }
+  /* self-rescheduling rAF loop that stops on destroy */
+  function rafLoop(step) {
+    const sig = lifecycle().ac.signal;
+    function frame(time) {
+      if (sig.aborted) return;
+      step(time);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  /* run now if the DOM is already parsed (SPA boot), else on DOMContentLoaded */
+  function ready(fn) {
+    if (document.readyState === 'loading') on(document, 'DOMContentLoaded', fn, { once: true });
+    else fn();
+  }
+  function boot(key) {
+    const page = pages[key];
+    if (!page) return;
+    lifecycle();
+    currentPage = key;
+    page.boot();
+  }
+  function destroy() {
+    if (!lc) return;
+    try { pages[currentPage]?.destroy?.(); } catch (e) { /* best effort */ }
+    lc.ac.abort();
+    lc.disposers.forEach((d) => { try { d(); } catch (e) { /* best effort */ } });
+    if (window.ScrollTrigger) ScrollTrigger.killAll();
+    try { lc.lenis?.destroy(); } catch (e) { /* best effort */ }
+    lc = null;
+    currentPage = null;
+  }
+
   /* Lenis smooth scroll + GSAP/ScrollTrigger wiring (canonical options) */
   function createLenis(options = {}) {
     const lenis = new Lenis({
@@ -33,16 +109,15 @@ window.DE = (() => {
       smoothTouch: false,
       ...options,
     });
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
+    lifecycle().lenis = lenis;
+    rafLoop((time) => lenis.raf(time));
 
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ limitCallbacks: true });
     lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    const tickerCb = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerCb);
+    addDisposer(() => gsap.ticker.remove(tickerCb));
     gsap.ticker.lagSmoothing(0);
     return lenis;
   }
@@ -60,20 +135,19 @@ window.DE = (() => {
     let my = window.innerHeight / 2;
     let gx = mx;
     let gy = my;
-    document.addEventListener('mousemove', (e) => {
+    on(document, 'mousemove', (e) => {
       mx = e.clientX;
       my = e.clientY;
       if (cursor) cursor.style.transform = `translate(${mx}px, ${my}px)`;
       glow?.classList.add('visible');
     });
-    document.addEventListener('mouseleave', () => glow?.classList.remove('visible'));
+    on(document, 'mouseleave', () => glow?.classList.remove('visible'));
     if (glow) {
-      (function follow() {
+      rafLoop(() => {
         gx += (mx - gx) * 0.1;
         gy += (my - gy) * 0.1;
         glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
-        requestAnimationFrame(follow);
-      })();
+      });
     }
   }
 
@@ -82,7 +156,7 @@ window.DE = (() => {
     const navbar = document.getElementById('navbar');
     if (!navbar) return;
     const onScroll = () => navbar.classList.toggle('is-scrolled', window.scrollY > 40);
-    window.addEventListener('scroll', onScroll, { passive: true });
+    on(window, 'scroll', onScroll, { passive: true });
     onScroll();
   }
 
@@ -104,6 +178,7 @@ window.DE = (() => {
       { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
     );
     faders.forEach((el) => obs.observe(el));
+    addDisposer(() => obs.disconnect());
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -170,6 +245,7 @@ window.DE = (() => {
       snapTimer = setTimeout(trySnap, 150);
     }
     lenis.on('scroll', queueSnap);
+    addDisposer(() => clearTimeout(snapTimer));
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -268,8 +344,8 @@ window.DE = (() => {
         });
       }
       if (fitBeats) {
-        window.addEventListener('resize', scheduleFitActiveBeat);
-        mobileActMedia.addEventListener('change', scheduleFitActiveBeat);
+        on(window, 'resize', scheduleFitActiveBeat);
+        on(mobileActMedia, 'change', scheduleFitActiveBeat);
       }
 
       const enterObs = new IntersectionObserver(
@@ -281,6 +357,13 @@ window.DE = (() => {
         { threshold: 0.08, rootMargin: '0px 0px -18% 0px' }
       );
       enterObs.observe(act);
+      addDisposer(() => {
+        enterObs.disconnect();
+        runToken += 1; // go inert: stillCurrent-guarded timer chains bail
+        if (scrollRaf) cancelAnimationFrame(scrollRaf);
+        const activeEl = stageBeats[activeBeat];
+        if (activeEl) cleanups.get(activeEl)?.(); // clear the live beat's timers
+      });
 
       function clearBeats() {
         const prevBeatEl = stageBeats[activeBeat];
@@ -401,7 +484,7 @@ window.DE = (() => {
       }
 
       applyScene(0, { animate: false, force: true });
-      window.addEventListener('scroll', queueLockedBeatUpdate, { passive: true });
+      on(window, 'scroll', queueLockedBeatUpdate, { passive: true });
       lenis.on('scroll', queueLockedBeatUpdate);
 
       ScrollTrigger.create({
@@ -433,5 +516,9 @@ window.DE = (() => {
     });
   }
 
-  return { reduceMotion, isSafari, createLenis, initCursorGlow, initNavScroll, initFade, attachSceneSnap, initActs };
+  return {
+    reduceMotion, isSafari,
+    createLenis, initCursorGlow, initNavScroll, initFade, attachSceneSnap, initActs,
+    pages, boot, destroy, on, interval, rafLoop, ready,
+  };
 })();

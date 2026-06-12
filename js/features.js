@@ -4,8 +4,10 @@
    the DE.initActs scroll controller. The system-loop act is one persistent
    scene; each beat just calls setLoopStage(N) to advance which nodes/arcs
    are lit. Also owns the contact modal + the department-chat modal.
+   Lifecycle: registered as DE.pages.features, booted by the
+   DE.boot('features') call at the bottom (see js/de-core.js).
    ─────────────────────────────────────────────────────────────────────── */
-(() => {
+DE.pages.features = { boot() {
   'use strict';
 
   const lenis = DE.createLenis();
@@ -16,7 +18,7 @@
   DE.initFade();
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
-    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+    DE.on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', initVideoBoatSections);
   }
 
   // ─── SYSTEM LOOP ───────────────────────────────────────────────────
@@ -393,7 +395,7 @@
     document.querySelectorAll('.js-dept-modal').forEach((btn) => btn.addEventListener('click', openDeptModal));
     closeBtn.addEventListener('click', closeDeptModal);
     backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeDeptModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeDeptModal(); });
+    DE.on(document, 'keydown', (e) => { if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeDeptModal(); });
   }());
 
   // ─── CONTACT MODAL ──────────────────────────────────────────────────
@@ -514,8 +516,10 @@
     document.querySelectorAll('.js-modal').forEach((btn) => btn.addEventListener('click', openModal));
     closeBtn.addEventListener('click', closeModal);
     backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal(); });
+    DE.on(document, 'keydown', (e) => { if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal(); });
   }());
 
   ScrollTrigger.refresh();
-})();
+} };
+
+DE.boot('features');

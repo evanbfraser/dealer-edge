@@ -6,9 +6,11 @@
    Conventions (see CLAUDE.md): every handler resets its own state
    first, guards async steps with stillCurrent, and marks the beat
    is-playing.
+   Lifecycle: registered as DE.pages.analytics, booted by the
+   DE.boot('analytics') call at the bottom (see js/de-core.js).
    ─────────────────────────────────────────────────────────────── */
 
-(() => {
+DE.pages.analytics = { boot() {
   'use strict';
 
   const reduceMotion = DE.reduceMotion;
@@ -24,7 +26,7 @@
   initLiveTicker();
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();
-    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', initVideoBoatSections);
+    DE.on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', initVideoBoatSections);
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -101,7 +103,7 @@
     const tickEl = seconds.closest('.a2-live-tick');
     let s = 8;
     seconds.textContent = s;
-    setInterval(() => {
+    DE.interval(() => {
       s += 1;
       if (s > 14) {
         s = 1;
@@ -454,4 +456,6 @@
     schedule(stillCurrent, 2500, () => margin?.classList.add('is-in'));
   }
 
-})();
+} };
+
+DE.boot('analytics');
