@@ -232,6 +232,42 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
+/* utility bar — the slim red strip above the main nav for CMS content
+   surfaces (Events / Specials / Resources / Blog). Rendered ONLY by the
+   platform's DeHeader (from the CMS nav config's utilityItems); the static
+   pages don't emit this markup, so these rules are dormant on here.now.
+   Desktop-only — the mobile panel lists the same links instead. */
+.nav-utility {
+  background: var(--accent);
+}
+.nav-utility-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 44px);
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(18px, 2.2vw, 30px);
+}
+.nav-utility-inner a {
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  opacity: 0.92;
+  transition: opacity 0.2s ease;
+}
+.nav-utility-inner a:hover {
+  opacity: 1;
+}
+@media (max-width: 1100px) {
+  .nav-utility {
+    display: none;
+  }
+}
+
 /* shared reveal-on-scroll utility (marketing + sales; wired by DE.initFade) */
 [data-fade] {
   opacity: 0;
