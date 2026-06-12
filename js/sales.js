@@ -18,9 +18,10 @@ DE.pages.sales = { boot() {
   DE.initNavScroll();
 
   /* ─────────────────────────────────────────────────────────────
-     MOBILE NAV
+     MOBILE NAV (mobile-nav.js — not shipped to the platform, where
+     DeHeader owns the nav; guard so the island boot doesn't throw)
      ───────────────────────────────────────────────────────────── */
-  initMobileNav();
+  if (typeof initMobileNav === 'function') initMobileNav();
 
   /* ─────────────────────────────────────────────────────────────
      DEMO REQUEST MODAL

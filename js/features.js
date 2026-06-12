@@ -12,7 +12,7 @@ DE.pages.features = { boot() {
 
   const lenis = DE.createLenis();
 
-  initMobileNav();
+  if (typeof initMobileNav === 'function') initMobileNav(); // not shipped to the platform (DeHeader owns nav)
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initFade();

@@ -18,7 +18,7 @@ DE.pages.analytics = { boot() {
   // shared engine (js/de-core.js): Lenis + cursor glow + nav state + fade
   const lenis = DE.createLenis();
 
-  initMobileNav();
+  if (typeof initMobileNav === 'function') initMobileNav(); // not shipped to the platform (DeHeader owns nav)
   initDemoModal(lenis);
   DE.initCursorGlow();
   DE.initNavScroll();
