@@ -79,13 +79,18 @@ Page scripts wrap their existing init in `DE.pages[key] = { boot, destroy }` ins
 
 ## 3. Decision points for Jason (need a call before Phase 2)
 
-### D1 — Chrome: platform nav/footer vs. the site's own ⚠️ *recommend revisiting v1's call*
+### D1 — Chrome: one code-owned DE nav/footer component, shared by islands AND CMS pages ✅ *refined 2026-06-11*
 
-v1 decided "keep standard platform chrome." Since then the static site grew a polished 9-page nav (Platform dropdown, scroll-gradient blur, mobile nav) and a footer that are part of the brand experience — and the platform's marketing chrome is dealer-shaped (announcement bars, compare bar, inventory search). Also: the island CSS (`style.css`) sets `body` background, global `cursor: none`, and its own resets — it wants to own the whole document.
+v1 decided "keep standard platform chrome"; an earlier v2 draft leaned "islands keep their baked-in nav." **Jason's CMS requirement settles it (2026-06-11): the site will also have CMS-driven surfaces — blog, resources, case studies, and marketing-engine-generated landing pages — and those are rendered by the platform, so a nav baked into static fragments can't reach them.** Two navs on one site is not acceptable.
 
-**Recommendation: the island keeps its own nav/footer (full-bleed pages).** Implement by tenant-checking inside `(marketing)/layout.tsx`: for the DE tenant render children bare (no header/footer/announcement components). A sibling route group can't work because `/` and `/inventory` must stay in `(marketing)`. This is less platform work, not more — no theming of dealer chrome to look like the DE brand.
+**Decision shape: port the static site's nav + footer ONCE as a small code-owned React component pair (DE-tenant chrome), rendered by `(marketing)/layout.tsx` for the DE tenant in place of the dealer chrome (header/footer/announcement/compare components).** The nav is the one piece of the static site worth a real React port — it's small, stable, and rarely changes (scroll-blur, Platform dropdown, mobile nav ≈ a few hundred lines), unlike the act engine. Consequences:
 
-If Jason holds v1's call instead: export strips the static nav/footer from fragments, the dealer chrome gets DE theme tokens, and the global `cursor:none` / body rules in style.css must be scoped — budget extra work and visual compromise.
+- The export script **always strips nav/footer from fragments** (no double-nav; removes the conditional in Phase 1 step 3).
+- CMS pages (blog/resources/landing pages) get the same DE chrome automatically — one brand across cinematic and content surfaces. Their interiors use platform blocks under DE theme tokens (`#000` bg, `#ee3a39`/`#4ade80`, Inter) — close-enough brand for machine-generated content pages.
+- The island CSS globals (`body` bg, `cursor: none`, resets) still load on island pages only; verify in the probe that the DE chrome component tolerates them (it will be designed against them anyway). CMS pages don't load island CSS — their dark look comes from theme tokens.
+- Nav edits move to the platform repo after cutover (rare; acceptable). The static site keeps its own baked nav for the here.now instance — export simply discards it.
+
+This is also what unlocks the marketing-engine dog-food: campaign landing pages generated for the DE tenant land inside the brand chrome with forms already wired to `/api/leads`.
 
 ### D2 — Homepage: port Evan's POC as-is, or rebuild later?
 
@@ -112,7 +117,7 @@ Unchanged from v1 §7: pricing tiers conflict with the locked Offer; the live na
 
 1. **Finish the controller merge:** port sales.js's `createActController` onto `DE.initActs` (the long-pending chassis Phase-2 item). One engine across all five act pages before anything ships to the platform.
 2. **Boot/destroy contract:** `DE.boot(page)` / `DE.destroy()` per §1; page scripts register `DE.pages[key]` instead of self-executing IIFEs. Verify the static site still behaves identically (it's the regression canary).
-3. **Export script** (`scripts/export-platform.mjs`): per page emit `fragment.html` (body minus `<script>` tags; minus nav/footer only if D1 goes platform-chrome) + `meta.json`; copy css/js/assets + vendored lenis/gsap/ScrollTrigger; rewrite asset paths to `/de-site/...`; write into the platform repo working tree. Idempotent — re-run = content update.
+3. **Export script** (`scripts/export-platform.mjs`): per page emit `fragment.html` (body minus `<script>` tags, minus nav/footer — the platform renders the DE chrome component per D1) + `meta.json`; copy css/js/assets + vendored lenis/gsap/ScrollTrigger; rewrite asset paths to `/de-site/...`; write into the platform repo working tree. Idempotent — re-run = content update.
 4. **Forms wiring (in the island JS):** demo modal / CTAs / Act-3 SMS demo POST to `/api/leads` (`form_type:'request_demo' / 'text_us'`), reading `data-visitor-id` off the page wrapper; newsletter → `/api/newsletter`; booking → `/api/appointments` once built. Keep these no-op (current behavior) when the bridge attrs are absent, so the static here.now instance keeps working.
 
 **Exit:** one engine, lifecycle-clean pages, `export-platform` produces a bundle; static site unchanged in behavior.
@@ -121,7 +126,7 @@ Unchanged from v1 §7: pricing tiers conflict with the locked Offer; the live na
 
 1. **Island host pattern (build once):** `lib/de-site/` fragment reader; `<DeIslandPage page="…">` server component (tenant gate → fragment + meta → visitor-id bridge attr); `<DeExperienceLoader>` client component (injects `/de-site/vendor/*` + `/de-site/js/*` script/link tags once, `DE.boot(page)` on mount, `DE.destroy()` on unmount).
 2. **Routes:** new gated `app/(marketing)/{sales,marketing,analytics,features}/page.tsx`; tenant branches inside the existing `/inventory` route and the homepage path; `generateMetadata` from meta.json.
-3. **Chrome per D1** (tenant check in `(marketing)/layout.tsx` if own-chrome wins).
+3. **DE chrome components (per D1):** port the static nav + footer to React (`DeHeader`/`DeFooter` — scroll-blur, Platform dropdown, mobile nav); tenant check in `(marketing)/layout.tsx` swaps them in for the DE tenant on ALL routes (islands + CMS pages alike).
 4. **`POST /api/appointments`** (the one backend build item).
 5. **`case_study` content type:** TS union + `/case-studies` index/detail cloned from resources + sitemap entry.
 6. **Probe page first:** ship **analytics or inventory** (the cleanest `DE.initActs` instances) end-to-end on staging before the rest — validates fragment SSR, CSP, fonts, Lenis-vs-platform interactions, soft-nav cleanup, and CWV with the least page-specific risk. *(v1 said sales-first; under the island model the risk is in the pattern, not the page, so probe cheap and iterate.)*
@@ -157,7 +162,7 @@ Order: probe page → **sales** (own hero, heaviest JS) → marketing → featur
 |---|---|---|
 | CDN scripts blocked by CSP | **High (certain)** | Vendor gsap/lenis/ScrollTrigger same-origin in the export bundle |
 | Route shadowing (`/inventory`, `/`) breaks dealer tenants | High | Tenant-branch inside existing routes; never replace them; smoke-test Premier after every route change |
-| Island globals (body bg, `cursor:none`, resets) fight platform styles/Tailwind preflight | Med | Own-chrome full-bleed (D1) makes the island own the document; probe page validates |
+| Island globals (body bg, `cursor:none`, resets) fight platform styles/Tailwind preflight or the DE chrome | Med | DE chrome components (D1) are designed against the island CSS; CMS pages never load island CSS; probe page validates |
 | Soft-nav leaks (ScrollTrigger pins, Lenis RAF, doc listeners) | Med | `DE.destroy()` contract; test repeated navigation in the probe |
 | Fonts blocked (style-src/font-src) | Med | Verify in probe; self-host Inter/JetBrains Mono in bundle if needed |
 | Export drift (static repo edited, platform stale) | Med | Export script is idempotent + one command; add a repo-root note; later a CI hook |
