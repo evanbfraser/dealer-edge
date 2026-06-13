@@ -3335,6 +3335,32 @@
   line-height: 1.4;
 }
 
+/* second field label (Your number) sits below the name row */
+.s-try-input-card .s-try-input-row + .s-try-label {
+  margin-top: 16px;
+}
+
+/* Act-3 real opt-in: consent gate for the text_us lead POST */
+.s-try-consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 16px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.s-try-consent input {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--good);
+  cursor: pointer;
+}
+
 .s-try-script-card {
   padding: 18px 22px;
   background: rgba(255,255,255,0.015);

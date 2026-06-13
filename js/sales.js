@@ -1938,6 +1938,8 @@ DE.pages.sales = { boot() {
   const tryStatus = document.getElementById('try-status');
   const phoneThread = document.getElementById('phone-thread');
   const tryScript = document.getElementById('try-script');
+  const tryName = document.getElementById('try-name');
+  const tryConsent = document.getElementById('try-consent');
 
   // Simulated buyer responses chosen randomly to feel live
   const buyerResponses = [
@@ -2109,18 +2111,44 @@ DE.pages.sales = { boot() {
     );
   }
 
+  // Platform lead bridge: when sales.html is hosted as a platform island, the
+  // route shell wraps the fragment in [data-de-page] carrying the persistent
+  // visitor id + leads endpoint. A real opt-in (consent box checked) POSTs a
+  // 'text_us' lead into the pipeline — which, once SMS is provisioned for the
+  // tenant, sends the AI's first text. On the static here.now instance there's
+  // no bridge, so this is a no-op and the demo stays pure theater. NEVER set
+  // the x-website-hp header — it's the honeypot.
+  function submitTextUsLead(name, phone) {
+    const bridge = document.querySelector('[data-de-page]');
+    if (!bridge) return;
+    fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitor_id: bridge.dataset.visitorId || undefined,
+        form_type: 'text_us',
+        form_data: { name, phone },
+        page_url: window.location.pathname,
+      }),
+    }).catch(() => {});
+  }
+
   // Wire input + buttons
   if (trySend) {
     trySend.addEventListener('click', () => {
+      const flash = (el) => {
+        if (!el) return;
+        el.style.borderColor = 'var(--accent)';
+        el.focus();
+        setTimeout(() => (el.style.borderColor = ''), 1000);
+      };
       const num = tryInput && tryInput.value.trim();
-      if (!num || num.length < 7) {
-        if (tryInput) {
-          tryInput.style.borderColor = 'var(--accent)';
-          tryInput.focus();
-          setTimeout(() => (tryInput.style.borderColor = ''), 1000);
-        }
-        return;
-      }
+      const name = tryName && tryName.value.trim();
+      if (!num || num.length < 7) { flash(tryInput); return; }
+      if (!name) { flash(tryName); return; }
+      // Real text only when the buyer opted in. The demo plays regardless, so
+      // the preview still works for anyone who doesn't check the box.
+      if (tryConsent && tryConsent.checked) submitTextUsLead(name, num);
       startDemo(num);
     });
   }

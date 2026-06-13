@@ -655,7 +655,7 @@
         <span class="s-headline-accent">Text our AI like you're shopping for a Wakesetter.</span>
       </h2>
       <p class="s-try-sub" data-fade data-delay="0.2">
-        Type your number. Tap <em>text me</em>. The AI Sales Captain will reach out and walk you through the same conversation a real buyer of your dealership would have. No human in the loop. (Prototype: the messages below simulate the real exchange.)
+        Enter your name and number, opt in, and tap <em>Text me</em>. The AI Sales Captain reaches out just like it would for a real shopper — and the thread on the left previews the exchange, message for message.
       </p>
 
       <div class="s-try-stage" data-fade data-delay="0.3">
@@ -684,12 +684,20 @@
         <!-- Right: input + script controls -->
         <div class="s-try-side">
           <div class="s-try-input-card">
-            <label class="s-try-label">Your number</label>
+            <label class="s-try-label" for="try-name">Your name</label>
+            <div class="s-try-input-row">
+              <input type="text" id="try-name" placeholder="First name" autocomplete="given-name">
+            </div>
+            <label class="s-try-label" for="try-phone">Your number</label>
             <div class="s-try-input-row">
               <input type="tel" id="try-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
               <button class="btn-primary" id="try-send">Text me</button>
             </div>
-            <p class="s-try-fineprint">Prototype mode. We won't send a real text from this page yet. Below is the conversation an actual buyer would have.</p>
+            <label class="s-try-consent" for="try-consent">
+              <input type="checkbox" id="try-consent">
+              <span>I agree to receive an automated text from DealerEdge&rsquo;s AI Sales Captain at this number to start the conversation. Msg &amp; data rates may apply; reply STOP to opt out. Consent isn&rsquo;t a condition of purchase.</span>
+            </label>
+            <p class="s-try-fineprint">The thread on the left plays the AI conversation in real time.</p>
           </div>
 
           <div class="s-try-script-card">
