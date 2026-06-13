@@ -26,8 +26,9 @@ import { fileURLToPath } from 'node:url';
 const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TARGET = path.resolve(process.argv[2] || 'C:\\Users\\jason\\repos\\dealerEdge-demo-generator');
 
-const PAGES = ['sales', 'marketing', 'inventory', 'analytics', 'features'];
-// index.html (homepage) is deferred: app.js has no DE.boot/DE.destroy lifecycle yet.
+const PAGES = ['sales', 'marketing', 'inventory', 'analytics', 'features', 'index'];
+// index.html (homepage) now ships: app.js is on the DE.boot/DE.destroy lifecycle
+// and uses the shared demo-modal (js/demo-modal.js) for lead capture.
 // mobile-nav.js is excluded everywhere: the platform renders DeHeader instead.
 const EXCLUDED_SCRIPTS = new Set(['js/mobile-nav.js']);
 
@@ -195,8 +196,14 @@ async function main() {
     warn.push('de-chrome: css/style.css not among page stylesheets — chrome css not emitted');
   }
   ALWAYS_INCLUDE_ASSETS.forEach((a) => assetRefs.add(a));
-  // ── js ──
+  // ── js (copy + scan string-literal asset refs the HTML scan can't see:
+  //    app.js loads the hero frame sequence + case-study logos + ripple bg
+  //    via JS, not markup) ──
+  let copyFramesDir = false;
   for (const j of jsToCopy) {
+    const text = await fs.readFile(path.join(SITE_ROOT, j), 'utf8');
+    for (const m of text.matchAll(/assets\/([\w./-]+\.(?:svg|jpe?g|png|webp|mp4|webm|gif|avif))/gi)) assetRefs.add(m[1]);
+    if (/assets\/frames\//.test(text)) copyFramesDir = true; // dynamic frame_${i}.webp sequence
     await fs.copyFile(path.join(SITE_ROOT, j), path.join(PUBLIC_DIR, j));
   }
   // ── vendor ──
@@ -220,6 +227,20 @@ async function main() {
   }
 
   process.stdout.write(`assets: ${copied} copied (${(bytes / 1048576).toFixed(1)} MB), ${missing} missing\n`);
+
+  // ── whole frames/ dir (homepage hero canvas — frame_${i}.webp built dynamically in app.js) ──
+  if (copyFramesDir) {
+    const framesSrc = path.join(SITE_ROOT, 'assets', 'frames');
+    const framesDest = path.join(PUBLIC_DIR, 'assets', 'frames');
+    await fs.mkdir(framesDest, { recursive: true });
+    let fc = 0, fb = 0;
+    for (const f of await fs.readdir(framesSrc)) {
+      const st = await fs.stat(path.join(framesSrc, f));
+      await fs.copyFile(path.join(framesSrc, f), path.join(framesDest, f));
+      fc += 1; fb += st.size;
+    }
+    process.stdout.write(`frames/: ${fc} copied (${(fb / 1048576).toFixed(1)} MB)\n`);
+  }
   if (warn.length) {
     process.stdout.write(`\nWARNINGS (${warn.length}):\n` + warn.map((w) => `  - ${w}`).join('\n') + '\n');
   }

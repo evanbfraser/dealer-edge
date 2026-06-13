@@ -249,7 +249,7 @@
           <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
         </div>
         <p class="boat-sub" id="boat-sub">Why wait on improving your sales. We can have this platform up and running for your dealership quickly.</p>
-        <button class="btn-primary boat-cta" id="boat-cta" onclick="document.getElementById('modal-backdrop').classList.add('is-open')">Get Started Today</button>
+        <button class="btn-primary boat-cta js-modal" id="boat-cta" type="button">Get Started Today</button>
       </div>
       <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
     </div>
@@ -375,20 +375,6 @@
 
   <!-- Footer -->
   <footer class="footer">
-
-    <!-- Game banner -->
-    <div class="footer-game-banner">
-      <div class="footer-game-banner-inner">
-        <div class="footer-game-text">
-          <span class="footer-game-eyebrow">Take a break</span>
-          <p class="footer-game-headline">Since DealerEdge is doing all the work, relax and enjoy.</p>
-        </div>
-        <button class="footer-game-btn" id="footer-play-game" onclick="window.openFishingGame && window.openFishingGame()">
-          Play Game
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polygon points="5,2 14,8 5,14" fill="currentColor"/></svg>
-        </button>
-      </div>
-    </div>
 
     <!-- Main footer body -->
     <div class="footer-body">
@@ -962,73 +948,33 @@
     </div>
   </div>
 
-  <!-- Contact Modal -->
+  <!-- Contact Modal (shared demo-modal.js — name/email/phone → confirm) -->
   <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
-    <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
       <button class="modal-close" id="modal-close" aria-label="Close">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
 
-      <!-- Progress dots -->
-      <div class="ms-dots" id="ms-dots">
-        <span class="ms-dot" data-dot="1"></span>
-        <span class="ms-dot" data-dot="2"></span>
-        <span class="ms-dot" data-dot="3"></span>
-      </div>
-
-      <!-- Step 1: Name -->
       <div class="ms-step" id="ms-step-1">
-        <span class="modal-eyebrow">Get Started</span>
-        <h2 class="ms-headline">What's your name?</h2>
-        <div class="form-group">
-          <input type="text" id="ms-name" placeholder="Jane Smith" autocomplete="name">
-        </div>
-        <button class="btn-primary ms-next-btn" id="ms-next-1">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        <span class="modal-eyebrow">Schedule a Demo</span>
+        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+        <div class="form-group"><input type="text" id="ms-name" placeholder="Your name" autocomplete="name"></div>
+        <div class="form-group"><input type="email" id="ms-email" placeholder="Email address" autocomplete="email"></div>
+        <div class="form-group"><input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel"></div>
+        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
       </div>
 
-      <!-- Step 2: Contact info -->
       <div class="ms-step ms-step--hidden" id="ms-step-2">
-        <span class="modal-eyebrow">Get Started</span>
-        <h2 class="ms-headline">Great <span id="ms-name-display"></span>. Now let's grab your info.</h2>
-        <div class="form-group">
-          <input type="email" id="ms-email" placeholder="jane@dealership.com" autocomplete="email">
-        </div>
-        <div class="form-group">
-          <input type="tel" id="ms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
-        </div>
-        <button class="btn-primary ms-next-btn" id="ms-next-2">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-      </div>
-
-      <!-- Step 3: Schedule? -->
-      <div class="ms-step ms-step--hidden" id="ms-step-3">
-        <span class="modal-eyebrow">Get Started</span>
-        <h2 class="ms-headline">Do you want to schedule a time on our calendar to chat?</h2>
-        <div class="ms-choice-row">
-          <button class="ms-choice ms-choice--yes" id="ms-yes">Yes, let's book a time</button>
-          <button class="ms-choice ms-choice--no" id="ms-no">No, just reach out</button>
-        </div>
-      </div>
-
-      <!-- Step 4: Calendar -->
-      <div class="ms-step ms-step--hidden" id="ms-step-4">
-        <span class="modal-eyebrow">Pick a Time</span>
-        <h2 class="ms-headline">Choose a date.</h2>
-        <div class="ms-calendar" id="ms-calendar"></div>
-        <div class="ms-times" id="ms-times"></div>
-      </div>
-
-      <!-- Step 5: Confirmation -->
-      <div class="ms-step ms-step--hidden" id="ms-step-5">
         <div class="ms-confirm">
           <div class="ms-confirm-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <h2 class="ms-confirm-title">You're all set!</h2>
           <p class="ms-confirm-text" id="ms-confirm-text"></p>
-          <button class="btn-primary ms-next-btn" id="ms-done">Done</button>
+          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -1054,92 +1000,9 @@
     </button>
   </div>
 
-  <!-- Fishing Game Overlay -->
-  <div id="fishing-game" class="fishing-game fishing-game--hidden">
-
-    <!-- Intro countdown overlay -->
-    <div class="fishing-intro" id="fishing-intro">
-      <div class="fishing-intro-words">
-        <div class="fishing-word" id="fishing-word-0">How Many</div>
-        <div class="fishing-word" id="fishing-word-1">New Customers</div>
-        <div class="fishing-word" id="fishing-word-2">Can You Catch?</div>
-      </div>
-    </div>
-
-    <!-- HUD: glassmorphism panels -->
-    <div class="game-hud">
-      <div class="game-hud-score">
-        <div class="game-hud-label">New Customers</div>
-        <div class="score-display">
-          <div class="score-digit-wrap" id="game-score-wrap">
-            <span class="score-digit-prev" id="score-prev">0</span>
-            <span class="score-digit-curr" id="score-curr">0</span>
-          </div>
-        </div>
-        <div class="score-progress-bar">
-          <div class="score-progress-fill" id="score-progress-fill"></div>
-        </div>
-        <div class="score-milestone-label" id="score-milestone"></div>
-      </div>
-      <div class="game-hud-timer">
-        <svg class="timer-ring" viewBox="0 0 80 80">
-          <circle class="timer-ring-bg" cx="40" cy="40" r="34"/>
-          <circle class="timer-ring-fill" id="timer-ring-fill" cx="40" cy="40" r="34"/>
-        </svg>
-        <div class="timer-number" id="timer-number">60</div>
-      </div>
-      <div id="game-combo" style="min-width:130px;"></div>
-    </div>
-
-    <!-- Close button top-right -->
-    <button class="fishing-close" id="fishing-close">✕ Close</button>
-
-    <!-- Ripple canvas (below fish, above background) -->
-    <!-- Fishing line from top of screen to hook -->
-    <div class="fishing-line" id="fishing-line"></div>
-
-    <!-- Hook cursor -->
-    <div class="fishing-hook" id="fishing-hook">
-      <svg width="28" height="56" viewBox="0 0 28 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="14" y1="0" x2="14" y2="26" stroke="#c8c8c8" stroke-width="2"/>
-        <path d="M14,26 L14,42 Q14,54 5,54 Q0,54 0,48 Q0,42 5,42" stroke="#aaa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="1" y1="48" x2="7" y2="43" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-    </div>
-
-    <!-- Fish container (fish injected by JS) -->
-    <div class="fishing-fish-layer" id="fishing-fish-layer"></div>
-
-    <!-- Floating catch text container -->
-    <div id="catch-floats" style="position:absolute;inset:0;pointer-events:none;z-index:15;overflow:hidden;"></div>
-
-    <!-- Screen edge flash -->
-    <div class="game-catch-flash" id="game-catch-flash"></div>
-
-    <!-- Benefit popup -->
-    <div class="fishing-popup" id="fishing-popup">
-      <span class="fishing-popup-badge">DEALER EDGE</span>
-      <p id="fishing-popup-text"></p>
-    </div>
-
-    <!-- End screen -->
-    <div class="game-end-screen" id="game-end-screen">
-      <div class="game-end-panel">
-        <div class="game-end-eyebrow">Time's Up</div>
-        <div class="game-end-score" id="end-score">0</div>
-        <div class="game-end-label">New Customers Landed</div>
-        <div class="game-end-stats">
-          <div class="game-stat"><span id="end-best-combo">—</span><label>Best Combo</label></div>
-          <div class="game-stat"><span id="end-catch-rate">0/min</span><label>Catch Rate</label></div>
-        </div>
-        <button class="game-end-cta" id="game-end-cta">Give Your Dealership the Edge</button>
-        <button class="game-end-restart" id="game-end-restart">Play Again</button>
-      </div>
-    </div>
-
-  </div>
-
+  <script src="js/de-core.js"></script>
   <script src="js/mobile-nav.js"></script>
+  <script src="js/demo-modal.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

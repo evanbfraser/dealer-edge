@@ -770,7 +770,7 @@
 .i-pipe-mask {
   display: block;
   height: 64px;
-  background: url('../assets/inventory/pipeline-wide.png') no-repeat;
+  background: url('../assets/inventory/pipeline-wide.webp') no-repeat;
   background-size: 640%;
   background-position: 26.5% 63%;
   filter: contrast(1.15) brightness(1.05);
@@ -802,7 +802,7 @@
 .i-pipe-graph {
   position: absolute;
   inset: 0;
-  background: url('../assets/inventory/pipeline-wide.png') center / cover no-repeat;
+  background: url('../assets/inventory/pipeline-wide.webp') center / cover no-repeat;
   filter: blur(3px) brightness(0.6) saturate(0.85);
   opacity: 0.75;
 }
