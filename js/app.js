@@ -125,13 +125,31 @@ function preloadFrames() {
     img.src = `assets/frames/frame_${String(i).padStart(4, '0')}.webp`;
     img.onload = () => {
       loaded++;
-      if (loaded === 1) requestAnimationFrame(() => drawFrame(1));
+      // First frame ready: paint now, then repaint a few times over ~2s. The
+      // React island host regenerates this subtree shortly after hydration
+      // (swapping #hero-canvas); repainting the freshly re-queried node a few
+      // times outlasts that swap, so the hero isn't left blank when the user
+      // hasn't scrolled. On the static site there's no swap — harmless.
+      if (loaded === 1) {
+        let tries = 8;
+        const paint = () => {
+          drawFrame(currentFrame);
+          if (tries-- > 0) setTimeout(() => requestAnimationFrame(paint), 250);
+        };
+        requestAnimationFrame(paint);
+      }
     };
     images.push(img);
   }
 }
 
 function drawFrame(idx) {
+  // Re-acquire the live node each draw. On the platform, the React island host
+  // regenerates this subtree shortly after hydration, swapping in a fresh
+  // #hero-canvas — the module-level ref captured at load would be orphaned, so
+  // we'd paint a detached node and the visible hero would stay blank.
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas ? canvas.getContext('2d') : null;
   if (!canvas || !ctx) return;
   const img = images[idx - 1];
   if (!img || !img.complete || img.naturalWidth === 0) return;
