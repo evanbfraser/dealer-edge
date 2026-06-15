@@ -197,13 +197,25 @@ function bindScrollToFrames() {
           ? Math.max(0, window.scrollY || window.pageYOffset || 0)
           : Math.max(0, -hero.getBoundingClientRect().top);
 
-        // Once the Features section has fully covered the pinned hero, hide it so
-        // the sticky layer can't paint over lower sections; restore on scroll-up.
+        // Desktop choreography while the hero is pinned: the copy exits upward a
+        // touch faster than scroll (its own speed), and the visual fades to
+        // transparent so it dissipates behind the incoming Features header
+        // (transparent section bg, higher z-index — see style.css). Hidden once
+        // gone so the sticky layer can't paint over lower sections. Reset on mobile.
+        const heroLeft = hero.querySelector('.hero-left');
+        const heroRight = hero.querySelector('.hero-right');
         if (desktop) {
-          const want = scrollY >= vh * 0.98 ? 'hidden' : '';
+          if (heroLeft) heroLeft.style.transform = `translateY(${(-scrollY * 1.25).toFixed(1)}px)`;
+          if (heroRight) {
+            const fade = 1 - Math.min(1, Math.max(0, (scrollY - vh * 0.35) / (vh * 0.55)));
+            heroRight.style.opacity = fade.toFixed(3);
+          }
+          const want = scrollY >= vh * 0.95 ? 'hidden' : '';
           if (hero.style.visibility !== want) hero.style.visibility = want;
-        } else if (hero.style.visibility) {
-          hero.style.visibility = '';
+        } else {
+          if (heroLeft && heroLeft.style.transform) heroLeft.style.transform = '';
+          if (heroRight && heroRight.style.opacity) heroRight.style.opacity = '';
+          if (hero.style.visibility) hero.style.visibility = '';
         }
 
         // Frame scrub over ~0.9vh on desktop (was 0.62) so the animation plays

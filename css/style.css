@@ -495,23 +495,31 @@ body {
   z-index: 1;
 }
 
-/* Desktop hero reveal — the hero pins at the top at its natural 100vh while the
-   Features section rises and covers it (Features gets a higher z-index over its
-   existing opaque #000 background), so the animating visual disappears
-   underneath the next section's copy and cards with NO extra scroll added.
-   app.js drives the frame scrub off window.scrollY (the pinned hero's own rect
-   is frozen at top:0) and hides the hero once it's fully covered, so the sticky
-   layer never paints over later sections. Mobile (≤768px) keeps the flat stacked
-   hero where .hero-right is a faint full-bleed background. */
+/* Desktop hero cross-fade reveal — the hero pins at the top at its natural 100vh
+   (sticky, LOW z-index) while the Features section rises with a TRANSPARENT
+   background and a higher z-index, so its header and cards layer IN FRONT of the
+   hero visual rather than slabbing over it. app.js then (1) exits the copy
+   upward at its own speed and (2) fades the visual to transparent, so the boat
+   dissipates behind the incoming header; the hero is hidden once gone so the
+   sticky layer can't paint over later sections. Frame scrub runs off
+   window.scrollY (the pinned hero's own rect is frozen at top:0). Mobile
+   (≤768px) keeps the flat stacked hero with its solid background. */
 @media (min-width: 769px) {
   .hero {
     position: sticky;
     top: 0;
     z-index: 0;
   }
-  .features-section {
+  .hero-left,
+  .hero-right {
+    will-change: transform, opacity;
+  }
+  /* #features (id) so the transparent bg + z-index win over the later
+     `.features-section { background:#000 }` base rule regardless of source order. */
+  #features {
     position: relative;
     z-index: 1;
+    background: transparent;
   }
 }
 
