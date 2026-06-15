@@ -73,7 +73,14 @@ function animateHero() {
   // and gsap.set are synchronous, so they apply even if the ticker is asleep.
   setTimeout(() => {
     if (tl.progress() < 1) tl.progress(1);
-    gsap.set(items, { opacity: 1, y: 0, clearProps: 'transform' });
+    // Re-query the LIVE copy nodes: if React's island regeneration swapped the
+    // subtree after boot, the captured refs above are orphaned, so force the
+    // visible state on whatever is currently mounted.
+    const liveContent = document.getElementById('hero-content');
+    const live = liveContent
+      ? [liveContent.querySelector('.hero-eyebrow'), liveContent.querySelector('.hero-headline'), liveContent.querySelector('.hero-sub'), liveContent.querySelector('.hero-actions')].filter(Boolean)
+      : items;
+    gsap.set(live, { opacity: 1, y: 0, clearProps: 'transform' });
   }, 2800);
 }
 
