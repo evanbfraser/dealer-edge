@@ -49,39 +49,23 @@ DE.pages.index = (function () {
 
 // ─── HERO ENTRANCE ANIMATION ───
 function animateHero() {
+  // Show the hero copy immediately — no entrance fade. The old dark→light
+  // reveal read as a slow page load (and could stall on the platform); the
+  // hero visual appears at once, so the copy should match. `.hero-content` is
+  // now visible by default in style.css; this guards against stale CSS and
+  // clears any leftover transform from a prior run.
   const content = document.getElementById('hero-content');
   if (!content) return;
-
-  const eyebrow = content.querySelector('.hero-eyebrow');
-  const headline = content.querySelector('.hero-headline');
-  const sub = content.querySelector('.hero-sub');
-  const actions = content.querySelector('.hero-actions');
-  const items = [eyebrow, headline, sub, actions].filter(Boolean);
-
   gsap.set(content, { opacity: 1 });
-
-  const tl = gsap.timeline({ delay: 0.2 })
-    .from(eyebrow,  { opacity: 0, y: 18, duration: 0.75, ease: 'power2.out' })
-    .from(headline, { opacity: 0, y: 28, duration: 0.95, ease: 'power2.out' }, '-=0.45')
-    .from(sub,      { opacity: 0, y: 20, duration: 0.85, ease: 'power2.out' }, '-=0.55')
-    .from(actions,  { opacity: 0, y: 18, duration: 0.8,  ease: 'power2.out' }, '-=0.5');
-
-  // Safety net: on the platform, the hydration + sequential script-load can
-  // stall the GSAP ticker mid-timeline, freezing this `.from()` copy near
-  // opacity 0 (it only recovers on a soft nav that re-runs the boot). After
-  // the timeline's natural end, force the final visible state — tl.progress(1)
-  // and gsap.set are synchronous, so they apply even if the ticker is asleep.
-  setTimeout(() => {
-    if (tl.progress() < 1) tl.progress(1);
-    // Re-query the LIVE copy nodes: if React's island regeneration swapped the
-    // subtree after boot, the captured refs above are orphaned, so force the
-    // visible state on whatever is currently mounted.
-    const liveContent = document.getElementById('hero-content');
-    const live = liveContent
-      ? [liveContent.querySelector('.hero-eyebrow'), liveContent.querySelector('.hero-headline'), liveContent.querySelector('.hero-sub'), liveContent.querySelector('.hero-actions')].filter(Boolean)
-      : items;
-    gsap.set(live, { opacity: 1, y: 0, clearProps: 'transform' });
-  }, 2800);
+  gsap.set(
+    [
+      content.querySelector('.hero-eyebrow'),
+      content.querySelector('.hero-headline'),
+      content.querySelector('.hero-sub'),
+      content.querySelector('.hero-actions'),
+    ].filter(Boolean),
+    { opacity: 1, y: 0, clearProps: 'transform' }
+  );
 }
 
 // ─── SECTION ENTRANCE ANIMATIONS ───

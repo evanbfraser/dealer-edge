@@ -538,7 +538,9 @@ body {
   position: relative;
   z-index: 4;
   text-align: left;
-  opacity: 0;
+  /* Visible by default — the copy shows immediately (no entrance fade), which
+     reads faster and avoids a stall leaving it hidden on the platform. */
+  opacity: 1;
 }
 
 .hero-eyebrow {
