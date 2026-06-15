@@ -177,11 +177,11 @@ function drawFrame(idx) {
 function bindScrollToFrames() {
   if (!canvas) return;
 
-  // Desktop only: the hero is taller (150vh — see the min-width:769px block in
-  // style.css) and the visual column drifts up at half scroll-speed. That gentle
-  // parallax makes the hero "leave slower" and, paired with the wider frame span
-  // below, lets more of the 192-frame animation play as it exits. Mobile keeps
-  // the flat stacked hero, so the drift + wider span are gated to desktop.
+  // Desktop only: the hero pins at the top (sticky — see the min-width:769px
+  // block in style.css) while the Features section rises and covers it, so the
+  // animating visual disappears underneath the next section's copy/cards with no
+  // extra scroll. Because the pinned hero's own rect is frozen at top:0, drive
+  // progress off window.scrollY rather than the hero rect on desktop.
   const heroParallax = window.matchMedia('(min-width: 769px)');
   let ticking = false;
 
@@ -192,23 +192,22 @@ function bindScrollToFrames() {
         if (!hero) { ticking = false; return; }
 
         const vh = window.innerHeight;
-        const scrollY = Math.max(0, -hero.getBoundingClientRect().top);
         const desktop = heroParallax.matches;
+        const scrollY = desktop
+          ? Math.max(0, window.scrollY || window.pageYOffset || 0)
+          : Math.max(0, -hero.getBoundingClientRect().top);
 
-        // Parallax drift on the visual column (re-queried for the island host).
-        // Capped at 0.5vh so the drifted column stays inside the 150vh hero.
-        const heroRight = hero.querySelector('.hero-right');
-        if (heroRight) {
-          if (desktop) {
-            const drift = Math.min(scrollY * 0.5, vh * 0.5);
-            heroRight.style.transform = `translateY(${drift}px)`;
-          } else if (heroRight.style.transform) {
-            heroRight.style.transform = '';
-          }
+        // Once the Features section has fully covered the pinned hero, hide it so
+        // the sticky layer can't paint over lower sections; restore on scroll-up.
+        if (desktop) {
+          const want = scrollY >= vh * 0.98 ? 'hidden' : '';
+          if (hero.style.visibility !== want) hero.style.visibility = want;
+        } else if (hero.style.visibility) {
+          hero.style.visibility = '';
         }
 
-        // Frame scrub spread over ~0.9vh on desktop (was 0.62) so the animation
-        // plays out across the lingering exit instead of finishing early.
+        // Frame scrub over ~0.9vh on desktop (was 0.62) so the animation plays
+        // out across the cover-reveal instead of finishing early.
         const maxScroll = vh * (desktop ? 0.9 : 0.62);
         const progress = Math.min(1, scrollY / maxScroll);
         const frameIdx = Math.min(FRAME_COUNT, Math.max(1, Math.round(progress * (FRAME_COUNT - 1)) + 1));

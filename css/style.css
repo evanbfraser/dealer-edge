@@ -495,24 +495,23 @@ body {
   z-index: 1;
 }
 
-/* Desktop hero parallax — the visual column drifts up at half scroll-speed
-   (driven in js/app.js bindScrollToFrames) so the hero leaves slower and more
-   of the frame animation is seen on the way out. The taller hero gives the
-   drift room (capped at 0.5vh → column stays inside the 150vh box); columns are
-   top-aligned so the copy still reads as one screen. Mobile (≤768px) keeps the
-   flat stacked hero where .hero-right is a faint full-bleed background. */
+/* Desktop hero reveal — the hero pins at the top at its natural 100vh while the
+   Features section rises and covers it (Features gets a higher z-index over its
+   existing opaque #000 background), so the animating visual disappears
+   underneath the next section's copy and cards with NO extra scroll added.
+   app.js drives the frame scrub off window.scrollY (the pinned hero's own rect
+   is frozen at top:0) and hides the hero once it's fully covered, so the sticky
+   layer never paints over later sections. Mobile (≤768px) keeps the flat stacked
+   hero where .hero-right is a faint full-bleed background. */
 @media (min-width: 769px) {
   .hero {
-    height: 150vh;
-    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    z-index: 0;
   }
-  .hero-left {
-    height: 100vh;
-  }
-  .hero-right {
-    align-self: flex-start;
-    height: 100vh;
-    will-change: transform;
+  .features-section {
+    position: relative;
+    z-index: 1;
   }
 }
 
