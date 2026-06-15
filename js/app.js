@@ -131,12 +131,17 @@ function preloadFrames() {
       // times outlasts that swap, so the hero isn't left blank when the user
       // hasn't scrolled. On the static site there's no swap — harmless.
       if (loaded === 1) {
-        let tries = 8;
-        const paint = () => {
+        // Paint, then keep retrying until a draw actually STICKS (the live
+        // canvas ends up sized, not the 300x150 default). The React island host
+        // swaps #hero-canvas ~1s after hydration, and we can't predict exactly
+        // when the replacement node is mounted AND its container is laid out AND
+        // frame 1 has loaded — so poll until drawFrame succeeds (or stop ~6s).
+        let tries = 30;
+        const iv = setInterval(() => {
           drawFrame(currentFrame);
-          if (tries-- > 0) setTimeout(() => requestAnimationFrame(paint), 250);
-        };
-        requestAnimationFrame(paint);
+          const c = document.getElementById('hero-canvas');
+          if ((c && c.width > 300) || --tries <= 0) clearInterval(iv);
+        }, 200);
       }
     };
     images.push(img);

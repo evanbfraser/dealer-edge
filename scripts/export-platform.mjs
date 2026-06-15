@@ -201,10 +201,16 @@ async function main() {
   //    via JS, not markup) ──
   let copyFramesDir = false;
   for (const j of jsToCopy) {
-    const text = await fs.readFile(path.join(SITE_ROOT, j), 'utf8');
+    let text = await fs.readFile(path.join(SITE_ROOT, j), 'utf8');
     for (const m of text.matchAll(/assets\/([\w./-]+\.(?:svg|jpe?g|png|webp|mp4|webm|gif|avif))/gi)) assetRefs.add(m[1]);
     if (/assets\/frames\//.test(text)) copyFramesDir = true; // dynamic frame_${i}.webp sequence
-    await fs.copyFile(path.join(SITE_ROOT, j), path.join(PUBLIC_DIR, j));
+    // Rewrite in-JS asset refs (string literals) to the served path, mirroring
+    // rewriteAssetPaths for HTML/CSS. Without this, app.js requests e.g.
+    // `assets/frames/frame_0001.webp` which on the platform resolves to
+    // /assets/frames/... — the catch-all returns 200 HTML, the <img> fails to
+    // decode (naturalWidth 0), and the hero canvas never paints.
+    text = text.replace(/(['"`])assets\//g, '$1/de-site/assets/');
+    await fs.writeFile(path.join(PUBLIC_DIR, j), text);
   }
   // ── vendor ──
   for (const v of VENDOR) {
