@@ -56,14 +56,25 @@ function animateHero() {
   const headline = content.querySelector('.hero-headline');
   const sub = content.querySelector('.hero-sub');
   const actions = content.querySelector('.hero-actions');
+  const items = [eyebrow, headline, sub, actions].filter(Boolean);
 
   gsap.set(content, { opacity: 1 });
 
-  gsap.timeline({ delay: 0.2 })
+  const tl = gsap.timeline({ delay: 0.2 })
     .from(eyebrow,  { opacity: 0, y: 18, duration: 0.75, ease: 'power2.out' })
     .from(headline, { opacity: 0, y: 28, duration: 0.95, ease: 'power2.out' }, '-=0.45')
     .from(sub,      { opacity: 0, y: 20, duration: 0.85, ease: 'power2.out' }, '-=0.55')
     .from(actions,  { opacity: 0, y: 18, duration: 0.8,  ease: 'power2.out' }, '-=0.5');
+
+  // Safety net: on the platform, the hydration + sequential script-load can
+  // stall the GSAP ticker mid-timeline, freezing this `.from()` copy near
+  // opacity 0 (it only recovers on a soft nav that re-runs the boot). After
+  // the timeline's natural end, force the final visible state — tl.progress(1)
+  // and gsap.set are synchronous, so they apply even if the ticker is asleep.
+  setTimeout(() => {
+    if (tl.progress() < 1) tl.progress(1);
+    gsap.set(items, { opacity: 1, y: 0, clearProps: 'transform' });
+  }, 2800);
 }
 
 // ─── SECTION ENTRANCE ANIMATIONS ───
