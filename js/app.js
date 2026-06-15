@@ -177,6 +177,12 @@ function drawFrame(idx) {
 function bindScrollToFrames() {
   if (!canvas) return;
 
+  // Desktop only: the hero is taller (150vh — see the min-width:769px block in
+  // style.css) and the visual column drifts up at half scroll-speed. That gentle
+  // parallax makes the hero "leave slower" and, paired with the wider frame span
+  // below, lets more of the 192-frame animation play as it exits. Mobile keeps
+  // the flat stacked hero, so the drift + wider span are gated to desktop.
+  const heroParallax = window.matchMedia('(min-width: 769px)');
   let ticking = false;
 
   DE.on(window, 'scroll', () => {
@@ -185,8 +191,25 @@ function bindScrollToFrames() {
         const hero = document.getElementById('hero');
         if (!hero) { ticking = false; return; }
 
+        const vh = window.innerHeight;
         const scrollY = Math.max(0, -hero.getBoundingClientRect().top);
-        const maxScroll = window.innerHeight * 0.62;
+        const desktop = heroParallax.matches;
+
+        // Parallax drift on the visual column (re-queried for the island host).
+        // Capped at 0.5vh so the drifted column stays inside the 150vh hero.
+        const heroRight = hero.querySelector('.hero-right');
+        if (heroRight) {
+          if (desktop) {
+            const drift = Math.min(scrollY * 0.5, vh * 0.5);
+            heroRight.style.transform = `translateY(${drift}px)`;
+          } else if (heroRight.style.transform) {
+            heroRight.style.transform = '';
+          }
+        }
+
+        // Frame scrub spread over ~0.9vh on desktop (was 0.62) so the animation
+        // plays out across the lingering exit instead of finishing early.
+        const maxScroll = vh * (desktop ? 0.9 : 0.62);
         const progress = Math.min(1, scrollY / maxScroll);
         const frameIdx = Math.min(FRAME_COUNT, Math.max(1, Math.round(progress * (FRAME_COUNT - 1)) + 1));
 
