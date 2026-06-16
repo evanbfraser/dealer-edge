@@ -184,11 +184,13 @@ window.DE = (() => {
   /* ─────────────────────────────────────────────────────────────
      IDLE SCROLL-HINT — one faint bottom-center "Scroll ⌄" per page.
      Fades in after ~3s of no scrolling, vanishes instantly on any
-     scroll. Stays hidden in the first viewport (page heroes own that
-     cue), within ~1 viewport of the page bottom, mid section-snap
-     (.de-snapping, set by attachSceneSnap), and while a modal has
-     stopped Lenis. Reduced-motion keeps it static (CSS drops the
-     chevron bounce). Injected once; removed on DE.destroy().
+     scroll. Stays hidden only while a page's own hero scroll-cue is on
+     screen (homepage .hero-scroll-hint — avoids a double), within ~1
+     viewport of the page bottom, mid section-snap (.de-snapping, set by
+     attachSceneSnap), and while a modal has stopped Lenis. So deep-dive
+     tops (which have no hero cue) get the hint after the idle delay.
+     Reduced-motion keeps it static (CSS drops the chevron bounce).
+     Injected once; removed on DE.destroy().
      ───────────────────────────────────────────────────────────── */
   function initScrollHint() {
     if (document.querySelector('.de-scroll-hint')) return;   // guard double-inject
@@ -200,12 +202,21 @@ window.DE = (() => {
     addDisposer(() => el.remove());
 
     const hide = () => el.classList.remove('is-visible');
+    const heroCueShown = () => {
+      // suppress only while a page's OWN hero scroll-cue is still on screen (the
+      // homepage .hero-scroll-hint) so we don't double up. Deep-dive tops have no
+      // such cue, so the hint is free to appear there after the idle delay.
+      const cue = document.querySelector('.hero-scroll-hint');
+      if (!cue) return false;
+      const cs = getComputedStyle(cue);
+      const r = cue.getBoundingClientRect();
+      return cs.visibility !== 'hidden' && +cs.opacity > 0.05 && r.bottom > 0 && r.top < window.innerHeight;
+    };
     const blocked = () => {
       const vh = window.innerHeight;
       const lenis = lifecycle().lenis;
       const atBottom = (vh + window.scrollY) >= (document.documentElement.scrollHeight - vh);
-      const inHero = window.scrollY < vh * 0.5;              // heroes own the first-screen cue
-      return inHero || atBottom
+      return atBottom || heroCueShown()
         || document.body.classList.contains('de-snapping')   // mid section-transition
         || !!(lenis && lenis.isStopped);                     // modal open (modals call lenis.stop())
     };
