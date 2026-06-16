@@ -198,22 +198,17 @@ function bindScrollToFrames() {
         const heroLeft = hero.querySelector('.hero-left');
         const heroRight = hero.querySelector('.hero-right');
 
-        // Copy: desktop bounces out (a half-sine dip down, spring up, then a
-        // slow-start cubic exit — easing sells the bounce); mobile drifts up and
-        // fades, clearing room for the incoming Features copy (no bounce on a
-        // small screen).
+        // Copy bounce — SAME ease + bounce on desktop AND mobile (mobile is a
+        // first-class citizen: ~7x the traffic, social-ad visitors land here
+        // first). A half-sine dip (down, then back up) over a slow-start cubic
+        // exit, so the copy/CTAs sink ~32px, spring, then launch up and out. The
+        // easing sells the bounce.
         if (heroLeft) {
-          if (desktop) {
-            const t = Math.min(1, scrollY / (vh * 0.6));
-            const dip = 42 * Math.sin(Math.PI * Math.min(t / 0.45, 1));
-            const exit = vh * 0.95 * (t * t * t);
-            heroLeft.style.transform = `translateY(${(dip - exit).toFixed(1)}px)`;
-            if (heroLeft.style.opacity) heroLeft.style.opacity = '';
-          } else {
-            const t = Math.min(1, scrollY / (vh * 0.55));
-            heroLeft.style.transform = `translateY(${(-t * 60).toFixed(1)}px)`;
-            heroLeft.style.opacity = (1 - t).toFixed(3);
-          }
+          const t = Math.min(1, scrollY / (vh * 0.6));
+          const dip = 42 * Math.sin(Math.PI * Math.min(t / 0.45, 1));
+          const exit = vh * 0.95 * (t * t * t);
+          heroLeft.style.transform = `translateY(${(dip - exit).toFixed(1)}px)`;
+          if (heroLeft.style.opacity) heroLeft.style.opacity = '';
         }
 
         // Visual dissipates to transparent — from full on desktop, from its 0.45
