@@ -122,26 +122,58 @@
 .roi-estimate:hover { opacity: 1; }
 .roi-est-note { font-size: 0.74rem; color: var(--text-dim); line-height: 1.4; font-style: italic; }
 
-/* ── conversion connectors: the rate between two funnel stages, vs the
-   marine/RV average. JS toggles .is-above / .is-par / .is-below. ── */
+/* ── conversion markers: the dealer's rate between two funnel stages vs the
+   marine/RV average. JS toggles .is-above / .is-par / .is-below. On desktop
+   they sit in a left side-rail beside the gap (anchored to the downstream
+   field, centered on the 16px gap, with a connector tick); on mobile they
+   fall inline above the field they feed. ── */
+.roi-funnel-stack { display: flex; flex-direction: column; gap: 16px; }
+
 .roi-conv {
-  display: flex; align-items: baseline; gap: 9px;
-  margin: -7px 0 -7px 7px;            /* pull snug between the two fields */
-  padding: 4px 0 4px 14px;
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px;
+  margin: 0 0 2px; padding-left: 12px;
   border-left: 2px solid var(--line-strong);
 }
 .roi-conv-rate {
   font-family: var(--mono); font-size: 0.95rem; font-weight: 700;
-  color: var(--text-mid); flex: 0 0 auto;
-  transition: color 0.18s ease;
+  color: var(--text-mid); transition: color 0.18s ease;
 }
-.roi-conv-note { font-size: 0.76rem; line-height: 1.35; color: var(--text-dim); }
+.roi-conv-verdict { display: none; }           /* desktop side-rail only */
+.roi-conv-note { font-size: 0.76rem; line-height: 1.3; color: var(--text-dim); }
+
 .roi-conv.is-above { border-left-color: var(--good); }
-.roi-conv.is-above .roi-conv-rate { color: var(--good); }
+.roi-conv.is-above .roi-conv-rate,
+.roi-conv.is-above .roi-conv-verdict { color: var(--good); }
 .roi-conv.is-below { border-left-color: var(--accent); }
-.roi-conv.is-below .roi-conv-rate { color: var(--accent); }
-.roi-conv.is-par { border-left-color: var(--line-strong); }
+.roi-conv.is-below .roi-conv-rate,
+.roi-conv.is-below .roi-conv-verdict { color: var(--accent); }
 .roi-conv.is-par .roi-conv-rate { color: var(--text-mid); }
+.roi-conv.is-par .roi-conv-verdict { color: var(--text-dim); }
+
+@media (min-width: 681px) {
+  .roi-funnel-stack { position: relative; padding-left: 108px; }
+  .roi-field { position: relative; }
+  .roi-conv {
+    position: absolute; top: -8px; left: -108px; width: 94px;
+    margin: 0; padding: 0; border-left: none;
+    flex-direction: column; align-items: flex-end; gap: 1px;
+    text-align: right; transform: translateY(-50%);
+  }
+  .roi-conv-rate { font-size: 1.08rem; }
+  .roi-conv-verdict {
+    display: block;
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.03em;
+    text-transform: uppercase; line-height: 1.2; color: var(--text-dim);
+  }
+  .roi-conv-note { display: none; }             /* note is the mobile long-form */
+  .roi-conv::after {                            /* tick from the rail into the field */
+    content: ''; position: absolute; top: 50%; left: 100%;
+    width: 14px; border-top: 2px solid var(--line-strong);
+    transform: translateY(-50%);
+  }
+  .roi-conv.is-above::after { border-top-color: var(--good); }
+  .roi-conv.is-below::after { border-top-color: var(--accent); }
+}
 
 /* ── sliders ── */
 .roi-slider-field {

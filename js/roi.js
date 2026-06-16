@@ -111,14 +111,16 @@ DE.pages.roi = { boot() {
     CONV.forEach((c) => {
       const rateEl = document.querySelector(`[data-roi-rate="${c.key}"]`);
       const noteEl = document.querySelector(`[data-roi-note="${c.key}"]`);
-      if (!rateEl || !noteEl) return;
+      const verdEl = document.querySelector(`[data-roi-verdict="${c.key}"]`);
+      if (!rateEl) return;
       const box = rateEl.closest('.roi-conv');
       const up = v[c.up];
       const down = v[c.down];
       const benchPct = Math.round(BENCH[c.key] * 100);
+      if (verdEl) verdEl.textContent = `vs ~${benchPct}% avg`;  // desktop rail (color carries the verdict)
       if (up <= 0) {
         rateEl.textContent = '—';
-        noteEl.textContent = c.verb;
+        if (noteEl) noteEl.textContent = c.verb;
         if (box) box.className = 'roi-conv is-par';
         return;
       }
@@ -129,7 +131,7 @@ DE.pages.roi = { boot() {
       else if (ratio <= 0.88) { verdict = `below the ~${benchPct}% marine avg`; cls = 'is-below'; }
       else { verdict = `on par with the ~${benchPct}% marine avg`; cls = 'is-par'; }
       rateEl.textContent = fmtPct(rate);
-      noteEl.textContent = `${c.verb} · ${verdict}`;
+      if (noteEl) noteEl.textContent = `${c.verb} · ${verdict}`;
       if (box) box.className = 'roi-conv ' + cls;
     });
   }
