@@ -15,6 +15,7 @@ DE.pages.features = { boot() {
   if (typeof initMobileNav === 'function') initMobileNav(); // not shipped to the platform (DeHeader owns nav)
   DE.initCursorGlow();
   DE.initNavScroll();
+  DE.initScrollHint();
   DE.initFade();
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();

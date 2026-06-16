@@ -182,6 +182,44 @@ window.DE = (() => {
   }
 
   /* ─────────────────────────────────────────────────────────────
+     IDLE SCROLL-HINT — one faint bottom-center "Scroll ⌄" per page.
+     Fades in after ~3s of no scrolling, vanishes instantly on any
+     scroll. Stays hidden in the first viewport (page heroes own that
+     cue), within ~1 viewport of the page bottom, mid section-snap
+     (.de-snapping, set by attachSceneSnap), and while a modal has
+     stopped Lenis. Reduced-motion keeps it static (CSS drops the
+     chevron bounce). Injected once; removed on DE.destroy().
+     ───────────────────────────────────────────────────────────── */
+  function initScrollHint() {
+    if (document.querySelector('.de-scroll-hint')) return;   // guard double-inject
+    const el = document.createElement('div');
+    el.className = 'de-scroll-hint';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<span class="de-scroll-hint__label">Scroll</span><span class="de-scroll-hint__chevron"></span>';
+    document.body.appendChild(el);
+    addDisposer(() => el.remove());
+
+    const hide = () => el.classList.remove('is-visible');
+    const blocked = () => {
+      const vh = window.innerHeight;
+      const lenis = lifecycle().lenis;
+      const atBottom = (vh + window.scrollY) >= (document.documentElement.scrollHeight - vh);
+      const inHero = window.scrollY < vh * 0.5;              // heroes own the first-screen cue
+      return inHero || atBottom
+        || document.body.classList.contains('de-snapping')   // mid section-transition
+        || !!(lenis && lenis.isStopped);                     // modal open (modals call lenis.stop())
+    };
+
+    let idleMs = 0;
+    on(window, 'scroll', () => { idleMs = 0; hide(); }, { passive: true });
+    interval(() => {
+      if (blocked()) { hide(); return; }
+      idleMs += 500;
+      if (idleMs >= 3000) el.classList.add('is-visible');
+    }, 500);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
      SNAP-TO-SCENE — once scrolling settles inside a fully-pinned
      section, ease to the nearest scene center so we always rest
      cleanly on one beat. Directional: a push >28% past the current
@@ -576,7 +614,7 @@ window.DE = (() => {
 
   return {
     reduceMotion, isSafari,
-    createLenis, initCursorGlow, initNavScroll, initFade, attachSceneSnap, initActs,
+    createLenis, initCursorGlow, initNavScroll, initFade, initScrollHint, attachSceneSnap, initActs,
     pages, boot, destroy, on, interval, rafLoop, ready,
   };
 })();

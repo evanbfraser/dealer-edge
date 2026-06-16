@@ -22,6 +22,7 @@ DE.pages.inventory = { boot() {
   initDemoModal(lenis);
   DE.initCursorGlow();
   DE.initNavScroll();
+  DE.initScrollHint();
   DE.initFade();
   initImageCompareCursorRelief();
   if (typeof initVideoBoatSections === 'function') {

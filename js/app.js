@@ -740,6 +740,7 @@ function initChatbot() {
     initChatbot();
     preloadFrames();
     bindScrollToFrames();
+    DE.initScrollHint();
     DE.on(window, 'resize', () => drawFrame(currentFrame), { passive: true });
     DE.on(window, 'load', () => drawFrame(currentFrame || 1), { once: true, passive: true });
   }

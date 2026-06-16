@@ -17,6 +17,7 @@ DE.pages.marketing = { boot() {
   initDemoModal(lenis);
   DE.initCursorGlow();
   DE.initNavScroll();
+  DE.initScrollHint();
   DE.initFade();
   initShowcase();
   initHero();

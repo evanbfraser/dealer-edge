@@ -16,6 +16,7 @@ DE.pages.sales = { boot() {
   const lenis = DE.createLenis();
   DE.initCursorGlow();
   DE.initNavScroll();
+  DE.initScrollHint();
 
   /* ─────────────────────────────────────────────────────────────
      MOBILE NAV (mobile-nav.js — not shipped to the platform, where

@@ -704,6 +704,51 @@ body {
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
+/* ─── UNIVERSAL IDLE SCROLL HINT (DE.initScrollHint) ─── */
+.de-scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 60;                 /* above content, below modals (≥1000) + cursor glow (9999) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  color: var(--text-dim);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.de-scroll-hint.is-visible {
+  opacity: 0.55;
+  transform: translateX(-50%) translateY(0);
+}
+
+.de-scroll-hint__chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: deScrollHintBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes deScrollHintBounce {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(45deg) translate(2px, 2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .de-scroll-hint { transition: opacity 0.2s ease; }
+  .de-scroll-hint__chevron { animation: none; }
+}
+
 /* ─── SECTION SHARED ─── */
 .section-container {
   max-width: var(--max-w);
