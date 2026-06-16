@@ -829,10 +829,11 @@ body {
   50% { transform: rotate(45deg) translate(3px, 3px); }
 }
 
-/* contrast breathe — low alpha blends with the dark bg, high alpha pops */
+/* contrast breathe — floor kept legible (it dipped too dark before and vanished);
+   still brightens to full white so the eye keeps catching it */
 @keyframes deEntryCuePulse {
-  0%, 100% { color: rgba(255, 255, 255, 0.34); }
-  50% { color: rgba(255, 255, 255, 0.96); }
+  0%, 100% { color: rgba(255, 255, 255, 0.62); }
+  50% { color: rgba(255, 255, 255, 1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
