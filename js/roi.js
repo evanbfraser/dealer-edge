@@ -45,9 +45,16 @@ DE.pages.roi = { boot() {
      ───────────────────────────────────────────────────────────── */
   const LIFT = { traffic: 1.25, leads: 1.75, showings: 3.16, sold: 1.5 };
 
-  // Default marine funnel ratios — used to back-calculate visitors when
-  // the dealer doesn't know their traffic (every dealer knows boats sold).
-  const RATE = { leadPerVisit: 0.08, showPerLead: 0.1875, soldPerShow: 1 / 3 };
+  // Marine/RV funnel benchmarks — the "average" each stage is compared to,
+  // and what we back-calculate visitors from when the dealer doesn't know
+  // their traffic. lead→showing 19% is canon (Killer Proof Chain); the
+  // other two are labeled placeholders pending Jason's real industry numbers.
+  const BENCH = { lead: 0.03, show: 0.19, close: 0.30 };
+  const CONV = [
+    { key: 'lead', up: 'traffic', down: 'leads', verb: 'become leads' },
+    { key: 'show', up: 'leads', down: 'showings', verb: 'book a showing' },
+    { key: 'close', up: 'showings', down: 'sold', verb: 'buy' },
+  ];
 
   const els = {
     traffic: document.getElementById('roi-traffic'),
@@ -96,6 +103,37 @@ DE.pages.roi = { boot() {
     input.style.background = `linear-gradient(90deg, var(--good) 0%, var(--good) ${pct}%, var(--line) ${pct}%, var(--line) 100%)`;
   }
 
+  function fmtPct(r) { const p = r * 100; return (p < 10 ? Math.round(p * 10) / 10 : Math.round(p)) + '%'; }
+
+  // For each gap, compute the dealer's actual conversion rate and compare it
+  // to the marine/RV average: above (green) / on par / below (red = the leak).
+  function renderConversions(v) {
+    CONV.forEach((c) => {
+      const rateEl = document.querySelector(`[data-roi-rate="${c.key}"]`);
+      const noteEl = document.querySelector(`[data-roi-note="${c.key}"]`);
+      if (!rateEl || !noteEl) return;
+      const box = rateEl.closest('.roi-conv');
+      const up = v[c.up];
+      const down = v[c.down];
+      const benchPct = Math.round(BENCH[c.key] * 100);
+      if (up <= 0) {
+        rateEl.textContent = '—';
+        noteEl.textContent = c.verb;
+        if (box) box.className = 'roi-conv is-par';
+        return;
+      }
+      const rate = down / up;
+      const ratio = rate / BENCH[c.key];
+      let verdict, cls;
+      if (ratio >= 1.12) { verdict = `above the ~${benchPct}% marine avg`; cls = 'is-above'; }
+      else if (ratio <= 0.88) { verdict = `below the ~${benchPct}% marine avg`; cls = 'is-below'; }
+      else { verdict = `on par with the ~${benchPct}% marine avg`; cls = 'is-par'; }
+      rateEl.textContent = fmtPct(rate);
+      noteEl.textContent = `${c.verb} · ${verdict}`;
+      if (box) box.className = 'roi-conv ' + cls;
+    });
+  }
+
   let lastAnnual = null;
   let countToken = 0;
   let firstPaint = true;
@@ -123,6 +161,9 @@ DE.pages.roi = { boot() {
     set(out.withShowings, fmt(showings * LIFT.showings));
     set(out.nowSold, fmt1(sold));
     set(out.withSold, fmt1(soldWith));
+
+    // per-stage conversion vs the marine/RV average
+    renderConversions({ traffic, leads, showings, sold });
 
     // sliders
     set(out.priceVal, fmt(price));
@@ -171,9 +212,9 @@ DE.pages.roi = { boot() {
   function estimateTraffic() {
     const sold = val(els.sold);
     const leads = val(els.leads);
-    if (sold > 0) return Math.round(sold / (RATE.leadPerVisit * RATE.showPerLead * RATE.soldPerShow));
-    if (leads > 0) return Math.round(leads / RATE.leadPerVisit);
-    return 1000;
+    if (sold > 0) return Math.round(sold / (BENCH.lead * BENCH.show * BENCH.close));
+    if (leads > 0) return Math.round(leads / BENCH.lead);
+    return 3000;
   }
 
   const estimateBtn = document.querySelector('[data-roi-estimate]');

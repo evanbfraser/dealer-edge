@@ -122,6 +122,27 @@
 .roi-estimate:hover { opacity: 1; }
 .roi-est-note { font-size: 0.74rem; color: var(--text-dim); line-height: 1.4; font-style: italic; }
 
+/* ── conversion connectors: the rate between two funnel stages, vs the
+   marine/RV average. JS toggles .is-above / .is-par / .is-below. ── */
+.roi-conv {
+  display: flex; align-items: baseline; gap: 9px;
+  margin: -7px 0 -7px 7px;            /* pull snug between the two fields */
+  padding: 4px 0 4px 14px;
+  border-left: 2px solid var(--line-strong);
+}
+.roi-conv-rate {
+  font-family: var(--mono); font-size: 0.95rem; font-weight: 700;
+  color: var(--text-mid); flex: 0 0 auto;
+  transition: color 0.18s ease;
+}
+.roi-conv-note { font-size: 0.76rem; line-height: 1.35; color: var(--text-dim); }
+.roi-conv.is-above { border-left-color: var(--good); }
+.roi-conv.is-above .roi-conv-rate { color: var(--good); }
+.roi-conv.is-below { border-left-color: var(--accent); }
+.roi-conv.is-below .roi-conv-rate { color: var(--accent); }
+.roi-conv.is-par { border-left-color: var(--line-strong); }
+.roi-conv.is-par .roi-conv-rate { color: var(--text-mid); }
+
 /* ── sliders ── */
 .roi-slider-field {
   display: flex; flex-direction: column; gap: 10px;

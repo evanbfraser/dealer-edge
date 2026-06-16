@@ -6,7 +6,7 @@
   <title>ROI Calculator | DealerEdge — See what you're leaving on the lot.</title>
   <link rel="stylesheet" href="css/style.css?v=20260616f">
   <link rel="stylesheet" href="css/de-act.css?v=20260616d">
-  <link rel="stylesheet" href="css/roi.css?v=20260616f">
+  <link rel="stylesheet" href="css/roi.css?v=20260616g">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -104,24 +104,39 @@
           <div class="roi-field">
             <label for="roi-traffic">Website visitors <span class="roi-field-unit">/ month</span></label>
             <div class="roi-num">
-              <input type="number" id="roi-traffic" inputmode="numeric" min="0" step="50" value="1000">
+              <input type="number" id="roi-traffic" inputmode="numeric" min="0" step="50" value="3000">
             </div>
             <button type="button" class="roi-estimate" data-roi-estimate>Don't know? Estimate it for me</button>
             <span class="roi-est-note" data-roi-est-note hidden>Estimated from your boats sold &amp; typical marine funnel ratios.</span>
           </div>
 
+          <div class="roi-conv is-par" data-conv="lead">
+            <span class="roi-conv-rate" data-roi-rate="lead">3.0%</span>
+            <span class="roi-conv-note" data-roi-note="lead">become leads</span>
+          </div>
+
           <div class="roi-field">
             <label for="roi-leads">Leads / inquiries <span class="roi-field-unit">/ month</span></label>
             <div class="roi-num">
-              <input type="number" id="roi-leads" inputmode="numeric" min="0" step="5" value="80">
+              <input type="number" id="roi-leads" inputmode="numeric" min="0" step="5" value="90">
             </div>
+          </div>
+
+          <div class="roi-conv is-par" data-conv="show">
+            <span class="roi-conv-rate" data-roi-rate="show">19%</span>
+            <span class="roi-conv-note" data-roi-note="show">book a showing</span>
           </div>
 
           <div class="roi-field">
             <label for="roi-showings">Showings booked <span class="roi-field-unit">/ month</span></label>
             <div class="roi-num">
-              <input type="number" id="roi-showings" inputmode="numeric" min="0" step="1" value="15">
+              <input type="number" id="roi-showings" inputmode="numeric" min="0" step="1" value="17">
             </div>
+          </div>
+
+          <div class="roi-conv is-par" data-conv="close">
+            <span class="roi-conv-rate" data-roi-rate="close">29%</span>
+            <span class="roi-conv-note" data-roi-note="close">buy</span>
           </div>
 
           <div class="roi-field">
@@ -161,23 +176,23 @@
 
             <div class="roi-row" data-roi-row="traffic">
               <span class="roi-row-label">Visitors</span>
-              <span class="roi-row-now" data-roi-now-traffic>1,000</span>
+              <span class="roi-row-now" data-roi-now-traffic>3,000</span>
               <span class="roi-row-arrow">→</span>
-              <span class="roi-row-with" data-roi-with-traffic>1,250</span>
+              <span class="roi-row-with" data-roi-with-traffic>3,750</span>
               <span class="roi-row-badge" data-roi-badge-traffic>×1.3</span>
             </div>
             <div class="roi-row" data-roi-row="leads">
               <span class="roi-row-label">Leads</span>
-              <span class="roi-row-now" data-roi-now-leads>80</span>
+              <span class="roi-row-now" data-roi-now-leads>90</span>
               <span class="roi-row-arrow">→</span>
-              <span class="roi-row-with" data-roi-with-leads>140</span>
+              <span class="roi-row-with" data-roi-with-leads>158</span>
               <span class="roi-row-badge" data-roi-badge-leads>×1.8</span>
             </div>
             <div class="roi-row" data-roi-row="showings">
               <span class="roi-row-label">Showings</span>
-              <span class="roi-row-now" data-roi-now-showings>15</span>
+              <span class="roi-row-now" data-roi-now-showings>17</span>
               <span class="roi-row-arrow">→</span>
-              <span class="roi-row-with" data-roi-with-showings>47</span>
+              <span class="roi-row-with" data-roi-with-showings>54</span>
               <span class="roi-row-badge" data-roi-badge-showings>×3.2</span>
             </div>
             <div class="roi-row roi-row--sold" data-roi-row="sold">
@@ -318,6 +333,6 @@
   <script src="js/demo-modal.js?v=20260616d"></script>
   <script src="js/section-video-boat.js?v=20260616d"></script>
   <script src="js/de-core.js?v=20260616d"></script>
-  <script src="js/roi.js?v=20260616f"></script>
+  <script src="js/roi.js?v=20260616g"></script>
 </body>
 </html>
