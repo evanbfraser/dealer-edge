@@ -40,10 +40,12 @@ Three phrases. Each maps to a pillar:
 
 ### The Offer (the locked one)
 
-> "Tell us what you spend across all your current vendors. We replace every single one of them. You pay **\$0 until we beat your current results by 20%.** When we do, pricing activates at the tier you chose before we started."
+> "Tell us what you spend across all your current vendors. We replace every single one of them. **If we don't beat your current results by 20% in 3 months, you don't pay anything — until we do.** When we do, pricing activates at the tier you chose before we started." (Phrasing locked by Jason 2026-06-16 — keep the conditional "if we don't… you don't pay anything, until we do." form; don't revert to "you pay \$0 until…")
 
-**Phase 1** — Prove It (up to 6 mo): \$0. We run everything. Measured against prior-year traffic + leads.
+**Phase 1** — Prove It (3-month benchmark): we run everything; the 20% beat is measured against prior-year traffic + leads.
 **Phase 2** — Partner (after 20% trigger): Tier picked upfront — **A** Flat Rate \$5K–\$15K/mo, **B** Base + Performance \$3K–\$4K + 10–15% of gross margin, **C** Pure Performance % of gross margin only.
+
+**Pricing posture (Jason, 2026-06-16):** default to money **upfront** — the "you don't pay until we beat it" guarantee is a negotiation lever to pull down toward \$0 only if a deal needs it to close, not the opening position. Customer-facing copy still leads with the guarantee; the upfront-first posture is for the sales conversation.
 
 **Do not** soften this to "free trial." **Do not** change "20%" to a different number. **Do not** rebrand it as a discount.
 
