@@ -182,15 +182,16 @@ window.DE = (() => {
   }
 
   /* ─────────────────────────────────────────────────────────────
-     IDLE SCROLL-HINT — one faint bottom-center "Scroll ⌄" per page.
-     Fades in after ~3s of no scrolling, vanishes instantly on any
-     scroll. Stays hidden only while a page's own hero scroll-cue is on
-     screen (homepage .hero-scroll-hint — avoids a double), within ~1
-     viewport of the page bottom, mid section-snap (.de-snapping, set by
-     attachSceneSnap), and while a modal has stopped Lenis. So deep-dive
-     tops (which have no hero cue) get the hint after the idle delay.
-     Reduced-motion keeps it static (CSS drops the chevron bounce).
-     Injected once; removed on DE.destroy().
+     IDLE / PROGRESS SCROLL-HINT — one faint bottom-center "Scroll ⌄"
+     per page. Re-appears after ~1s of stillness at each rest point (so
+     it keeps signalling "more below" as the reader moves through),
+     vanishes instantly on any scroll. Stays hidden while a page's own
+     hero scroll-cue is on screen (homepage .hero-scroll-hint OR the
+     prominent .de-entry-cue), within ~1 viewport of the page bottom,
+     mid section-snap (.de-snapping), and while a modal has stopped
+     Lenis. Reduced-motion keeps it static (CSS drops the chevron bounce).
+     Injected once; removed on DE.destroy(). Tier 1 (the prominent
+     per-hero entry cue) is initEntryCue() below.
      ───────────────────────────────────────────────────────────── */
   function initScrollHint() {
     if (document.querySelector('.de-scroll-hint')) return;   // guard double-inject
@@ -203,10 +204,10 @@ window.DE = (() => {
 
     const hide = () => el.classList.remove('is-visible');
     const heroCueShown = () => {
-      // suppress only while a page's OWN hero scroll-cue is still on screen (the
-      // homepage .hero-scroll-hint) so we don't double up. Deep-dive tops have no
-      // such cue, so the hint is free to appear there after the idle delay.
-      const cue = document.querySelector('.hero-scroll-hint');
+      // suppress while a page's OWN hero scroll-cue is on screen — the homepage
+      // .hero-scroll-hint OR the prominent .de-entry-cue (Item 7) — so the faint
+      // progress hint never doubles a louder hero cue.
+      const cue = document.querySelector('.hero-scroll-hint, .de-entry-cue');
       if (!cue) return false;
       const cs = getComputedStyle(cue);
       const r = cue.getBoundingClientRect();
@@ -221,13 +222,51 @@ window.DE = (() => {
         || !!(lenis && lenis.isStopped);                     // modal open (modals call lenis.stop())
     };
 
+    // ~1s of stillness re-reveals it at each rest point; any scroll hides it.
     let idleMs = 0;
     on(window, 'scroll', () => { idleMs = 0; hide(); }, { passive: true });
     interval(() => {
       if (blocked()) { hide(); return; }
       idleMs += 500;
-      if (idleMs >= 3000) el.classList.add('is-visible');
+      if (idleMs >= 1000) el.classList.add('is-visible');
     }, 500);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     ENTRY CUE (Tier 1) — a prominent, per-hero "Scroll to explore"
+     that lives INSIDE the hero, so it can sit in the empty vertical
+     space some heroes leave (e.g. the features void). Opt-in + sized
+     via the hero's data-scroll-entry="prominent|compact" attribute;
+     heroes that already fill the viewport simply omit it (and pages
+     with their own cue — homepage, sales, marketing — don't opt in,
+     so nothing doubles). Reveals on arrival (after the hero copy
+     settles), retires the instant the visitor scrolls (its only job
+     is "you've arrived — there's more"). Shows on touch too;
+     reduced-motion keeps it static. Removed on DE.destroy().
+     ───────────────────────────────────────────────────────────── */
+  function initEntryCue() {
+    const host = document.querySelector('[data-scroll-entry]');
+    if (!host || host.querySelector(':scope > .de-entry-cue')) return;   // none / already injected
+    const variant = host.dataset.scrollEntry === 'compact' ? 'compact' : 'prominent';
+    const cue = document.createElement('div');
+    cue.className = 'de-entry-cue de-entry-cue--' + variant;
+    cue.setAttribute('aria-hidden', 'true');
+    cue.innerHTML = '<span class="de-entry-cue__label">Scroll to explore</span><span class="de-entry-cue__chevron"></span>';
+    host.appendChild(cue);
+
+    // reveal after the hero copy has settled
+    const reveal = setTimeout(() => cue.classList.add('is-in'), 1300);
+    addDisposer(() => { clearTimeout(reveal); cue.remove(); });
+
+    let gone = false;
+    const retire = () => {
+      if (gone) return;
+      gone = true;
+      clearTimeout(reveal);
+      cue.classList.remove('is-in');
+      cue.classList.add('is-gone');
+    };
+    on(window, 'scroll', () => { if (window.scrollY > 8) retire(); }, { passive: true });
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -625,7 +664,7 @@ window.DE = (() => {
 
   return {
     reduceMotion, isSafari,
-    createLenis, initCursorGlow, initNavScroll, initFade, initScrollHint, attachSceneSnap, initActs,
+    createLenis, initCursorGlow, initNavScroll, initFade, initScrollHint, initEntryCue, attachSceneSnap, initActs,
     pages, boot, destroy, on, interval, rafLoop, ready,
   };
 })();

@@ -17,6 +17,7 @@ DE.pages.sales = { boot() {
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initScrollHint();
+  DE.initEntryCue();
 
   /* ─────────────────────────────────────────────────────────────
      MOBILE NAV (mobile-nav.js — not shipped to the platform, where

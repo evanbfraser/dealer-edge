@@ -16,6 +16,7 @@ DE.pages.features = { boot() {
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initScrollHint();
+  DE.initEntryCue();
   DE.initFade();
   if (typeof initVideoBoatSections === 'function') {
     initVideoBoatSections();

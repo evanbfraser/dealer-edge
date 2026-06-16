@@ -23,6 +23,7 @@ DE.pages.inventory = { boot() {
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initScrollHint();
+  DE.initEntryCue();
   DE.initFade();
   initImageCompareCursorRelief();
   if (typeof initVideoBoatSections === 'function') {

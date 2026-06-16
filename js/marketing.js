@@ -18,6 +18,7 @@ DE.pages.marketing = { boot() {
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initScrollHint();
+  DE.initEntryCue();
   DE.initFade();
   initShowcase();
   initHero();

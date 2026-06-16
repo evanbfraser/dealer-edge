@@ -749,6 +749,67 @@ body {
   .de-scroll-hint__chevron { animation: none; }
 }
 
+/* ─── ENTRY CUE (DE.initEntryCue) — prominent per-hero "Scroll to explore" ─── */
+/* Lives inside a hero that opts in via data-scroll-entry; sits in the hero's
+   empty vertical space. The hero is the positioning context (de-act-inner is
+   sticky = positioned; .hero etc. are relative). */
+.de-entry-cue {
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  color: var(--text-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.de-entry-cue.is-in { opacity: 1; transform: translateX(-50%) translateY(0); }
+.de-entry-cue.is-gone { opacity: 0 !important; transform: translateX(-50%) translateY(12px); }
+
+.de-entry-cue__label { font-size: 0.7rem; letter-spacing: 0.26em; }
+
+.de-entry-cue__chevron {
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: deEntryCueBob 1.9s ease-in-out infinite;
+}
+
+/* Prominent: larger, parked lower-center in the hero void */
+.de-entry-cue--prominent {
+  bottom: clamp(40px, 13vh, 150px);
+  color: rgba(255, 255, 255, 0.62);
+}
+.de-entry-cue--prominent .de-entry-cue__label {
+  font-size: clamp(0.72rem, 1.05vw, 0.86rem);
+  letter-spacing: 0.3em;
+}
+.de-entry-cue--prominent .de-entry-cue__chevron { width: 14px; height: 14px; }
+
+/* Compact: small bottom cue (parity with .de-scroll-hint) for dense heroes */
+.de-entry-cue--compact { bottom: 26px; }
+.de-entry-cue--compact .de-entry-cue__label { font-size: 0.6rem; letter-spacing: 0.2em; }
+
+@keyframes deEntryCueBob {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(45deg) translate(3px, 3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .de-entry-cue { transition: opacity 0.2s ease; }
+  .de-entry-cue__chevron { animation: none; }
+}
+
 /* ─── SECTION SHARED ─── */
 .section-container {
   max-width: var(--max-w);

@@ -23,6 +23,7 @@ DE.pages.analytics = { boot() {
   DE.initCursorGlow();
   DE.initNavScroll();
   DE.initScrollHint();
+  DE.initEntryCue();
   DE.initFade();
   initLiveTicker();
   if (typeof initVideoBoatSections === 'function') {
