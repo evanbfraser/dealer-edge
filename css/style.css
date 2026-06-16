@@ -746,12 +746,16 @@ body {
 }
 
 .feature-card {
+  display: flex;
+  flex-direction: column;
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: clamp(28px, 3vw, 42px);
   position: relative;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
   transition: border-color 0.35s ease, background 0.35s ease, transform 0.3s ease;
   cursor: none;
 }
@@ -827,6 +831,69 @@ body {
   border: 1px solid rgba(238, 58, 57, 0.15);
   padding: 0.32em 0.85em;
   border-radius: 100px;
+}
+
+/* Card footer: tag (left) + clickable "Explore →" affordance (right) */
+.feature-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.feature-card-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  opacity: 0.6;
+  transition: opacity 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.feature-card-more svg {
+  transition: transform 0.3s ease;
+}
+
+/* On hover-capable devices the affordance is hidden until hover; on touch it stays visible */
+@media (hover: hover) {
+  .feature-card-more {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  .feature-card:hover .feature-card-more {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--accent);
+  }
+  .feature-card:hover .feature-card-more svg {
+    transform: translateX(3px);
+  }
+}
+
+/* Section CTA → platform overview */
+.features-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  margin-top: clamp(44px, 6.5vh, 72px);
+  text-align: center;
+}
+
+.features-cta-line {
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.features-cta-line .dim {
+  color: var(--accent);
 }
 
 /* ─── JOURNEY / TOUCHPOINTS ─── */
