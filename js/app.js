@@ -177,12 +177,12 @@ function drawFrame(idx) {
 function bindScrollToFrames() {
   if (!canvas) return;
 
-  // Desktop only: the hero pins at the top (sticky — see the min-width:769px
-  // block in style.css) while the Features section rises and covers it, so the
-  // animating visual disappears underneath the next section's copy/cards with no
-  // extra scroll. Because the pinned hero's own rect is frozen at top:0, drive
-  // progress off window.scrollY rather than the hero rect on desktop.
-  const heroParallax = window.matchMedia('(min-width: 769px)');
+  // Cross-fade reveal (desktop + mobile): the hero is pinned (sticky at all
+  // widths — see style.css) while the Features section rises in FRONT of it
+  // (transparent bg, higher z-index). The copy clears and the visual fades to
+  // transparent, so it dissipates behind the incoming Features copy. Because the
+  // pinned hero's own rect is frozen at top:0, drive progress off window.scrollY.
+  const desktopMq = window.matchMedia('(min-width: 769px)');
   let ticking = false;
 
   DE.on(window, 'scroll', () => {
@@ -192,44 +192,43 @@ function bindScrollToFrames() {
         if (!hero) { ticking = false; return; }
 
         const vh = window.innerHeight;
-        const desktop = heroParallax.matches;
-        const scrollY = desktop
-          ? Math.max(0, window.scrollY || window.pageYOffset || 0)
-          : Math.max(0, -hero.getBoundingClientRect().top);
+        const desktop = desktopMq.matches;
+        const scrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
 
-        // Desktop choreography while the hero is pinned: the copy exits upward a
-        // touch faster than scroll (its own speed), and the visual fades to
-        // transparent so it dissipates behind the incoming Features header
-        // (transparent section bg, higher z-index — see style.css). Hidden once
-        // gone so the sticky layer can't paint over lower sections. Reset on mobile.
         const heroLeft = hero.querySelector('.hero-left');
         const heroRight = hero.querySelector('.hero-right');
-        if (desktop) {
-          if (heroLeft) {
-            // Copy bounce: a half-sine DIP (down, then back up) layered over a
-            // slow-start cubic EXIT (up). The cubic's easing keeps the exit near
-            // zero early, so the dip reads first — the copy sinks ~30px, springs
-            // back, then launches up and is gone by ~0.6vh (before the visual
-            // finishes fading). The easing is what sells the bounce.
+
+        // Copy: desktop bounces out (a half-sine dip down, spring up, then a
+        // slow-start cubic exit — easing sells the bounce); mobile drifts up and
+        // fades, clearing room for the incoming Features copy (no bounce on a
+        // small screen).
+        if (heroLeft) {
+          if (desktop) {
             const t = Math.min(1, scrollY / (vh * 0.6));
             const dip = 42 * Math.sin(Math.PI * Math.min(t / 0.45, 1));
             const exit = vh * 0.95 * (t * t * t);
             heroLeft.style.transform = `translateY(${(dip - exit).toFixed(1)}px)`;
+            if (heroLeft.style.opacity) heroLeft.style.opacity = '';
+          } else {
+            const t = Math.min(1, scrollY / (vh * 0.55));
+            heroLeft.style.transform = `translateY(${(-t * 60).toFixed(1)}px)`;
+            heroLeft.style.opacity = (1 - t).toFixed(3);
           }
-          if (heroRight) {
-            const fade = 1 - Math.min(1, Math.max(0, (scrollY - vh * 0.35) / (vh * 0.55)));
-            heroRight.style.opacity = fade.toFixed(3);
-          }
-          const want = scrollY >= vh * 0.95 ? 'hidden' : '';
-          if (hero.style.visibility !== want) hero.style.visibility = want;
-        } else {
-          if (heroLeft && heroLeft.style.transform) heroLeft.style.transform = '';
-          if (heroRight && heroRight.style.opacity) heroRight.style.opacity = '';
-          if (hero.style.visibility) hero.style.visibility = '';
         }
 
-        // Frame scrub over ~0.9vh on desktop (was 0.62) so the animation plays
-        // out across the cover-reveal instead of finishing early.
+        // Visual dissipates to transparent — from full on desktop, from its 0.45
+        // backdrop baseline on mobile.
+        if (heroRight) {
+          const fade = 1 - Math.min(1, Math.max(0, (scrollY - vh * 0.35) / (vh * 0.55)));
+          heroRight.style.opacity = ((desktop ? 1 : 0.45) * fade).toFixed(3);
+        }
+
+        // Hidden once gone so the sticky layer can't paint over lower sections.
+        const want = scrollY >= vh * 0.95 ? 'hidden' : '';
+        if (hero.style.visibility !== want) hero.style.visibility = want;
+
+        // Frame scrub spread over ~0.9vh (desktop) / 0.62vh (mobile) so the
+        // animation plays across the cross-fade instead of finishing early.
         const maxScroll = vh * (desktop ? 0.9 : 0.62);
         const progress = Math.min(1, scrollY / maxScroll);
         const frameIdx = Math.min(FRAME_COUNT, Math.max(1, Math.round(progress * (FRAME_COUNT - 1)) + 1));
