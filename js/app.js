@@ -205,7 +205,17 @@ function bindScrollToFrames() {
         const heroLeft = hero.querySelector('.hero-left');
         const heroRight = hero.querySelector('.hero-right');
         if (desktop) {
-          if (heroLeft) heroLeft.style.transform = `translateY(${(-scrollY * 1.25).toFixed(1)}px)`;
+          if (heroLeft) {
+            // Copy bounce: a half-sine DIP (down, then back up) layered over a
+            // slow-start cubic EXIT (up). The cubic's easing keeps the exit near
+            // zero early, so the dip reads first — the copy sinks ~30px, springs
+            // back, then launches up and is gone by ~0.6vh (before the visual
+            // finishes fading). The easing is what sells the bounce.
+            const t = Math.min(1, scrollY / (vh * 0.6));
+            const dip = 42 * Math.sin(Math.PI * Math.min(t / 0.45, 1));
+            const exit = vh * 0.95 * (t * t * t);
+            heroLeft.style.transform = `translateY(${(dip - exit).toFixed(1)}px)`;
+          }
           if (heroRight) {
             const fade = 1 - Math.min(1, Math.max(0, (scrollY - vh * 0.35) / (vh * 0.55)));
             heroRight.style.opacity = fade.toFixed(3);
