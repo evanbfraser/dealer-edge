@@ -214,10 +214,15 @@ window.DE = (() => {
     // snap). touch: any coarse-pointer device — including iOS Safari, because
     // there native momentum settles on its own and we gate on finger-up +
     // scroll-event silence, so there's nothing to fight.
+    // isTouch routes the coasting check (touch can't use lenis.velocity); it's the
+    // PRIMARY pointer, so a touch laptop driven by its mouse still reads as fine.
     const isTouch = () => window.matchMedia('(pointer: coarse)').matches;
-    const canSnapDesktop = () =>
-      !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
-    const canSnap = () => !reduceMotion && (canSnapDesktop() || isTouch());
+    // gate is pointer-based, NOT width-based: snap on any fine pointer (desktop at
+    // any window width, excl. Safari's fighting trackpad momentum) OR any coarse
+    // pointer (touch, incl. iOS Safari). This closes the old <1101px fine-pointer
+    // dead zone — a resized desktop window now snaps too.
+    const canSnapFine = () => !isSafari && window.matchMedia('(pointer: fine)').matches;
+    const canSnap = () => !reduceMotion && (canSnapFine() || isTouch());
     const isLocked = () => {
       const rect = section.getBoundingClientRect();
       return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
