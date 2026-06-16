@@ -199,40 +199,77 @@ window.DE = (() => {
     let snapping = false;
     let lastDir = 0;
     let lastY = window.scrollY;
-    const canSnap = () =>
-      !reduceMotion && !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
+    // FIRM SNAP: our committed scene within the act (-1 = outside it, no clamp).
+    // A momentum flick can carry Lenis 2-3 scenes before it settles; clamping the
+    // snap target to ±1 of this collapses the overshoot to a single step — the
+    // user lands on the NEXT scene, never skates past one. It is set synchronously
+    // to whatever scene each snap targets (so it's correct even while the snap
+    // animates, which is what keeps a rapid second flick from overshooting),
+    // seeded from the true rest scene on the first wheel/touch after entering the
+    // act, and dropped only when we leave the pinned section.
+    let anchorScene = -1;
+    let touching = false;
+    let snapGen = 0;        // bumped on each snap / user-takeover so stale timers can't clear a newer snap
+    // desktop: fine pointer, wide, NOT Safari (its trackpad momentum fights the
+    // snap). touch: any coarse-pointer device — including iOS Safari, because
+    // there native momentum settles on its own and we gate on finger-up +
+    // scroll-event silence, so there's nothing to fight.
+    const isTouch = () => window.matchMedia('(pointer: coarse)').matches;
+    const canSnapDesktop = () =>
+      !isSafari && window.matchMedia('(min-width: 1101px) and (pointer: fine)').matches;
+    const canSnap = () => !reduceMotion && (canSnapDesktop() || isTouch());
     const isLocked = () => {
       const rect = section.getBoundingClientRect();
       return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
     };
+    const travel = () => Math.max(1, section.offsetHeight - window.innerHeight);
+    const sceneAt = () => clampN((window.scrollY - section.offsetTop) / travel(), 0, 0.9999) * sceneCount;
+    const restScene = () => Math.floor(sceneAt());
+    const sceneCenterY = (n) => Math.round(section.offsetTop + ((n + 0.5) / sceneCount) * travel());
+    const setSnapping = (v) => {
+      snapping = v;
+      // exposed for the idle scroll-hint (Item 4) so it stays hidden mid-transition
+      document.body.classList.toggle('de-snapping', v);
+    };
+    const dropAnchor = () => { anchorScene = -1; };
     function trySnap() {
       snapTimer = 0;
-      if (snapping || !canSnap() || !isLocked()) return;
-      // still coasting (wheel/trackpad momentum)? wait for a real settle —
-      // snapping mid-momentum fights the user's scroll.
-      if (Math.abs(lenis.velocity || 0) > 0.1) {
+      if (snapping) return;
+      if (!canSnap() || !isLocked()) { dropAnchor(); return; }
+      // still coasting? wait for a real settle — snapping mid-momentum fights
+      // the user. Desktop reads Lenis velocity; on touch smoothTouch is off so
+      // velocity is unreliable — instead we only block while a finger is down,
+      // since the 150ms requeue already waits out native momentum (scroll
+      // events keep firing through the flick, then go silent at rest).
+      if (isTouch() ? touching : Math.abs(lenis.velocity || 0) > 0.15) {
         queueSnap();
         return;
       }
-      const travel = Math.max(1, section.offsetHeight - window.innerHeight);
-      const f = clampN((window.scrollY - section.offsetTop) / travel, 0, 0.9999) * sceneCount;
+      const f = sceneAt();
       let scene = Math.floor(f);
       const frac = f - scene;
       // directional bias: tiny nudges still rest on the current beat, but a
       // real push in the direction of travel hands the user to the next one
       if (lastDir > 0 && frac > 0.78) scene += 1;
       else if (lastDir < 0 && frac < 0.22) scene -= 1;
+      // firm-snap clamp: at most one scene from our committed anchor, so a
+      // momentum overshoot — even a second flick that starts mid-snap — can't
+      // skip a section.
+      if (anchorScene >= 0) scene = clampN(scene, anchorScene - 1, anchorScene + 1);
       scene = clampN(scene, 0, sceneCount - 1);
-      const targetY = Math.round(section.offsetTop + ((scene + 0.5) / sceneCount) * travel);
+      anchorScene = scene;                 // commit synchronously: this is our rest/destination
+      const targetY = sceneCenterY(scene);
       if (Math.abs(window.scrollY - targetY) < 4) return;
-      snapping = true;
+      setSnapping(true);
+      const gen = ++snapGen;
       lenis.scrollTo(targetY, {
         duration: 0.5,
         easing: (t) => 1 - Math.pow(1 - t, 3),
-        onComplete: () => { snapping = false; },
+        onComplete: () => { if (gen === snapGen) setSnapping(false); },
       });
-      // safety: clear the guard even if onComplete is pre-empted by user input
-      setTimeout(() => { snapping = false; }, 850);
+      // safety: clear the guard even if onComplete is pre-empted — gen-tagged so
+      // a stale safety timer can't clear a newer snap
+      setTimeout(() => { if (gen === snapGen) setSnapping(false); }, 850);
     }
     function queueSnap() {
       // direction from real position deltas — lenis.velocity isn't reliably
@@ -244,8 +281,24 @@ window.DE = (() => {
       if (snapTimer) clearTimeout(snapTimer);
       snapTimer = setTimeout(trySnap, 150);
     }
+    // seed the anchor for the FIRST gesture after entering the act: a wheel/
+    // touchstart fires before Lenis integrates the delta, so scrollY is still at
+    // rest. Once a snap has committed an anchor, that wins (anchorScene<0 guard);
+    // the commit is what survives a rapid second flick mid-snap.
+    const seedAnchor = () => {
+      if (anchorScene < 0 && !snapping && canSnap() && isLocked()) anchorScene = restScene();
+    };
+    // real user input mid-snap = they're taking over. Release our snap (Lenis
+    // cancels the interrupted scrollTo itself) and bump the gen so the old snap's
+    // pending timers can't clear the next one. anchorScene (the committed target)
+    // stays, so the next flick still clamps ±1 from where we were headed.
+    const yieldSnap = () => { if (snapping) { snapGen++; setSnapping(false); } };
     lenis.on('scroll', queueSnap);
-    addDisposer(() => clearTimeout(snapTimer));
+    on(window, 'wheel', () => { yieldSnap(); seedAnchor(); }, { passive: true });
+    on(window, 'touchstart', () => { touching = true; yieldSnap(); seedAnchor(); }, { passive: true });
+    on(window, 'touchend', () => { touching = false; queueSnap(); }, { passive: true });
+    on(window, 'touchcancel', () => { touching = false; }, { passive: true });
+    addDisposer(() => { clearTimeout(snapTimer); document.body.classList.remove('de-snapping'); });
   }
 
   /* ─────────────────────────────────────────────────────────────
