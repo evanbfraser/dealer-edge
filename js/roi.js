@@ -209,6 +209,44 @@ DE.pages.roi = { boot() {
     requestAnimationFrame(frame);
   }
 
+  // ── funnel state (Jason, 2026-06-16): each stage is either an 'est'
+  // (industry-average / derived) value or a 'manual' value the dealer typed.
+  // Editing a stage cascades DOWNSTREAM only and never overwrites a manual
+  // field; estimates re-derive from the nearest stage above them.
+  const DEFAULT_TRAFFIC = 3000;
+  const STAGE = [
+    { key: 'traffic', el: els.traffic },
+    { key: 'leads', el: els.leads, rate: 'lead' },
+    { key: 'showings', el: els.showings, rate: 'show' },
+    { key: 'sold', el: els.sold, rate: 'close' },
+  ];
+  const EST_LABEL = { traffic: 'estimate', leads: 'industry avg', showings: 'industry avg', sold: 'industry avg' };
+  const state = { traffic: 'est', leads: 'est', showings: 'est', sold: 'est' };
+
+  function cascade() {
+    let prev = val(els.traffic);
+    for (let i = 1; i < STAGE.length; i++) {
+      const s = STAGE[i];
+      if (state[s.key] === 'manual') { prev = val(s.el); continue; }
+      const v = Math.max(0, Math.round(prev * BENCH[s.rate]));
+      s.el.value = v;          // programmatic — does not fire 'input', so no loop
+      prev = v;
+    }
+  }
+
+  function renderStatus() {
+    STAGE.forEach((s) => {
+      const wrap = document.querySelector(`[data-roi-status="${s.key}"]`);
+      if (!wrap) return;
+      const txt = wrap.querySelector('.roi-status-text');
+      const manual = state[s.key] === 'manual';
+      wrap.className = 'roi-status ' + (manual ? 'is-you' : 'is-est');
+      if (txt) txt.textContent = manual ? 'your number' : EST_LABEL[s.key];
+    });
+  }
+
+  function recalc() { cascade(); update(); renderStatus(); }
+
   // "Don't know? Estimate it for me" — back-calc visitors from the most
   // reliable number the dealer has (boats sold), else from leads.
   function estimateTraffic() {
@@ -216,30 +254,45 @@ DE.pages.roi = { boot() {
     const leads = val(els.leads);
     if (sold > 0) return Math.round(sold / (BENCH.lead * BENCH.show * BENCH.close));
     if (leads > 0) return Math.round(leads / BENCH.lead);
-    return 3000;
+    return DEFAULT_TRAFFIC;
   }
 
   const estimateBtn = document.querySelector('[data-roi-estimate]');
   if (estimateBtn) {
     estimateBtn.addEventListener('click', () => {
       els.traffic.value = estimateTraffic();
+      state.traffic = 'est';
       if (out.estNote) out.estNote.hidden = false;
-      countToken++; // let the estimate paint instantly, not as a count-up reveal
+      countToken++;           // paint instantly, not as a count-up reveal
       firstPaint = false;
-      update();
+      recalc();
     });
   }
-  // dealer typing their own traffic clears the "estimated" note
-  if (els.traffic) {
-    els.traffic.addEventListener('input', () => { if (out.estNote) out.estNote.hidden = true; });
-  }
 
-  // element listeners die with the island DOM — no DE.on() needed (see de-core lifecycle note)
-  [els.traffic, els.leads, els.showings, els.sold, els.price, els.margin].forEach((el) => {
-    if (el) el.addEventListener('input', update);
+  // typing a funnel field locks it as 'manual', then cascades the stages below
+  STAGE.forEach((s) => {
+    if (!s.el) return;
+    s.el.addEventListener('input', () => {
+      state[s.key] = 'manual';
+      if (s.key === 'traffic' && out.estNote) out.estNote.hidden = true;
+      recalc();
+    });
   });
 
-  update();
+  // "use avg" reset — revert a field to its industry-average estimate
+  document.querySelectorAll('[data-roi-reset]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.roiReset;
+      state[k] = 'est';
+      if (k === 'traffic') { els.traffic.value = DEFAULT_TRAFFIC; if (out.estNote) out.estNote.hidden = true; }
+      recalc();
+    });
+  });
+
+  // sliders only affect the dollar math, not the funnel counts
+  [els.price, els.margin].forEach((el) => { if (el) el.addEventListener('input', update); });
+
+  recalc();
 }};
 
 DE.boot('roi');

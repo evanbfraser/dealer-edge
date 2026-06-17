@@ -6,7 +6,7 @@
   <title>ROI Calculator | DealerEdge — See what you're leaving on the lot.</title>
   <link rel="stylesheet" href="css/style.css?v=20260616f">
   <link rel="stylesheet" href="css/de-act.css?v=20260616d">
-  <link rel="stylesheet" href="css/roi.css?v=20260616h">
+  <link rel="stylesheet" href="css/roi.css?v=20260616i">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -103,7 +103,10 @@
 
           <div class="roi-funnel-stack">
             <div class="roi-field">
-              <label for="roi-traffic">Website visitors <span class="roi-field-unit">/ month</span></label>
+              <div class="roi-field-top">
+                <label for="roi-traffic">Website visitors <span class="roi-field-unit">/ month</span></label>
+                <span class="roi-status is-est" data-roi-status="traffic"><span class="roi-status-text">estimate</span></span>
+              </div>
               <div class="roi-num">
                 <input type="number" id="roi-traffic" inputmode="numeric" min="0" step="50" value="3000">
               </div>
@@ -117,7 +120,10 @@
                 <span class="roi-conv-verdict" data-roi-verdict="lead">vs ~3% avg</span>
                 <span class="roi-conv-note" data-roi-note="lead">become leads · on par with the ~3% marine avg</span>
               </div>
-              <label for="roi-leads">Leads / inquiries <span class="roi-field-unit">/ month</span></label>
+              <div class="roi-field-top">
+                <label for="roi-leads">Leads / inquiries <span class="roi-field-unit">/ month</span></label>
+                <span class="roi-status is-est" data-roi-status="leads"><span class="roi-status-text">industry avg</span><button type="button" class="roi-status-reset" data-roi-reset="leads">use avg</button></span>
+              </div>
               <div class="roi-num">
                 <input type="number" id="roi-leads" inputmode="numeric" min="0" step="5" value="90">
               </div>
@@ -129,7 +135,10 @@
                 <span class="roi-conv-verdict" data-roi-verdict="show">vs ~19% avg</span>
                 <span class="roi-conv-note" data-roi-note="show">book a showing · on par with the ~19% marine avg</span>
               </div>
-              <label for="roi-showings">Showings booked <span class="roi-field-unit">/ month</span></label>
+              <div class="roi-field-top">
+                <label for="roi-showings">Showings booked <span class="roi-field-unit">/ month</span></label>
+                <span class="roi-status is-est" data-roi-status="showings"><span class="roi-status-text">industry avg</span><button type="button" class="roi-status-reset" data-roi-reset="showings">use avg</button></span>
+              </div>
               <div class="roi-num">
                 <input type="number" id="roi-showings" inputmode="numeric" min="0" step="1" value="17">
               </div>
@@ -141,7 +150,10 @@
                 <span class="roi-conv-verdict" data-roi-verdict="close">vs ~30% avg</span>
                 <span class="roi-conv-note" data-roi-note="close">buy · on par with the ~30% marine avg</span>
               </div>
-              <label for="roi-sold">Boats sold <span class="roi-field-unit">/ month</span></label>
+              <div class="roi-field-top">
+                <label for="roi-sold">Boats sold <span class="roi-field-unit">/ month</span></label>
+                <span class="roi-status is-est" data-roi-status="sold"><span class="roi-status-text">industry avg</span><button type="button" class="roi-status-reset" data-roi-reset="sold">use avg</button></span>
+              </div>
               <div class="roi-num">
                 <input type="number" id="roi-sold" inputmode="numeric" min="0" step="1" value="5">
               </div>
@@ -335,6 +347,6 @@
   <script src="js/demo-modal.js?v=20260616d"></script>
   <script src="js/section-video-boat.js?v=20260616d"></script>
   <script src="js/de-core.js?v=20260616d"></script>
-  <script src="js/roi.js?v=20260616h"></script>
+  <script src="js/roi.js?v=20260616i"></script>
 </body>
 </html>

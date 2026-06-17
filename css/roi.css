@@ -84,11 +84,32 @@
 .roi-panel-sub { font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; }
 
 .roi-field { display: flex; flex-direction: column; gap: 7px; }
-.roi-field > label,
+.roi-field-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.roi-field-top label,
 .roi-slider-top label {
   font-size: 0.86rem; font-weight: 500; color: var(--text-mid);
 }
 .roi-field-unit { color: var(--text-dim); font-weight: 400; }
+
+/* provenance chip: industry-avg/estimate vs your-number, + reset on overrides.
+   Kept NEUTRAL (not green) so it never reads as the benchmark verdict color. */
+.roi-status { display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.roi-status-text {
+  font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.09em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 20px;
+  border: 1px solid var(--line); white-space: nowrap; transition: all 0.16s ease;
+}
+.roi-status.is-est .roi-status-text { color: var(--text-dim); }
+.roi-status.is-you .roi-status-text {
+  color: var(--text); border-color: var(--line-strong); background: rgba(255, 255, 255, 0.06);
+}
+.roi-status-reset {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-size: 0.66rem; color: var(--text-dim);
+  border-bottom: 1px dashed var(--line-strong); transition: color 0.16s ease;
+}
+.roi-status-reset:hover { color: var(--text-mid); }
+.roi-status.is-est .roi-status-reset { display: none; }
 
 .roi-num { position: relative; }
 .roi-num input[type="number"] {
