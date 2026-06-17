@@ -1037,6 +1037,18 @@ body {
   color: var(--accent);
 }
 
+.features-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+/* match the ghost to the large primary so the pair balances */
+.features-cta-actions .btn-ghost {
+  font-size: 1.05rem;
+  padding: 0.95em 2em;
+}
+
 /* ─── JOURNEY / TOUCHPOINTS ─── */
 .journey-section {
   padding: clamp(90px, 13vh, 150px) 0 clamp(80px, 12vh, 130px);
