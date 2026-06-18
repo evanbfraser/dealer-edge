@@ -64,18 +64,25 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Scroll fade-in for [data-fade] elements
+  // NOTE: explicit fromTo (not gsap.from). style.css now sets
+  // [data-fade]{opacity:0}, so gsap.from would animate to the *current*
+  // value (0) and the page would stay invisible. fromTo forces the end
+  // state to opacity:1 regardless of the base CSS.
   document.querySelectorAll('[data-fade]').forEach(el => {
-    gsap.from(el, {
-      opacity: 0,
-      y: 28,
-      duration: 0.75,
-      delay: parseFloat(el.dataset.delay || 0),
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-      },
-    });
+    gsap.fromTo(el,
+      { opacity: 0, y: 28 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.75,
+        delay: parseFloat(el.dataset.delay || 0),
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+        },
+      }
+    );
   });
 
   // ─── CONTACT MODAL ───

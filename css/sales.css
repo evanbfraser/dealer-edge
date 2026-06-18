@@ -4072,6 +4072,16 @@
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
 }
 
+/* handoff from this sample calculator to the full ROI page */
+.s-roi-full {
+  display: block; text-align: center;
+  padding: 13px 16px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--good); text-decoration: none;
+  transition: background 0.18s ease;
+}
+.s-roi-full:hover { background: rgba(74, 222, 128, 0.08); }
+
 .s-roi-header {
   padding: 16px 22px;
   background: #050505;

@@ -57,6 +57,7 @@ function initBoatSection() {
   const headIn = document.querySelector('.boat-headline--in');
   const boatSub = document.getElementById('boat-sub');
   const boatCta = document.getElementById('boat-cta');
+  const boatRoi = document.getElementById('boat-roi'); // optional secondary ROI CTA (deep-dive closes)
   if (!section || !video || !headOut || !headIn || !boatSub || !boatCta) return;
 
   video.pause();
@@ -73,6 +74,11 @@ function initBoatSection() {
     boatCta.style.opacity = '1';
     boatCta.style.transform = 'none';
     boatCta.style.pointerEvents = 'auto';
+    if (boatRoi) {
+      boatRoi.style.opacity = '1';
+      boatRoi.style.transform = 'none';
+      boatRoi.style.pointerEvents = 'auto';
+    }
     if (video.readyState >= 1 && video.duration) {
       video.currentTime = video.duration * 0.37;
     }
@@ -120,6 +126,15 @@ function initBoatSection() {
       { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.1, ease: 'power2.out' },
       ctaAt
     );
+
+  if (boatRoi) {
+    textTimeline.fromTo(
+      boatRoi,
+      { opacity: 0, y: 18, pointerEvents: 'none' },
+      { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.1, ease: 'power2.out' },
+      ctaAt + 0.02
+    );
+  }
 
   videoBoatTriggers.push(scrubTrigger, textTimeline.scrollTrigger);
 }

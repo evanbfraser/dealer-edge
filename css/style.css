@@ -678,6 +678,20 @@ body {
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* green "win" ghost — secondary ROI CTAs across the site (sits over .btn-ghost) */
+.btn-ghost--good { color: #4ade80; border-color: rgba(74, 222, 128, 0.28); }
+.btn-ghost--good:hover { color: #6ee79b; border-color: rgba(74, 222, 128, 0.5); background: rgba(74, 222, 128, 0.08); }
+
+/* secondary ROI link in the deep-dive boat-section close — revealed by the
+   GSAP timeline alongside #boat-cta (section-video-boat.js) */
+.boat-roi-link { opacity: 0; transform: translateY(18px); pointer-events: none; margin-top: 4px; }
+
+/* ROI CTA in the pricing hero */
+.pricing-hero-cta { margin-top: clamp(24px, 4vh, 40px); }
+
+/* homepage Results: View Results + secondary ROI CTA row */
+.cs-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
 /* ─── SCROLL HINT (homepage hero) ─── */
 .hero-scroll-hint {
   position: absolute;
