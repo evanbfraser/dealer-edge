@@ -644,6 +644,18 @@ body {
   padding: 0.95em 2.4em;
 }
 
+/* green "win" variant of the primary button (intentional second equal-weight
+   CTA — used for "Calculate your ROI"). Dark text for contrast on bright green. */
+.btn-good {
+  background: #4ade80;
+  color: #04210f;
+}
+.btn-good:hover {
+  background: #6ee79b;
+  box-shadow: 0 0 48px rgba(74, 222, 128, 0.45), 0 4px 24px rgba(74, 222, 128, 0.4);
+  transform: translateY(-2px);
+}
+
 .btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -1042,11 +1054,6 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 14px;
-}
-/* match the ghost to the large primary so the pair balances */
-.features-cta-actions .btn-ghost {
-  font-size: 1.05rem;
-  padding: 0.95em 2em;
 }
 
 /* ─── JOURNEY / TOUCHPOINTS ─── */
