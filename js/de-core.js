@@ -207,7 +207,7 @@ window.DE = (() => {
       // suppress while a page's OWN hero scroll-cue is on screen — the homepage
       // .hero-scroll-hint OR the prominent .de-entry-cue (Item 7) — so the faint
       // progress hint never doubles a louder hero cue.
-      const cue = document.querySelector('.hero-scroll-hint, .de-entry-cue');
+      const cue = document.querySelector('.hero-scroll-hint, .de-entry-cue, .s-prehero-cue');
       if (!cue) return false;
       const cs = getComputedStyle(cue);
       const r = cue.getBoundingClientRect();

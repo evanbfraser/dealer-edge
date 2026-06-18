@@ -936,3 +936,14 @@
   .f-ba-after, .f-ba-tag--after { opacity: 1 !important; }
   .f-sms-bubble, .f-sms-stamp { opacity: 1 !important; transform: none !important; }
 }
+
+/* "Not sure where to start?" helper band (before the boat CTA) */
+.f-help {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(70px, 11vh, 120px) 24px clamp(20px, 4vh, 40px);
+  text-align: center;
+}
+.f-help .de-section-label { justify-content: center; }
+.f-help-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; margin: 12px 0; }
+.f-help-sub { color: var(--text-mid); font-size: 1rem; line-height: 1.55; max-width: 560px; margin: 0 auto 26px; }

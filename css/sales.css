@@ -23,6 +23,47 @@
 }
 
 /* ─── HERO + STATS (merged pinned experience) ─────────────────── */
+/* ── HERO TEASER (the hook before the pinned cohort) ── */
+.s-prehero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 90px 24px;
+}
+.s-prehero-inner { position: relative; z-index: 2; max-width: 900px; }
+.s-prehero-eyebrow {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 22px;
+}
+.s-prehero-q {
+  font-size: clamp(2.2rem, 6vw, 4.6rem); font-weight: 800; line-height: 1.05;
+  letter-spacing: -0.025em; color: #fff; margin: 0;
+}
+.s-prehero-cue {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-top: clamp(40px, 7vh, 72px);
+  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--text-mid); text-decoration: none;
+  transition: color 0.2s ease;
+}
+.s-prehero-cue:hover { color: #fff; }
+.s-prehero-cue-chevron {
+  width: 12px; height: 12px;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(45deg); animation: sPreheroBob 1.8s ease-in-out infinite;
+}
+@keyframes sPreheroBob {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(45deg) translate(4px, 4px); }
+}
+@media (prefers-reduced-motion: reduce) { .s-prehero-cue-chevron { animation: none; } }
+
 .s-hero.s-stats-section {
   position: relative;
   height: 480vh; /* 6 stages × 80vh — desktop scenes are 80vh each, like marketing */
