@@ -93,6 +93,26 @@ DE.pages.roi = { boot() {
   const fmt = (n) => Math.round(n).toLocaleString('en-US');
   const fmt1 = (n) => (Math.round(n * 10) / 10).toLocaleString('en-US');
   function round1(n) { return Math.round(n * 10) / 10; }
+
+  // Non-linear avg-price slider: the common $75k–$300k band gets most of the
+  // travel; $300k → $2M (yachts — a small segment) is compressed into the
+  // right ~30%. The slider value is a 0–1000 position mapped to dollars.
+  const PRICE_STOPS = [[0, 15000], [0.15, 75000], [0.70, 300000], [1, 2000000]];
+  function priceFromPos(pos) {
+    pos = Math.max(0, Math.min(1, pos));
+    for (let i = 1; i < PRICE_STOPS.length; i += 1) {
+      const [p1, v1] = PRICE_STOPS[i - 1];
+      const [p2, v2] = PRICE_STOPS[i];
+      if (pos <= p2) return v1 + (v2 - v1) * ((pos - p1) / (p2 - p1));
+    }
+    return PRICE_STOPS[PRICE_STOPS.length - 1][1];
+  }
+  function roundPrice(p) {
+    if (p < 100000) return Math.round(p / 1000) * 1000;
+    if (p < 500000) return Math.round(p / 5000) * 5000;
+    return Math.round(p / 25000) * 25000;
+  }
+
   function setBadge(sel, txt) { const el = document.querySelector(sel); if (el) el.textContent = txt; }
   function val(el) { const v = parseFloat(el && el.value); return isFinite(v) && v > 0 ? v : 0; }
   function set(el, txt) { if (el) el.textContent = txt; }
@@ -145,7 +165,7 @@ DE.pages.roi = { boot() {
     const leads = val(els.leads);
     const showings = val(els.showings);
     const sold = val(els.sold);
-    const price = +els.price.value;
+    const price = roundPrice(priceFromPos((+els.price.value) / 1000));
     const marginPct = +els.margin.value;
     const marginDollars = price * (marginPct / 100);
 
