@@ -26,7 +26,7 @@ import { fileURLToPath } from 'node:url';
 const SITE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TARGET = path.resolve(process.argv[2] || 'C:\\Users\\jason\\repos\\dealerEdge-demo-generator');
 
-const PAGES = ['sales', 'marketing', 'inventory', 'analytics', 'features', 'index'];
+const PAGES = ['sales', 'marketing', 'inventory', 'analytics', 'features', 'index', 'roi'];
 // index.html (homepage) now ships: app.js is on the DE.boot/DE.destroy lifecycle
 // and uses the shared demo-modal (js/demo-modal.js) for lead capture.
 // mobile-nav.js is excluded everywhere: the platform renders DeHeader instead.
