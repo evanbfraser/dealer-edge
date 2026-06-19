@@ -97,7 +97,7 @@ DE.pages.roi = { boot() {
   // Non-linear avg-price slider: the common $75k–$300k band gets most of the
   // travel; $300k → $2M (yachts — a small segment) is compressed into the
   // right ~30%. The slider value is a 0–1000 position mapped to dollars.
-  const PRICE_STOPS = [[0, 15000], [0.15, 75000], [0.70, 300000], [1, 2000000]];
+  const PRICE_STOPS = [[0, 15000], [0.15, 75000], [0.70, 300000], [0.88, 1000000], [1, 5000000]];
   function priceFromPos(pos) {
     pos = Math.max(0, Math.min(1, pos));
     for (let i = 1; i < PRICE_STOPS.length; i += 1) {
@@ -110,7 +110,8 @@ DE.pages.roi = { boot() {
   function roundPrice(p) {
     if (p < 100000) return Math.round(p / 1000) * 1000;
     if (p < 500000) return Math.round(p / 5000) * 5000;
-    return Math.round(p / 25000) * 25000;
+    if (p < 2000000) return Math.round(p / 25000) * 25000;
+    return Math.round(p / 100000) * 100000;
   }
 
   function setBadge(sel, txt) { const el = document.querySelector(sel); if (el) el.textContent = txt; }

@@ -699,6 +699,11 @@ body {
 .pillar-nav-head { text-align: center; margin-bottom: clamp(24px, 4vh, 42px); }
 .pillar-nav-head .de-section-label { justify-content: center; }
 .pillar-nav-head p { color: var(--text-mid, rgba(255, 255, 255, 0.72)); font-size: 1rem; line-height: 1.5; max-width: 540px; margin: 10px auto 0; }
+.pillar-nav-head .pillar-nav-recap {
+  color: #fff; font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 700;
+  letter-spacing: -0.015em; line-height: 1.25; max-width: 660px; margin: 12px auto 6px;
+}
+.pillar-nav-recap b { color: var(--accent, #ee3a39); font-weight: 700; }
 .pillar-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .pillar-nav-link {
   display: flex; flex-direction: column; gap: 7px;
