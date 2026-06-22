@@ -19,7 +19,7 @@ function initDemoModal(lenis) {
             <div class="form-group"><input type="tel" id="ms-phone" placeholder="Phone number" aria-label="Phone number" autocomplete="tel"></div>
             <p class="ms-error" id="ms-error" role="alert" hidden></p>
             <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
-            <p class="ms-legal">By submitting, you agree to our <a href="/legal/privacy-policy">Privacy Policy</a>.</p>
+            <p class="ms-legal">By submitting, you agree to our <a href="/legal/privacy">Privacy Policy</a>.</p>
           </div>
 
           <div class="ms-step ms-step--hidden" id="ms-step-2">
