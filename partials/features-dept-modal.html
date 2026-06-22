@@ -1,0 +1,76 @@
+<div class="modal-backdrop" id="dm-backdrop" aria-hidden="true">
+    <div class="modal modal--dept" id="dm-modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="dm-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="ms-step" id="dm-step-1">
+        <span class="modal-eyebrow">Let's find your fit</span>
+        <h2 class="ms-headline">Which department are you looking to improve?</h2>
+        <div class="dm-dept-list" id="dm-dept-list"></div>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="dm-step-2">
+        <button class="dm-back-btn" id="dm-back">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <div class="dm-insight" id="dm-insight"></div>
+        <button class="btn-primary ms-next-btn" id="dm-next-2">
+          Chat about this
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="dm-step-3">
+        <div class="dm-chat-window">
+          <div class="dm-chat-messages" id="dm-chat-messages"></div>
+          <div class="dm-chat-input-row">
+            <input type="text" id="dm-chat-input" placeholder="Type your response..." autocomplete="off">
+            <button class="dm-chat-send" id="dm-chat-send" aria-label="Send">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="dm-step-4">
+        <span class="modal-eyebrow" id="dm-dept-eyebrow"></span>
+        <h2 class="ms-headline">What's your name?</h2>
+        <div class="form-group">
+          <input type="text" id="dm-name" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <button class="btn-primary ms-next-btn" id="dm-next-4">
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="dm-step-5">
+        <span class="modal-eyebrow" id="dm-dept-eyebrow-2"></span>
+        <h2 class="ms-headline">Great <span id="dm-name-display"></span>. How should we reach you?</h2>
+        <div class="form-group">
+          <input type="email" id="dm-email" placeholder="jane@dealership.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="dm-phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <button class="btn-primary ms-next-btn" id="dm-next-5">
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="ms-step ms-step--hidden" id="dm-step-6">
+        <div class="ms-confirm">
+          <div class="ms-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 class="ms-confirm-title">You're all set!</h2>
+          <p class="ms-confirm-text" id="dm-confirm-text"></p>
+          <button class="btn-primary ms-next-btn" id="dm-done">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>

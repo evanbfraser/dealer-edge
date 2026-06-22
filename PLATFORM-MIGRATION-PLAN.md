@@ -5,7 +5,9 @@
 **Author:** Claude (Fable 5) with Jason
 **Scope:** Move the DealerEdge marketing site (`dealer-edge-website`) onto the DealerEdge platform (`dealerEdge-demo-generator`) as a first-class tenant — dog-fooding CRM, lead comms, attribution, and content — **without losing the cinematic UX and without freezing the fast static-site iteration loop.**
 
-> Planning/meta doc. Not a runtime asset — do **not** deploy to here.now.
+> **⚠️ Historical record (2026-06-11).** Phases 0–3 are largely executed: the DE tenant is live on staging (https://dealeredge.dealeredge.ai) and all 7 pages ship via `export-platform.mjs`. The **here.now preview this doc references is retired** — the platform tenant is now the only deploy target. For current state + the remaining launch punch-list, see [`PROJECT-STATUS.md`](PROJECT-STATUS.md); for the live deploy/build flow see [`CLAUDE.md`](CLAUDE.md). Kept here for the architecture rationale.
+
+> Planning/meta doc. Not a runtime asset — do **not** deploy.
 
 ---
 

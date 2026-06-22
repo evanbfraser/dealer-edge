@@ -4,13 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pricing | DealerEdge</title>
-  <link rel="stylesheet" href="css/style.css?v=20260616i">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="css/pricing-core.min.css?v=20260621a">
+  <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 
@@ -26,7 +21,7 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">
-        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
       </div>
       <div class="nav-links">
         <div class="nav-dropdown">
@@ -358,7 +353,7 @@
     <div class="footer-body">
       <div class="footer-inner">
         <div class="footer-col footer-col--brand">
-          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" class="footer-logo" width="162" height="34" loading="lazy" decoding="async">
           <p class="footer-tagline">Built for dealers who move fast.</p>
         </div>
         <div class="footer-col">
@@ -460,56 +455,8 @@
     </div>
   </div>
 
-  <script src="js/de-core.js?v=20260616d"></script>
-  <script src="js/mobile-nav.js?v=20260616d"></script>
-  <script src="js/demo-modal.js?v=20260616d"></script>
-  <script src="js/app.js?v=20260616d"></script>
-
-  <!-- Pricing toggle (page-specific) -->
-  <script>
-    (function () {
-      const PRICING = {
-        monthly:   { price: '$1,497', note: 'Billed month-to-month. Cancel anytime.', save: '' },
-        quarterly: { price: '$1,347', note: 'Billed $4,041 every 3 months.',           save: 'Save 10%' },
-        yearly:    { price: '$1,247', note: 'Billed $14,964 once per year.',            save: 'Save 17%' },
-      };
-
-      const toggleBtns = document.querySelectorAll('.pricing-toggle-btn');
-      const pill        = document.getElementById('pricing-toggle-pill');
-      const priceEl     = document.getElementById('pricing-price');
-      const noteEl      = document.getElementById('pricing-billed-note');
-      const badgeEl     = document.getElementById('pricing-save-badge');
-      const rows        = {
-        monthly:   document.getElementById('pb-monthly'),
-        quarterly: document.getElementById('pb-quarterly'),
-        yearly:    document.getElementById('pb-yearly'),
-      };
-
-      function setPeriod(period) {
-        const activeBtn  = document.querySelector(`.pricing-toggle-btn[data-period="${period}"]`);
-        const toggleWrap = document.getElementById('pricing-toggle');
-        const wrapRect   = toggleWrap.getBoundingClientRect();
-        const btnRect    = activeBtn.getBoundingClientRect();
-        pill.style.width = btnRect.width + 'px';
-        pill.style.left  = (btnRect.left - wrapRect.left) + 'px';
-
-        toggleBtns.forEach(b => b.classList.toggle('is-active', b.dataset.period === period));
-
-        const data = PRICING[period];
-        priceEl.textContent = data.price;
-        noteEl.textContent  = data.note;
-        badgeEl.textContent = data.save;
-        badgeEl.style.opacity = data.save ? '1' : '0';
-
-        Object.entries(rows).forEach(([key, row]) => {
-          row.classList.toggle('is-active', key === period);
-        });
-      }
-
-      toggleBtns.forEach(btn => btn.addEventListener('click', () => setPeriod(btn.dataset.period)));
-      window.addEventListener('load', () => setPeriod('monthly'));
-    }());
-  </script>
+  <script src="js/mobile-nav.min.js?v=20260621a" defer></script>
+  <script src="js/pricing.min.js?v=20260621a" defer></script>
 
 </body>
 </html>

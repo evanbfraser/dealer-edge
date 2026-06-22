@@ -1,0 +1,32 @@
+{
+  "$schema": "https://bonsai-qa/config.schema.json",
+
+  "targetUrl": "https://dealeredge.dealeredge.ai/",
+  "contextPath": "./.bonsai-qa/context.md",
+  "productionOrigin": null,
+
+  "mode": "preview",
+
+  "maxIterations": 2,
+
+  "crawlBaseUrl": "https://dealeredge.dealeredge.ai/",
+  "maxPages": 20,
+  "maxDepth": 3,
+  "excludePatterns": [],
+  "only": null,
+  "scenariosPath": null,
+  "specialists": null,
+  "maxTurns": null,
+
+  "local": {
+    "_doc": "ALTERNATIVE local/curated mode (not active). To QA a local build instead of the live site, set mode=local and scenariosPath=./.bonsai-qa/scenarios.md. This is a static HTML site served by the built-in static server in serve-and-qa.mjs on port 5050.",
+    "staticDir": "C:\\Users\\jason\\repos\\dealer-edge-website",
+    "serveCmd": null,
+    "serveCwd": null,
+    "serveEnv": {},
+    "readyUrl": "http://127.0.0.1:5050",
+    "readyTimeoutMs": 30000
+  },
+
+  "notes": "ACTIVE plan: full pre-launch QA against the live site via from-site (the crawler discovers pages and synthesizes its own scenario plan, then all 10 specialists run across desktop 1280x800 + mobile 375x812). maxPages 20 reaches the full nav plus deeper pages (blog posts, etc.); trim for faster/cheaper runs. specialists null = all 10 (incl. performance, visual-consistency site-scope, mystery-shopper). maxTurns null so each specialist uses its tuned registry default (a value here is a uniform override that LOWERS the high-budget specialists). Area codes are 2-12 uppercase letters. To run a tighter curated pass instead, switch to mode=local + scenariosPath (see the local block)."
+}

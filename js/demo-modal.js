@@ -1,5 +1,44 @@
 /* Demo request modal — name, email, phone → confirmation */
 function initDemoModal(lenis) {
+  function ensureDemoModalMarkup() {
+    if (document.getElementById('modal-backdrop')) return;
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
+      <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+        <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+          <button class="modal-close" id="modal-close" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+
+          <div class="ms-step" id="ms-step-1">
+            <span class="modal-eyebrow">Schedule a Demo</span>
+            <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
+            <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
+            <div class="form-group"><input type="text" id="ms-name" placeholder="Your name" aria-label="Your name" autocomplete="name"></div>
+            <div class="form-group"><input type="email" id="ms-email" placeholder="Email address" aria-label="Email address" autocomplete="email"></div>
+            <div class="form-group"><input type="tel" id="ms-phone" placeholder="Phone number" aria-label="Phone number" autocomplete="tel"></div>
+            <p class="ms-error" id="ms-error" role="alert" hidden></p>
+            <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+            <p class="ms-legal">By submitting, you agree to our <a href="/legal/privacy-policy">Privacy Policy</a>.</p>
+          </div>
+
+          <div class="ms-step ms-step--hidden" id="ms-step-2">
+            <div class="ms-confirm">
+              <div class="ms-confirm-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h2 class="ms-confirm-title">You're all set!</h2>
+              <p class="ms-confirm-text" id="ms-confirm-text"></p>
+              <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `.trim();
+    document.body.appendChild(wrapper.firstElementChild);
+  }
+
+  ensureDemoModalMarkup();
   const backdrop = document.getElementById('modal-backdrop');
   const modal = document.getElementById('modal');
   const closeBtn = document.getElementById('modal-close');
@@ -13,7 +52,31 @@ function initDemoModal(lenis) {
   const submitBtn = document.getElementById('ms-submit');
   const confirmText = document.getElementById('ms-confirm-text');
   const doneBtn = document.getElementById('ms-done');
+  const errorEl = document.getElementById('ms-error');
   if (!stepForm || !stepConfirm || !nameInput || !emailInput || !phoneInput || !submitBtn) return;
+
+  // Loose-but-real email shape check: requires a single @, a dot in the domain,
+  // and no whitespace. Catches the "foo" case QA flagged while staying lenient.
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function showError(msg, field) {
+    if (errorEl) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+    }
+    if (field) {
+      field.setAttribute('aria-invalid', 'true');
+      field.focus();
+    }
+  }
+
+  function clearError() {
+    if (errorEl) {
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+    [nameInput, emailInput, phoneInput].forEach((i) => i.removeAttribute('aria-invalid'));
+  }
 
   function showStep(n) {
     stepForm.classList.toggle('ms-step--hidden', n !== 1);
@@ -85,14 +148,16 @@ function initDemoModal(lenis) {
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
     const phone = phoneInput.value.trim();
-    if (!name) return nameInput.focus();
-    if (!email) return emailInput.focus();
-    if (!phone) return phoneInput.focus();
+    clearError();
+    if (!name) return showError('Please enter your name.', nameInput);
+    if (!email) return showError('Please enter your email address.', emailInput);
+    if (!EMAIL_RE.test(email)) return showError('Please enter a valid email address.', emailInput);
+    if (!phone) return showError('Please enter your phone number.', phoneInput);
 
     // Platform bridge: when hosted as an island, the route shell wraps the
     // fragment in [data-de-page] carrying the persistent visitor id — POST a
     // real lead into the platform pipeline (fire-and-forget; the in-modal
-    // confirmation below runs either way). On the static here.now instance
+    // confirmation below runs either way). On the standalone static site
     // the wrapper doesn't exist and this block is a no-op. NEVER set the
     // x-website-hp header — it's the honeypot.
     const bridge = document.querySelector('[data-de-page]');
@@ -118,6 +183,7 @@ function initDemoModal(lenis) {
 
   submitBtn.addEventListener('click', submitForm);
   [nameInput, emailInput, phoneInput].forEach((input) => {
+    input.addEventListener('input', clearError);
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -132,6 +198,7 @@ function initDemoModal(lenis) {
     nameInput.value = '';
     emailInput.value = '';
     phoneInput.value = '';
+    clearError();
     showStep(1);
     backdrop.classList.add('is-open');
     backdrop.setAttribute('aria-hidden', 'false');
@@ -147,7 +214,9 @@ function initDemoModal(lenis) {
     lenis?.start?.();
   }
 
-  document.querySelectorAll('.js-modal').forEach((btn) => btn.addEventListener('click', openModal));
+  (window.DE?.on || ((t, e, f) => t.addEventListener(e, f)))(document, 'click', (e) => {
+    if (e.target.closest('.js-modal')) openModal(e);
+  });
   closeBtn?.addEventListener('click', closeModal);
   backdrop.addEventListener('click', (e) => {
     if (e.target === backdrop) closeModal();

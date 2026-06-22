@@ -234,6 +234,13 @@
   background: #0a0a0b;
 }
 
+.a2-hero-shot picture,
+.a2-fullreport-viewport picture,
+.a2-comms-shot picture {
+  display: block;
+  width: 100%;
+}
+
 .a2-hero-shot img {
   display: block;
   width: 100%;

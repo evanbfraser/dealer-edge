@@ -11,10 +11,129 @@ DE.pages.index = (function () {
   function boot() {
     'use strict';
 
-    // ─── CURSOR GLOW (red ambient) ───
+    function runWhenNear(selector, fn, rootMargin = '1200px 0px') {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      const margin = parseInt(rootMargin, 10) || 0;
+      let didRun = false;
+      let observer = null;
+
+      const run = () => {
+        if (didRun) return;
+        didRun = true;
+        if (observer) observer.disconnect();
+        fn();
+      };
+
+      const check = () => {
+        if (didRun) return;
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + margin && rect.bottom > -margin) run();
+      };
+
+      if (!('IntersectionObserver' in window)) {
+        DE.on(window, 'scroll', check, { passive: true });
+        DE.on(window, 'resize', check, { passive: true });
+        check();
+        return;
+      }
+
+      observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        run();
+      }, { rootMargin });
+
+      observer.observe(el);
+      DE.on(window, 'scroll', check, { passive: true });
+      DE.on(window, 'resize', check, { passive: true });
+      check();
+    }
+
+    let homeLateCssPromise = null;
+    function loadHomeLateCss() {
+      const href = 'css/home-late.min.css?v=20260621a';
+      if (document.querySelector(`link[href="${href}"]`)) {
+        return homeLateCssPromise || Promise.resolve();
+      }
+      if (!homeLateCssPromise) {
+        homeLateCssPromise = new Promise((resolve) => {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = href;
+          link.onload = () => {
+            if (window.ScrollTrigger) ScrollTrigger.refresh();
+            resolve();
+          };
+          link.onerror = resolve;
+          document.head.appendChild(link);
+        });
+      }
+      return homeLateCssPromise;
+    }
+
+    function initHomeLateCss() {
+      const load = () => loadHomeLateCss();
+
+      ['wheel', 'touchmove', 'keydown'].forEach((eventName) => {
+        window.addEventListener(eventName, load, { once: true, passive: true });
+      });
+
+      if (document.readyState === 'complete') {
+        setTimeout(load, 2200);
+      } else {
+        window.addEventListener('load', () => setTimeout(load, 2200), { once: true });
+      }
+    }
+
+    let homeLateJsPromise = null;
+    let homeLateInitialized = false;
+    function loadHomeLateJs() {
+      const src = 'js/app-late.min.js?v=20260621a';
+      if (!homeLateJsPromise) {
+        homeLateJsPromise = DE.loadScrollLibs(lenis).then(() => new Promise((resolve) => {
+          const existing = document.querySelector('script[src="' + src + '"]');
+          if (existing) {
+            existing.addEventListener('load', resolve, { once: true });
+            existing.addEventListener('error', resolve, { once: true });
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = src;
+          script.defer = true;
+          script.onload = resolve;
+          script.onerror = resolve;
+          document.head.appendChild(script);
+        }));
+      }
+      return homeLateJsPromise.then(() => {
+        if (!homeLateInitialized && typeof DE.initHomeLate === 'function') {
+          homeLateInitialized = true;
+          DE.initHomeLate({ lenis, runWhenNear, loadHomeLateCss });
+        }
+      });
+    }
+
+    function initHomeLateJs() {
+      const load = () => loadHomeLateJs();
+      runWhenNear('.journey-section', load, '0px 0px');
+      const chatTrigger = document.getElementById('chatbot-trigger');
+      if (chatTrigger) chatTrigger.addEventListener('pointerenter', load, { once: true, passive: true });
+      if (chatTrigger) chatTrigger.addEventListener('focus', load, { once: true });
+      if (chatTrigger) {
+        chatTrigger.addEventListener('click', (event) => {
+          if (homeLateInitialized) return;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          load().then(() => chatTrigger.click());
+        }, { once: true });
+      }
+    }
+
+    // ─── CURSOR GLOW (red ambient) + white-dot cursor ───
     (function initCursorGlowHome() {
       const glow = document.getElementById('cursor-glow');
-      if (!glow) return;
+      const cursor = document.getElementById('custom-cursor');
+      if (!glow && !cursor) return;
 
       let mouseX = window.innerWidth / 2;
       let mouseY = window.innerHeight / 2;
@@ -24,16 +143,28 @@ DE.pages.index = (function () {
       DE.on(window, 'mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        glow.classList.add('visible');
+        // Drive the white-dot cursor from page load. The native cursor is hidden
+        // globally (cursor: none), and the dot's follow logic otherwise lives in
+        // js/app-late.js, which doesn't load until the journey section scrolls
+        // into view — so above the fold the homepage had no visible cursor. Use
+        // left/top to match app-late.js (both set the same values, so once the
+        // late handler also binds there's no double-offset).
+        if (cursor) {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        }
+        if (glow) glow.classList.add('visible');
       }, { passive: true });
 
-      DE.on(window, 'mouseleave', () => glow.classList.remove('visible'));
+      DE.on(window, 'mouseleave', () => glow?.classList.remove('visible'));
 
-      DE.rafLoop(() => {
-        currentX += (mouseX - currentX) * 0.1;
-        currentY += (mouseY - currentY) * 0.1;
-        glow.style.transform = `translate(${currentX - 300}px, ${currentY - 300}px)`;
-      });
+      if (glow) {
+        DE.rafLoop(() => {
+          currentX += (mouseX - currentX) * 0.1;
+          currentY += (mouseY - currentY) * 0.1;
+          glow.style.transform = `translate(${currentX - 300}px, ${currentY - 300}px)`;
+        });
+      }
     }());
 
     // ─── LENIS SMOOTH SCROLL (shared engine: GSAP/ScrollTrigger sync + teardown) ───
@@ -56,60 +187,83 @@ function animateHero() {
   // clears any leftover transform from a prior run.
   const content = document.getElementById('hero-content');
   if (!content) return;
-  gsap.set(content, { opacity: 1 });
-  gsap.set(
-    [
-      content.querySelector('.hero-eyebrow'),
-      content.querySelector('.hero-headline'),
-      content.querySelector('.hero-sub'),
-      content.querySelector('.hero-actions'),
-    ].filter(Boolean),
-    { opacity: 1, y: 0, clearProps: 'transform' }
-  );
+  content.style.opacity = '1';
+  [
+    content.querySelector('.hero-eyebrow'),
+    content.querySelector('.hero-headline'),
+    content.querySelector('.hero-sub'),
+    content.querySelector('.hero-actions'),
+  ].filter(Boolean).forEach((el) => {
+    el.style.opacity = '1';
+    el.style.transform = '';
+  });
 }
 
 // ─── SECTION ENTRANCE ANIMATIONS ───
 function animateSections() {
-  document.querySelectorAll('[data-animation]').forEach((el) => {
+  const items = Array.from(document.querySelectorAll('[data-animation]'));
+  if (!items.length) return;
+
+  const reveal = (el) => {
     const delay = parseFloat(el.getAttribute('data-delay') || '0');
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: 44 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.95,
-        delay,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 87%',
-          toggleActions: 'play none none none',
-        },
-      }
-    );
-  });
+    if (delay) el.style.transitionDelay = `${delay}s`;
+    el.classList.add('is-visible');
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(reveal);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      reveal(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+
+  items.forEach((el) => observer.observe(el));
+  DE.addDisposer(() => observer.disconnect());
 }
 
 // ─── COUNTER ANIMATIONS ───
 function animateCounters() {
-  document.querySelectorAll('.stat-number').forEach((el) => {
+  const counters = Array.from(document.querySelectorAll('.stat-number'));
+  if (!counters.length) return;
+
+  const startCounter = (el) => {
+    if (el.dataset.counted === 'true') return;
+    el.dataset.counted = 'true';
     const end = parseInt(el.getAttribute('data-count'), 10);
-    const obj = { val: 0 };
-    gsap.to(obj, {
-      val: end,
-      duration: 2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-        once: true,
-      },
-      onUpdate() {
-        el.textContent = Math.floor(obj.val);
-      },
+    if (!Number.isFinite(end)) return;
+    const duration = 1800;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.floor(end * eased);
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = end;
+    };
+    requestAnimationFrame(tick);
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    counters.forEach(startCounter);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      startCounter(entry.target);
+      observer.unobserve(entry.target);
     });
-  });
+  }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
+
+  counters.forEach((el) => observer.observe(el));
+  DE.addDisposer(() => observer.disconnect());
 }
 
 // ─── CANVAS FRAME SCRUBBING ───
@@ -118,15 +272,19 @@ const ctx = canvas ? canvas.getContext('2d') : null;
 const FRAME_COUNT = 192;
 const IMAGE_SCALE = 1.32;
 const images = [];
+const frameLoadPromises = [];
+const loadedFrames = new Set();
 let loaded = 0;
 let currentFrame = 1;
 
-function preloadFrames() {
-  for (let i = 1; i <= FRAME_COUNT; i++) {
+function loadFrame(i) {
+  if (images[i - 1]) return frameLoadPromises[i - 1] || Promise.resolve(images[i - 1]);
+  const promise = new Promise((resolve) => {
     const img = new Image();
     img.src = `assets/frames/frame_${String(i).padStart(4, '0')}.webp`;
     img.onload = () => {
       loaded++;
+      loadedFrames.add(i);
       // First frame ready: paint now, then repaint a few times over ~2s. The
       // React island host regenerates this subtree shortly after hydration
       // (swapping #hero-canvas); repainting the freshly re-queried node a few
@@ -145,9 +303,38 @@ function preloadFrames() {
           if ((c && c.width > 300) || --tries <= 0) clearInterval(iv);
         }, 200);
       }
+      resolve(img);
     };
-    images.push(img);
+    img.onerror = () => resolve(img);
+    images[i - 1] = img;
+  });
+  frameLoadPromises[i - 1] = promise;
+  return promise;
+}
+
+function preloadFrames() {
+  loadFrame(1);
+  const preloadRest = () => {
+    for (let i = 2; i <= FRAME_COUNT; i++) {
+      setTimeout(() => loadFrame(i), (i - 2) * 18);
+    }
+  };
+  const schedule = window.requestIdleCallback || ((fn) => setTimeout(fn, 1200));
+  DE.on(window, 'load', () => {
+    setTimeout(() => schedule(preloadRest, { timeout: 2400 }), 1200);
+  }, { once: true, passive: true });
+}
+
+function getNearestLoadedFrame(idx) {
+  if (loadedFrames.has(idx)) return idx;
+  loadFrame(idx);
+  for (let distance = 1; distance < FRAME_COUNT; distance++) {
+    const prev = idx - distance;
+    const next = idx + distance;
+    if (prev >= 1 && loadedFrames.has(prev)) return prev;
+    if (next <= FRAME_COUNT && loadedFrames.has(next)) return next;
   }
+  return 1;
 }
 
 function drawFrame(idx) {
@@ -158,7 +345,8 @@ function drawFrame(idx) {
   const canvas = document.getElementById('hero-canvas');
   const ctx = canvas ? canvas.getContext('2d') : null;
   if (!canvas || !ctx) return;
-  const img = images[idx - 1];
+  const frameIdx = getNearestLoadedFrame(idx);
+  const img = images[frameIdx - 1];
   if (!img || !img.complete || img.naturalWidth === 0) return;
 
   // Size canvas to its container (the right panel), not the full window
@@ -236,508 +424,14 @@ function bindScrollToFrames() {
   }, { passive: true });
 }
 
-// ─── RIPPLE EFFECT ───
-function initRippleEffect() {
-  const canvas = document.getElementById('ripple-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  const SCALE = 0.5, DAMPING = 0.985, STRENGTH = 220, BRUSH = 6;
-  let w = 0, h = 0, buf1, buf2, srcData, outImg;
-  let mouseX = 0, mouseY = 0, hovering = false, lastAuto = 0;
-
-  function setup(img) {
-    const cssW = canvas.parentElement ? canvas.parentElement.offsetWidth : 0;
-    if (!cssW || !img.naturalWidth) return false;
-    const cssH = Math.round(cssW * img.naturalHeight / img.naturalWidth);
-    w = Math.round(cssW * SCALE);
-    h = Math.round(cssH * SCALE);
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.height = cssH + 'px';
-    buf1 = new Float32Array(w * h);
-    buf2 = new Float32Array(w * h);
-    outImg = ctx.createImageData(w, h);
-    // Draw image to an offscreen canvas we own, then read pixels.
-    // getImageData on an owned canvas is permitted on localhost (same-origin).
-    const off = document.createElement('canvas');
-    off.width = w; off.height = h;
-    const offCtx = off.getContext('2d');
-    offCtx.drawImage(img, 0, 0, w, h);
-    try {
-      srcData = offCtx.getImageData(0, 0, w, h).data;
-    } catch (e) {
-      return false; // file:// strict security — graceful fallback to CSS bg
-    }
-    return true;
-  }
-
-  function disturb(ix, iy) {
-    ix = Math.round(ix); iy = Math.round(iy);
-    for (let dy = -BRUSH; dy <= BRUSH; dy++) {
-      for (let dx = -BRUSH; dx <= BRUSH; dx++) {
-        const nx = ix + dx, ny = iy + dy;
-        if (nx > 0 && nx < w - 1 && ny > 0 && ny < h - 1) buf1[ny * w + nx] = STRENGTH;
-      }
-    }
-  }
-
-  function tick(ts) {
-    if (!w || !srcData) return;
-
-    // Auto-disturb every 2s so ripples are visible without hovering
-    if (ts - lastAuto > 2000) {
-      disturb(
-        w * 0.25 + Math.random() * w * 0.5,
-        h * 0.25 + Math.random() * h * 0.5
-      );
-      lastAuto = ts;
-    }
-
-    // Wave physics
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const i = y * w + x;
-        buf2[i] = (buf1[i - 1] + buf1[i + 1] + buf1[i - w] + buf1[i + w]) * 0.5 - buf2[i];
-        buf2[i] *= DAMPING;
-      }
-    }
-    const tmp = buf1; buf1 = buf2; buf2 = tmp;
-
-    // Render: displace each pixel by the local wave gradient
-    const dst = outImg.data;
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const i = y * w + x;
-        let sx = x, sy = y;
-        if (x > 0 && x < w - 1 && y > 0 && y < h - 1) {
-          sx = Math.max(0, Math.min(w - 1, Math.round(x + (buf1[i - 1] - buf1[i + 1]) * 0.025)));
-          sy = Math.max(0, Math.min(h - 1, Math.round(y + (buf1[i - w] - buf1[i + w]) * 0.025)));
-        }
-        const si = (sy * w + sx) << 2;
-        const di = i << 2;
-        dst[di]     = srcData[si];
-        dst[di + 1] = srcData[si + 1];
-        dst[di + 2] = srcData[si + 2];
-        dst[di + 3] = 255;
-      }
-    }
-    ctx.putImageData(outImg, 0, 0);
-  }
-
-  const section = canvas.parentElement;
-  section.addEventListener('mousemove', e => {
-    const r = canvas.getBoundingClientRect();
-    if (r.width > 0) {
-      mouseX = (e.clientX - r.left) * (w / r.width);
-      mouseY = (e.clientY - r.top)  * (h / r.height);
-    }
-    if (hovering) disturb(mouseX, mouseY);
-  }, { passive: true });
-  section.addEventListener('mouseenter', () => { hovering = true; });
-  section.addEventListener('mouseleave', () => { hovering = false; });
-  DE.on(window, 'resize', () => {
-    if (img.complete && img.naturalWidth) setup(img);
-  }, { passive: true });
-
-  const img = new Image();
-  img.onload = () => { setTimeout(() => { if (setup(img)) DE.rafLoop(tick); }, 100); };
-  img.src = 'assets/dealer-edge-case-studies-background.jpg';
-}
-
-// ─── VIDEO SECTION ───
-function animateVideoSection() {
-  const inner   = document.getElementById('video-inner');
-  const overlay = document.getElementById('video-overlay-text');
-  const section = document.getElementById('video-section');
-  if (!inner || !section) return;
-
-  // Expand from 800px to full viewport width on scroll
-  gsap.to(inner, {
-    width: '100%',
-    maxWidth: '100%',
-    borderRadius: 0,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top 65%',
-      end: 'center center',
-      scrub: 1,
-    },
-  });
-
-  // Text fades in once image is centred in the viewport
-  ScrollTrigger.create({
-    trigger: inner,
-    start: 'center center',
-    onEnter:     () => overlay.classList.add('visible'),
-    onLeaveBack: () => overlay.classList.remove('visible'),
-  });
-}
-
-// ─── JOURNEY TIMELINE ───
-function animateJourney() {
-  const lineFill = document.querySelector('.journey-line-fill');
-  const timeline = document.querySelector('.journey-timeline');
-  if (!lineFill || !timeline) return;
-
-  // Line grows downward as user scrolls through the section
-  gsap.to(lineFill, {
-    height: '100%',
-    ease: 'none',
-    scrollTrigger: {
-      trigger: timeline,
-      start: 'top 70%',
-      end: 'bottom 65%',
-      scrub: 0.8,
-    },
-  });
-
-  // Each point: card slides in + dot activates
-  document.querySelectorAll('.journey-point').forEach((point) => {
-    const card = point.querySelector('.journey-card');
-    const isLeft = point.classList.contains('journey-point--left');
-
-    gsap.fromTo(
-      card,
-      { opacity: 0, x: isLeft ? -36 : 36 },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.85,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: point,
-          start: 'top 72%',
-          toggleActions: 'play none none none',
-          onEnter: () => point.classList.add('active'),
-        },
-      }
-    );
-  });
-}
-
-// ─── CUSTOM CURSOR + JOURNEY MODAL ───
-function initCustomCursor() {
-  const cursor   = document.getElementById('custom-cursor');
-  const backdrop = document.getElementById('journey-modal-backdrop');
-  const cards = document.querySelectorAll('.journey-card[data-journey]');
-  if (!cursor) return;
-
-  // Position updates instantly on every mousemove, no lerp, pixel-perfect
-  DE.on(window, 'mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-  }, { passive: true });
-
-  // Video section hover, dot grows into play circle
-  const videoInner = document.getElementById('video-inner');
-  if (videoInner) {
-    videoInner.addEventListener('mouseenter', () => cursor.classList.add('video-active'));
-    videoInner.addEventListener('mouseleave', () => cursor.classList.remove('video-active'));
-  }
-
-  // Case study card hover, same "Learn More" cursor
-  document.querySelectorAll('.cs-card').forEach((card) => {
-    card.addEventListener('mouseenter', () => cursor.classList.add('journey-active'));
-    card.addEventListener('mouseleave', () => cursor.classList.remove('journey-active'));
-  });
-
-  // Journey card hover, dot grows into glass circle in place
-  cards.forEach((card) => {
-    card.addEventListener('mouseenter', () => cursor.classList.add('journey-active'));
-    card.addEventListener('mouseleave', () => cursor.classList.remove('journey-active'));
-
-    card.addEventListener('click', () => {
-      const title = card.getAttribute('data-journey');
-
-      // Show only the matching content panel
-      document.querySelectorAll('[data-journey-content]').forEach((panel) => {
-        panel.style.display = panel.getAttribute('data-journey-content') === title ? '' : 'none';
-      });
-
-      backdrop.classList.add('is-open');
-      backdrop.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      lenis.stop();
-      cursor.classList.remove('journey-active');
-    });
-  });
-
-  // Nav arrows, switch between panels
-  function showPanel(title) {
-    document.querySelectorAll('[data-journey-content]').forEach((panel) => {
-      panel.style.display = panel.getAttribute('data-journey-content') === title ? '' : 'none';
-    });
-  }
-
-  DE.on(document, 'click', (e) => {
-    const btn = e.target.closest('.jm-nav-btn');
-    if (!btn) return;
-    const target = btn.getAttribute('data-nav-to');
-    if (target) showPanel(target);
-  });
-
-  function closeJourneyModal() {
-    backdrop.classList.remove('is-open');
-    backdrop.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    lenis.start();
-  }
-
-  // Close button, handle all .jm-close buttons via delegation
-  if (backdrop) backdrop.addEventListener('click', (e) => {
-    if (e.target.closest('.jm-close')) closeJourneyModal();
-  });
-  if (backdrop) {
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) closeJourneyModal();
-    });
-  }
-  DE.on(document, 'keydown', (e) => {
-    if (e.key === 'Escape' && backdrop?.classList.contains('is-open')) closeJourneyModal();
-  });
-}
-
-// ─── BOAT SECTION ───
-function initBoatSection() {
-  const section = document.getElementById('boat-section');
-  const video   = document.getElementById('boat-video');
-  const headOut = document.querySelector('.boat-headline--out');
-  const headIn  = document.querySelector('.boat-headline--in');
-  const boatSub = document.getElementById('boat-sub');
-  const boatCta = document.getElementById('boat-cta');
-  if (!section || !video) return;
-
-  // Keep video paused, scroll drives currentTime
-  video.pause();
-
-  function scrub(progress) {
-    if (video.readyState >= 1 && video.duration) {
-      video.currentTime = progress * video.duration;
-    }
-  }
-
-  // Scroll drives video playback
-  ScrollTrigger.create({
-    trigger: section,
-    start: 'top top',
-    end:   'bottom bottom',
-    onUpdate: (self) => scrub(self.progress),
-  });
-
-  // Text swap: out at 20%, second headline in at 28%, sub at 33%, button at 37%
-  gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end:   'bottom bottom',
-      scrub: 1,
-    }
-  })
-  .to(headOut,     { opacity: 0, y: -30, duration: 0.1,  ease: 'power2.in'  }, 0.20)
-  .fromTo(headIn,  { opacity: 0, y:  30 }, { opacity: 1, y: 0, duration: 0.12, ease: 'power2.out' }, 0.28)
-  .fromTo(boatSub, { opacity: 0, y:  16, pointerEvents: 'none' }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.1, ease: 'power2.out' }, 0.33)
-  .fromTo(boatCta, { opacity: 0, y:  20, pointerEvents: 'none' }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.1, ease: 'power2.out' }, 0.37);
-}
-
-// ─── CASE STUDIES ───
-function initCaseStudyCarousel() {
-  const CASES = [
-    {
-      logo:  'assets/dealer-logo-1.svg',
-      stats: [
-        { value: '+150%', label: 'Increase in Sales'    },
-        { value: '3×',    label: 'Qualified Leads'      },
-        { value: '+40%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: 'Since switching to DealerEdge, our team handles twice the leads in half the time. The AI follow-up alone has completely changed our business.',
-      name:  'Jake Morrison, Sales Manager',
-    },
-    {
-      logo:  'assets/dealer-logo-2.svg',
-      stats: [
-        { value: '+170%', label: 'Increase in Sales'    },
-        { value: '4×',    label: 'Qualified Leads'      },
-        { value: '+49%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: "We were skeptical at first, but the numbers don't lie. Three months in and we're closing deals we never would have captured before.",
-      name:  'Rachel Torres, General Manager',
-    },
-    {
-      logo:  'assets/dealer-logo-3.svg',
-      stats: [
-        { value: '+220%', label: 'Increase in Sales'    },
-        { value: '2.5×',  label: 'Qualified Leads'      },
-        { value: '+33%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: "DealerEdge doesn't just bring in leads, it brings in the right leads. Our close rate has never been higher and our team is less stressed.",
-      name:  'Marcus Webb, Owner',
-    },
-    {
-      logo:  'assets/dealer-logo-4.svg',
-      stats: [
-        { value: '+195%', label: 'Increase in Sales'    },
-        { value: '5×',    label: 'Qualified Leads'      },
-        { value: '+55%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: 'The platform paid for itself in the first month. Our customers love the faster response times and our team loves not chasing cold leads anymore.',
-      name:  'Sandra Kim, Dealer Principal',
-    },
-  ];
-
-  const detail      = document.getElementById('cs-detail');
-  const detailLogo  = document.getElementById('cs-detail-logo');
-  const detailStats = document.getElementById('cs-detail-stats');
-  const detailQuote = document.getElementById('cs-detail-quote');
-  const detailAttr  = document.getElementById('cs-detail-attribution');
-  const btns        = Array.from(document.querySelectorAll('.cs-logo-btn'));
-  if (!detail || !btns.length) return;
-
-  function render(idx) {
-    const c = CASES[idx];
-    detailLogo.src = c.logo;
-    detailStats.innerHTML = c.stats.map(s => `
-      <div class="cs-detail-stat">
-        <span class="cs-detail-stat-value">${s.value}</span>
-        <span class="cs-detail-stat-label">${s.label}</span>
-      </div>`).join('');
-    detailQuote.textContent = `"${c.quote}"`;
-    detailAttr.textContent  = `${c.name}`;
-  }
-
-  function select(idx) {
-    btns.forEach((b, i) => b.classList.toggle('cs-logo-btn--active', i === idx));
-    detail.classList.add('is-switching');
-    setTimeout(() => {
-      render(idx);
-      detail.classList.remove('is-switching');
-    }, 200);
-  }
-
-  btns.forEach((btn, i) => btn.addEventListener('click', () => select(i)));
-
-  // Initialise with first item
-  render(0);
-}
-
-// ─── CHATBOT ───
-function initChatbot() {
-  const widget   = document.getElementById('chatbot-widget');
-  const trigger  = document.getElementById('chatbot-trigger');
-  const closeBtn = document.getElementById('chatbot-close');
-  const messages = document.getElementById('chatbot-messages');
-  const input    = document.getElementById('chatbot-input');
-  const sendBtn  = document.getElementById('chatbot-send');
-  if (!widget || !trigger) return;
-
-  // ── Responses ──
-  const responses = [
-    { match: /hello|hi|hey|howdy/i,
-      reply: "Hey! Great to have you here. What can I help you with today, features, pricing, or getting started?" },
-    { match: /price|pricing|cost|how much|plans/i,
-      reply: "Pricing is tailored to your dealership's size and needs. The best way to get a number is a quick call with our team, want me to point you to the contact form?" },
-    { match: /feature|what can|what does|offer|include/i,
-      reply: "DealerEdge covers the full customer journey: AI marketing, smart listings, instant lead response, and sales analytics, all in one platform. Which area interests you most?" },
-    { match: /market|ad|advertis|social|seo/i,
-      reply: "Our AI generates high-converting ads, SEO content, and social posts tailored to your live inventory, automatically, no agency needed." },
-    { match: /listing|inventory|vehicle|car|boat|rv/i,
-      reply: "DealerEdge publishes polished listings across every major platform in seconds. AI writes the descriptions, optimises photos, and manages pricing for you." },
-    { match: /lead|response|inquiry|follow.?up/i,
-      reply: "Our AI responds to leads in seconds, qualifies buyers, and books appointments 24/7, even while your team sleeps." },
-    { match: /analytic|track|dashboard|report|data/i,
-      reply: "Real-time dashboards show every deal from first touch to close, broken down by channel, salesperson, and vehicle type." },
-    { match: /loyalt|repeat|retention|customer/i,
-      reply: "DealerEdge keeps customers engaged after the sale through automated follow-ups, service reminders, and personalised outreach, turning buyers into advocates." },
-    { match: /start|demo|trial|sign.?up|onboard/i,
-      reply: "Getting started is simple! Fill out the contact form on this page and our team will reach out within one business day. Want me to scroll you there?" },
-    { match: /contact|email|phone|call|reach|talk/i,
-      reply: "You can reach us at contact@dealeredge.com or use the Get Started form on this page. Our team typically responds within a few hours." },
-    { match: /thank|thanks|great|awesome|perfect/i,
-      reply: "Happy to help! Anything else you'd like to know about DealerEdge?" },
-    { match: /bye|goodbye|see you/i,
-      reply: "Talk soon! Feel free to come back any time. 👋" },
-  ];
-
-  function getReply(text) {
-    for (const { match, reply } of responses) {
-      if (match.test(text)) return reply;
-    }
-    return "That's a great question! For the most detailed answer I'd recommend chatting with our team directly. Want me to point you to the contact form?";
-  }
-
-  // ── DOM helpers ──
-  function addMessage(text, type) {
-    const div = document.createElement('div');
-    div.className = `chat-msg chat-msg--${type}`;
-    const p = document.createElement('p');
-    p.textContent = text;
-    div.appendChild(p);
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-    return div;
-  }
-
-  function showTyping() {
-    const div = document.createElement('div');
-    div.className = 'chat-msg chat-msg--bot chat-msg--typing';
-    div.innerHTML = '<p><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></p>';
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-    return div;
-  }
-
-  function send() {
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-
-    addMessage(text, 'user');
-    const typing = showTyping();
-
-    setTimeout(() => {
-      typing.remove();
-      addMessage(getReply(text), 'bot');
-    }, 900 + Math.random() * 500);
-  }
-
-  // ── Open / close ──
-  let hasOpened = false;
-
-  function open() {
-    widget.classList.add('is-open');
-    input.focus();
-    if (!hasOpened) {
-      hasOpened = true;
-      setTimeout(() => {
-        const div = addMessage('Want to see how your dealership can respond to every lead instantly and close more deals?', 'bot');
-        div.classList.add('chat-msg--animate-in');
-      }, 800);
-    }
-  }
-
-  function close() { widget.classList.remove('is-open'); }
-
-  trigger.addEventListener('click', () => widget.classList.contains('is-open') ? close() : open());
-  closeBtn.addEventListener('click', close);
-  sendBtn.addEventListener('click', send);
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
-}
-
     // ─── INIT ───
+    initHomeLateCss();
     animateHero();
     animateSections();
     animateCounters();
-    initRippleEffect();
-    animateVideoSection();
-    initBoatSection();
-    animateJourney();
-    initCustomCursor();
-    initDemoModal(lenis);
-    if (typeof initMobileNav === 'function') initMobileNav(); // not shipped to the platform (DeHeader owns nav)
-    initCaseStudyCarousel();
-    initChatbot();
+    initHomeLateJs();
+    DE.initLazyDemoModal(lenis);
+    DE.initMobileNav(); // not shipped to the platform (DeHeader owns nav)
     preloadFrames();
     bindScrollToFrames();
     DE.initScrollHint();

@@ -30,7 +30,7 @@ const PAGES = ['sales', 'marketing', 'inventory', 'analytics', 'features', 'inde
 // index.html (homepage) now ships: app.js is on the DE.boot/DE.destroy lifecycle
 // and uses the shared demo-modal (js/demo-modal.js) for lead capture.
 // mobile-nav.js is excluded everywhere: the platform renders DeHeader instead.
-const EXCLUDED_SCRIPTS = new Set(['js/mobile-nav.js']);
+const EXCLUDED_SCRIPTS = new Set(['js/mobile-nav.js', 'js/mobile-nav.min.js']);
 
 const VENDOR = [
   { file: 'lenis.min.js', url: 'https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js' },
@@ -40,7 +40,7 @@ const VENDOR = [
 
 // Referenced only by the stripped nav/footer (now the platform's DeHeader/DeFooter
 // components) — must ship even though no fragment references them.
-const ALWAYS_INCLUDE_ASSETS = ['dealer-edge-logo-horiz.svg'];
+const ALWAYS_INCLUDE_ASSETS = ['dealer-edge-logo-horiz.webp', 'dealer-edge-logo-horiz.svg'];
 
 // style.css sections (by `/* ─── NAME ─── */` header) that make up the DE
 // chrome stylesheet consumed by the platform's DeHeader/DeFooter on BOTH
@@ -61,6 +61,20 @@ const CHROME_ADDENDUM = `
 @media (max-width: 960px) { .nav-links { display: none; } }
 /* CMS pages don't load the island reset — pin the chrome's own typography */
 .navbar, .nav-mobile-panel, .footer { font-family: var(--font); }
+/* DE CMS page-header (shared <PageHeader variant=gradient|solid>): dark on-brand
+   surface + clear the fixed nav. Fixes the red-band-vs-red-utility-bar clash AND
+   the H1/logo collision in one rule. Scoped to the gradient/solid header so the
+   full-bleed island heroes are untouched; primary stays the CTA/accent red. */
+#main-content header.from-primary,
+#main-content header.bg-primary {
+  background: linear-gradient(165deg, #0c0c0e 0%, #000 72%);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  padding-top: calc(var(--nav-height) + 38px + 2.5rem);
+}
+@media (max-width: 1100px) {
+  #main-content header.from-primary,
+  #main-content header.bg-primary { padding-top: calc(var(--nav-height) + 1.5rem); }
+}
 `;
 
 function extractChromeCss(styleCss) {
@@ -96,6 +110,41 @@ function rewriteAssetPaths(s) {
     .replace(/url\((['"]?)assets\//g, 'url($1/de-site/assets/');
 }
 
+// Internal page links in the static source are authored as `features.html`,
+// `/sales.html`, etc. On the platform those routes are clean (`/features`,
+// `/sales`); `index.html` is the homepage `/`. Rewrite them so fragments never
+// ship `.html` hrefs (they'd hit the catch-all → soft-404). External links
+// (https://…/x.html) don't match — the pattern only catches a bare page name
+// optionally prefixed with a single leading slash.
+function rewriteInternalLinks(s) {
+  return s.replace(/href="(\/?)([a-z][a-z0-9-]*)\.html((?:#[^"]*)?)"/g, (m, _slash, name, hash) =>
+    name === 'index' ? `href="/${hash}"` : `href="/${name}${hash}"`);
+}
+
+// React hydrates the injected island via dangerouslySetInnerHTML; non-void
+// elements authored self-closing (`<polygon …/>`, `<path …/>`) re-serialize to
+// explicit close tags when the browser parses the DOM, which trips React #418
+// (hydration mismatch). Expand every self-closing tag EXCEPT the HTML void
+// elements so the fragment string matches the parsed DOM byte-for-byte.
+const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
+function expandSelfClosingTags(s) {
+  return s.replace(/<([a-zA-Z][\w:-]*)((?:"[^"]*"|'[^']*'|[^"'>])*?)\s*\/>/g, (m, tag, attrs) =>
+    VOID_TAGS.has(tag.toLowerCase()) ? m : `<${tag}${attrs}></${tag}>`);
+}
+
+// The platform chrome (DeHeader/DeFooter + the marketing layout's
+// <main id="main-content">) owns the page-level landmarks. Island content
+// authors its own <main> (full-page hero) and <header class="de-act-head">
+// act headers — inside the chrome those become a nested/duplicate <main> and
+// extra <header> landmarks (QA: "2 mains", "5 headers"). Demote both to <div>;
+// styling and the act controller are class-driven, so nothing else changes,
+// and the headings (h1/h2/h3) inside are preserved for screen-reader nav.
+function neutralizeLandmarks(s) {
+  return s
+    .replace(/<main\b/g, '<div').replace(/<\/main>/g, '</div>')
+    .replace(/<header\b/g, '<div').replace(/<\/header>/g, '</div>');
+}
+
 function collectAssetRefs(s, refs) {
   for (const m of s.matchAll(/(?:src|href|poster)="assets\/([^"]+)"/g)) refs.add(m[1]);
   for (const m of s.matchAll(/url\((['"]?)(?:\.\.\/)?assets\/([^'")]+)\1\)/g)) refs.add(m[2]);
@@ -104,6 +153,15 @@ function collectAssetRefs(s, refs) {
       const u = part.trim().split(/\s+/)[0];
       if (u.startsWith('assets/')) refs.add(u.slice('assets/'.length));
     }
+  }
+}
+
+function collectDynamicDeps(jsText, jsRefs, cssRefs) {
+  for (const m of jsText.matchAll(/['"`](js\/[^'"`?]+\.js)(?:\?[^'"`]*)?['"`]/g)) {
+    if (!EXCLUDED_SCRIPTS.has(m[1])) jsRefs.add(m[1]);
+  }
+  for (const m of jsText.matchAll(/['"`](css\/[^'"`?]+\.css)(?:\?[^'"`]*)?['"`]/g)) {
+    cssRefs.add(m[1]);
   }
 }
 
@@ -132,7 +190,7 @@ async function main() {
   await fs.rm(FRAGMENTS_DIR, { recursive: true, force: true });
   await fs.rm(PUBLIC_DIR, { recursive: true, force: true });
   await fs.mkdir(FRAGMENTS_DIR, { recursive: true });
-  for (const d of ['css', 'js', 'assets', 'vendor']) await fs.mkdir(path.join(PUBLIC_DIR, d), { recursive: true });
+  for (const d of ['css', 'js', 'assets', 'partials', 'vendor']) await fs.mkdir(path.join(PUBLIC_DIR, d), { recursive: true });
 
   const assetRefs = new Set();
   const cssToCopy = new Set();
@@ -149,7 +207,7 @@ async function main() {
     const bodyClass = html.match(/<body\s+class="([^"]*)"/)?.[1] ?? '';
     const css = [...html.matchAll(/<link\s+rel="stylesheet"\s+href="(css\/[^"?]+)(?:\?[^"]*)?"/g)].map((m) => m[1]);
     const fonts = [...html.matchAll(/<link[^>]+href="(https:\/\/fonts\.googleapis\.com\/css2[^"]+)"[^>]*>/g)].map((m) => m[1]);
-    const js = [...html.matchAll(/<script\s+src="(js\/[^"?]+)(?:\?[^"]*)?"><\/script>/g)]
+    const js = [...html.matchAll(/<script\b[^>]*\bsrc="(js\/[^"?]+)(?:\?[^"]*)?"[^>]*><\/script>/g)]
       .map((m) => m[1])
       .filter((s) => !EXCLUDED_SCRIPTS.has(s));
     css.forEach((c) => cssToCopy.add(c));
@@ -161,9 +219,12 @@ async function main() {
     let frag = bodyInner;
     frag = stripBlock(frag, /<nav\s+class="navbar"[^>]*>/, '</nav>', `${page}: navbar`);
     frag = stripBlock(frag, /<footer\s+class="footer"[^>]*>/, '</footer>', `${page}: footer`);
-    frag = frag.replace(/\s*<script\s+src="[^"]*"><\/script>/g, '');
+    frag = frag.replace(/\s*<script\b[^>]*\bsrc="[^"]*"[^>]*><\/script>/g, '');
     if (/<script[\s>]/.test(frag)) warn.push(`${page}: inline <script> left in fragment — review`);
     collectAssetRefs(frag, assetRefs);
+    frag = neutralizeLandmarks(frag);
+    frag = expandSelfClosingTags(frag);
+    frag = rewriteInternalLinks(frag);
     frag = rewriteAssetPaths(frag).trim();
 
     await fs.writeFile(path.join(FRAGMENTS_DIR, `${page}.html`), frag + '\n');
@@ -179,12 +240,27 @@ async function main() {
   }
 
   // ── css (scan for asset refs, rewrite nothing — ../assets resolves under /de-site/css/) ──
+  // Page scripts lazy-load late JS/CSS after user intent. Discover that graph
+  // before copying so platform routes don't request /inventory/js/... etc.
+  for (let scanned = 0; scanned < jsToCopy.size; scanned += 1) {
+    const j = [...jsToCopy][scanned];
+    const text = await fs.readFile(path.join(SITE_ROOT, j), 'utf8');
+    collectDynamicDeps(text, jsToCopy, cssToCopy);
+  }
+
   let styleCssText = null;
   for (const c of cssToCopy) {
     const text = await fs.readFile(path.join(SITE_ROOT, c), 'utf8');
     if (c === 'css/style.css') styleCssText = text;
     collectAssetRefs(text, assetRefs);
     await fs.writeFile(path.join(PUBLIC_DIR, c.replace(/^css\//, 'css/')), text);
+  }
+  if (!styleCssText) {
+    try {
+      styleCssText = await fs.readFile(path.join(SITE_ROOT, 'css', 'style.css'), 'utf8');
+    } catch {
+      warn.push('de-chrome: css/style.css source not found — chrome css not emitted');
+    }
   }
   // ── de-chrome.css for the platform's DeHeader/DeFooter ──
   if (styleCssText) {
@@ -196,6 +272,28 @@ async function main() {
     warn.push('de-chrome: css/style.css not among page stylesheets — chrome css not emitted');
   }
   ALWAYS_INCLUDE_ASSETS.forEach((a) => assetRefs.add(a));
+  // ── partials (lazy-loaded by page JS via fetch("/de-site/partials/...")) ──
+  const partialsSrc = path.join(SITE_ROOT, 'partials');
+  try {
+    const partialNames = await fs.readdir(partialsSrc);
+    let partialCount = 0;
+    for (const name of partialNames) {
+      if (!name.endsWith('.html')) continue;
+      const src = path.join(partialsSrc, name);
+      let text = await fs.readFile(src, 'utf8');
+      collectAssetRefs(text, assetRefs);
+      text = neutralizeLandmarks(text);
+      text = expandSelfClosingTags(text);
+      text = rewriteInternalLinks(text);
+      text = rewriteAssetPaths(text);
+      await fs.writeFile(path.join(PUBLIC_DIR, 'partials', name), text);
+      partialCount += 1;
+    }
+    process.stdout.write(`partials: ${partialCount} copied\n`);
+  } catch {
+    warn.push('partials: source directory not found');
+  }
+
   // ── js (copy + scan string-literal asset refs the HTML scan can't see:
   //    app.js loads the hero frame sequence + case-study logos + ripple bg
   //    via JS, not markup) ──
@@ -209,7 +307,11 @@ async function main() {
     // `assets/frames/frame_0001.webp` which on the platform resolves to
     // /assets/frames/... — the catch-all returns 200 HTML, the <img> fails to
     // decode (naturalWidth 0), and the hero canvas never paints.
-    text = text.replace(/(['"`])assets\//g, '$1/de-site/assets/');
+    text = text
+      .replace(/(['"`])assets\//g, '$1/de-site/assets/')
+      .replace(/(['"`])partials\//g, '$1/de-site/partials/')
+      .replace(/(['"`])js\//g, '$1/de-site/js/')
+      .replace(/(['"`])css\//g, '$1/de-site/css/');
     await fs.writeFile(path.join(PUBLIC_DIR, j), text);
   }
   // ── vendor ──

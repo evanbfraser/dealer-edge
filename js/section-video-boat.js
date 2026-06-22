@@ -11,6 +11,12 @@ function animateVideoSection() {
   const overlay = document.getElementById('video-overlay-text');
   const section = document.getElementById('video-section');
   if (!inner || !section || !overlay) return;
+  if (!window.gsap || !window.ScrollTrigger) {
+    inner.style.width = '100%';
+    inner.style.borderRadius = '0';
+    overlay.classList.add('visible');
+    return;
+  }
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobileVideo = window.matchMedia('(max-width: 960px)').matches;
@@ -60,10 +66,79 @@ function initBoatSection() {
   const boatRoi = document.getElementById('boat-roi'); // optional secondary ROI CTA (deep-dive closes)
   if (!section || !video || !headOut || !headIn || !boatSub || !boatCta) return;
 
+  let videoRequested = false;
+  function requestVideo() {
+    if (videoRequested) return;
+    const src = video.getAttribute('data-src');
+    if (!src) {
+      videoRequested = true;
+      return;
+    }
+    videoRequested = true;
+    video.preload = 'auto';
+    video.src = src;
+    video.load();
+    video.pause();
+  }
+
+  function requestVideoWhenNear() {
+    const rect = section.getBoundingClientRect();
+    const margin = Number(section.dataset.videoPrewarm || 900);
+    if (rect.top < window.innerHeight + margin && rect.bottom > -margin) requestVideo();
+  }
+
+  function isSectionNear() {
+    const rect = section.getBoundingClientRect();
+    const margin = Number(section.dataset.videoPrewarm || 900);
+    return rect.top < window.innerHeight + margin && rect.bottom > -margin;
+  }
+
   video.pause();
+  const on = window.DE?.on || ((target, type, handler, opts) => target.addEventListener(type, handler, opts));
+  on(window, 'scroll', requestVideoWhenNear, { passive: true });
+  on(window, 'resize', requestVideoWhenNear, { passive: true });
+  requestVideoWhenNear();
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);
+  if (!hasGsap) {
+    const setText = (progress) => {
+      const fade = (value, start, end) => Math.max(0, Math.min(1, (value - start) / (end - start)));
+      const headOutOpacity = 1 - fade(progress, 0.16, 0.26);
+      const headInOpacity = fade(progress, 0.22, 0.34);
+      const subOpacity = fade(progress, 0.28, 0.42);
+      const ctaOpacity = fade(progress, 0.34, 0.48);
+      headOut.style.opacity = String(headOutOpacity);
+      headOut.style.transform = `translateY(${-30 * (1 - headOutOpacity)}px)`;
+      headIn.style.opacity = String(headInOpacity);
+      headIn.style.transform = `translateY(${30 * (1 - headInOpacity)}px)`;
+      boatSub.style.opacity = String(subOpacity);
+      boatSub.style.transform = `translateY(${16 * (1 - subOpacity)}px)`;
+      boatSub.style.pointerEvents = subOpacity > 0.9 ? 'auto' : 'none';
+      boatCta.style.opacity = String(ctaOpacity);
+      boatCta.style.transform = `translateY(${20 * (1 - ctaOpacity)}px)`;
+      boatCta.style.pointerEvents = ctaOpacity > 0.9 ? 'auto' : 'none';
+      if (boatRoi) {
+        boatRoi.style.opacity = String(ctaOpacity);
+        boatRoi.style.transform = `translateY(${18 * (1 - ctaOpacity)}px)`;
+        boatRoi.style.pointerEvents = ctaOpacity > 0.9 ? 'auto' : 'none';
+      }
+    };
+    const updateNative = () => {
+      const rect = section.getBoundingClientRect();
+      const total = Math.max(1, section.offsetHeight - window.innerHeight);
+      const progress = Math.max(0, Math.min(1, -rect.top / total));
+      scrub(progress);
+      setText(progress);
+    };
+    on(window, 'scroll', updateNative, { passive: true });
+    on(window, 'resize', updateNative, { passive: true });
+    updateNative();
+    return;
+  }
+
   if (prefersReducedMotion) {
+    requestVideo();
     gsap.set([headOut, headIn, boatSub, boatCta], { clearProps: 'opacity,transform' });
     headOut.style.opacity = '0';
     headIn.style.opacity = '1';
@@ -86,6 +161,7 @@ function initBoatSection() {
   }
 
   function scrub(progress) {
+    if (progress > 0.001 || isSectionNear()) requestVideo();
     if (video.readyState >= 1 && video.duration) {
       video.currentTime = progress * video.duration;
     }
@@ -143,5 +219,5 @@ function initVideoBoatSections() {
   killVideoBoatTriggers();
   animateVideoSection();
   initBoatSection();
-  ScrollTrigger.refresh();
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
 }

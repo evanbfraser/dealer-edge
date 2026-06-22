@@ -4,3 +4,15 @@ claude:skills:video-to-website:
 
 # Local QA / audit artifacts — not runtime assets, keep .git lean
 screenshots/
+perf-reports/
+node_modules/
+
+# bonsai-qa throwaway run artifacts
+.bonsai-qa/runs/
+
+# local agent tooling (not site source)
+.agents/
+
+# Machine-specific local MCP wiring (absolute path to the generator's mcp-server;
+# default tenant scoped to DealerEdge 36304ab1-… for safe cross-repo QA). Not shared.
+.mcp.json

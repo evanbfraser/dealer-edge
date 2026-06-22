@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Case Study | DealerEdge</title>
   <script>if(sessionStorage.getItem('csd-from-transition'))document.documentElement.classList.add('csd-from-transition');</script>
-  <link rel="stylesheet" href="css/style.css?v=20260616i">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <link rel="preload" href="assets/case-study-image-1-hero-1120-q42.avif" as="image" type="image/avif">
+  <link rel="preload" href="assets/dealer-logo-1.svg" as="image">
+  <link rel="stylesheet" href="css/results-core.min.css?v=20260621a">
+  <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 
@@ -25,7 +22,7 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">
-        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
       </div>
       <div class="nav-links">
         <div class="nav-dropdown">
@@ -70,16 +67,16 @@
 
   <!-- Hero -->
   <section class="csd-hero" id="csd-section-hero">
-    <div class="csd-hero-img" id="csd-hero-img"></div>
+    <div class="csd-hero-img" id="csd-hero-img" style="background-image: image-set(url('assets/case-study-image-1-hero-1120-q42.avif') type('image/avif'), url('assets/case-study-image-1-hero-1280-lite.webp') type('image/webp'))"></div>
     <div class="csd-hero-overlay"></div>
     <a href="case-studies.html" class="csd-back-link">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       All Results
     </a>
     <div class="csd-hero-logo-wrap">
-      <img id="csd-hero-logo" src="" alt="" class="csd-hero-logo">
+      <img id="csd-hero-logo" src="assets/dealer-logo-1.svg" alt="Galati Yacht Sales" class="csd-hero-logo">
     </div>
-    <h1 class="csd-hero-headline" id="csd-hero-headline"></h1>
+    <h1 class="csd-hero-headline" id="csd-hero-headline">How Galati Yacht Sales tripled their qualified leads in 90 days</h1>
   </section>
 
   <!-- Intro -->
@@ -154,7 +151,7 @@
     <div class="footer-body">
       <div class="footer-inner">
         <div class="footer-col footer-col--brand">
-          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" class="footer-logo" width="162" height="34" loading="lazy" decoding="async">
           <p class="footer-tagline">Built for dealers who move fast.</p>
         </div>
         <div class="footer-col">
@@ -236,10 +233,10 @@
     </div>
   </div>
 
-  <script src="js/mobile-nav.js?v=20260616d"></script>
-  <script src="js/case-study.js?v=20260616d"></script>
+  <script src="js/mobile-nav.min.js?v=20260621a" defer></script>
+  <script src="js/case-study.min.js?v=20260621a" defer></script>
   <script>
-    // Modal (inline, uses lenis from case-study.js)
+    // Modal (inline, native body scroll lock)
     (function () {
       const backdrop = document.getElementById('modal-backdrop');
       const modal    = document.getElementById('modal');
@@ -291,8 +288,8 @@
       modal.querySelector('#ms-name').addEventListener('keydown',e=>{if(e.key==='Enter')modal.querySelector('#ms-next-1').click();});
       modal.querySelector('#ms-email').addEventListener('keydown',e=>{if(e.key==='Enter')modal.querySelector('#ms-phone').focus();});
       modal.querySelector('#ms-phone').addEventListener('keydown',e=>{if(e.key==='Enter')modal.querySelector('#ms-next-2').click();});
-      function openModal(e){e.preventDefault();userData={};modal.querySelectorAll('input').forEach(i=>i.value='');showStep(1);backdrop.classList.add('is-open');backdrop.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';lenis.stop();setTimeout(()=>modal.querySelector('#ms-name')?.focus(),320);}
-      function closeModal(){backdrop.classList.remove('is-open');backdrop.setAttribute('aria-hidden','true');document.body.style.overflow='';lenis.start();}
+      function openModal(e){e.preventDefault();userData={};modal.querySelectorAll('input').forEach(i=>i.value='');showStep(1);backdrop.classList.add('is-open');backdrop.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(()=>modal.querySelector('#ms-name')?.focus(),320);}
+      function closeModal(){backdrop.classList.remove('is-open');backdrop.setAttribute('aria-hidden','true');document.body.style.overflow='';}
       document.querySelectorAll('.js-modal').forEach(btn=>btn.addEventListener('click',openModal));
       closeBtn.addEventListener('click',closeModal);
       backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeModal();});

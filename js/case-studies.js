@@ -18,13 +18,6 @@
   tick();
 }());
 
-// ─── SMOOTH SCROLL ───
-const lenis = new Lenis({ lerp: 0.085, smoothWheel: true });
-gsap.registerPlugin(ScrollTrigger);
-gsap.ticker.add((time) => lenis.raf(time * 1000));
-gsap.ticker.lagSmoothing(0);
-lenis.on('scroll', ScrollTrigger.update);
-
 // ─── NAVBAR ───
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
@@ -33,6 +26,44 @@ window.addEventListener('scroll', () => {
 
 // ─── INIT ───
 window.addEventListener('DOMContentLoaded', () => {
+  function hydrateDeferredCardMedia(card) {
+    if (!card || card.dataset.mediaHydrated === 'true') return;
+    card.dataset.mediaHydrated = 'true';
+    card.querySelectorAll('source[data-srcset]').forEach(source => {
+      source.srcset = source.dataset.srcset;
+      source.removeAttribute('data-srcset');
+    });
+    card.querySelectorAll('img[data-src]').forEach(img => {
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    });
+  }
+
+  (function initDeferredCardMedia() {
+    const cards = Array.from(document.querySelectorAll('[data-defer-card-media]'))
+      .map(media => media.closest('.csp-card'))
+      .filter(Boolean);
+    if (!cards.length) return;
+    const check = () => {
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 120 && rect.bottom > -120) hydrateDeferredCardMedia(card);
+      });
+    };
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          hydrateDeferredCardMedia(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '120px 0px' });
+      cards.forEach(card => observer.observe(card));
+    }
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    check();
+  }());
 
   // Custom cursor
   const cursor = document.getElementById('custom-cursor');
@@ -48,42 +79,45 @@ window.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', (e) => {
         e.preventDefault();
         const id = card.dataset.csId;
+        hydrateDeferredCardMedia(card);
         const img = card.querySelector('.csp-card-img');
         const rect = img.getBoundingClientRect();
         const overlay = document.createElement('div');
-        overlay.style.cssText = `position:fixed;z-index:9998;background-image:url('${img.src}');background-size:cover;background-position:center;border-radius:20px;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;`;
+        overlay.style.cssText = `position:fixed;z-index:9998;background-image:url('${img.currentSrc || img.src}');background-size:cover;background-position:center;border-radius:20px;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;`;
         document.body.appendChild(overlay);
         document.body.style.overflow = 'hidden';
-        gsap.to(overlay, {
-          top: 0, left: 0, width: '100vw', height: '100vh', borderRadius: 0,
-          duration: 0.6, ease: 'power3.inOut',
-          onComplete: () => { sessionStorage.setItem('csd-from-transition', '1'); window.location.href = `case-study.html?id=${id}`; }
+        overlay.style.transition = 'top 0.6s cubic-bezier(0.22, 1, 0.36, 1), left 0.6s cubic-bezier(0.22, 1, 0.36, 1), width 0.6s cubic-bezier(0.22, 1, 0.36, 1), height 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+        requestAnimationFrame(() => {
+          overlay.style.top = '0';
+          overlay.style.left = '0';
+          overlay.style.width = '100vw';
+          overlay.style.height = '100vh';
+          overlay.style.borderRadius = '0';
         });
+        overlay.addEventListener('transitionend', () => {
+          sessionStorage.setItem('csd-from-transition', '1');
+          window.location.href = `case-study.html?id=${id}`;
+        }, { once: true });
       });
     });
   }
 
   // Scroll fade-in for [data-fade] elements
-  // NOTE: explicit fromTo (not gsap.from). style.css now sets
-  // [data-fade]{opacity:0}, so gsap.from would animate to the *current*
-  // value (0) and the page would stay invisible. fromTo forces the end
-  // state to opacity:1 regardless of the base CSS.
-  document.querySelectorAll('[data-fade]').forEach(el => {
-    gsap.fromTo(el,
-      { opacity: 0, y: 28 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.75,
-        delay: parseFloat(el.dataset.delay || 0),
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 88%',
-        },
-      }
-    );
-  });
+  const fadeEls = Array.from(document.querySelectorAll('[data-fade]'));
+  if ('IntersectionObserver' in window) {
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const delay = parseFloat(entry.target.dataset.delay || 0);
+        entry.target.style.transitionDelay = `${delay}s`;
+        entry.target.classList.add('is-visible');
+        fadeObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+    fadeEls.forEach(el => fadeObserver.observe(el));
+  } else {
+    fadeEls.forEach(el => el.classList.add('is-visible'));
+  }
 
   // ─── CONTACT MODAL ───
   (function initModal() {
@@ -194,7 +228,6 @@ window.addEventListener('DOMContentLoaded', () => {
       backdrop.classList.add('is-open');
       backdrop.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      lenis.stop();
       setTimeout(() => modal.querySelector('#ms-name')?.focus(), 320);
     }
 
@@ -202,7 +235,6 @@ window.addEventListener('DOMContentLoaded', () => {
       backdrop.classList.remove('is-open');
       backdrop.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
-      lenis.start();
     }
 
     document.querySelectorAll('.js-modal').forEach(btn => btn.addEventListener('click', openModal));

@@ -107,6 +107,7 @@
   position: relative;
   width: min(1200px, 100%);
   margin: 0 auto;
+  min-height: 568px;
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.05fr);
   gap: 56px;
@@ -770,7 +771,7 @@
 .i-pipe-mask {
   display: block;
   height: 64px;
-  background: url('../assets/inventory/pipeline-wide.webp') no-repeat;
+  background-repeat: no-repeat;
   background-size: 640%;
   background-position: 26.5% 63%;
   filter: contrast(1.15) brightness(1.05);
@@ -802,7 +803,9 @@
 .i-pipe-graph {
   position: absolute;
   inset: 0;
-  background: url('../assets/inventory/pipeline-wide.webp') center / cover no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   filter: blur(3px) brightness(0.6) saturate(0.85);
   opacity: 0.75;
 }
@@ -1795,6 +1798,7 @@
   .i-hero { padding: calc(var(--nav-height, 72px) + 28px) 16px 56px; }
 
   .i-hero-inner {
+    min-height: 0;
     grid-template-columns: 1fr;
     gap: 34px;
   }

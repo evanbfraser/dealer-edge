@@ -1,12 +1,16 @@
 # DealerEdge Marketing Site — Agent Guide
 
-This file is the persistent context for any AI agent (Codex, Cursor, Codex, etc.) working in this repo. Read it first. The conventions below were earned over real iteration with Jason — please don't re-derive them or rewrite locked language without explicit permission.
+This file is the persistent context for any AI agent (Codex, Cursor, etc.) working in this repo. Read it first. The conventions below were earned over real iteration with Jason — please don't re-derive them or rewrite locked language without explicit permission.
+
+> **Canonical source: [`CLAUDE.md`](CLAUDE.md).** This file mirrors it and can lag. For the current build pipeline, deploy/export flow, and the cross-repo (static → platform) split, read CLAUDE.md — when the two differ, CLAUDE.md wins. Live status + launch punch-list: [`PROJECT-STATUS.md`](PROJECT-STATUS.md).
 
 ---
 
 ## What this project is
 
-`evanbfraser/dealer-edge` is the marketing site for **DealerEdge**, one of three product lines under **The Edge Platform** (Bonsai Media Group's AI Competitive Edge platform — see Notion). Static HTML/CSS/JS, no build step. Hosted publicly at **https://mantra-harbor-8vkd.here.now/** via [here.now](https://here.now). The git remote (`evanbfraser/dealer-edge`) is Evan's repo; Jason has push access.
+`evanbfraser/dealer-edge` is the marketing site for **DealerEdge**, one of three product lines under **The Edge Platform** (Bonsai Media Group's AI Competitive Edge platform — see Notion). Static HTML/CSS/JS with a **light build step** (per-page critical/late CSS+JS split, then minified — `npm run minify`; details in CLAUDE.md). The git remote (`evanbfraser/dealer-edge`) is Evan's repo; Jason has push access.
+
+**The live surface is the DealerEdge platform tenant** — **https://dealeredge.dealeredge.ai** (staging; production target **dealeredge.ai**) — where the pages run as exported vanilla "islands" inside the `dealerEdge-demo-generator` Next.js app. That's the launch target and what the autonomous QA audits; ~half of all chrome/SEO/a11y fixes live in the **platform repo**, not here (see CLAUDE.md → *Cross-repo*). The here.now preview (`mantra-harbor-8vkd`) is **retired**.
 
 Pages:
 
@@ -329,52 +333,33 @@ There's a custom cursor system inherited from Evan's POC (`.cursor-glow`, `.cust
 
 ---
 
-## External libraries (CDN, no build step)
+## External libraries
 
-All loaded via CDN in each page's `<head>`. Don't add new libraries casually — keep this list lean.
+Don't add new libraries casually — keep this list lean.
 
 - [**Lenis**](https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js) v1 — smooth scroll
 - [**GSAP**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js) 3.12.5 — animations
-- [**ScrollTrigger**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js) 3.12.5 — scroll-driven triggers
-- Google Fonts: Inter + JetBrains Mono
+- [**ScrollTrigger**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js) 3.12.5 — scroll-driven triggers (loaded late, with deferred act JS)
+
+Loading: CDN (`defer`) on the static site; the platform export **vendors them same-origin** (CSP). **Fonts are self-hosted** variable woff2 in `assets/fonts/` (preloaded — no Google Fonts CDN). See CLAUDE.md → *Performance & build pipeline* for the critical/late split and minify build.
 
 ---
 
-## Deploy workflow (here.now)
+## Deploy
 
-### Live URL (don't change the slug)
-
-**https://mantra-harbor-8vkd.here.now/** — owned by Jason's here.now account, authenticated, permanent.
-
-### Why we use a separate "preview" folder
-
-The source repo (`c:\Users\jason\repos\dealer-edge-website`) has a **~70 MB `.git` directory** that breaks the here.now upload on Windows Git Bash (the script hashes every file through subshells, which on Windows is glacial). We mirror only the runtime files into `c:\Users\jason\repos\dealer-edge-preview` and publish from there.
-
-The preview folder is excluded from the .git tree. Don't commit it; don't run `git init` inside it.
-
-### Deploy steps
+**The only deploy target is the platform tenant** — the here.now preview (`mantra-harbor-8vkd`) and its `dealer-edge-preview` mirror are **retired; don't recreate them.** To ship a change:
 
 ```powershell
-# 1. Sync only the files you changed into the preview folder
-$src = "C:\Users\jason\repos\dealer-edge-website"
-$dst = "C:\Users\jason\repos\dealer-edge-preview"
-Copy-Item "$src\sales.html"      "$dst\"     -Force
-Copy-Item "$src\css\sales.css"   "$dst\css\" -Force
-Copy-Item "$src\js\sales.js"     "$dst\js\"  -Force
-# (and any other changed runtime files — never .git, never node_modules)
-
-# 2. Publish via the existing wrapper (uses Git Bash + here.now/publish.sh)
-& "C:\Program Files\Git\bin\bash.exe" "C:/Users/jason/repos/dealer-edge-preview/.run-publish.sh"
-
-# 3. Check the result
-Get-Content C:\Users\jason\repos\dealer-edge-preview\publish-out.log -Tail 12
+npm run minify                       # rebuild the .min.* artifacts (REQUIRED — pages load .min.*)
+node scripts/export-platform.mjs     # package pages → dealerEdge-demo-generator
+# then commit + push the platform repo (staging-first); Vercel deploys it
 ```
 
-The wrapper script `.run-publish.sh` calls `~/.agents/skills/here-now/scripts/publish.sh . --slug mantra-harbor-8vkd ...` which auto-updates the existing site (delta upload — only changed files re-upload).
+Preview locally with `npm run benchmark` (serves on `:4173`) or by opening the HTML. Full flow, repo routing, and tenant IDs: **CLAUDE.md → *Deploy* + *Cross-repo: static site → platform tenant***.
 
 ### When NOT to redeploy
 
-AGENTS.md, README, .git/*, plan files, scratch files — none of these are runtime assets. Don't redeploy when only meta files change.
+AGENTS.md, CLAUDE.md, README, .git/*, plan/status files, `perf-reports/`, `.bonsai-qa/` — none are runtime assets. Don't re-export when only meta files change.
 
 ---
 
@@ -424,12 +409,12 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **Don't change demo story specifics** without updating the canon table above. Mixing "Saturday at 10 AM" and "Tuesday at 10 AM" in different beats has happened — caused a Jason callout because the timing made no sense.
 - **Don't add CSS keyframe animations to beat content that ignore the IntersectionObserver gate.** Use JS-driven animations that read `stillCurrent` so they don't pre-play off-screen.
 - **Don't break the scroll-pinned act sizing** (`height: N*100vh` rule). Last beat goes unreachable.
-- **Don't deploy the full source folder** to here.now — the `.git` folder is too big for Windows Git Bash to chew. Use the preview-folder pattern.
+- **Don't skip `npm run minify` before exporting/deploying** — pages load the `.min.*` artifacts; stale output ships old code. Don't hand-edit `.min.*` or the generated `*-core`/`*-critical`/`*-late` CSS — edit the source and rebuild.
 - **Don't push to remote without committing cleanly.** Don't force-push to main.
 - **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, fonts. That's it.
 - **Don't add matter.js back** without explicit permission — the Stats Section now uses GSAP + DOM sprites.
 - **Don't delete the `.s-` CSS prefix.** It's the namespace boundary; styles will leak across pages without it.
-- **Don't commit the preview folder** (`c:\Users\jason\repos\dealer-edge-preview`) into this repo.
+- **Don't recreate the here.now preview** (`mantra-harbor-8vkd`) or the `dealer-edge-preview` mirror — both retired; the platform tenant is the only deploy target.
 - **Don't reuse a `data-anim` key** across two different beats. Each key resolves to exactly one handler.
 - **Don't put live API keys, customer phone numbers, or PII** anywhere in this repo. Even in demo data — use the `+1 (615) 555-XXXX` style fake numbers.
 

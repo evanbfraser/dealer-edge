@@ -6,12 +6,13 @@ const sales = fs.readFileSync(path.join(root, 'sales.html'), 'utf8');
 const salesCss = fs.readFileSync(path.join(root, 'css/sales.css'), 'utf8');
 const styleCss = fs.readFileSync(path.join(root, 'css/style.css'), 'utf8');
 const salesJs = fs.readFileSync(path.join(root, 'js/sales.js'), 'utf8');
+const demoModalJs = fs.readFileSync(path.join(root, 'js/demo-modal.js'), 'utf8');
 const css = salesCss + styleCss;
 
 const checks = [
   ['sales-page body class', sales.includes('class="sales-page"')],
   ['mobile nav toggle', sales.includes('id="nav-toggle"')],
-  ['demo modal', sales.includes('id="modal-backdrop"')],
+  ['demo modal', salesJs.includes('initLazyDemoModal') && demoModalJs.includes('id="modal-backdrop"')],
   ['boat section', sales.includes('id="boat-section"')],
   ['video section', sales.includes('id="video-section"')],
   ['bp tokens', css.includes('--bp-tablet')],

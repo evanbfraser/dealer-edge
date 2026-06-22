@@ -5,15 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROI Calculator | DealerEdge — See what you're leaving on the lot.</title>
   <meta name="description" content="See what slow sites and slow follow-up cost your dealership — and the gross margin DealerEdge recovers. Enter your funnel, tune the sliders, and watch the math.">
-  <link rel="stylesheet" href="css/style.css?v=20260616f">
-  <link rel="stylesheet" href="css/de-act.css?v=20260616d">
-  <link rel="stylesheet" href="css/roi.css?v=20260616j">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="css/deep-core.min.css?v=20260621a">
+  <link rel="stylesheet" href="css/roi.min.css?v=20260621a">
+  <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body class="roi-page">
 
@@ -29,7 +23,7 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">
-        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" height="36"></a>
+        <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
       </div>
       <div class="nav-links">
         <div class="nav-dropdown">
@@ -293,7 +287,7 @@
   </section>
 
   <!-- Boat CTA close -->
-  <section class="boat-section" id="boat-section">
+  <section class="boat-section" id="boat-section" data-video-prewarm="160">
     <div class="boat-sticky">
       <div class="boat-left">
         <div class="section-label">The Competitive Edge</div>
@@ -304,7 +298,7 @@
         <p class="boat-sub" id="boat-sub">That number isn't hypothetical &mdash; it's the gap between what you sell now and what the same buyers would buy with faster follow-up. Let's pull your real figures.</p>
         <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your demo today</button>
       </div>
-      <video id="boat-video" src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="auto"></video>
+      <video id="boat-video" data-src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="none"></video>
     </div>
   </section>
   </main>
@@ -314,7 +308,7 @@
     <div class="footer-body">
       <div class="footer-inner">
         <div class="footer-col footer-col--brand">
-          <img src="assets/dealer-edge-logo-horiz.svg" alt="DealerEdge" class="footer-logo">
+          <img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" class="footer-logo" width="162" height="34" loading="lazy" decoding="async">
           <p class="footer-tagline">More leads in. Faster response out. Nothing lost in between.</p>
         </div>
         <div class="footer-col">
@@ -347,47 +341,7 @@
     </div>
   </footer>
 
-  <!-- Demo request modal -->
-  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
-    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
-      <button class="modal-close" id="modal-close" aria-label="Close">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-
-      <div class="ms-step" id="ms-step-1">
-        <span class="modal-eyebrow">Schedule a Demo</span>
-        <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
-        <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
-        <div class="form-group">
-          <input type="text" id="ms-name" placeholder="Your name" autocomplete="name">
-        </div>
-        <div class="form-group">
-          <input type="email" id="ms-email" placeholder="Email address" autocomplete="email">
-        </div>
-        <div class="form-group">
-          <input type="tel" id="ms-phone" placeholder="Phone number" autocomplete="tel">
-        </div>
-        <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
-      </div>
-
-      <div class="ms-step ms-step--hidden" id="ms-step-2">
-        <div class="ms-confirm">
-          <div class="ms-confirm-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <h2 class="ms-confirm-title">You're all set!</h2>
-          <p class="ms-confirm-text" id="ms-confirm-text"></p>
-          <button class="btn-primary ms-next-btn" id="ms-done" type="button">Done</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script src="js/mobile-nav.js?v=20260616d"></script>
-  <script src="js/demo-modal.js?v=20260616d"></script>
-  <script src="js/section-video-boat.js?v=20260616d"></script>
-  <script src="js/de-core.js?v=20260616d"></script>
-  <script src="js/roi.js?v=20260616k"></script>
+  <script src="js/mobile-nav.min.js?v=20260621a" defer></script>
+  <script src="js/roi.min.js?v=20260621a" defer></script>
 </body>
 </html>

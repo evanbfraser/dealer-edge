@@ -1,0 +1,30 @@
+{
+  "name": "dealer-edge-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "benchmark": "node scripts/benchmark-pages.js",
+    "smoke:live": "node scripts/smoke-live-de-site.js",
+    "minify:css": "node scripts/minify-css.js",
+    "minify:js": "node scripts/minify-js.js",
+    "minify": "npm run minify:css && npm run minify:js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evanbfraser/dealer-edge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/evanbfraser/dealer-edge/issues"
+  },
+  "homepage": "https://github.com/evanbfraser/dealer-edge#readme",
+  "devDependencies": {
+    "playwright": "^1.61.0",
+    "terser": "^5.48.0"
+  }
+}

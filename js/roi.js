@@ -16,29 +16,201 @@
    leading indicator only — we deliberately put money on the proven
    number, anchored to The Offer's 20% guarantee.
 
-   Lifecycle: registered as DE.pages.roi, booted by DE.boot('roi')
-   at the bottom (see js/de-core.js).
    ─────────────────────────────────────────────────────────────── */
 
-DE.pages.roi = { boot() {
+(function () {
   'use strict';
 
-  const reduceMotion = DE.reduceMotion;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // shared engine (js/de-core.js): Lenis + cursor glow + nav state + fade
-  const lenis = DE.createLenis();
-
-  if (typeof initMobileNav === 'function') initMobileNav(); // not shipped to the platform (DeHeader owns nav)
-  if (typeof initDemoModal === 'function') initDemoModal(lenis);
-  DE.initCursorGlow();
-  DE.initNavScroll();
-  DE.initScrollHint();
-  DE.initEntryCue();
-  DE.initFade();
-  if (typeof initVideoBoatSections === 'function') {
-    initVideoBoatSections();
-    DE.on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', initVideoBoatSections);
+  function initCursorGlow() {
+    const cursor = document.getElementById('custom-cursor');
+    const glow = document.getElementById('cursor-glow');
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!finePointer || (!cursor && !glow)) return;
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let gx = mx;
+    let gy = my;
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+      if (cursor) cursor.style.transform = `translate(${mx}px, ${my}px)`;
+      glow?.classList.add('visible');
+    }, { passive: true });
+    document.addEventListener('mouseleave', () => glow?.classList.remove('visible'));
+    function tick() {
+      gx += (mx - gx) * 0.1;
+      gy += (my - gy) * 0.1;
+      glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+      requestAnimationFrame(tick);
+    }
+    if (glow) tick();
   }
+
+  function initNavScroll() {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+    const onScroll = () => navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  function initFade() {
+    const faders = document.querySelectorAll('[data-fade]');
+    if (!faders.length) return;
+    if (!('IntersectionObserver' in window)) {
+      faders.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const delay = parseFloat(entry.target.dataset.delay || 0);
+        if (delay) entry.target.style.transitionDelay = `${delay}s`;
+        entry.target.classList.add('is-visible');
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+    faders.forEach((el) => obs.observe(el));
+  }
+
+  function initScrollHint() {
+    if (document.querySelector('.de-scroll-hint')) return;
+    const el = document.createElement('div');
+    el.className = 'de-scroll-hint';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<span class="de-scroll-hint__label">Scroll</span><span class="de-scroll-hint__chevron"></span>';
+    document.body.appendChild(el);
+    let idleMs = 0;
+    const hide = () => el.classList.remove('is-visible');
+    const blocked = () => {
+      const vh = window.innerHeight;
+      const atBottom = (vh + window.scrollY) >= (document.documentElement.scrollHeight - vh);
+      return atBottom
+        || document.getElementById('modal-backdrop')?.classList.contains('is-open');
+    };
+    window.addEventListener('scroll', () => { idleMs = 0; hide(); }, { passive: true });
+    setInterval(() => {
+      if (blocked()) { hide(); return; }
+      idleMs += 500;
+      if (idleMs >= 1000) el.classList.add('is-visible');
+    }, 500);
+  }
+
+  function initLazyDemoModal() {
+    const triggers = [...document.querySelectorAll('.js-modal')];
+    if (!triggers.length) return;
+
+    const src = 'js/demo-modal.min.js?v=20260621a';
+    let loading = null;
+    let initialized = false;
+
+    const load = () => {
+      if (!loading) {
+        loading = new Promise((resolve) => {
+          const existing = document.querySelector(`script[src="${src}"]`);
+          if (existing) {
+            existing.addEventListener('load', resolve, { once: true });
+            existing.addEventListener('error', resolve, { once: true });
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = src;
+          script.defer = true;
+          script.onload = resolve;
+          script.onerror = resolve;
+          document.head.appendChild(script);
+        });
+      }
+
+      return loading.then(() => {
+        if (!initialized && typeof initDemoModal === 'function') {
+          initialized = true;
+          initDemoModal(null);
+        }
+      });
+    };
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', (event) => {
+        if (initialized) return;
+        event.preventDefault();
+        load().then(() => trigger.click());
+      }, { once: true });
+    });
+
+    ['pointerenter', 'focus'].forEach((eventName) => {
+      triggers.forEach((trigger) => trigger.addEventListener(eventName, load, { once: true, passive: true }));
+    });
+  }
+
+  function initLazyVideoBoatSections() {
+    const target = document.getElementById('video-section') || document.getElementById('boat-section');
+    if (!target) return;
+
+    let requested = false;
+    let observer = null;
+    let cssPromise = null;
+    const loadCss = () => {
+      const href = 'css/video-boat.min.css?v=20260621a';
+      const existing = document.querySelector(`link[href="${href}"]`);
+      if (existing) return cssPromise || Promise.resolve();
+      cssPromise = new Promise((resolve) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.onload = resolve;
+        link.onerror = resolve;
+        document.head.appendChild(link);
+      });
+      return cssPromise;
+    };
+    const load = () => {
+      if (requested) return;
+      requested = true;
+      observer?.disconnect();
+      const readyForLayout = loadCss();
+      if (typeof initVideoBoatSections === 'function') {
+        readyForLayout.then(initVideoBoatSections);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'js/section-video-boat.min.js?v=20260621a';
+      script.defer = true;
+      script.onload = () => {
+        if (typeof initVideoBoatSections === 'function') readyForLayout.then(initVideoBoatSections);
+      };
+      document.head.appendChild(script);
+    };
+    const checkNear = () => {
+      const rect = target.getBoundingClientRect();
+      const margin = 500;
+      if (rect.top < window.innerHeight + margin && rect.bottom > -margin) load();
+    };
+
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) load();
+      }, { rootMargin: '500px 0px' });
+      observer.observe(target);
+    }
+    window.addEventListener('scroll', checkNear, { passive: true });
+    window.addEventListener('resize', checkNear, { passive: true });
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => {
+      if (requested && typeof initVideoBoatSections === 'function') initVideoBoatSections();
+    });
+    checkNear();
+  }
+
+  function boot() {
+  if (typeof initMobileNav === 'function') initMobileNav(); // not shipped to the platform (DeHeader owns nav)
+  initLazyDemoModal();
+  initCursorGlow();
+  initNavScroll();
+  initScrollHint();
+  initFade();
+  initLazyVideoBoatSections();
 
   /* ─────────────────────────────────────────────────────────────
      Calculator
@@ -314,6 +486,11 @@ DE.pages.roi = { boot() {
   [els.price, els.margin].forEach((el) => { if (el) el.addEventListener('input', update); });
 
   recalc();
-}};
+  }
 
-DE.boot('roi');
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+}());

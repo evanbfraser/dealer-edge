@@ -6,11 +6,15 @@ This file is the persistent context for any AI agent (Claude Code, Cursor, Codex
 
 ## What this project is
 
-`evanbfraser/dealer-edge` is the marketing site for **DealerEdge**, one of three product lines under **The Edge Platform** (Bonsai Media Group's AI Competitive Edge platform — see Notion). Static HTML/CSS/JS, no build step. Hosted publicly at **https://mantra-harbor-8vkd.here.now/** via [here.now](https://here.now). The git remote (`evanbfraser/dealer-edge`) is Evan's repo; Jason has push access.
+`evanbfraser/dealer-edge` is the marketing site for **DealerEdge**, one of three product lines under **The Edge Platform** (Bonsai Media Group's AI Competitive Edge platform — see Notion). Static HTML/CSS/JS with a **light build step** (per-page critical/late CSS+JS split, then minified — see [Performance & build pipeline](#performance--build-pipeline)). The git remote (`evanbfraser/dealer-edge`) is Evan's repo; Jason has push access.
+
+**The live surface is the DealerEdge platform tenant** — **https://dealeredge.dealeredge.ai** (staging; production target **dealeredge.ai**). The pages run as exported vanilla "islands" inside the `dealerEdge-demo-generator` Next.js app, wearing platform-rendered chrome (`DeHeader`/`DeFooter`). It is **the launch target** and what the autonomous QA audits. When fixing the live site, read [Cross-repo: static site → platform tenant](#cross-repo-static-site--platform-tenant) first — roughly half of all chrome/SEO/a11y fixes live in the platform repo, **not here**. Current state + launch punch-list: [`PROJECT-STATUS.md`](PROJECT-STATUS.md).
+
+This repo is a **self-contained standalone site** — open the HTML locally or `npm run benchmark` (serves on `:4173`) for fast authoring + regression checks before exporting. It is **no longer published to here.now**; that preview (`mantra-harbor-8vkd`) and the `dealer-edge-preview` mirror are retired.
 
 Pages:
 
-- `index.html` — Homepage (Evan's original POC; mostly untouched, still uses CDN GSAP + Lenis + custom canvas hero)
+- `index.html` — Homepage. **Rebuilt 2026-06-20 for performance**: the 192-frame canvas hero sequence + 18 MB dock video ("the fishing game") were removed and media optimized — **6.8 MB / 211 requests → ~337 KB / 13 requests, LCP ~224 ms, CLS ~0**. Now on the `DE.boot/DE.destroy` lifecycle, uses the shared `js/demo-modal.js` for lead capture, and ships in the platform export (`app.js`/`app-late.js`).
 - `features.html` — Features explorer (data-driven side-nav, populated by `js/features.js`)
 - `pricing.html`, `case-studies.html`, `case-study.html` — Lighter pages, less iteration
 - **`sales.html`** — The Sales pillar deep-dive prototype. This is the file we've been actively iterating on. Most of the conventions in this guide were established here. **Read [`sales.html`](sales.html), [`css/sales.css`](css/sales.css), and [`js/sales.js`](js/sales.js) before making changes to ANY page.** The pattern is meant to spread.
@@ -373,55 +377,107 @@ There's a custom cursor system inherited from Evan's POC (`.cursor-glow`, `.cust
 
 ---
 
-## External libraries (CDN, no build step)
+## External libraries
 
-All loaded via CDN in each page's `<head>`. Don't add new libraries casually — keep this list lean.
+Don't add new libraries casually — keep this list lean. The runtime deps are unchanged; how they load changed with the perf work.
 
 - [**Lenis**](https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js) v1 — smooth scroll
 - [**GSAP**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js) 3.12.5 — animations
-- [**ScrollTrigger**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js) 3.12.5 — scroll-driven triggers
-- Google Fonts: Inter + JetBrains Mono
+- [**ScrollTrigger**](https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js) 3.12.5 — scroll-driven triggers (loaded *late*, with the deferred act JS)
+
+**Loading:** on the static site these load via CDN (`defer`). The **platform export vendors them same-origin** into `public/de-site/vendor/` because the platform CSP blocks cdnjs/jsdelivr (`export-platform.mjs` downloads them once into `vendor/`). **Fonts are now self-hosted** variable woff2 in `assets/fonts/` (`inter-var-latin.woff2`, `jetbrains-mono-var-latin.woff2`), `<link rel="preload">`ed — the render-blocking Google Fonts CDN is gone. Build still has **no bundler** (no webpack/vite); the "build step" is just the CSS slicer + minifiers below.
 
 ---
 
-## Deploy workflow (here.now)
+## Performance & build pipeline
 
-### Live URL (don't change the slug)
+Added 2026-06-20. The deep-dive pages got a major CWV pass; this is the machinery. **Source files (`css/*.css`, `js/*.js`) are authored by hand as before — the `.min.*` and generated bundles are build artifacts. Pages load the `.min.*` files, so you MUST rebuild after editing source (see below) or the site serves stale code.**
 
-**https://mantra-harbor-8vkd.here.now/** — owned by Jason's here.now account, authenticated, permanent.
+### What ships per page
 
-### Why we use a separate "preview" folder
+- **CSS is split critical / core / late.** Each deep-dive `<head>` loads only `deep-core.min.css` + `<page>-critical.min.css`. The below-the-fold CSS (`<page>-late.min.css`) is appended by JS as the user scrolls toward the late section. The homepage uses `home-core` + `home-late`; chrome lives in `style.css`.
+- **JS is split main / late.** `<page>.min.js` (hero, cohort, snap, core init) loads `defer` up front; `<page>-late.min.js` (the later acts/animations + GSAP/ScrollTrigger) is injected on scroll-approach.
+- **Below-fold HTML is a lazy partial.** Content past the hero lives in `partials/<page>-late-content.html`, `fetch`ed into `<div data-<page>-late-root>` on scroll-approach, then wired (`DE.initFade()`, lazy video/boat sections, demo modal). Cuts initial DOM/parse/transfer. The lazy-load orchestration lives in each page's `js/<page>.js` (see `loadSalesLateExperience()` / `loadSalesLateContent()` / `loadSalesLateJs()` in `js/sales.js` as the canonical example).
+- **Cache-busting:** every local `.min.css`/`.min.js`/partial reference carries a `?v=YYYYMMDDx` token. **Bump it on any changed asset** or browsers/CDN serve stale — see the `de-deploy-cache-versioning` memory.
 
-The source repo (`c:\Users\jason\repos\dealer-edge-website`) has a **~70 MB `.git` directory** that breaks the here.now upload on Windows Git Bash (the script hashes every file through subshells, which on Windows is glacial). We mirror only the runtime files into `c:\Users\jason\repos\dealer-edge-preview` and publish from there.
+### The generators (CSS only)
 
-The preview folder is excluded from the .git tree. Don't commit it; don't run `git init` inside it.
+`style.css` and the page CSS are the **source of truth**. Per-page builder scripts **slice named, comment-delimited sections** out of them into composed bundles:
 
-### Deploy steps
+- `build-deep-core-css.js` → `deep-core.css`, `video-boat.css`, `features-dept.css`
+- `build-page-core-css.js` → `home-core.css`, `home-late.css`, `pricing-core.css`, `results-core.css`
+- `build-sales-css.js` / `build-marketing-css.js` / `build-inventory-css.js` / `build-analytics-css.js` → each page's `-critical` / `-late` split
+
+⚠️ **The slicers use exact section-header comments as boundaries** — e.g. `/* ─── HERO ─── */`, `/* ─── BUTTONS ─── */`. **Renaming, reordering, or deleting one of those header comments in `style.css` silently breaks the build** (the builder throws `Missing start/end marker`). The same marker names also drive the platform chrome extraction in `export-platform.mjs` (`CHROME_SECTIONS`). Treat those `/* ─── NAME ─── */` headers as an API.
+
+### Build + measure
 
 ```powershell
-# 1. Sync only the files you changed into the preview folder
-$src = "C:\Users\jason\repos\dealer-edge-website"
-$dst = "C:\Users\jason\repos\dealer-edge-preview"
-Copy-Item "$src\sales.html"      "$dst\"     -Force
-Copy-Item "$src\css\sales.css"   "$dst\css\" -Force
-Copy-Item "$src\js\sales.js"     "$dst\js\"  -Force
-# shared-layer files when touched:
-Copy-Item "$src\css\de-act.css"  "$dst\css\" -Force
-Copy-Item "$src\js\de-core.js"   "$dst\js\"  -Force
-# (and any other changed runtime files — never .git, never node_modules)
-
-# 2. Publish via the existing wrapper (uses Git Bash + here.now/publish.sh)
-& "C:\Program Files\Git\bin\bash.exe" "C:/Users/jason/repos/dealer-edge-preview/.run-publish.sh"
-
-# 3. Check the result
-Get-Content C:\Users\jason\repos\dealer-edge-preview\publish-out.log -Tail 12
+npm run minify        # runs all CSS builders → strips comments/whitespace → *.min.css;
+                      # then terser (2-pass, mangle) on the JS → *.min.js
+npm run minify:css    # CSS only        npm run minify:js   # JS only
+npm run benchmark     # serves the repo on :4173, 3 runs/page, desktop + mobile,
+                      # writes perf-reports/<timestamp>/summary.md (FCP/LCP/CLS/Load/Transfer/Requests)
 ```
 
-The wrapper script `.run-publish.sh` calls `~/.agents/skills/here-now/scripts/publish.sh . --slug mantra-harbor-8vkd ...` which auto-updates the existing site (delta upload — only changed files re-upload).
+**Always `npm run minify` before deploying or exporting** — the pages reference the `.min.*` artifacts. `perf-reports/` is a scratch log of benchmark runs (not a runtime asset; don't deploy it). As of 2026-06-20 every page sits at LCP ~150–340 ms, CLS ~0, transfer mostly <500 KB.
+
+---
+
+## Deploy
+
+**The only deploy target is the platform tenant.** The here.now preview (`mantra-harbor-8vkd`) and its `dealer-edge-preview` mirror folder are **retired** — don't recreate them. To get a change live:
+
+```powershell
+npm run minify                       # 1. rebuild the .min.* artifacts (REQUIRED — pages load .min.*)
+node scripts/export-platform.mjs     # 2. package pages → dealerEdge-demo-generator
+# 3. commit + push the platform repo (staging-first) — Vercel deploys it
+```
+
+Full detail (what the export emits, repo routing, tenant IDs) is in [Cross-repo: static site → platform tenant](#cross-repo-static-site--platform-tenant) below. Bump the `?v=` token in a page `<head>` for any changed `.min.*`/partial so caches refetch.
+
+To preview locally before exporting: `npm run benchmark` serves the repo on `http://127.0.0.1:4173/`, or just open the HTML files. The repo is fully self-contained (no server needed for the static pages).
 
 ### When NOT to redeploy
 
-CLAUDE.md, README, .git/*, plan files, scratch files — none of these are runtime assets. Don't redeploy when only meta files change.
+CLAUDE.md, AGENTS.md, README, .git/*, plan/status files, scratch files, `perf-reports/`, `.bonsai-qa/` — none are runtime assets. Don't re-export/redeploy when only meta files change.
+
+---
+
+## Cross-repo: static site → platform tenant
+
+The launch target (**dealeredge.ai**) is the **platform tenant**. The platform render is what the autonomous QA audits, and **its fixes split across two repos** — this is the single most important thing to understand before fixing the live site.
+
+### The two repos
+
+| Repo | Path | Owns |
+|---|---|---|
+| **Static site** (this repo) | `C:\Users\jason\repos\dealer-edge-website` | Page **bodies** (the exported island fragments), the shared design-token CSS (`style.css`), demo modal, page JS/animations |
+| **Platform** (`dealerEdge-demo-generator`) | `C:\Users\jason\repos\dealerEdge-demo-generator` | The Next.js host: **chrome** (`components/de-site/de-header.tsx` / `de-footer.tsx`), route **metadata**, 404 handling, CMS surfaces (blog/events/specials/resources), `/api/leads` + `/api/appointments`, the DE tenant seed |
+
+### The export pipeline (how a page-body change reaches the platform)
+
+```powershell
+npm run minify                       # 1. rebuild the .min.* artifacts (REQUIRED)
+node scripts/export-platform.mjs     # 2. package pages → dealerEdge-demo-generator
+#    default target: C:\Users\jason\repos\dealerEdge-demo-generator
+```
+
+`export-platform.mjs` emits, per page in `PAGES` (`sales, marketing, inventory, analytics, features, index, roi`):
+`lib/de-site/fragments/<page>.html` (body, nav/footer/`<script>` stripped, asset paths → `/de-site/...`) + `<page>.meta.json` (title/description/OG + ordered css/js lists), and copies `css/ js/ assets/ vendor/` into `public/de-site/`. It also extracts the **DE chrome CSS** from `style.css`'s `/* ─── NAME ─── */` sections (`CHROME_SECTIONS`) into `de-chrome.css` — so a chrome **style** change is authored here in `style.css`, but the chrome **markup/behavior** (`DeHeader`/`DeFooter`) is React in the platform repo. After exporting, **commit + push the platform repo** (staging-first, platform discipline — see below) to deploy.
+
+### Which repo does a fix belong in?
+
+- **Page-body content/copy, animations, demo modal, design tokens (`--text-dim`, `--accent`, button colors)** → **here**, then `npm run minify` + export.
+- **`<header>`/landmark/`aria-label`/skip-link/tab-order/focus-ring, nav DOM order, footer newsletter label, route `<meta>`/OG/canonical, soft-404, empty CMS pages** → **platform repo** (`de-header.tsx`, `de-footer.tsx`, route `generateMetadata`, `not-found`, CMS seed). Chrome *styling* is the exception — authored in `style.css` here, shipped via `de-chrome.css`.
+- **Internal cross-links** (`href="sales.html"` in page bodies) must resolve to **clean platform routes** (`/sales`) — the export/redirects own this; broken `.html`/`/null` links are a current launch blocker (see `PROJECT-STATUS.md`).
+
+### Platform-side facts (from the migration; keep current in PROJECT-STATUS.md)
+
+- **DE tenant id:** `36304ab1-6682-4dbc-8854-d101c6964483`. Env var on the platform is **`DE_SITE_TENANT_ID`** (renamed from `DEALEREDGE_TENANT_ID` to dodge a collision — PR #724).
+- **Staging:** https://dealeredge.dealeredge.ai (live, smoke-tested 2026-06-12; PRs #721 + #724 merged).
+- **Platform discipline:** land changes as a spec'd branch → staging → PR; never hand-edit prod. Lead routing skips reps whose `user_id` is NULL — Bob/Mike/Sarah must be linked in the dashboard for routing to work.
+- Full runbook (architecture, IDs, Vercel scope, gotchas): memory `project_de-site-platform-migration.md`.
 
 ---
 
@@ -471,12 +527,12 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 - **Don't change demo story specifics** without updating the canon table above. Mixing "Saturday at 10 AM" and "Tuesday at 10 AM" in different beats has happened — caused a Jason callout because the timing made no sense.
 - **Don't add CSS keyframe animations to beat content that ignore the IntersectionObserver gate.** Use JS-driven animations that read `stillCurrent` so they don't pre-play off-screen.
 - **Don't break the scroll-pinned act sizing** — heights come from the `de-act--N` scene-count classes in de-act.css (scenes × 80vh desktop / × 115vh mobile, intro counts as a scene). Wrong N = last beat unreachable.
-- **Don't deploy the full source folder** to here.now — the `.git` folder is too big for Windows Git Bash to chew. Use the preview-folder pattern.
+- **Don't skip `npm run minify` before exporting/deploying** — pages load the `.min.*` artifacts; stale minified output ships old code. And don't hand-edit the `.min.*` / generated `*-core`/`*-critical`/`*-late` CSS — they're build output; edit the source and rebuild.
 - **Don't push to remote without committing cleanly.** Don't force-push to main.
 - **Don't add new CDN dependencies** without explicit permission. Keep the dependency list lean: Lenis, GSAP, ScrollTrigger, fonts. That's it.
 - **Don't add matter.js back** without explicit permission — the Stats Section now uses GSAP + DOM sprites.
 - **Don't restyle `.de-` chassis classes from a page stylesheet.** de-act.css owns them; page overrides hang off a page hook class (`.s-act--team .de-act-stage-sticky`). Page-unique components keep their page prefix (`.m-`/`.s-`) so styles don't leak.
-- **Don't commit the preview folder** (`c:\Users\jason\repos\dealer-edge-preview`) into this repo.
+- **Don't recreate the here.now preview** (`mantra-harbor-8vkd`) or the `dealer-edge-preview` mirror folder — both retired; the platform tenant is the only deploy target.
 - **Don't reuse a `data-anim` key** across two different beats. Each key resolves to exactly one handler.
 - **Don't put live API keys, customer phone numbers, or PII** anywhere in this repo. Even in demo data — use the `+1 (615) 555-XXXX` style fake numbers.
 
@@ -509,4 +565,4 @@ Don't use `git commit -m "$(cat <<'EOF' …)"` heredoc syntax — PowerShell par
 
 ---
 
-*Last updated: 2026-06-11 (overnight session) by Claude Code (Fable 5) — the platform-migration Phase 1 rails: **DE.boot/DE.destroy lifecycle** (page scripts register `DE.pages[key] = { boot() {} }` and end with `DE.boot('<key>')`; long-lived window/document/matchMedia listeners, intervals, and rAF self-loops must go through `DE.on()`/`DE.interval()`/`DE.rafLoop()` so an SPA host can tear the page down — sales/marketing/inventory/analytics/features + demo-modal converted; app.js/index NOT yet), **scripts/export-platform.mjs** (packages the 5 deep-dive pages as fragments + meta + referenced assets + vendored lenis/gsap into the platform repo — nav/footer stripped per plan D1, mobile-nav.js excluded, index deferred), and the **demo-modal platform bridge** (POSTs a real `/api/leads` lead when a `[data-de-page]` wrapper exists; no-op on the static site). Earlier same day — sales.js controller merge: deleted the page-local `createActController`/`setupActs`, sales now runs the shared `DE.initActs` (one act engine across all five pages); engine gained `fitBeats` (mobile beat-fit, sales-only opt-in) and the static-act-phase fallback; all 14 sales anims now set `.is-playing` (the replay gate); verified with a headless act-by-act harness (phases, exclusive activation, intro replay, replay gate under scroll nudges, mobile fit). Also: PLATFORM-MIGRATION-PLAN.md rewritten as v2 (export-pipeline + vanilla-island architecture). Previously: 2026-06-04 by Claude Code (Opus 4.8) for inventory.html — the third deep-dive instance (static before/after hero, shared includes/compare, 2 couplet acts incl. the proprietary-pipeline beat with real Supra/Moomba before/afters, territory pricing engine; `assets/inventory/`; Inventory nav link on all 8 pages) and the `DE.initActs` promotion (marketing's act controller moved into de-core.js, used by marketing + inventory; sales controller merge still pending). Earlier the same day: the shared static sections (`.de-includes` + `.de-compare` + `.de-section-label` promoted into de-act.css; sales gained both under its hero — "From 19 bookings to 60" checklist + 7-row Without/With table). Earlier the same day: the shared layer (css/de-act.css + js/de-core.js — one `.de-` act chassis and one scroll-engine for marketing + sales, boat CTA/nav/fade promoted to style.css). Earlier the same day: the sales.html port of the marketing patterns (intro scenes, 80vh pacing, snap, line-mode copy, "AI sales platform" title) and the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*
+*Last updated: 2026-06-21 by Claude Code (Opus 4.8) — pre-launch consolidation pass: folded the (now-deleted) `MORNING-REVIEW.md` cross-repo notes into this file, fixed the stale "no build step" framing, and documented the **2026-06-20 performance & build pipeline** (critical/late CSS+JS split, comment-marker CSS slicers, terser minify, lazy partials, self-hosted fonts, `npm run minify` is now mandatory before deploy/export) and the **cross-repo deploy reality** (static body fixes here + `export-platform.mjs`; chrome/SEO/a11y/CMS fixes in `dealerEdge-demo-generator`). Added [`PROJECT-STATUS.md`](PROJECT-STATUS.md) as the living launch-handoff doc (where we are, the QA punch-list routed by repo, what gates dealeredge.ai going live). No page copy or locked language changed. Previously: 2026-06-11 (overnight session) by Claude Code (Fable 5) — the platform-migration Phase 1 rails: **DE.boot/DE.destroy lifecycle** (page scripts register `DE.pages[key] = { boot() {} }` and end with `DE.boot('<key>')`; long-lived window/document/matchMedia listeners, intervals, and rAF self-loops must go through `DE.on()`/`DE.interval()`/`DE.rafLoop()` so an SPA host can tear the page down — sales/marketing/inventory/analytics/features + demo-modal converted; app.js/index NOT yet), **scripts/export-platform.mjs** (packages the 5 deep-dive pages as fragments + meta + referenced assets + vendored lenis/gsap into the platform repo — nav/footer stripped per plan D1, mobile-nav.js excluded, index deferred), and the **demo-modal platform bridge** (POSTs a real `/api/leads` lead when a `[data-de-page]` wrapper exists; no-op on the static site). Earlier same day — sales.js controller merge: deleted the page-local `createActController`/`setupActs`, sales now runs the shared `DE.initActs` (one act engine across all five pages); engine gained `fitBeats` (mobile beat-fit, sales-only opt-in) and the static-act-phase fallback; all 14 sales anims now set `.is-playing` (the replay gate); verified with a headless act-by-act harness (phases, exclusive activation, intro replay, replay gate under scroll nudges, mobile fit). Also: PLATFORM-MIGRATION-PLAN.md rewritten as v2 (export-pipeline + vanilla-island architecture). Previously: 2026-06-04 by Claude Code (Opus 4.8) for inventory.html — the third deep-dive instance (static before/after hero, shared includes/compare, 2 couplet acts incl. the proprietary-pipeline beat with real Supra/Moomba before/afters, territory pricing engine; `assets/inventory/`; Inventory nav link on all 8 pages) and the `DE.initActs` promotion (marketing's act controller moved into de-core.js, used by marketing + inventory; sales controller merge still pending). Earlier the same day: the shared static sections (`.de-includes` + `.de-compare` + `.de-section-label` promoted into de-act.css; sales gained both under its hero — "From 19 bookings to 60" checklist + 7-row Without/With table). Earlier the same day: the shared layer (css/de-act.css + js/de-core.js — one `.de-` act chassis and one scroll-engine for marketing + sales, boat CTA/nav/fade promoted to style.css). Earlier the same day: the sales.html port of the marketing patterns (intro scenes, 80vh pacing, snap, line-mode copy, "AI sales platform" title) and the "AI platform" identity-noun rule (Dustin Talley feedback). Previously: 2026-05-27 by Codex GPT-5 for the continuous 1,000-buyer cohort hero. When you add to this file, add a date stamp and your tool name so we can see how this doc evolves.*

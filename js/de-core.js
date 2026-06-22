@@ -82,6 +82,16 @@ window.DE = (() => {
     if (document.readyState === 'loading') on(document, 'DOMContentLoaded', fn, { once: true });
     else fn();
   }
+  function prewarm(fn, delay = 350) {
+    let done = false;
+    const run = () => {
+      if (done) return;
+      done = true;
+      fn();
+    };
+    ready(() => setTimeout(run, delay));
+    return run;
+  }
   function boot(key) {
     const page = pages[key];
     if (!page) return;
@@ -100,7 +110,60 @@ window.DE = (() => {
     currentPage = null;
   }
 
-  /* Lenis smooth scroll + GSAP/ScrollTrigger wiring (canonical options) */
+  function loadScriptOnce(src) {
+    return new Promise((resolve) => {
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        if (existing.dataset.loaded === 'true') {
+          resolve();
+          return;
+        }
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', resolve, { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.defer = true;
+      script.onload = () => {
+        script.dataset.loaded = 'true';
+        resolve();
+      };
+      script.onerror = resolve;
+      document.head.appendChild(script);
+    });
+  }
+
+  function attachScrollTrigger(lenis) {
+    if (!lenis || !window.gsap || !window.ScrollTrigger || lenis.__deScrollTriggerAttached) return false;
+    lenis.__deScrollTriggerAttached = true;
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ limitCallbacks: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    // lenis.raf is ALREADY driven by createLenis's rafLoop. Do NOT also drive it
+    // from gsap.ticker — when ScrollTrigger attaches late (e.g. the homepage,
+    // where GSAP loads on approach to .journey-section, right after the
+    // "Four capabilities" CTA), lenis would advance twice per frame, doubling
+    // scroll speed and visibly breaking the smooth scroll. ScrollTrigger only
+    // needs to update on lenis's scroll event (wired above); its own animations
+    // still run on gsap.ticker.
+    gsap.ticker.lagSmoothing(0);
+    return true;
+  }
+
+  function loadScrollLibs(lenis) {
+    if (window.gsap && window.ScrollTrigger) {
+      attachScrollTrigger(lenis);
+      return Promise.resolve();
+    }
+    const gsapSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+    const scrollTriggerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js';
+    return loadScriptOnce(gsapSrc)
+      .then(() => loadScriptOnce(scrollTriggerSrc))
+      .then(() => { attachScrollTrigger(lenis); });
+  }
+
+  /* Lenis smooth scroll + optional GSAP/ScrollTrigger wiring (canonical options) */
   function createLenis(options = {}) {
     const lenis = new Lenis({
       duration: 1.15,
@@ -111,14 +174,7 @@ window.DE = (() => {
     });
     lifecycle().lenis = lenis;
     rafLoop((time) => lenis.raf(time));
-
-    gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ limitCallbacks: true });
-    lenis.on('scroll', ScrollTrigger.update);
-    const tickerCb = (time) => lenis.raf(time * 1000);
-    gsap.ticker.add(tickerCb);
-    addDisposer(() => gsap.ticker.remove(tickerCb));
-    gsap.ticker.lagSmoothing(0);
+    attachScrollTrigger(lenis);
     return lenis;
   }
 
@@ -158,6 +214,58 @@ window.DE = (() => {
     const onScroll = () => navbar.classList.toggle('is-scrolled', window.scrollY > 40);
     on(window, 'scroll', onScroll, { passive: true });
     onScroll();
+  }
+
+  function initMobileNav() {
+    const toggle = document.getElementById('nav-toggle');
+    const panel = document.getElementById('nav-mobile-panel');
+    if (!toggle || !panel) return;
+    if (toggle.dataset.mobileNavBound === 'true') return;
+    toggle.dataset.mobileNavBound = 'true';
+
+    function closeNav() {
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function openNav() {
+      toggle.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    on(toggle, 'click', () => {
+      if (panel.classList.contains('is-open')) closeNav();
+      else openNav();
+    });
+
+    panel.querySelectorAll('a').forEach((link) => {
+      on(link, 'click', closeNav);
+    });
+
+    on(document, 'keydown', (event) => {
+      if (event.key === 'Escape' && panel.classList.contains('is-open')) closeNav();
+    });
+
+    panel.querySelectorAll('.nav-mobile-group-trigger').forEach((trigger) => {
+      const sub = trigger.nextElementSibling;
+      if (!sub || !sub.classList.contains('nav-mobile-sub')) return;
+      if (sub.querySelector('a.nav-link--active')) {
+        trigger.classList.add('is-open');
+        sub.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+      on(trigger, 'click', () => {
+        const open = sub.classList.toggle('is-open');
+        trigger.classList.toggle('is-open', open);
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
   }
 
   /* [data-fade] reveal on scroll-into-view (styles in style.css);
@@ -267,6 +375,138 @@ window.DE = (() => {
       cue.classList.add('is-gone');
     };
     on(window, 'scroll', () => { if (window.scrollY > 8) retire(); }, { passive: true });
+  }
+
+  function initLazyVideoBoatSections(options = {}) {
+    const target = document.getElementById('video-section') || document.getElementById('boat-section');
+    if (!target) return;
+
+    const src = options.src || 'js/section-video-boat.min.js?v=20260621a';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260621a';
+    const rootMargin = options.rootMargin || '1400px 0px';
+    let requested = false;
+    let observer = null;
+    let cssPromise = null;
+
+    function loadCss() {
+      if (!cssHref) return Promise.resolve();
+      const existing = document.querySelector(`link[href="${cssHref}"]`);
+      if (existing) return cssPromise || Promise.resolve();
+      cssPromise = new Promise((resolve) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssHref;
+        link.onload = resolve;
+        link.onerror = resolve;
+        document.head.appendChild(link);
+      });
+      return cssPromise;
+    }
+
+    function run() {
+      if (typeof window.initVideoBoatSections !== 'function') return;
+      window.initVideoBoatSections();
+      if (typeof window.killVideoBoatTriggers === 'function') {
+        addDisposer(() => window.killVideoBoatTriggers());
+      }
+    }
+
+    function load() {
+      if (requested) return;
+      requested = true;
+      observer?.disconnect();
+      const readyForLayout = loadCss();
+      if (typeof window.initVideoBoatSections === 'function') {
+        readyForLayout.then(run);
+        return;
+      }
+      window.__deVideoBoatScript = window.__deVideoBoatScript || new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.defer = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+      Promise.all([readyForLayout, window.__deVideoBoatScript]).then(run).catch(() => {});
+    }
+
+    function checkNear() {
+      const margin = Number.parseInt(rootMargin, 10) || 1400;
+      const rect = target.getBoundingClientRect();
+      if (rect.top < window.innerHeight + margin && rect.bottom > -margin) load();
+    }
+
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) load();
+      }, { rootMargin });
+      observer.observe(target);
+      addDisposer(() => observer?.disconnect());
+    }
+
+    on(window, 'scroll', checkNear, { passive: true });
+    on(window, 'resize', checkNear, { passive: true });
+    on(window.matchMedia('(prefers-reduced-motion: reduce)'), 'change', () => {
+      if (requested && typeof window.initVideoBoatSections === 'function') window.initVideoBoatSections();
+    });
+    checkNear();
+  }
+
+  let demoModalPromise = null;
+  function loadDemoModalScript() {
+    if (typeof window.initDemoModal === 'function') return Promise.resolve();
+    const src = 'js/demo-modal.min.js?v=20260621a';
+    if (!demoModalPromise) {
+      demoModalPromise = new Promise((resolve) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+          existing.addEventListener('load', resolve, { once: true });
+          existing.addEventListener('error', resolve, { once: true });
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = src;
+        script.defer = true;
+        script.onload = resolve;
+        script.onerror = resolve;
+        document.head.appendChild(script);
+      });
+    }
+    return demoModalPromise;
+  }
+
+  function initLazyDemoModal(lenis) {
+    if (typeof window.initDemoModal === 'function') {
+      window.initDemoModal(lenis);
+      return;
+    }
+
+    let initialized = false;
+    const init = () => loadDemoModalScript().then(() => {
+      if (!initialized && typeof window.initDemoModal === 'function') {
+        initialized = true;
+        window.initDemoModal(lenis);
+      }
+    });
+
+    on(document, 'click', (event) => {
+      const trigger = event.target.closest?.('.js-modal');
+      if (!trigger || initialized) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      init().then(() => trigger.click());
+    }, { capture: true });
+
+    on(document, 'pointerover', (event) => {
+      if (initialized || !event.target.closest?.('.js-modal')) return;
+      init();
+    }, { passive: true });
+
+    on(document, 'focusin', (event) => {
+      if (initialized || !event.target.closest?.('.js-modal')) return;
+      init();
+    });
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -517,6 +757,7 @@ window.DE = (() => {
         copyBeats.forEach((beat) => beat.classList.remove('is-active'));
         stageBeats.forEach((beat) => {
           beat.classList.remove('is-active', 'is-playing');
+          delete beat.dataset.animStarted;
           beat.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('is-in'));
           beat.querySelectorAll('video').forEach((video) => video.pause?.());
           if (fitBeats) beat.style.removeProperty('--de-beat-fit-scale');
@@ -541,6 +782,7 @@ window.DE = (() => {
           const active = i === next;
           beat.classList.toggle('is-active', active);
           beat.classList.remove('is-playing');
+          if (!active) delete beat.dataset.animStarted;
           beat.querySelectorAll('[data-step]').forEach((el) => el.classList.remove('is-in'));
           beat.querySelectorAll('video').forEach((video) => {
             if (active) video.play?.().catch(() => {});
@@ -559,11 +801,21 @@ window.DE = (() => {
         if (!animate) return;
 
         const beatEl = stageBeats[next];
+        playBeatAnimation(beatEl, token);
+      }
+
+      function playBeatAnimation(beatEl, token) {
         const anim = anims[beatEl?.dataset.anim];
-        if (anim) {
-          requestAnimationFrame(() => {
-            tick(() => token === runToken, () => {
-              anim(beatEl, () => token === runToken);
+        if (anim && beatEl?.dataset.animStarted !== 'true' && beatEl?.dataset.animPending !== 'true') {
+          beatEl.dataset.animPending = 'true';
+          let started = false;
+          const play = () => {
+            if (started) return;
+            tick(() => token === runToken || beatEl.classList.contains('is-active'), () => {
+              started = true;
+              delete beatEl.dataset.animPending;
+              beatEl.dataset.animStarted = 'true';
+              anim(beatEl, () => token === runToken || beatEl.classList.contains('is-active'));
               // anims grow beats over several seconds — re-fit as they land
               if (fitBeats && mobileActMedia.matches) {
                 [120, 520, 1000, 1800, 2800, 4200, 6200].forEach((delay) => {
@@ -573,7 +825,10 @@ window.DE = (() => {
                 });
               }
             });
-          });
+          };
+          requestAnimationFrame(play);
+          play();
+          setTimeout(play, 80);
         }
       }
 
@@ -620,8 +875,11 @@ window.DE = (() => {
         const scene = currentScene();
         const beatIdx = hasIntro ? scene - 1 : scene;
         const beatEl = stageBeats[beatIdx];
-        const replay = beatIdx === activeBeat && !beatEl?.classList.contains('is-playing') && !(hasIntro && scene === 0);
+        const replay = beatIdx === activeBeat && beatEl?.dataset.animStarted !== 'true' && !(hasIntro && scene === 0);
         applyScene(scene, { force: replay });
+        if (beatEl && beatIdx === activeBeat && beatEl.dataset.animStarted !== 'true') {
+          playBeatAnimation(beatEl, runToken);
+        }
       }
 
       function queueLockedBeatUpdate() {
@@ -664,7 +922,7 @@ window.DE = (() => {
 
   return {
     reduceMotion, isSafari,
-    createLenis, initCursorGlow, initNavScroll, initFade, initScrollHint, initEntryCue, attachSceneSnap, initActs,
-    pages, boot, destroy, on, interval, rafLoop, ready,
+    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
+    pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };
 })();
