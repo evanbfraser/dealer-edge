@@ -371,48 +371,12 @@ function initBoatSection() {
 
 // ─── CASE STUDIES ───
 function initCaseStudyCarousel() {
-  const CASES = [
-    {
-      logo:  'assets/dealer-logo-1.svg',
-      stats: [
-        { value: '+150%', label: 'Increase in Sales'    },
-        { value: '3×',    label: 'Qualified Leads'      },
-        { value: '+40%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: 'Since switching to DealerEdge, our team handles twice the leads in half the time. The AI follow-up alone has completely changed our business.',
-      name:  'Jake Morrison, Sales Manager',
-    },
-    {
-      logo:  'assets/dealer-logo-2.svg',
-      stats: [
-        { value: '+170%', label: 'Increase in Sales'    },
-        { value: '4×',    label: 'Qualified Leads'      },
-        { value: '+49%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: "We were skeptical at first, but the numbers don't lie. Three months in and we're closing deals we never would have captured before.",
-      name:  'Rachel Torres, General Manager',
-    },
-    {
-      logo:  'assets/dealer-logo-3.svg',
-      stats: [
-        { value: '+220%', label: 'Increase in Sales'    },
-        { value: '2.5×',  label: 'Qualified Leads'      },
-        { value: '+33%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: "DealerEdge doesn't just bring in leads, it brings in the right leads. Our close rate has never been higher and our team is less stressed.",
-      name:  'Marcus Webb, Owner',
-    },
-    {
-      logo:  'assets/dealer-logo-4.svg',
-      stats: [
-        { value: '+195%', label: 'Increase in Sales'    },
-        { value: '5×',    label: 'Qualified Leads'      },
-        { value: '+55%',  label: 'Lead Conversion Rate' },
-      ],
-      quote: 'The platform paid for itself in the first month. Our customers love the faster response times and our team loves not chasing cold leads anymore.',
-      name:  'Sandra Kim, Dealer Principal',
-    },
-  ];
+  // Homepage case-study selector retired (2026-06-23): the fabricated demo
+  // dealers were replaced with the real Premier Watersports flagship result,
+  // hardcoded statically in index.html, plus the OEM pedigree named in copy.
+  // No .cs-logo-btn buttons remain, so this no-ops below — kept as a guarded
+  // stub so the DE.boot lifecycle call stays valid.
+  const CASES = [];
 
   const detail      = document.getElementById('cs-detail');
   const detailLogo  = document.getElementById('cs-detail-logo');
