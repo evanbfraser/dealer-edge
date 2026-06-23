@@ -211,7 +211,10 @@ DE.pages.marketing = { boot() {
         if (load) countTo(load, 2.3, 900, 1, 's');
         if (loadLabel) setTimeout(() => { loadLabel.textContent = 'loaded'; }, 950);
         if (score) countTo(score, 99, 1100);
-        counters.forEach((c) => countTo(c, Number(c.dataset.count) || 0, 1100));
+        // Reset to 0 at animation start so the static HTML can hold the real
+        // value as the no-JS/crawler fallback (countTo reads its start from
+        // textContent) while the count-up still plays on reveal.
+        counters.forEach((c) => { c.textContent = '0'; countTo(c, Number(c.dataset.count) || 0, 1100); });
       }, 600);
     }
 
