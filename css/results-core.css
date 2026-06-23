@@ -1802,6 +1802,21 @@ body {
   margin: 0;
 }
 
+/* Tiered proof: dealer results vs OEM/enterprise pedigree */
+.csp-tier { margin: 0 0 clamp(18px, 2.5vw, 26px); }
+.csp-grid + .csp-tier { margin-top: clamp(44px, 6vh, 68px); }
+.csp-tier-label {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.85); margin: 0 0 8px;
+}
+.csp-tier-note {
+  font-size: 0.95rem; color: rgba(255,255,255,0.52);
+  margin: 0; max-width: 62ch; line-height: 1.6;
+}
+.csp-grid--feature { grid-template-columns: 1fr; margin-bottom: clamp(20px, 2.5vw, 32px); }
+
 /* ─── CASE STUDY DETAIL PAGE ─── */
 
 /* Hero */
