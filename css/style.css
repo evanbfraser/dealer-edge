@@ -425,6 +425,16 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
+/* After selecting a menu item the pointer is still over the dropdown (SPA nav,
+   no page reload) so :hover/:focus-within would keep it open. The React nav
+   (DeHeader) adds .is-dismissed on item click to force-close it until the
+   pointer leaves and re-enters. Harmless on the static site (class never set). */
+.nav-dropdown.is-dismissed .nav-dropdown-menu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 .nav-dropdown-menu a {
   display: flex;
   align-items: center;
