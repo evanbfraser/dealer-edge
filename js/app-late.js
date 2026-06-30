@@ -221,7 +221,7 @@ function initCustomCursor() {
     if (!journeyModalPromise) {
       journeyModalPromise = Promise.all([
         loadHomeLateCss ? loadHomeLateCss() : Promise.resolve(),
-        fetch('partials/journey-modal.html?v=20260621a')
+        fetch('partials/journey-modal.html?v=20260630a')
           .then((response) => response.ok ? response.text() : '')
       ]).then(([, html]) => {
         if (!html) return null;

@@ -381,8 +381,8 @@ window.DE = (() => {
     const target = document.getElementById('video-section') || document.getElementById('boat-section');
     if (!target) return;
 
-    const src = options.src || 'js/section-video-boat.min.js?v=20260621a';
-    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260621a';
+    const src = options.src || 'js/section-video-boat.min.js?v=20260630a';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260630a';
     const rootMargin = options.rootMargin || '1400px 0px';
     let requested = false;
     let observer = null;
@@ -456,7 +456,7 @@ window.DE = (() => {
   let demoModalPromise = null;
   function loadDemoModalScript() {
     if (typeof window.initDemoModal === 'function') return Promise.resolve();
-    const src = 'js/demo-modal.min.js?v=20260621a';
+    const src = 'js/demo-modal.min.js?v=20260630a';
     if (!demoModalPromise) {
       demoModalPromise = new Promise((resolve) => {
         const existing = document.querySelector(`script[src="${src}"]`);

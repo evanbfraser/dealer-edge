@@ -19,7 +19,7 @@ DE.pages.features = { boot() {
     if (!root) return Promise.resolve();
     if (featuresLateContentReady || root.dataset.loaded === 'true') return featuresLateContentPromise || Promise.resolve();
     if (!featuresLateContentPromise) {
-      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20260621a')
+      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20260630a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -237,7 +237,7 @@ DE.pages.features = { boot() {
   let featuresLatePromise = null;
   let featuresLateInitialized = false;
   function loadFeaturesLate() {
-    const src = 'js/features-late.min.js?v=20260621a';
+    const src = 'js/features-late.min.js?v=20260630a';
     if (!featuresLatePromise) {
       featuresLatePromise = new Promise((resolve) => {
         const existing = document.querySelector('script[src="' + src + '"]');

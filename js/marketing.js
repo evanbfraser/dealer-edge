@@ -15,7 +15,7 @@ DE.pages.marketing = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260621b';
+    const href = 'css/de-act.min.css?v=20260630b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -34,7 +34,7 @@ DE.pages.marketing = { boot() {
   let marketingLateContentPromise = null;
   let marketingLateContentReady = false;
   function loadMarketingLateCss() {
-    const href = 'css/marketing-late.min.css?v=20260621b';
+    const href = 'css/marketing-late.min.css?v=20260630b';
     if (document.querySelector(`link[href="${href}"]`)) {
       return marketingLateCssPromise || Promise.resolve();
     }
@@ -56,7 +56,7 @@ DE.pages.marketing = { boot() {
     if (!root) return Promise.resolve();
     if (marketingLateContentReady || root.dataset.loaded === 'true') return marketingLateContentPromise || Promise.resolve();
     if (!marketingLateContentPromise) {
-      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20260621b')
+      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20260630b')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -523,7 +523,7 @@ DE.pages.marketing = { boot() {
   let marketingLateJsPromise = null;
   let marketingLateInitialized = false;
   function loadMarketingLateJs() {
-    const src = 'js/marketing-late.min.js?v=20260621b';
+    const src = 'js/marketing-late.min.js?v=20260630b';
     if (!marketingLateJsPromise) {
       marketingLateJsPromise = new Promise((resolve) => {
         const existing = document.querySelector('script[src="' + src + '"]');

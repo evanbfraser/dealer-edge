@@ -20,7 +20,7 @@ DE.pages.analytics = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260621a';
+    const href = 'css/de-act.min.css?v=20260630a';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -42,7 +42,7 @@ DE.pages.analytics = { boot() {
     if (!root) return Promise.resolve();
     if (analyticsLateContentReady || root.dataset.loaded === 'true') return analyticsLateContentPromise || Promise.resolve();
     if (!analyticsLateContentPromise) {
-      analyticsLateContentPromise = fetch('partials/analytics-late-content.html?v=20260621a')
+      analyticsLateContentPromise = fetch('partials/analytics-late-content.html?v=20260630a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -79,7 +79,7 @@ DE.pages.analytics = { boot() {
   let analyticsLateJsPromise = null;
   let analyticsLateInitialized = false;
   function loadAnalyticsLateJs() {
-    const src = 'js/analytics-late.min.js?v=20260621a';
+    const src = 'js/analytics-late.min.js?v=20260630a';
     if (!analyticsLateJsPromise) {
       analyticsLateJsPromise = Promise.all([DE.loadScrollLibs(lenis), loadAnalyticsLateContent()])
         .then(() => new Promise((resolve) => {
@@ -154,7 +154,7 @@ DE.pages.analytics = { boot() {
   }
 
   function loadAnalyticsLateCss() {
-    const href = 'css/analytics-late.min.css?v=20260621a';
+    const href = 'css/analytics-late.min.css?v=20260630a';
     if (document.querySelector(`link[href="${href}"]`)) return analyticsLateCssPromise || Promise.resolve();
     if (!analyticsLateCssPromise) {
       analyticsLateCssPromise = new Promise((resolve) => {

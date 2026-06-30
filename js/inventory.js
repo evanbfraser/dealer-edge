@@ -20,7 +20,7 @@ DE.pages.inventory = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260621a';
+    const href = 'css/de-act.min.css?v=20260630a';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -42,7 +42,7 @@ DE.pages.inventory = { boot() {
     if (!root) return Promise.resolve();
     if (inventoryLateContentReady || root.dataset.loaded === 'true') return inventoryLateContentPromise || Promise.resolve();
     if (!inventoryLateContentPromise) {
-      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20260621a')
+      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20260630a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -80,7 +80,7 @@ DE.pages.inventory = { boot() {
   let inventoryLateJsPromise = null;
   let inventoryLateInitialized = false;
   function loadInventoryLateJs() {
-    const src = 'js/inventory-late.min.js?v=20260621a';
+    const src = 'js/inventory-late.min.js?v=20260630a';
     if (!inventoryLateJsPromise) {
       inventoryLateJsPromise = new Promise((resolve) => {
         const existing = document.querySelector('script[src="' + src + '"]');
@@ -148,7 +148,7 @@ DE.pages.inventory = { boot() {
   }
 
   function loadInventoryLateCss() {
-    const href = 'css/inventory-late.min.css?v=20260621a';
+    const href = 'css/inventory-late.min.css?v=20260630a';
     if (document.querySelector(`link[href="${href}"]`)) return inventoryLateCssPromise || Promise.resolve();
     if (!inventoryLateCssPromise) {
       inventoryLateCssPromise = new Promise((resolve) => {
