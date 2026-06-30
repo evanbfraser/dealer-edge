@@ -95,6 +95,16 @@ window.DE = (() => {
   function boot(key) {
     const page = pages[key];
     if (!page) return;
+    // Idempotent. On the platform an island boots TWICE on first load: the
+    // exported page script self-runs DE.boot(key) AND DeExperienceLoader calls
+    // it. Without this guard the second boot builds a 2nd Lenis while the first
+    // is orphaned (lc.lenis only holds the latest) — and the orphan's
+    // passive:false `wheel` listener is never torn down, so it preventDefaults
+    // every wheel event on the NEXT (CMS) page after a soft nav → no scroll.
+    // Re-boot for the same key is a no-op until destroy() clears currentPage.
+    if (lc && currentPage === key) return;
+    // booting a different page without a teardown first — clean up to be safe
+    if (lc) destroy();
     lifecycle();
     currentPage = key;
     page.boot();
