@@ -134,7 +134,7 @@ DE.pages.sales = { boot() {
     if (!root) return Promise.resolve();
     if (salesLateContentReady || root.dataset.loaded === 'true') return salesLateContentPromise || Promise.resolve();
     if (!salesLateContentPromise) {
-      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20260630a')
+      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20260630b')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -630,7 +630,7 @@ DE.pages.sales = { boot() {
   let salesLateJsPromise = null;
   let salesLateInitialized = false;
   function loadSalesLateJs() {
-    const src = 'js/sales-late.min.js?v=20260630a';
+    const src = 'js/sales-late.min.js?v=20260630b';
     if (!salesLateJsPromise) {
       salesLateJsPromise = Promise.all([initStatsEngine(), loadSalesLateContent()]).then(() => new Promise((resolve) => {
         const existing = document.querySelector(`script[src="${src}"]`);

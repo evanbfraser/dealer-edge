@@ -939,7 +939,7 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
 
   // Pre-scripted AI replies (so it feels natural without a backend)
   const aiReplies = [
-    "Hey there — Riley from the overnight desk. I see you were checking out the 2022 Malibu Wakesetter 23 LSV. Happy to help. What can I tell you about it?",
+    "Hey there — Tyler from the sales desk. I see you were checking out the 2022 Malibu Wakesetter 23 LSV. Happy to help. What can I tell you about it?",
     "It's running the Indmar Raptor 575 — 0-30 in about 4.2 seconds. Towing 3,400 lbs with the ballast loaded. Pretty quick boat.",
     "Yes, still on the lot. I actually have one in Pearl White and another in Carbon Black. Both same engine package. Which one's pulling at you?",
     "Sticker is $162,900, but the manager has some room on it. Want me to text you what we could do out the door with tax & title?",
@@ -948,19 +948,27 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
   ];
 
   let demoState = {
+    mode: 'sim',
     running: false,
     step: 0,
     timers: [],
+    pollId: null,
+    token: null,
+    gen: 0,
   };
 
   function clearTimers() {
     demoState.timers.forEach(clearTimeout);
     demoState.timers = [];
+    if (demoState.pollId) { clearInterval(demoState.pollId); demoState.pollId = null; }
   }
 
   function resetDemo() {
     clearTimers();
-    demoState = { running: false, step: 0, timers: [] };
+    // Bump the generation token so any in-flight live fetch/poll bails instead
+    // of mutating a thread that has since been reset or torn down.
+    const gen = demoState.gen + 1;
+    demoState = { mode: 'sim', running: false, step: 0, timers: [], pollId: null, token: null, gen };
     if (phoneThread) {
       phoneThread.innerHTML =
         '<div class="s-phone-empty"><span>Enter a number and tap Text me</span><span class="s-phone-empty-sub">to see the conversation play out</span></div>';
@@ -1108,37 +1116,171 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
     }).catch(() => {});
   }
 
-  // Wire input + buttons
-  if (trySend) {
+  // ── LIVE mode ──────────────────────────────────────────────────
+  // When sales.html is hosted as a platform island that exposes the demo
+  // endpoints AND the buyer opts in, we send a REAL text from the AI Sales
+  // Captain (Tyler) and mirror the live conversation into the phone frame.
+  // The wrapper ([data-de-page]) carries data-demo-start-endpoint /
+  // data-demo-thread-endpoint only when the tenant's SMS number is
+  // provisioned; absent them (static site, or pre-provisioning) we stay in
+  // pure-theater SIM mode and the experience still plays.
+  function getDemoBridge() {
+    const b = document.querySelector('[data-de-page]');
+    if (!b || !b.dataset.demoStartEndpoint || !b.dataset.demoThreadEndpoint) return null;
+    return {
+      startUrl: b.dataset.demoStartEndpoint,
+      threadUrl: b.dataset.demoThreadEndpoint,
+      visitorId: b.dataset.visitorId || '',
+    };
+  }
+
+  function cleanPhone(raw) { return (raw || '').replace(/[^\d+]/g, ''); }
+  // Strict NANP mobile-ish check, used only before a REAL send. SIM mode stays
+  // lenient so the static preview is testable with any number.
+  function isValidUsMobile(raw) {
+    const d = cleanPhone(raw).replace(/^\+?1/, '');
+    return /^[2-9]\d{2}[2-9]\d{6}$/.test(d);
+  }
+
+  // Buyer's-phone POV: a message the dealership/AI SENT (direction 'outbound')
+  // arrives as an INCOMING bubble on the buyer's phone; a message the buyer
+  // SENT (direction 'inbound') is their own OUTGOING bubble.
+  function phoneRoleFor(direction) { return direction === 'inbound' ? 'out' : 'in'; }
+
+  function startLiveDemo(name, phone, bridge) {
+    resetDemo();
+    const gen = demoState.gen;
+    demoState.mode = 'live';
+    demoState.running = true;
+    if (phoneThread) phoneThread.innerHTML = '';
+    if (tryStatus) { tryStatus.textContent = 'Texting you…'; tryStatus.classList.add('is-active'); }
+    if (trySend) { trySend.disabled = true; trySend.textContent = 'Texting you…'; }
+    appendScriptBeat(0);
+    const typing = appendPhoneTyping();
+
+    fetch(bridge.startUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        consent: true,
+        boat_title: '2022 Malibu Wakesetter 23 LSV',
+        visitor_id: bridge.visitorId || undefined,
+        page_url: window.location.pathname,
+      }),
+    })
+      .then((r) => r.json().then((j) => ({ ok: r.ok, body: j })).catch(() => ({ ok: r.ok, body: null })))
+      .then(({ ok, body }) => {
+        if (demoState.gen !== gen) return;                 // reset/teardown won the race
+        if (typing && typing.remove) typing.remove();
+        if (!ok || !body || !body.token) {
+          // Not provisioned / rate-limited / error → fall back to theater so the
+          // visitor still sees the experience, and still capture the lead.
+          submitTextUsLead(name, phone);
+          startDemo(phone);
+          return;
+        }
+        demoState.token = body.token;
+        if (tryStatus) tryStatus.textContent = 'Text sent to your phone ✓';
+        appendScriptBeat(1);
+        pollLiveThread(bridge, body.token, gen);
+      })
+      .catch(() => {
+        if (demoState.gen !== gen) return;
+        if (typing && typing.remove) typing.remove();
+        submitTextUsLead(name, phone);
+        startDemo(phone);
+      });
+  }
+
+  function pollLiveThread(bridge, token, gen) {
+    const seen = new Set();
+    let idle = 0;
+    const MAX_IDLE = 120;            // ~5 min at 2.5s ticks, then stop polling
+    let awaitingReply = false;
+    let liveTyping = null;
+
+    const poll = () => {
+      if (demoState.gen !== gen) { clearTimers(); return; }
+      fetch(bridge.threadUrl + '?token=' + encodeURIComponent(token), { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => {
+          if (!j || demoState.gen !== gen) return;
+          let fresh = 0;
+          (j.messages || []).forEach((m) => {
+            if (!m || seen.has(m.id)) return;
+            seen.add(m.id);
+            fresh += 1;
+            if (liveTyping && liveTyping.remove) { liveTyping.remove(); liveTyping = null; }
+            appendPhoneMsg(phoneRoleFor(m.direction), m.text);
+            if (m.direction === 'inbound') {
+              if (tryStatus) tryStatus.textContent = 'You replied — AI is answering…';
+              awaitingReply = true;
+            } else {
+              if (tryStatus) tryStatus.textContent = 'Tyler replied ✓';
+              awaitingReply = false;
+            }
+          });
+          idle = fresh > 0 ? 0 : idle + 1;
+          if (awaitingReply && !liveTyping) liveTyping = appendPhoneTyping();
+          if (idle > MAX_IDLE) {
+            clearTimers();
+            demoState.running = false;
+            if (liveTyping && liveTyping.remove) liveTyping.remove();
+            if (tryStatus) tryStatus.textContent = 'Conversation live on your phone ✓';
+            if (trySend) { trySend.disabled = false; trySend.textContent = 'Start a new text'; }
+          }
+        })
+        .catch(() => {});
+    };
+
+    poll();                                       // immediate first read
+    demoState.pollId = window.DE.interval(poll, 2500);
+  }
+
+  // ── Wire input + buttons (idempotent) ──────────────────────────
+  // Guarded by data-deWired so an island re-boot that calls initSalesLate a
+  // second time can't attach a duplicate set of listeners — that double-bind
+  // was what made the conversation print into the thread twice.
+  if (trySend && !trySend.dataset.deWired) {
+    trySend.dataset.deWired = '1';
+
+    const flash = (el) => {
+      if (!el) return;
+      el.style.borderColor = 'var(--accent)';
+      el.focus();
+      setTimeout(() => { el.style.borderColor = ''; }, 1200);
+    };
+
     trySend.addEventListener('click', () => {
-      const flash = (el) => {
-        if (!el) return;
-        el.style.borderColor = 'var(--accent)';
-        el.focus();
-        setTimeout(() => (el.style.borderColor = ''), 1000);
-      };
       const num = tryInput && tryInput.value.trim();
       const name = tryName && tryName.value.trim();
-      if (!num || num.length < 7) { flash(tryInput); return; }
       if (!name) { flash(tryName); return; }
-      // Real text only when the buyer opted in. The demo plays regardless, so
-      // the preview still works for anyone who doesn't check the box.
-      if (tryConsent && tryConsent.checked) submitTextUsLead(name, num);
-      startDemo(num);
-    });
-  }
 
-  if (tryReset) {
-    tryReset.addEventListener('click', resetDemo);
-  }
+      const bridge = getDemoBridge();
+      const optedIn = !!(tryConsent && tryConsent.checked);
 
-  if (tryInput) {
-    tryInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        trySend.click();
+      if (bridge && optedIn) {
+        // Real send — require a real, well-formed US mobile number.
+        if (!num || !isValidUsMobile(num)) { flash(tryInput); return; }
+        startLiveDemo(name, num, bridge);
+      } else {
+        // Theater — lenient so the preview is testable; still capture the lead
+        // if the buyer opted in and the lead bridge is present.
+        if (!num || cleanPhone(num).length < 7) { flash(tryInput); return; }
+        if (optedIn) submitTextUsLead(name, num);
+        startDemo(num);
       }
     });
+
+    if (tryReset) tryReset.addEventListener('click', resetDemo);
+
+    if (tryInput) {
+      tryInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); trySend.click(); }
+      });
+    }
   }
 
 };
