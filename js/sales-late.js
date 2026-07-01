@@ -1236,7 +1236,7 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
     };
 
     poll();                                       // immediate first read
-    demoState.pollId = window.DE.interval(poll, 2500);
+    demoState.pollId = window.DE.interval(poll, 1500);
   }
 
   // ── Wire input + buttons (idempotent) ──────────────────────────
