@@ -199,6 +199,23 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Fixed-nav clearance for CMS pages (platform only — #main-content exists in
+   the DealerEdge marketing layout, not the standalone static site, so this is
+   dormant here). The nav is position:fixed and reserves no layout space. Island
+   pages carry a [data-de-page] wrapper and intentionally sit UNDER the nav
+   (full-bleed heroes); CMS pages (case-study/resource/event/blog detail,
+   listing headers) have no such wrapper, so without this their top content —
+   breadcrumbs, page headers — renders behind the fixed nav. +38px clears the
+   red utility bar, which is hidden ≤1100px (so the mobile value drops it). */
+#main-content:not(:has([data-de-page])):not(:has(header.from-primary)):not(:has(header.bg-primary)) {
+  padding-top: calc(var(--nav-height) + 38px);
+}
+@media (max-width: 1100px) {
+  #main-content:not(:has([data-de-page])):not(:has(header.from-primary)):not(:has(header.bg-primary)) {
+    padding-top: var(--nav-height);
+  }
+}
+
 /* utility bar — the slim red strip above the main nav for CMS content
    surfaces (Events / Specials / Resources / Blog). Rendered ONLY by the
    platform's DeHeader (from the CMS nav config's utilityItems); the static
@@ -369,6 +386,16 @@ body {
   visibility: visible;
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
+}
+
+/* After selecting a menu item the pointer is still over the dropdown (SPA nav,
+   no page reload) so :hover/:focus-within would keep it open. The React nav
+   (DeHeader) adds .is-dismissed on item click to force-close it until the
+   pointer leaves and re-enters. Harmless on the static site (class never set). */
+.nav-dropdown.is-dismissed .nav-dropdown-menu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .nav-dropdown-menu a {
