@@ -2,11 +2,36 @@
 
 **Living doc.** Keep it current — it's the single place that answers "where are we and what's left to go live." Planning/meta only; **not a runtime asset, don't deploy it.**
 
-_Last updated: 2026-06-21 by Claude Code (Opus 4.8)._
+_Last updated: 2026-07-02 by Claude Code (Fable 5)._
 
 ---
 
-## The goal
+## 🚀 LAUNCHED — the site is LIVE at https://www.dealeredge.ai (verified 2026-07-02)
+
+`dealeredge.ai` serves the platform tenant in production (apex 308→www). Prod and staging serve the same build (`20260702d` verified on both), so staging pushes are reaching prod. The doc below is now the **post-launch** punch-list; the original launch goal is met.
+
+### Verified in production, 2026-07-02 (curl + WebKit iPhone emulation)
+
+- ✅ Today's mobile scroll fixes are live (refresh-loop kill, native touch scroll, hero per-beat fit, marine stack) — sales all 6 hero beats fit, zero at-rest churn; marketing/inventory/analytics acts lock + animate on mobile, zero overflow, zero churn.
+- ✅ F1 partially verified fixed: `/sales` body has **no** `.html` cross-links.
+- ✅ F2 fixed: unknown URLs return real **HTTP 404** (was soft-200).
+- ✅ S1 largely fixed: homepage has `meta description` + `og:image` (308→200 resolves).
+- ✅ C1 resolved by seeding: `/blog`, `/events`, `/specials` no longer show empty states.
+- ✅ Fabricated homepage proof band (500+/200%/98%) is gone from prod.
+
+### Open post-launch items (re-triaged 2026-07-02)
+
+1. **Lead notifications (conversion-critical):** DE tenant has ONE team member (Jason, linked) — but his notification prefs are `email_digest: off`, `sms_notifications: false`, PWA push only. A real demo request could sit unseen. Turn on email/SMS for lead assignment in the dashboard. (Bob/Mike/Sarah were never seeded — that's fine for the corporate site; leads route to Jason.) Also confirm prod `/api/leads` writes to the DB you're watching (MCP env here is staging — verify prod shares it).
+2. **Real-iPhone confirmation** of the sales-page scroll feel (the whole 2026-07-02 fix set was verified in emulation; the reporter's device should re-test).
+3. **A11y set (A1–A9) not re-verified** — chrome landmarks/labels/skip-link/tab-order live in the platform repo; contrast decisions (A8 red, A9 `--text-dim`) still need Jason. Re-run the autonomous QA against prod to re-triage.
+4. **S2/S3 (per-page OG/canonical/sitemap) not re-verified** across all island routes — worth one QA pass now that it's public.
+5. **Platform script error on every page (minor):** `navigator.storage.persisted` throws a TypeError in WebKit contexts where `navigator.storage` is undefined (headless; possibly iOS private browsing) — add a guard in the platform repo.
+6. **Cascade-inversion hazard (architectural, latent):** on the platform the island loader injects `<page>-critical.min.css` at the END of `<head>`, AFTER the runtime-loaded late CSS — late-only rules lose specificity ties they win on the static site. Sales is fixed (narrow cohort blocks marker-extracted into critical); marketing/inventory/analytics screenshots look clean today, but any future "works static, broken on platform" CSS bug → check `document.styleSheets` order first (memory: `reference_de-critical-late-cascade-inversion.md`).
+7. **10DLC / live SMS demo** (Spec 094 check) — unverified; the sales Act 3 live-text mode needs a compliant number in prod.
+
+---
+
+## The goal *(met 2026-07-02 — kept for context)*
 
 Get the DealerEdge marketing site **fully live at `dealeredge.ai`**. It already runs as a platform tenant on staging — **https://dealeredge.dealeredge.ai** — inside the `dealerEdge-demo-generator` Next.js app (vanilla-island architecture; see `PLATFORM-MIGRATION-PLAN.md` and CLAUDE.md → *Cross-repo*). "Launch" = production tenant + the `dealeredge.ai` domain attached + the punch-list below cleared.
 
@@ -97,4 +122,5 @@ Triaged from the live QA run `075a889e` (2026-06-20, against staging) + crawl `S
 
 ## Changelog
 
+- **2026-07-02** — **Site is LIVE at dealeredge.ai.** Marked launched; re-triaged the punch-list against prod (see top). Same day: fixed the mobile scroll death spiral (late-loaders ran `ScrollTrigger.refresh()` on every scroll event — self-sustaining loop; plus Lenis→native-scroll shim on touch, snap back to fine-pointer-only, `ignoreMobileResize`, `visibility:hidden` inactive beats, mobile backdrop-filter cuts), the hero cohort per-beat fit (`100svh` pin + `fitCohortViz()` grid cap), the marine callout mobile stack + button-font fix, and the platform **cascade inversion** (critical CSS loads LAST on the tenant → all mobile cohort rules now duplicated into sales-critical). Static `8ad1d83`+`b430a53`+`20dab4d`; platform `47eccce69`+`375a45e9a`+`288976d2a`.
 - **2026-06-21** — Created this doc; consolidated cross-repo + perf notes into CLAUDE.md; deleted the stale `MORNING-REVIEW.md` (2026-06-12). Triaged live QA run `075a889e` into the punch-list above. Confirmed: fixes will be driven across **both** repos.
