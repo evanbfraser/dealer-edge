@@ -1246,29 +1246,47 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
   if (trySend && !trySend.dataset.deWired) {
     trySend.dataset.deWired = '1';
 
-    const flash = (el) => {
+    // live (XXX) XXX-XXXX formatting + mobile phone keypad (helper in de-core)
+    window.DE?.attachUsPhoneInput?.(tryInput);
+
+    const flash = (el, msg) => {
       if (!el) return;
       el.style.borderColor = 'var(--accent)';
       el.focus();
+      if (msg && tryStatus) {
+        tryStatus.textContent = msg;
+        tryStatus.classList.add('is-active');
+        setTimeout(() => {
+          if (tryStatus.textContent === msg) {
+            tryStatus.textContent = 'Idle';
+            tryStatus.classList.remove('is-active');
+          }
+        }, 2600);
+      }
       setTimeout(() => { el.style.borderColor = ''; }, 1200);
     };
 
     trySend.addEventListener('click', () => {
       const num = tryInput && tryInput.value.trim();
       const name = tryName && tryName.value.trim();
-      if (!name) { flash(tryName); return; }
+      if (!name) { flash(tryName, 'Enter your name'); return; }
+      // first + last required — lead enrichment needs both to work with
+      if (!(window.DE?.isFullName ? DE.isFullName(name) : name.split(/\s+/).length >= 2)) {
+        flash(tryName, 'First and last name, please');
+        return;
+      }
 
       const bridge = getDemoBridge();
       const optedIn = !!(tryConsent && tryConsent.checked);
 
       if (bridge && optedIn) {
         // Real send — require a real, well-formed US mobile number.
-        if (!num || !isValidUsMobile(num)) { flash(tryInput); return; }
+        if (!num || !isValidUsMobile(num)) { flash(tryInput, 'Enter a valid 10-digit US number'); return; }
         startLiveDemo(name, num, bridge);
       } else {
         // Theater — lenient so the preview is testable; still capture the lead
         // if the buyer opted in and the lead bridge is present.
-        if (!num || cleanPhone(num).length < 7) { flash(tryInput); return; }
+        if (!num || cleanPhone(num).length < 7) { flash(tryInput, 'Enter your phone number'); return; }
         if (optedIn) submitTextUsLead(name, num);
         startDemo(num);
       }

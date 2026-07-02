@@ -237,7 +237,7 @@ DE.pages.features = { boot() {
   let featuresLatePromise = null;
   let featuresLateInitialized = false;
   function loadFeaturesLate() {
-    const src = 'js/features-late.min.js?v=20260630a';
+    const src = 'js/features-late.min.js?v=20260702f';
     if (!featuresLatePromise) {
       featuresLatePromise = new Promise((resolve) => {
         const existing = document.querySelector('script[src="' + src + '"]');

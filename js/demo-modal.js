@@ -14,9 +14,9 @@ function initDemoModal(lenis) {
             <span class="modal-eyebrow">Schedule a Demo</span>
             <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
             <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
-            <div class="form-group"><input type="text" id="ms-name" placeholder="Your name" aria-label="Your name" autocomplete="name"></div>
+            <div class="form-group"><input type="text" id="ms-name" placeholder="First and last name" aria-label="First and last name" autocomplete="name"></div>
             <div class="form-group"><input type="email" id="ms-email" placeholder="Email address" aria-label="Email address" autocomplete="email"></div>
-            <div class="form-group"><input type="tel" id="ms-phone" placeholder="Phone number" aria-label="Phone number" autocomplete="tel"></div>
+            <div class="form-group"><input type="tel" id="ms-phone" inputmode="tel" placeholder="(555) 000-0000" aria-label="Phone number" autocomplete="tel"></div>
             <p class="ms-error" id="ms-error" role="alert" hidden></p>
             <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
             <p class="ms-legal">By submitting, you agree to our <a href="/legal/privacy">Privacy Policy</a>.</p>
@@ -58,6 +58,12 @@ function initDemoModal(lenis) {
   // Loose-but-real email shape check: requires a single @, a dot in the domain,
   // and no whitespace. Catches the "foo" case QA flagged while staying lenient.
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // US phone live-formatting + phone keypad (shared helper in de-core.js;
+  // guarded so the modal still works if it somehow loads before DE)
+  window.DE?.attachUsPhoneInput?.(phoneInput);
+  const isFullName = (v) => (window.DE?.isFullName ? DE.isFullName(v) : String(v).trim().split(/\s+/).filter(Boolean).length >= 2);
+  const phoneComplete = (v) => (window.DE?.usPhoneComplete ? DE.usPhoneComplete(v) : String(v).replace(/\D/g, '').length >= 10);
 
   function showError(msg, field) {
     if (errorEl) {
@@ -150,9 +156,12 @@ function initDemoModal(lenis) {
     const phone = phoneInput.value.trim();
     clearError();
     if (!name) return showError('Please enter your name.', nameInput);
+    // first + last required — lead enrichment needs both
+    if (!isFullName(name)) return showError('Please enter your first and last name.', nameInput);
     if (!email) return showError('Please enter your email address.', emailInput);
     if (!EMAIL_RE.test(email)) return showError('Please enter a valid email address.', emailInput);
     if (!phone) return showError('Please enter your phone number.', phoneInput);
+    if (!phoneComplete(phone)) return showError('Please enter a full 10-digit phone number.', phoneInput);
 
     const confirmSuccess = () => {
       if (confirmText) {

@@ -507,7 +507,7 @@ window.DE = (() => {
   let demoModalPromise = null;
   function loadDemoModalScript() {
     if (typeof window.initDemoModal === 'function') return Promise.resolve();
-    const src = 'js/demo-modal.min.js?v=20260702e';
+    const src = 'js/demo-modal.min.js?v=20260702f';
     if (!demoModalPromise) {
       demoModalPromise = new Promise((resolve) => {
         const existing = document.querySelector(`script[src="${src}"]`);
@@ -558,6 +558,51 @@ window.DE = (() => {
       if (initialized || !event.target.closest?.('.js-modal')) return;
       init();
     });
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     LEAD-FORM HELPERS — shared by the demo modal, the sales SMS
+     demo, and the features modals so every phone field formats to
+     US (XXX) XXX-XXXX as you type, raises the phone keypad on
+     mobile, and every name field can require first + last (lead
+     enrichment needs both).
+     ───────────────────────────────────────────────────────────── */
+  function usPhoneDigits(value) {
+    let d = String(value || '').replace(/\D/g, '');
+    if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
+    return d.slice(0, 10);
+  }
+  function formatUsPhone(value) {
+    const d = usPhoneDigits(value);
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return '(' + d.slice(0, 3) + ') ' + d.slice(3);
+    return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6);
+  }
+  /* true once a full 10-digit US number is present */
+  function usPhoneComplete(value) {
+    return usPhoneDigits(value).length === 10;
+  }
+  /* at least two words — "first and last name" */
+  function isFullName(value) {
+    return String(value || '').trim().split(/\s+/).filter(Boolean).length >= 2;
+  }
+  /* wire an <input> to live-format as a US phone number + phone keypad */
+  function attachUsPhoneInput(input) {
+    if (!input || input.dataset.dePhoneWired === '1') return;
+    input.dataset.dePhoneWired = '1';
+    input.setAttribute('type', 'tel');
+    input.setAttribute('inputmode', 'tel');
+    if (!input.getAttribute('autocomplete')) input.setAttribute('autocomplete', 'tel');
+    const reformat = () => {
+      const formatted = formatUsPhone(input.value);
+      if (formatted !== input.value) {
+        input.value = formatted;
+        try { input.setSelectionRange(formatted.length, formatted.length); } catch (e) { /* non-text state */ }
+      }
+    };
+    input.addEventListener('input', reformat);
+    input.addEventListener('blur', reformat);
+    reformat();
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -974,6 +1019,7 @@ window.DE = (() => {
   return {
     reduceMotion, isSafari,
     createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
+    usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput,
     pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };
 })();

@@ -27,12 +27,37 @@ window.DE.initFeaturesLate = function initFeaturesLate(lenis) {
 
   function loadFeatureModalPartials() {
     return Promise.all([
-      loadPartialOnce('modal-backdrop', 'partials/features-contact-modal.html?v=20260630a'),
-      loadPartialOnce('dm-backdrop', 'partials/features-dept-modal.html?v=20260630a'),
+      loadPartialOnce('modal-backdrop', 'partials/features-contact-modal.html?v=20260702f'),
+      loadPartialOnce('dm-backdrop', 'partials/features-dept-modal.html?v=20260702f'),
     ]);
   }
 
   window.DE.__featuresLateReady = loadFeatureModalPartials().then(() => {
+
+  // ─── SHARED FORM HELPERS ────────────────────────────────────────────
+  // Both feature modals collect real contact details — capture them as
+  // platform leads via the island bridge ([data-de-page], same pattern as
+  // demo-modal.js). On the standalone static site the bridge is absent and
+  // this is a no-op. Inputs are strictly validated client-side first
+  // (full name / email shape / complete phone) so the fire-and-forget POST
+  // can't be silently rejected by the API's validators.
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isFullName = (v) => (window.DE?.isFullName ? DE.isFullName(v) : String(v).trim().split(/\s+/).filter(Boolean).length >= 2);
+  const phoneComplete = (v) => (window.DE?.usPhoneComplete ? DE.usPhoneComplete(v) : String(v).replace(/\D/g, '').length >= 10);
+  function submitFeaturesLead(formType, formData) {
+    const bridge = document.querySelector('[data-de-page]');
+    if (!bridge) return;
+    fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitor_id: bridge.dataset.visitorId || undefined,
+        form_type: formType,
+        form_data: formData,
+        page_url: window.location.pathname,
+      }),
+    }).catch(() => {});
+  }
 
   // ─── DEPARTMENTS (id/name/icon only — drives the chat modal list) ───
   const DEPARTMENTS = [
@@ -240,19 +265,39 @@ window.DE.initFeaturesLate = function initFeaturesLate(lenis) {
     document.getElementById('dm-back').addEventListener('click', () => showDmStep(1));
     document.getElementById('dm-next-2').addEventListener('click', startChat);
 
+    // US phone live-formatting + mobile keypad
+    window.DE?.attachUsPhoneInput?.(document.getElementById('dm-phone'));
+
     document.getElementById('dm-next-4').addEventListener('click', () => {
-      const val = document.getElementById('dm-name').value.trim();
-      if (!val) return document.getElementById('dm-name').focus();
+      const nameEl = document.getElementById('dm-name');
+      const val = nameEl.value.trim();
+      if (!val || !isFullName(val)) {
+        nameEl.placeholder = 'First and last name';
+        return nameEl.focus();
+      }
       userData.name = val;
       document.getElementById('dm-name-display').textContent = val;
       showDmStep(5);
     });
 
     document.getElementById('dm-next-5').addEventListener('click', () => {
-      const email = document.getElementById('dm-email').value.trim();
-      if (!email) return document.getElementById('dm-email').focus();
+      const emailEl = document.getElementById('dm-email');
+      const email = emailEl.value.trim();
+      if (!email || !EMAIL_RE.test(email)) return emailEl.focus();
+      const phoneEl = document.getElementById('dm-phone');
+      const phone = phoneEl.value.trim();
+      if (phone && !phoneComplete(phone)) return phoneEl.focus();
       userData.email = email;
-      userData.phone = document.getElementById('dm-phone').value.trim();
+      userData.phone = phone;
+      // the frustration the visitor typed into the chat — real context for the rep
+      const chatNote = document.querySelector('.dm-chat-msg--user')?.textContent || undefined;
+      submitFeaturesLead('contact', {
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone || undefined,
+        department: selectedDeptName || undefined,
+        message: chatNote,
+      });
       document.getElementById('dm-confirm-text').textContent =
         `Thanks, ${userData.name}! A specialist from our ${selectedDeptName} team will reach out to ${userData.email} within one business day.`;
       showDmStep(6);
@@ -359,6 +404,20 @@ window.DE.initFeaturesLate = function initFeaturesLate(lenis) {
 
     function showConfirm() {
       const el = document.getElementById('ms-confirm-text');
+      // capture the lead (bridge no-ops on the static site) — the fields were
+      // strictly validated at their steps so the API's validators can't
+      // silently reject this. Once per modal session (userData resets on open).
+      if (userData.leadSent) { showStep(5); return; }
+      userData.leadSent = true;
+      submitFeaturesLead('request_demo', {
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone || undefined,
+        preferred_date: userData.wantsSchedule && userData.date
+          ? userData.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+          : undefined,
+        preferred_time: userData.wantsSchedule ? userData.time || undefined : undefined,
+      });
       if (userData.wantsSchedule && userData.date && userData.time) {
         const dateStr = userData.date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         el.textContent = `You're booked for ${dateStr} at ${userData.time}. We'll send a confirmation to ${userData.email}.`;
@@ -368,18 +427,29 @@ window.DE.initFeaturesLate = function initFeaturesLate(lenis) {
       showStep(5);
     }
 
+    // US phone live-formatting + mobile keypad
+    window.DE?.attachUsPhoneInput?.(modal.querySelector('#ms-phone'));
+
     modal.querySelector('#ms-next-1').addEventListener('click', () => {
-      const val = modal.querySelector('#ms-name').value.trim();
-      if (!val) return modal.querySelector('#ms-name').focus();
+      const nameEl = modal.querySelector('#ms-name');
+      const val = nameEl.value.trim();
+      if (!val || !isFullName(val)) {
+        nameEl.placeholder = 'First and last name';
+        return nameEl.focus();
+      }
       userData.name = val;
       document.getElementById('ms-name-display').textContent = val;
       showStep(2);
     });
     modal.querySelector('#ms-next-2').addEventListener('click', () => {
-      const email = modal.querySelector('#ms-email').value.trim();
-      if (!email) return modal.querySelector('#ms-email').focus();
+      const emailEl = modal.querySelector('#ms-email');
+      const email = emailEl.value.trim();
+      if (!email || !EMAIL_RE.test(email)) return emailEl.focus();
+      const phoneEl = modal.querySelector('#ms-phone');
+      const phone = phoneEl.value.trim();
+      if (phone && !phoneComplete(phone)) return phoneEl.focus();
       userData.email = email;
-      userData.phone = modal.querySelector('#ms-phone').value.trim();
+      userData.phone = phone;
       showStep(3);
     });
     modal.querySelector('#ms-yes').addEventListener('click', () => { userData.wantsSchedule = true; userData.date = null; userData.time = null; renderCal(); renderTimes(); showStep(4); });
