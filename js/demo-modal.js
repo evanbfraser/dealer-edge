@@ -154,31 +154,69 @@ function initDemoModal(lenis) {
     if (!EMAIL_RE.test(email)) return showError('Please enter a valid email address.', emailInput);
     if (!phone) return showError('Please enter your phone number.', phoneInput);
 
+    const confirmSuccess = () => {
+      if (confirmText) {
+        confirmText.textContent = `Thanks, ${name}! We'll reach out at ${email} or ${phone} within one business day to schedule your demo.`;
+      }
+      showStep(2);
+      setTimeout(launchConfetti, 80);
+    };
+
     // Platform bridge: when hosted as an island, the route shell wraps the
     // fragment in [data-de-page] carrying the persistent visitor id — POST a
-    // real lead into the platform pipeline (fire-and-forget; the in-modal
-    // confirmation below runs either way). On the standalone static site
-    // the wrapper doesn't exist and this block is a no-op. NEVER set the
+    // real lead into the platform pipeline. On the standalone static site
+    // the wrapper doesn't exist and we confirm immediately. NEVER set the
     // x-website-hp header — it's the honeypot.
+    //
+    // The POST is AWAITED and validation failures are surfaced: the old
+    // fire-and-forget confirmed "Thanks!" even when the API rejected the
+    // submission (e.g. a phone format the server won't accept), silently
+    // losing the lead. A NETWORK failure still confirms — don't dead-end a
+    // real buyer over transient wiring.
     const bridge = document.querySelector('[data-de-page]');
-    if (bridge) {
-      fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          visitor_id: bridge.dataset.visitorId || undefined,
-          form_type: 'request_demo',
-          form_data: { name, email, phone },
-          page_url: window.location.pathname,
-        }),
-      }).catch(() => {});
+    if (!bridge) {
+      confirmSuccess();
+      return;
     }
 
-    if (confirmText) {
-      confirmText.textContent = `Thanks, ${name}! We'll reach out at ${email} or ${phone} within one business day to schedule your demo.`;
-    }
-    showStep(2);
-    setTimeout(launchConfetti, 80);
+    submitBtn.disabled = true;
+    fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitor_id: bridge.dataset.visitorId || undefined,
+        form_type: 'request_demo',
+        form_data: { name, email, phone },
+        page_url: window.location.pathname,
+      }),
+    }).then(async (res) => {
+      submitBtn.disabled = false;
+      if (res.ok) {
+        confirmSuccess();
+        return;
+      }
+      let message = 'Something went wrong — please check your details and try again.';
+      let field = null;
+      try {
+        const body = await res.json();
+        const first = body && body.errors && body.errors[0];
+        if (first && first.field === 'phone') {
+          message = 'Please enter a valid phone number, e.g. (425) 555-0123.';
+          field = phoneInput;
+        } else if (first && first.field === 'email') {
+          message = 'Please enter a valid email address.';
+          field = emailInput;
+        } else if (first && first.message) {
+          message = first.message;
+        } else if (body && body.error && body.error !== 'Validation failed') {
+          message = body.error;
+        }
+      } catch (e) { /* non-JSON error body — keep the generic message */ }
+      showError(message, field || undefined);
+    }).catch(() => {
+      submitBtn.disabled = false;
+      confirmSuccess();
+    });
   }
 
   submitBtn.addEventListener('click', submitForm);
