@@ -20,7 +20,7 @@ DE.pages.inventory = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260630a';
+    const href = 'css/de-act.min.css?v=20260702b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -59,12 +59,20 @@ DE.pages.inventory = { boot() {
     return inventoryLateContentPromise;
   }
 
+  /* One-shot: cached so the debounced per-scroll loader can't re-run the
+     trailing ScrollTrigger.refresh() every 850ms forever (refresh's
+     pin-revert scrollTo() fires scroll events that re-arm the loader —
+     a perpetual refresh loop that dragged mobile WebKit down). */
+  let inventoryLateExperiencePromise = null;
   function loadInventoryLateExperience() {
-    return Promise.all([loadInventoryLateContent(), loadDeActCss(), loadInventoryLateCss()])
-      .then(() => loadInventoryLateJs())
-      .then(() => {
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-      });
+    if (!inventoryLateExperiencePromise) {
+      inventoryLateExperiencePromise = Promise.all([loadInventoryLateContent(), loadDeActCss(), loadInventoryLateCss()])
+        .then(() => loadInventoryLateJs())
+        .then(() => {
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
+    }
+    return inventoryLateExperiencePromise;
   }
 
   DE.initMobileNav(); // not shipped to the platform (DeHeader owns nav)
@@ -125,15 +133,18 @@ DE.pages.inventory = { boot() {
       });
     });
 
+    let requested = false;
     const check = () => {
+      if (requested) return;
       const rect = target.getBoundingClientRect();
       if (window.scrollY > 430 && rect.top < window.innerHeight + 450) scheduleLoad();
     };
     let lateLoadTimer = 0;
     function scheduleLoad() {
-      if (lateLoadTimer) return;
+      if (lateLoadTimer || requested) return;
       lateLoadTimer = setTimeout(() => {
         lateLoadTimer = 0;
+        requested = true;
         load();
       }, 850);
     }

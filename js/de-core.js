@@ -148,7 +148,12 @@ window.DE = (() => {
     if (!lenis || !window.gsap || !window.ScrollTrigger || lenis.__deScrollTriggerAttached) return false;
     lenis.__deScrollTriggerAttached = true;
     gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ limitCallbacks: true });
+    // ignoreMobileResize: iOS fires window resize when the URL bar
+    // collapses/expands mid-scroll; without this flag every direction
+    // change near the bar triggers a full refresh of a ~28,000px page
+    // (pin revert + re-measure + programmatic scroll writes) = visible
+    // jump/flicker on phones.
+    ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
     lenis.on('scroll', ScrollTrigger.update);
     // lenis.raf is ALREADY driven by createLenis's rafLoop. Do NOT also drive it
     // from gsap.ticker — when ScrollTrigger attaches late (e.g. the homepage,
@@ -173,8 +178,44 @@ window.DE = (() => {
       .then(() => { attachScrollTrigger(lenis); });
   }
 
-  /* Lenis smooth scroll + optional GSAP/ScrollTrigger wiring (canonical options) */
+  /* Lenis smooth scroll + optional GSAP/ScrollTrigger wiring (canonical options).
+
+     TOUCH-PRIMARY DEVICES GET A NATIVE-SCROLL SHIM INSTEAD OF LENIS.
+     With smoothTouch off, Lenis adds nothing on phones — but its
+     VirtualScroll still binds wheel/touchstart/touchmove with
+     {passive: false}, and a non-passive touchmove forces iOS WebKit to
+     synchronize EVERY touch-scroll frame with the main thread before the
+     compositor may commit. On a page this heavy that turns busy main-thread
+     moments directly into finger lag ("stuck in mud"). The shim keeps the
+     lenis surface our code consumes (on/scrollTo/stop/start/raf/destroy)
+     while scrolling stays 100% native and compositor-driven; ScrollTrigger
+     still updates via the forwarded native scroll event. */
   function createLenis(options = {}) {
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      const handlers = [];
+      const shim = {
+        isNativeShim: true,
+        isStopped: false,
+        velocity: 0,
+        on(event, fn) { if (event === 'scroll') handlers.push(fn); },
+        raf() {},
+        resize() {},
+        // parity with Lenis stop()/start(): real Lenis preventDefaults touch
+        // while stopped (modal open) — the shim locks the root scroller instead
+        stop() { this.isStopped = true; document.documentElement.style.overflow = 'hidden'; },
+        start() { this.isStopped = false; document.documentElement.style.overflow = ''; },
+        scrollTo(target, opts = {}) {
+          const top = typeof target === 'number' ? target : 0;
+          window.scrollTo({ top, behavior: reduceMotion || opts.immediate ? 'auto' : 'smooth' });
+          if (opts.onComplete) setTimeout(opts.onComplete, 600);
+        },
+        destroy() { handlers.length = 0; },
+      };
+      on(window, 'scroll', () => { handlers.forEach((fn) => fn(shim)); }, { passive: true });
+      lifecycle().lenis = shim;
+      attachScrollTrigger(shim);
+      return shim;
+    }
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -392,7 +433,7 @@ window.DE = (() => {
     if (!target) return;
 
     const src = options.src || 'js/section-video-boat.min.js?v=20260630a';
-    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260630a';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260702b';
     const rootMargin = options.rootMargin || '1400px 0px';
     let requested = false;
     let observer = null;
@@ -548,19 +589,19 @@ window.DE = (() => {
     let anchorScene = -1;
     let touching = false;
     let snapGen = 0;        // bumped on each snap / user-takeover so stale timers can't clear a newer snap
-    // desktop: fine pointer, wide, NOT Safari (its trackpad momentum fights the
-    // snap). touch: any coarse-pointer device — including iOS Safari, because
-    // there native momentum settles on its own and we gate on finger-up +
-    // scroll-event silence, so there's nothing to fight.
     // isTouch routes the coasting check (touch can't use lenis.velocity); it's the
     // PRIMARY pointer, so a touch laptop driven by its mouse still reads as fine.
     const isTouch = () => window.matchMedia('(pointer: coarse)').matches;
     // gate is pointer-based, NOT width-based: snap on any fine pointer (desktop at
-    // any window width, excl. Safari's fighting trackpad momentum) OR any coarse
-    // pointer (touch, incl. iOS Safari). This closes the old <1101px fine-pointer
-    // dead zone — a resized desktop window now snaps too.
+    // any window width, excl. Safari's fighting trackpad momentum). Touch devices
+    // are EXCLUDED (reverts the 2026-06-15 "snap on mobile too" experiment): a
+    // lenis.scrollTo after every settled flick fights native momentum and reads
+    // as scroll-jacking on iPhones — mobile scroll must stay fully native.
+    // (In practice touch snap almost never fired anyway — the late-loader refresh
+    // loop kept resetting the settle timer — so removing it changes nothing users
+    // ever saw; it just prevents the yank from AWAKENING now that the loop is fixed.)
     const canSnapFine = () => !isSafari && window.matchMedia('(pointer: fine)').matches;
-    const canSnap = () => !reduceMotion && (canSnapFine() || isTouch());
+    const canSnap = () => !reduceMotion && canSnapFine();
     const isLocked = () => {
       const rect = section.getBoundingClientRect();
       return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;

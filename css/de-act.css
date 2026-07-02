@@ -251,11 +251,16 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  /* visibility (not just opacity) so scrolled-past acts stop painting and
+     their infinite CSS animations stop ticking — opacity:0 alone keeps
+     every stage alive in the compositor, which piles up on mobile WebKit */
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s;
 }
 /* the controller adds .is-locked while the act is pinned fullscreen */
 .de-act.is-locked .de-act-stage {
   opacity: 1;
+  visibility: visible;
 }
 
 .de-act-stage-sticky {
@@ -279,12 +284,18 @@
   justify-content: center;
   gap: 18px;
   opacity: 0;
+  /* visibility keeps the 4-6 stacked sibling beats out of the paint/animation
+     pipeline (opacity:0 still runs their infinite pulses and holds layers —
+     a real cost inside every pinned act on mobile WebKit). Flips visible
+     instantly on activate; hides after the 0.7s fade-out completes. */
+  visibility: hidden;
   transform: scale(0.96) translateY(20px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.7s;
   pointer-events: none;
 }
 .de-beat.is-active {
   opacity: 1;
+  visibility: visible;
   transform: scale(var(--de-beat-fit-scale, 1)) translateY(0);
   pointer-events: auto;
 }
@@ -473,6 +484,10 @@
     font-size: 0.62rem;
     letter-spacing: 0.13em;
     padding: 9px 12px;
+    /* backdrop-filter re-blurs every frame on WebKit while anything moves
+       behind it — needless on phones over an already-dark stage */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
 

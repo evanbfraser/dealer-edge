@@ -15,7 +15,7 @@ DE.pages.marketing = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260630b';
+    const href = 'css/de-act.min.css?v=20260702b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -73,22 +73,40 @@ DE.pages.marketing = { boot() {
     return marketingLateContentPromise;
   }
 
+  /* One-shot: cached so the per-scroll loader can't re-run the trailing
+     ScrollTrigger.refresh() — refresh's pin-revert scrollTo() fires more
+     scroll events, which re-invoked this on every event: a self-sustaining
+     full-refresh loop that crushed mobile WebKit. Refresh exactly once. */
+  let marketingLateExperiencePromise = null;
   function loadMarketingLateExperience() {
-    return Promise.all([loadMarketingLateContent(), loadDeActCss(), loadMarketingLateCss()])
-      .then(() => loadMarketingLateJs())
-      .then(() => {
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-      });
+    if (!marketingLateExperiencePromise) {
+      marketingLateExperiencePromise = Promise.all([loadMarketingLateContent(), loadDeActCss(), loadMarketingLateCss()])
+        .then(() => loadMarketingLateJs())
+        .then(() => {
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
+    }
+    return marketingLateExperiencePromise;
   }
 
   function initLateCssLoader() {
     const sec = document.querySelector('[data-marketing-late-root]');
-    const load = () => loadMarketingLateExperience();
+    let requested = false;
+    const load = () => {
+      if (requested) return;
+      requested = true;
+      loadMarketingLateExperience();
+    };
 
     if (!sec) return;
     const check = () => {
+      if (requested) return;
       const rect = sec.getBoundingClientRect();
-      if (window.scrollY > 0 && rect.top < window.innerHeight) load();
+      // +450px approach margin (matches inventory/analytics): the pre-late
+      // page is barely taller than one viewport, so an exact
+      // `top < innerHeight` gate can sit forever at the scroll clamp — it
+      // only ever passed on phones because the URL-bar resize re-ran it.
+      if (window.scrollY > 0 && rect.top < window.innerHeight + 450) load();
     };
     DE.on(window, 'scroll', check, { passive: true });
     DE.on(window, 'resize', check, { passive: true });

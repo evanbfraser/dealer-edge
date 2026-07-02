@@ -257,6 +257,23 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Phones: a fixed element with backdrop-filter forces WebKit to re-blur its
+   backdrop EVERY frame for the entire scroll — the single biggest standing
+   per-frame paint cost on mobile. Swap the frosted glass for a slightly more
+   opaque fill; visually near-identical over these dark pages. */
+@media (max-width: 1100px) {
+  .navbar.scrolled {
+    background: rgba(0, 0, 0, 0.94);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .navbar.is-scrolled {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.97) 0%, rgba(0, 0, 0, 0.92) 72%, rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* Fixed-nav clearance for CMS pages (platform only — #main-content exists in
    the DealerEdge marketing layout, not the standalone static site, so this is
    dormant here). The nav is position:fixed and reserves no layout space. Island

@@ -57,6 +57,7 @@ DE.pages.sales = { boot() {
 
     if (!statsSection) return;
     const check = () => {
+      if (statsInitialized) return;
       const rect = statsSection.getBoundingClientRect();
       if (rect.top < window.innerHeight) run();
     };
@@ -77,7 +78,7 @@ DE.pages.sales = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260630a';
+    const href = 'css/de-act.min.css?v=20260702b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -151,17 +152,33 @@ DE.pages.sales = { boot() {
     return salesLateContentPromise;
   }
 
+  /* One-shot: cached so repeat calls (the scroll-driven loader fires on
+     every scroll event) can't re-run the chain. Before this guard, every
+     scroll past the hero resolved the already-cached loads and hit the
+     trailing ScrollTrigger.refresh() — whose pin-revert scrollTo() fires
+     more scroll events — a self-sustaining full-refresh loop (~20/s) that
+     ground mobile WebKit into the dirt and got worse the deeper the page
+     loaded. Keep the refresh exactly once. */
+  let salesLateExperiencePromise = null;
   function loadSalesLateExperience() {
-    return Promise.all([loadSalesLateContent(), loadDeActCss(), loadSalesLateCss()])
-      .then(() => loadSalesLateJs())
-      .then(() => {
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-      });
+    if (!salesLateExperiencePromise) {
+      salesLateExperiencePromise = Promise.all([loadSalesLateContent(), loadDeActCss(), loadSalesLateCss()])
+        .then(() => loadSalesLateJs())
+        .then(() => {
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
+    }
+    return salesLateExperiencePromise;
   }
 
   function initLateCssAndJsLoader() {
     const target = document.querySelector('[data-stats-section]');
-    const load = () => initStatsEngine().then(() => loadSalesLateExperience());
+    let requested = false;
+    const load = () => {
+      if (requested) return;
+      requested = true;
+      initStatsEngine().then(() => loadSalesLateExperience());
+    };
 
     ['wheel', 'touchstart', 'keydown'].forEach((eventName) => {
       window.addEventListener(eventName, load, { once: true, passive: true });
@@ -173,6 +190,7 @@ DE.pages.sales = { boot() {
 
     if (!target) return;
     const check = () => {
+      if (requested) return;
       const rect = target.getBoundingClientRect();
       if (window.scrollY > 0 && rect.top < window.innerHeight) load();
     };
