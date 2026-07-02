@@ -63,6 +63,21 @@ const statsResponsive = readSlice(
   '/* ─── ACT SECTIONS'
 );
 
+// The mobile cohort CARD/GRID layout (grid-template-areas, .s-cohort-row
+// display:contents, the aspect-ratio grid, and the 600vh mobile pin height)
+// lives inside a below-fold @media block, so it was landing in sales-late —
+// but the cohort IS the above-the-fold hero. Without it, the grid collapses to
+// width:0 on mobile first paint (blank card) until the late CSS loads. Pull the
+// marked block into critical, re-wrapped in its media query. It stays in the
+// late bundle too (identical rules, harmless duplicate).
+const mobileCohortHero = readSlice(
+  '/* ─── MOBILE COHORT HERO START (pulled into sales-critical) ─── */',
+  '/* ─── MOBILE COHORT HERO END ─── */'
+)
+  .replace('/* ─── MOBILE COHORT HERO START (pulled into sales-critical) ─── */', '')
+  .trim();
+const mobileCohortHeroCritical = `@media (max-width: 1100px) {\n${mobileCohortHero}\n}`;
+
 const monoFontFace = `@font-face {
   font-family: 'JetBrains Mono';
   src: url('../assets/fonts/jetbrains-mono-var-latin.woff2') format('woff2');
@@ -73,7 +88,7 @@ const monoFontFace = `@font-face {
 
 write(
   'sales-critical.css',
-  [monoFontFace, heroBase, statsResponsive].join('\n\n'),
+  [monoFontFace, heroBase, statsResponsive, mobileCohortHeroCritical].join('\n\n'),
   'critical hook and pinned cohort hero CSS'
 );
 

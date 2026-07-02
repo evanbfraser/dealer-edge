@@ -3550,6 +3550,7 @@
     max-height: 32px;
     object-fit: contain;
   }
+  /* ─── MOBILE COHORT HERO START (pulled into sales-critical) ─── */
   .s-cohort-headline {
     align-items: center;
     text-align: center;
@@ -3700,6 +3701,7 @@
     padding-top: calc(96px + env(safe-area-inset-top, 0px));
   }
   .s-hero.s-stats-section { height: 600vh; }
+  /* ─── MOBILE COHORT HERO END ─── */
   .s-marine-proof {
     padding-top: max(72px, calc(24px + env(safe-area-inset-top, 0px)));
   }
