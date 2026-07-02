@@ -78,6 +78,21 @@ const mobileCohortHero = readSlice(
   .trim();
 const mobileCohortHeroCritical = `@media (max-width: 1100px) {\n${mobileCohortHero}\n}`;
 
+// The narrower cohort-hero blocks (≤640 + the short-viewport tiers) must ALSO
+// ship in critical: on the platform the island loader injects the critical
+// stylesheet AFTER the runtime-loaded late stylesheet, so any cohort rule that
+// exists only in sales-late loses the cascade to critical's ≤1100 duplicates.
+// These slices carry their own @media wrappers — extracted verbatim; they stay
+// in the late bundle too (identical copies, so load order can't matter).
+const cohortNarrowSlices = [
+  ['/* ─── MOBILE COHORT HERO 640 START (pulled into sales-critical) ─── */',
+    '/* ─── MOBILE COHORT HERO 640 END ─── */'],
+  ['/* ─── MOBILE COHORT HERO SHORT-880 START (pulled into sales-critical) ─── */',
+    '/* ─── MOBILE COHORT HERO SHORT-880 END ─── */'],
+  ['/* ─── MOBILE COHORT HERO SHORT-720 START (pulled into sales-critical) ─── */',
+    '/* ─── MOBILE COHORT HERO SHORT-720 END ─── */'],
+].map(([start, end]) => readSlice(start, end).replace(start, '').trim());
+
 const monoFontFace = `@font-face {
   font-family: 'JetBrains Mono';
   src: url('../assets/fonts/jetbrains-mono-var-latin.woff2') format('woff2');
@@ -88,7 +103,7 @@ const monoFontFace = `@font-face {
 
 write(
   'sales-critical.css',
-  [monoFontFace, heroBase, statsResponsive, mobileCohortHeroCritical].join('\n\n'),
+  [monoFontFace, heroBase, statsResponsive, mobileCohortHeroCritical, ...cohortNarrowSlices].join('\n\n'),
   'critical hook and pinned cohort hero CSS'
 );
 

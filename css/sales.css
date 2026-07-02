@@ -4855,6 +4855,12 @@
   .s-closer-stats { grid-template-columns: 1fr; }
 }
 
+/* Cohort-hero ≤640 rules are marker-extracted into sales-critical: on the
+   platform the island loader injects the critical stylesheet AFTER the
+   runtime-loaded late stylesheet, so any cohort rule that lives only in
+   the late bundle loses the cascade to critical's ≤1100 duplicates.
+   Keeping identical copies in BOTH bundles makes load order irrelevant. */
+/* ─── MOBILE COHORT HERO 640 START (pulled into sales-critical) ─── */
 @media (max-width: 640px) {
   .s-hero { padding: 100px 20px 60px; min-height: auto; }
   .s-cohort-headline h1 {
@@ -4917,6 +4923,10 @@
     margin-top: 0;
     width: 100%;
   }
+}
+/* ─── MOBILE COHORT HERO 640 END ─── */
+
+@media (max-width: 640px) {
   .de-beat,
   .de-beat > * {
     max-width: 100%;
@@ -5224,6 +5234,7 @@
   }
 }
 
+/* ─── MOBILE COHORT HERO SHORT-880 START (pulled into sales-critical) ─── */
 @media (max-width: 640px) and (max-height: 880px) {
   .s-cohort-card {
     gap: 10px;
@@ -5288,10 +5299,12 @@
     letter-spacing: 0.16em;
   }
 }
+/* ─── MOBILE COHORT HERO SHORT-880 END ─── */
 
 /* Short phone viewports (URL bar visible): tighten the headline type +
    card chrome so the dot grid keeps a readable size — otherwise the
    4-line beat-3 headline eats the whole svh budget */
+/* ─── MOBILE COHORT HERO SHORT-720 START (pulled into sales-critical) ─── */
 @media (max-width: 640px) and (max-height: 720px) {
   .s-cohort-stat {
     font-size: clamp(3.6rem, 15vw, 5rem);
@@ -5315,6 +5328,7 @@
     margin-bottom: clamp(10px, 2vh, 16px);
   }
 }
+/* ─── MOBILE COHORT HERO SHORT-720 END ─── */
 
 @media (max-width: 960px) {
   .sales-page .video-section {

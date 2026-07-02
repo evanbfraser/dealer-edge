@@ -97,7 +97,7 @@ DE.pages.sales = { boot() {
   let salesLateContentPromise = null;
   let salesLateContentReady = false;
   function loadSalesLateCss() {
-    const href = 'css/sales-late.min.css?v=20260702c';
+    const href = 'css/sales-late.min.css?v=20260702d';
     if (document.querySelector(`link[href="${href}"]`)) {
       return salesLateCssPromise || Promise.resolve();
     }
