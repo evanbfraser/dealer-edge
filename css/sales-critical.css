@@ -102,8 +102,14 @@
 .s-stats-pin {
   position: sticky;
   top: 0;
+  /* svh, not vh: on iOS 100vh is the LARGE viewport, so with the URL bar
+     visible the pin's bottom (last dot rows + counters) hid under the
+     browser chrome. svh sizes to the bars-visible viewport — worst case
+     always fits; when the bars collapse the section bg fills the gap. */
   height: 100vh;
+  height: 100svh;
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -827,7 +833,10 @@
   }
   .s-cohort-grid-wrap {
     display: block;
-    width: min(100%, calc(100vw - 56px), 440px);
+    /* --s-cohort-viz-cap: JS-measured height budget (grid is 1:1 so a width
+       cap IS a height cap) set by fitCohortViz() in sales.js — shrinks the
+       grid whenever headline + card would overflow the pinned viewport */
+    width: min(100%, calc(100vw - 56px), 440px, var(--s-cohort-viz-cap, 9999px));
     max-width: 100%;
     height: auto;
     margin-inline: auto;
@@ -901,12 +910,12 @@
   .s-stats-section[data-active-beat="6"] .s-hero-pulse {
     display: none;
   }
-  .s-stats-section[data-active-beat="6"] .s-hero-story-handoff {
-    opacity: 0;
-    max-height: 0;
-    margin: 0;
-    overflow: hidden;
-    pointer-events: none;
+  /* the in-pin story handoff is never visible on mobile (opacity 0 on beats
+     1-5, collapsed on beat 6) — take it out of flow entirely so its
+     invisible text doesn't inflate the pin's height budget and starve the
+     dot grid (fitCohortViz measures real flow height) */
+  .s-hero-story-handoff {
+    display: none;
   }
   .s-stats-section[data-active-beat="6"] .s-cohort-fix-stack {
     gap: 8px;

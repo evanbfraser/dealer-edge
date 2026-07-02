@@ -97,7 +97,7 @@ DE.pages.sales = { boot() {
   let salesLateContentPromise = null;
   let salesLateContentReady = false;
   function loadSalesLateCss() {
-    const href = 'css/sales-late.min.css?v=20260701a';
+    const href = 'css/sales-late.min.css?v=20260702c';
     if (document.querySelector(`link[href="${href}"]`)) {
       return salesLateCssPromise || Promise.resolve();
     }
@@ -343,10 +343,33 @@ DE.pages.sales = { boot() {
       return Number(value).toLocaleString('en-US');
     }
 
+    const innerEl = section.querySelector('.s-hero-inner--pinned');
+    const gridWrapEl = section.querySelector('.s-cohort-grid-wrap');
+    const mobileHeroMedia = window.matchMedia('(max-width: 1100px)');
+
+    /* Mobile: shrink the dot grid until the whole pinned stack (headline +
+       label + grid + counters + caption) fits the pin. Headline height
+       varies per beat and syncHeadlineSlot's inline min-height overrides
+       any CSS cap on the headline slot, so a fixed grid size can't work —
+       measure the pin's real overflow and cap the viz width instead (the
+       grid is 1:1, so a width budget IS a height budget). The cap is
+       cleared before measuring, so every call re-derives from the natural
+       size — no compounding shrink. */
+    function fitCohortViz() {
+      if (!innerEl || !gridWrapEl) return;
+      section.style.removeProperty('--s-cohort-viz-cap');
+      if (!mobileHeroMedia.matches) return;
+      const overflow = innerEl.scrollHeight - innerEl.clientHeight;
+      if (overflow <= 0) return;
+      const cap = Math.max(120, gridWrapEl.offsetHeight - overflow - 6);
+      section.style.setProperty('--s-cohort-viz-cap', `${Math.round(cap)}px`);
+    }
+
     function syncHeadlineSlot() {
       const active = headlines.find((headline) => headline.classList.contains('is-active'));
       if (!headlinesEl || !active) return;
       headlinesEl.style.minHeight = `${active.offsetHeight}px`;
+      fitCohortViz();
     }
 
     function setText(el, value) {
@@ -604,6 +627,13 @@ DE.pages.sales = { boot() {
       requestAnimationFrame(() => {
         syncHeadlineSlot();
         requestAnimationFrame(syncHeadlineSlot);
+      });
+      // beat content lands asynchronously (fonts, beat-6 fix cards +
+      // scene-next banner) — re-fit the viz as it settles
+      [420, 1100, 2200, 3600].forEach((delay) => {
+        setTimeout(() => {
+          if (gen === cohortGen) fitCohortViz();
+        }, delay);
       });
 
       setText(labelEl, stage.label);
