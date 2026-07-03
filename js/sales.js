@@ -97,7 +97,7 @@ DE.pages.sales = { boot() {
   let salesLateContentPromise = null;
   let salesLateContentReady = false;
   function loadSalesLateCss() {
-    const href = 'css/sales-late.min.css?v=20260702d';
+    const href = 'css/sales-late.min.css?v=20260703a';
     if (document.querySelector(`link[href="${href}"]`)) {
       return salesLateCssPromise || Promise.resolve();
     }
@@ -678,7 +678,7 @@ DE.pages.sales = { boot() {
   let salesLateJsPromise = null;
   let salesLateInitialized = false;
   function loadSalesLateJs() {
-    const src = 'js/sales-late.min.js?v=20260702f';
+    const src = 'js/sales-late.min.js?v=20260703a';
     if (!salesLateJsPromise) {
       salesLateJsPromise = Promise.all([initStatsEngine(), loadSalesLateContent()]).then(() => new Promise((resolve) => {
         const existing = document.querySelector(`script[src="${src}"]`);

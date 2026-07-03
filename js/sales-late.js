@@ -915,6 +915,14 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
   const tryScript = document.getElementById('try-script');
   const tryName = document.getElementById('try-name');
   const tryConsent = document.getElementById('try-consent');
+  const tryCard = document.querySelector('.s-try-input-card');
+
+  /* Once a send is accepted, the inputs collapse (the visitor's job is done)
+     and the button pulses while the AI works; resetDemo restores the form. */
+  function setTrySending(sending) {
+    if (tryCard) tryCard.classList.toggle('is-sent', sending);
+    if (trySend) trySend.classList.toggle('is-working', sending);
+  }
 
   // Simulated buyer responses chosen randomly to feel live
   const buyerResponses = [
@@ -982,9 +990,13 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
       trySend.disabled = false;
       trySend.textContent = 'Text me';
     }
+    setTrySending(false);
   }
 
   function appendPhoneMsg(role, text) {
+    // first real bubble = the AI is no longer "working" — stop the pulse
+    // (inputs stay collapsed until reset)
+    if (trySend) trySend.classList.remove('is-working');
     const msg = document.createElement('div');
     msg.className = `s-phone-msg is-${role}`;
     msg.textContent = text;
@@ -1024,6 +1036,7 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
       trySend.disabled = true;
       trySend.textContent = 'Texting you…';
     }
+    setTrySending(true);
     if (phoneThread) phoneThread.innerHTML = '';
 
     // Beat 0: AI sees the inquiry
@@ -1155,6 +1168,7 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
     if (phoneThread) phoneThread.innerHTML = '';
     if (tryStatus) { tryStatus.textContent = 'Texting you…'; tryStatus.classList.add('is-active'); }
     if (trySend) { trySend.disabled = true; trySend.textContent = 'Texting you…'; }
+    setTrySending(true);
     appendScriptBeat(0);
     const typing = appendPhoneTyping();
 
@@ -1218,7 +1232,7 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
               if (tryStatus) tryStatus.textContent = 'You replied — AI is answering…';
               awaitingReply = true;
             } else {
-              if (tryStatus) tryStatus.textContent = 'Tyler replied ✓';
+              if (tryStatus) tryStatus.textContent = 'AI replied ✓';
               awaitingReply = false;
             }
           });

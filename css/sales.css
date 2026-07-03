@@ -2925,6 +2925,34 @@
   cursor: pointer;
 }
 
+/* After a send is accepted (.is-sent, set by sales-late.js): the visitor's
+   job is done — collapse the name/number inputs and consent so the card
+   reads as "in progress"; the button rides solo full-width. resetDemo
+   removes the class and restores the form. */
+.s-try-input-card.is-sent .s-try-label,
+.s-try-input-card.is-sent #try-name,
+.s-try-input-card.is-sent #try-phone,
+.s-try-input-card.is-sent .s-try-consent {
+  display: none;
+}
+.s-try-input-card.is-sent #try-send {
+  flex: 1;
+  width: 100%;
+}
+
+/* Light "working" pulse on the button while the AI is texting — a soft
+   breathing glow, killed by the first real bubble (.is-working removed) */
+#try-send.is-working {
+  animation: s-try-working 1.4s ease-in-out infinite;
+}
+@keyframes s-try-working {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.09); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #try-send.is-working { animation: none; }
+}
+
 .s-try-script-card {
   padding: 18px 22px;
   background: rgba(255,255,255,0.015);
