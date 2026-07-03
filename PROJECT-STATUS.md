@@ -19,6 +19,20 @@ _Last updated: 2026-07-02 by Claude Code (Fable 5)._
 - ✅ C1 resolved by seeding: `/blog`, `/events`, `/specials` no longer show empty states.
 - ✅ Fabricated homepage proof band (500+/200%/98%) is gone from prod.
 
+### Lighthouse-mobile optimization pass (2026-07-03, Claude Fable 5)
+
+Perf/a11y/BP/SEO before → after (staging, LH 13.4 mobile, clean runs): home **63→87**/96/96/100, sales 77→78/96/100/**92→100**, marketing **71→86**/96/100/**92→100**, inventory 89→90/96/100/**92→100**, analytics 89/96/100/**92→100**, features 77→79/96/100/100, roi 85→87/96/100/100, case-studies **74→80** (**LCP 13 s→4.8 s**)/96/100/100. Shipped (static `dd54455`, platform `6fd538c99` + `d86c530b5`; also unbroke the staging build — #996 shipped a missing `createServiceClientOrThrow` import in `lib/api/inventory.ts`, every deploy since had failed):
+
+> ⚠️ Lighthouse-harness gotcha for future runs: headless-Chrome runs on this machine intermittently report a phantom **CLS of exactly 0.5180348102620734** (no attributed element; roams between pages/runs; NOT reproducible with a real PerformanceObserver on an emulated mobile device). If a page suddenly shows CLS 0.518, re-roll before believing it. Home's "CLS 0.518" in the baseline was this artifact too.
+
+Also this pass: the premier case-study card was a **1.16 MB PNG** (the case-studies LCP image) — re-encoded to a 117 KB JPEG at identical 1536×1024 resolution, uploaded alongside (`premier-watersports-card.jpg`), post `7c3a6914` repointed via MCP. The old PNG still serves the post's `og_image`.
+
+- **Perf:** removed the redundant Google Fonts CDN stylesheet from the DE layout branch (~780 ms render-blocking on every page; de-chrome.css already self-hosts the same variable fonts — woff2 preloads added); explicit dimensions on nav/footer logos + video-thumb + analytics hero shot (the unsized footer logo was the homepage's entire **CLS 0.518**); case-studies first card image eager + `fetchpriority=high` (was lazy → 13 s LCP); de-chrome.css ships minified (20.7 → 13.4 KB).
+- **SEO:** meta descriptions added to the 4 deep-dive islands (92 → 100); **DE-tenant sitemap** — it was advertising dealer routes (`/inventory/new`, `/financing`, demo boat listings) on dealeredge.ai; now island pages + `/demo` + CMS content. Canonical/OG/robots verified correct.
+- **BP:** home's console error (React #418) **root-caused via A/B network blocking: the GTM container mutates the DOM during React's hydration window** (home only because it hydrates slowest; error vanishes with googletagmanager blocked). Fix deferred — belongs in a GTM-container audit (DOM-mutating Custom HTML tags), not in shared analytics code. Costs 4 BP points on home only.
+- **A11y (96 everywhere):** the ONLY failing audit is color-contrast = the A8/A9 decisions below (visual, needs Jason). Precise data: white-on-`#ee3a39` = 3.96:1 (all `.btn-primary`/boat-CTA surfaces, every page); minimal passing brand red ≈ `#e02f2e` (4.55:1). `--text-dim` 0.45 → 4.42:1 on black / 4.48:1 on `#0a0a0a`; bump to **0.47–0.48** passes (4.8–5.0:1). Also: roi `.de-scroll-hint__label` (#474747, 2.13:1) and home `#cs-detail-attribution` (#6e6e6e, 3.81:1). Home's sub-2.0 ratios (stat-number/stat-label/span.dim) are entrance-animation snapshots, not resting states.
+- **New finding (route-level, open):** `/inventory/new` on the DE tenant renders "New Boats | **Premier Watersports**" (dealer inventory page, wrong tenant name) — live on dealeredge.ai; removed from sitemap now, but the route itself should be gated/noindexed for DE. Also `/about` is a soft-404 (HTTP 200 "Page Not Found").
+
 ### Open post-launch items (re-triaged 2026-07-02)
 
 1. **Lead notifications (conversion-critical):** DE tenant has ONE team member (Jason, linked) — but his notification prefs are `email_digest: off`, `sms_notifications: false`, PWA push only. A real demo request could sit unseen. Turn on email/SMS for lead assignment in the dashboard. (Bob/Mike/Sarah were never seeded — that's fine for the corporate site; leads route to Jason.) Also confirm prod `/api/leads` writes to the DB you're watching (MCP env here is staging — verify prod shares it).
