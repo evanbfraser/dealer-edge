@@ -145,6 +145,39 @@ function neutralizeLandmarks(s) {
     .replace(/<header\b/g, '<div').replace(/<\/header>/g, '</div>');
 }
 
+// ── site KB extraction ──
+// Visible text per page (fragment + its lazy late-content partial) becomes
+// lib/de-site/site-kb.json in the platform repo — the SMS/chat agents'
+// search_site_content reads it, so the marketing site IS the AI's knowledge
+// base and every copy change ships to the AI on the next export.
+const ENTITIES = {
+  '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'",
+  '&apos;': "'", '&nbsp;': ' ', '&rsquo;': '’', '&lsquo;': '‘',
+  '&ldquo;': '“', '&rdquo;': '”', '&mdash;': ' - ', '&ndash;': '-',
+  '&hellip;': '...', '&times;': 'x', '&rarr;': '->', '&larr;': '<-',
+};
+
+function htmlToText(html) {
+  let s = html;
+  // Drop non-content blocks entirely (scripts already stripped from fragments,
+  // but partials come in raw).
+  for (const tag of ['script', 'style', 'svg', 'noscript', 'template']) {
+    s = s.replace(new RegExp(`<${tag}\\b[\\s\\S]*?</${tag}>`, 'gi'), ' ');
+  }
+  s = s.replace(/<!--[\s\S]*?-->/g, ' ');
+  // Block-level boundaries become line breaks so headings/lines don't fuse.
+  s = s.replace(/<\/(?:p|div|section|article|li|h[1-6]|tr|blockquote|figcaption)>/gi, '\n');
+  s = s.replace(/<(?:br|hr)\b[^>]*>/gi, '\n');
+  s = s.replace(/<[^>]+>/g, ' ');
+  for (const [ent, ch] of Object.entries(ENTITIES)) s = s.split(ent).join(ch);
+  s = s.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
+  // Collapse whitespace: runs of spaces/tabs, then 3+ newlines to 2.
+  s = s.replace(/[ \t]+/g, ' ');
+  s = s.replace(/ ?\n ?/g, '\n');
+  s = s.replace(/\n{3,}/g, '\n\n');
+  return s.trim();
+}
+
 function collectAssetRefs(s, refs) {
   for (const m of s.matchAll(/(?:src|href|poster)="assets\/([^"]+)"/g)) refs.add(m[1]);
   for (const m of s.matchAll(/url\((['"]?)(?:\.\.\/)?assets\/([^'")]+)\1\)/g)) refs.add(m[2]);
@@ -195,6 +228,7 @@ async function main() {
   const assetRefs = new Set();
   const cssToCopy = new Set();
   const jsToCopy = new Set();
+  const kbDocs = [];
 
   for (const page of PAGES) {
     const html = await fs.readFile(path.join(SITE_ROOT, `${page}.html`), 'utf8');
@@ -237,7 +271,28 @@ async function main() {
       }, null, 2) + '\n'
     );
     process.stdout.write(`fragment: ${page} (${(frag.length / 1024).toFixed(1)} KB, ${js.length} scripts, ${css.length} css)\n`);
+
+    // ── site KB doc: fragment text + the lazy late-content partial (most of
+    // a deep-dive page's copy lives in the partial, not the fragment) ──
+    let kbContent = htmlToText(frag);
+    try {
+      const late = await fs.readFile(path.join(SITE_ROOT, 'partials', `${page}-late-content.html`), 'utf8');
+      kbContent += '\n\n' + htmlToText(late);
+    } catch { /* no late partial for this page */ }
+    kbDocs.push({
+      page,
+      url: page === 'index' ? '/' : `/${page}`,
+      title,
+      description,
+      content: kbContent.slice(0, 16000),
+    });
   }
+
+  await fs.writeFile(
+    path.join(TARGET, 'lib', 'de-site', 'site-kb.json'),
+    JSON.stringify({ generatedAt: new Date().toISOString(), docs: kbDocs }, null, 2) + '\n'
+  );
+  process.stdout.write(`site-kb: ${kbDocs.length} docs (${(kbDocs.reduce((n, d) => n + d.content.length, 0) / 1024).toFixed(0)} KB text)\n`);
 
   // ── css (scan for asset refs, rewrite nothing — ../assets resolves under /de-site/css/) ──
   // Page scripts lazy-load late JS/CSS after user intent. Discover that graph
