@@ -88,6 +88,36 @@ function extractChromeCss(styleCss) {
   return picked.join('\n\n') + '\n' + CHROME_ADDENDUM;
 }
 
+// Same comment-stripping + whitespace-collapse pass as scripts/minify-css.js —
+// de-chrome.css is render-blocking on every platform page, so ship it minified.
+function minifyCss(css) {
+  let out = '';
+  let quote = null;
+  for (let i = 0; i < css.length; i += 1) {
+    const ch = css[i];
+    const next = css[i + 1];
+    if (quote) {
+      out += ch;
+      if (ch === '\\') { out += next || ''; i += 1; }
+      else if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; out += ch; continue; }
+    if (ch === '/' && next === '*') {
+      i += 2;
+      while (i < css.length && !(css[i] === '*' && css[i + 1] === '/')) i += 1;
+      i += 1;
+      continue;
+    }
+    out += ch;
+  }
+  return out
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([{}:;,])\s*/g, '$1')
+    .replace(/;}/g, '}')
+    .trim();
+}
+
 const FRAGMENTS_DIR = path.join(TARGET, 'lib', 'de-site', 'fragments');
 const PUBLIC_DIR = path.join(TARGET, 'public', 'de-site');
 
@@ -321,8 +351,9 @@ async function main() {
   if (styleCssText) {
     const chrome = extractChromeCss(styleCssText);
     collectAssetRefs(chrome, assetRefs);
-    await fs.writeFile(path.join(PUBLIC_DIR, 'css', 'de-chrome.css'), chrome);
-    process.stdout.write(`de-chrome.css: ${(chrome.length / 1024).toFixed(1)} KB (${CHROME_SECTIONS.length} sections)\n`);
+    const chromeMin = minifyCss(chrome);
+    await fs.writeFile(path.join(PUBLIC_DIR, 'css', 'de-chrome.css'), chromeMin);
+    process.stdout.write(`de-chrome.css: ${(chromeMin.length / 1024).toFixed(1)} KB minified (${CHROME_SECTIONS.length} sections)\n`);
   } else {
     warn.push('de-chrome: css/style.css not among page stylesheets — chrome css not emitted');
   }
