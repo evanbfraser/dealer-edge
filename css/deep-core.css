@@ -669,7 +669,10 @@ body {
 }
 
 .de-scroll-hint.is-visible {
-  opacity: 0.55;
+  /* full opacity: at 0.55 the effective label contrast was ~2.3:1
+     (opacity × --text-dim) — failed WCAG AA and was easy to miss.
+     var(--text-dim) alone is ~5:1 and still reads as a quiet cue. */
+  opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
