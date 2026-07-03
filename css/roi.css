@@ -11,13 +11,13 @@
   --bg: #000;
   --panel: #0a0a0a;
   --panel-2: #111;
-  --accent: #ee3a39;
-  --accent-dim: rgba(238, 58, 57, 0.12);
+  --accent: #e02f2e;
+  --accent-dim: rgba(224, 47, 46, 0.12);
   --good: #4ade80;
   --good-dim: rgba(74, 222, 128, 0.12);
   --text: #fff;
   --text-mid: rgba(255, 255, 255, 0.75);
-  --text-dim: rgba(255, 255, 255, 0.45);
+  --text-dim: rgba(255, 255, 255, 0.48);
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.16);
   --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;

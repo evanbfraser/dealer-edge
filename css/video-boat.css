@@ -360,8 +360,8 @@ body {
 }
 
 .nav-dot--red {
-  background: #ee3a39;
-  box-shadow: 0 0 8px rgba(238, 58, 57, 0.6);
+  background: #e02f2e;
+  box-shadow: 0 0 8px rgba(224, 47, 46, 0.6);
 }
 
 .btn-nav {
@@ -462,10 +462,10 @@ body {
      index/sales/marketing all render the same closing CTA */
   font-size: clamp(1.05rem, 1.5vw, 1.3rem);
   padding: 1em 2.6em;
-  box-shadow: 0 0 40px rgba(238, 58, 57, 0.35), 0 6px 28px rgba(238, 58, 57, 0.28);
+  box-shadow: 0 0 40px rgba(224, 47, 46, 0.35), 0 6px 28px rgba(224, 47, 46, 0.28);
 }
 .boat-cta:hover {
-  box-shadow: 0 0 60px rgba(238, 58, 57, 0.5), 0 8px 34px rgba(238, 58, 57, 0.36);
+  box-shadow: 0 0 60px rgba(224, 47, 46, 0.5), 0 8px 34px rgba(224, 47, 46, 0.36);
 }
 
 /* Video — right, 65% wide, overlaps text by ~17% */

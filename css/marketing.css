@@ -14,8 +14,8 @@
   --m-dim: rgba(255, 255, 255, 0.44);
   --m-good: #4ade80;
   --m-good-dim: rgba(74, 222, 128, 0.12);
-  --m-bad: #ee3a39;
-  --m-bad-dim: rgba(238, 58, 57, 0.12);
+  --m-bad: #e02f2e;
+  --m-bad-dim: rgba(224, 47, 46, 0.12);
   --m-cyan: #22d3ee;
   --m-gold: #fbbf24;
   --m-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
@@ -224,7 +224,7 @@
   text-decoration: underline;
   text-decoration-thickness: 3px;
   text-underline-offset: 6px;
-  text-shadow: 0 0 18px rgba(238,58,57,0.22);
+  text-shadow: 0 0 18px rgba(224, 47, 46,0.22);
 }
 
 .m-note-arrow {
@@ -265,8 +265,8 @@
   bottom: -0.14em;
   height: 5px;
   background:
-    linear-gradient(92deg, transparent 0 4%, rgba(238, 58, 57, 0.9) 5% 92%, transparent 96%),
-    linear-gradient(86deg, transparent 0 8%, rgba(238, 58, 57, 0.58) 9% 88%, transparent 92%);
+    linear-gradient(92deg, transparent 0 4%, rgba(224, 47, 46, 0.9) 5% 92%, transparent 96%),
+    linear-gradient(86deg, transparent 0 8%, rgba(224, 47, 46, 0.58) 9% 88%, transparent 92%);
   border-radius: 999px;
   transform: rotate(-1.4deg);
   opacity: 0.86;
@@ -299,7 +299,7 @@
   border-radius: 20px;
   background:
     radial-gradient(circle at 50% 46%, rgba(74, 222, 128, 0.13), transparent 34%),
-    radial-gradient(circle at 20% 20%, rgba(238, 58, 57, 0.14), transparent 30%),
+    radial-gradient(circle at 20% 20%, rgba(224, 47, 46, 0.14), transparent 30%),
     linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55);
   overflow: hidden;
@@ -332,7 +332,7 @@
   display: grid;
   place-items: center;
   padding: 12px 14px;
-  --bad: rgba(238,58,57,0.42);
+  --bad: rgba(224, 47, 46,0.42);
   --bad-soft: rgba(255,150,146,0.9);
   --good: rgba(74,222,128,0.55);
   --good-line: rgba(74,222,128,0.85);
@@ -541,7 +541,7 @@
 .m-flow-src.is-spotlight,
 .m-flow-node.is-spotlight {
   border-color: rgba(255,120,118,0.85) !important;
-  box-shadow: 0 0 0 1px rgba(255,120,118,0.5), 0 0 22px rgba(238,58,57,0.4) !important;
+  box-shadow: 0 0 0 1px rgba(255,120,118,0.5), 0 0 22px rgba(224, 47, 46,0.4) !important;
 }
 .m-hero[data-active-stage="2"] .m-flow-src.is-spotlight,
 .m-hero[data-active-stage="2"] .m-flow-node.is-spotlight,
@@ -567,7 +567,7 @@
   margin: -4px 0 0 -4px;
   border-radius: 50%;
   background: var(--bad-soft);
-  box-shadow: 0 0 8px rgba(238,58,57,0.5);
+  box-shadow: 0 0 8px rgba(224, 47, 46,0.5);
   will-change: transform, opacity;
 }
 .m-flow-prospect.is-green {
@@ -585,7 +585,7 @@
   padding: 9px 14px;
   border-radius: 12px;
   text-align: center;
-  border: 1px solid rgba(238,58,57,0.34);
+  border: 1px solid rgba(224, 47, 46,0.34);
   background: rgba(10,4,4,0.92);
   transition: border-color 0.55s ease, background 0.55s ease;
 }
@@ -655,7 +655,7 @@
   right: -30px;
   width: 2px;
   border-radius: 2px;
-  background: repeating-linear-gradient(180deg, rgba(238,58,57,0.4) 0 5px, transparent 5px 11px);
+  background: repeating-linear-gradient(180deg, rgba(224, 47, 46,0.4) 0 5px, transparent 5px 11px);
   opacity: 0.7;
   transition: background 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
   pointer-events: none;
@@ -668,7 +668,7 @@
   height: 9px;
   border-left: 2px solid currentColor;
   border-top: 2px solid currentColor;
-  color: rgba(238,58,57,0.6);
+  color: rgba(224, 47, 46,0.6);
   transform: rotate(45deg);
   transition: color 0.5s ease;
 }
@@ -821,8 +821,8 @@
 
 /* ════════════ STAGE 2 — the leak: buyers bounce off the slow site ════════════ */
 .m-hero[data-active-stage="1"] .m-flow-node[data-flow-node="site"] {
-  border-color: rgba(238,58,57,0.7);
-  box-shadow: 0 10px 26px rgba(0,0,0,0.45), 0 0 26px rgba(238,58,57,0.28);
+  border-color: rgba(224, 47, 46,0.7);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.45), 0 0 26px rgba(224, 47, 46,0.28);
   animation: mFlowSlow 1.6s ease-in-out infinite;
 }
 @keyframes mFlowSlow {
@@ -893,9 +893,9 @@
   flex-direction: column;
   padding: 16px 16px 92px;
   border-radius: 16px;
-  border: 1px solid rgba(238,58,57,0.26);
+  border: 1px solid rgba(224, 47, 46,0.26);
   background:
-    radial-gradient(circle at 24% 18%, rgba(238,58,57,0.14), transparent 36%),
+    radial-gradient(circle at 24% 18%, rgba(224, 47, 46,0.14), transparent 36%),
     linear-gradient(180deg, rgba(15, 6, 6, 0.92), rgba(0, 0, 0, 0.74));
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,0.025),
@@ -978,7 +978,7 @@
 
 .m-board-connectors i {
   position: absolute;
-  border-color: rgba(238,58,57,0.32);
+  border-color: rgba(224, 47, 46,0.32);
   opacity: 0.55;
 }
 
@@ -994,14 +994,14 @@
   left: 10%;
   right: 10%;
   top: 31%;
-  border-top: 1px dashed rgba(238,58,57,0.32);
+  border-top: 1px dashed rgba(224, 47, 46,0.32);
 }
 
 .m-board-connectors i:nth-child(2) {
   left: 10%;
   right: 10%;
   top: 65%;
-  border-top: 1px dashed rgba(238,58,57,0.22);
+  border-top: 1px dashed rgba(224, 47, 46,0.22);
   animation-delay: 0.5s;
 }
 
@@ -1009,7 +1009,7 @@
   top: 8%;
   bottom: 8%;
   left: 50%;
-  border-left: 1px dashed rgba(238,58,57,0.26);
+  border-left: 1px dashed rgba(224, 47, 46,0.26);
   animation-delay: 1s;
 }
 
@@ -1018,7 +1018,7 @@
   bottom: 8%;
   left: 50%;
   width: 30%;
-  border-top: 1px dashed rgba(238,58,57,0.18);
+  border-top: 1px dashed rgba(224, 47, 46,0.18);
   transform: translateX(-50%) rotate(-24deg);
   transform-origin: 0 50%;
   animation-delay: 1.5s;
@@ -1064,7 +1064,7 @@
   align-content: center;
   gap: 4px 11px;
   padding: 12px;
-  border: 1px solid rgba(238,58,57,0.4);
+  border: 1px solid rgba(224, 47, 46,0.4);
   background: rgba(22, 7, 7, 0.92);
   box-shadow: 0 14px 32px rgba(0,0,0,0.34);
   overflow: visible;
@@ -1126,7 +1126,7 @@
   height: 32px;
   border-radius: 9px;
   color: rgba(255,188,184,1);
-  background: rgba(238,58,57,0.2);
+  background: rgba(224, 47, 46,0.2);
   font: 900 0.74rem/1 var(--m-mono);
 }
 
@@ -1225,8 +1225,8 @@
 
 .m-cost-token {
   color: rgba(255,171,167,0.96);
-  border: 1px solid rgba(238,58,57,0.28);
-  background: rgba(238,58,57,0.13);
+  border: 1px solid rgba(224, 47, 46,0.28);
+  background: rgba(224, 47, 46,0.13);
   box-shadow: 0 8px 22px rgba(0,0,0,0.26);
 }
 
@@ -1295,19 +1295,19 @@
 }
 
 .m-board-output--problem {
-  border: 1px solid rgba(238,58,57,0.28);
+  border: 1px solid rgba(224, 47, 46,0.28);
   background: rgba(15, 5, 5, 0.88);
 }
 
 .m-board-output--problem i {
   width: 42px;
   height: 1px;
-  background: linear-gradient(90deg, rgba(238,58,57,0.08), rgba(238,58,57,0.76), rgba(238,58,57,0.08));
+  background: linear-gradient(90deg, rgba(224, 47, 46,0.08), rgba(224, 47, 46,0.76), rgba(224, 47, 46,0.08));
 }
 
 .m-unknown-token {
   color: var(--m-bad) !important;
-  text-shadow: 0 0 22px rgba(238,58,57,0.24);
+  text-shadow: 0 0 22px rgba(224, 47, 46,0.24);
 }
 
 .m-hero[data-active-stage="1"] .m-board-output--problem {
@@ -1529,7 +1529,7 @@
   width: 40%;
   height: 1px;
   transform-origin: 0 50%;
-  background: linear-gradient(90deg, rgba(238,58,57,0.7), rgba(238,58,57,0.04));
+  background: linear-gradient(90deg, rgba(224, 47, 46,0.7), rgba(224, 47, 46,0.04));
   opacity: 0.72;
   transition: opacity 0.5s ease, background 0.5s ease, width 0.5s ease;
 }
@@ -1550,8 +1550,8 @@
   background: rgba(7, 8, 8, 0.92);
   box-shadow:
     0 24px 70px rgba(0,0,0,0.65),
-    0 0 0 1px rgba(238,58,57,0.12),
-    0 0 44px rgba(238,58,57,0.13);
+    0 0 0 1px rgba(224, 47, 46,0.12),
+    0 0 44px rgba(224, 47, 46,0.13);
   overflow: hidden;
   transition: border-color 0.65s ease, box-shadow 0.65s ease, transform 0.65s ease, filter 0.65s ease;
   animation: mSiteStrain 4.8s ease-in-out infinite;
@@ -1622,10 +1622,10 @@
   display: inline-flex;
   margin-bottom: 8px;
   padding: 5px 7px;
-  border: 1px solid rgba(238,58,57,0.3);
+  border: 1px solid rgba(224, 47, 46,0.3);
   border-radius: 999px;
   color: rgba(255,150,146,0.95);
-  background: rgba(238,58,57,0.11);
+  background: rgba(224, 47, 46,0.11);
   font: 700 0.5rem/1 var(--m-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1669,7 +1669,7 @@
   width: 86%;
   height: 15px;
   color: transparent;
-  background: rgba(238,58,57,0.34);
+  background: rgba(224, 47, 46,0.34);
   transition: background 0.65s ease;
 }
 
@@ -1692,7 +1692,7 @@
   align-content: center;
   gap: 3px 10px;
   padding: 10px 12px;
-  border: 1px solid rgba(238,58,57,0.34);
+  border: 1px solid rgba(224, 47, 46,0.34);
   border-radius: 14px;
   background: rgba(22, 7, 7, 0.88);
   box-shadow: 0 14px 38px rgba(0,0,0,0.46);
@@ -1734,7 +1734,7 @@
   flex: 0 0 auto;
   border-radius: 10px;
   color: rgba(255, 155, 151, 0.95);
-  background: rgba(238,58,57,0.14);
+  background: rgba(224, 47, 46,0.14);
   transition: color 0.65s ease, background 0.65s ease;
 }
 
@@ -1804,10 +1804,10 @@
   left: 50%;
   top: 50%;
   padding: 7px 10px;
-  border: 1px solid rgba(238,58,57,0.34);
+  border: 1px solid rgba(224, 47, 46,0.34);
   border-radius: 999px;
   color: rgba(255,170,166,0.95);
-  background: rgba(238,58,57,0.16);
+  background: rgba(224, 47, 46,0.16);
   font: 800 0.55rem/1 var(--m-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2371,7 +2371,7 @@
   gap: 2px;
   padding: 8px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(238, 58, 57, 0.4);
+  border: 1px solid rgba(224, 47, 46, 0.4);
   background: rgba(20, 6, 6, 0.92);
   transition: opacity 0.5s ease, border-color 0.5s ease;
 }
@@ -2551,9 +2551,9 @@
   justify-content: space-between;
   gap: 18px;
   padding: 16px;
-  border: 1px solid rgba(238,58,57,0.18);
+  border: 1px solid rgba(224, 47, 46,0.18);
   border-radius: 12px;
-  background: rgba(238,58,57,0.07);
+  background: rgba(224, 47, 46,0.07);
 }
 
 .m-ticket[data-old-ticket] {
@@ -2646,8 +2646,8 @@
 
 .m-bad-tags span {
   color: rgba(255,150,146,0.92);
-  border: 1px solid rgba(238,58,57,0.24);
-  background: rgba(238,58,57,0.08);
+  border: 1px solid rgba(224, 47, 46,0.24);
+  background: rgba(224, 47, 46,0.08);
 }
 
 /* Act 1 — old-way beat visuals */
@@ -2673,7 +2673,7 @@
 }
 
 .m-old-listing-preview.is-stale {
-  border-color: rgba(238,58,57,0.42);
+  border-color: rgba(224, 47, 46,0.42);
   filter: saturate(0.72);
 }
 
@@ -2784,8 +2784,8 @@
 }
 
 .m-old-ready.is-stuck {
-  border-color: rgba(238,58,57,0.42);
-  background: rgba(238,58,57,0.12);
+  border-color: rgba(224, 47, 46,0.42);
+  background: rgba(224, 47, 46,0.12);
   color: rgba(255,150,146,0.95);
 }
 
@@ -2811,7 +2811,7 @@
   background: rgba(8,2,2,0.78);
   font: 800 1.05rem/1 var(--m-mono);
   letter-spacing: 0.24em;
-  box-shadow: 0 0 0 4px rgba(238,58,57,0.12);
+  box-shadow: 0 0 0 4px rgba(224, 47, 46,0.12);
 }
 
 .m-old-queue-gate.is-down {
@@ -2840,7 +2840,7 @@
 }
 
 .m-old-speed-scene.is-buyers-leaving .m-old-speed-path--slow {
-  border-top-color: rgba(238,58,57,0.5);
+  border-top-color: rgba(224, 47, 46,0.5);
   opacity: 1;
   animation: m-old-speed-path-warn 1.2s ease-in-out infinite;
 }
@@ -2931,8 +2931,8 @@
 }
 
 .m-old-speed-site--slow {
-  border-color: rgba(238,58,57,0.38);
-  background: linear-gradient(180deg, rgba(238,58,57,0.09), rgba(0,0,0,0.25));
+  border-color: rgba(224, 47, 46,0.38);
+  background: linear-gradient(180deg, rgba(224, 47, 46,0.09), rgba(0,0,0,0.25));
 }
 
 .m-old-speed-site--fast {
@@ -3077,7 +3077,7 @@
 }
 
 .m-old-speed-site--slow.is-abandoned .m-old-speed-zone {
-  border-left-color: rgba(238,58,57,0.28);
+  border-left-color: rgba(224, 47, 46,0.28);
 }
 
 .m-old-speed-site--fast.is-loaded .m-old-speed-zone {
@@ -3107,8 +3107,8 @@
 
 .m-old-intent-packet.is-press {
   transform: translateY(14px) scale(0.97);
-  border-color: rgba(238,58,57,0.42);
-  background: rgba(238,58,57,0.08);
+  border-color: rgba(224, 47, 46,0.42);
+  background: rgba(224, 47, 46,0.08);
   filter: saturate(0.45) brightness(0.82);
 }
 
@@ -3142,8 +3142,8 @@
 .m-old-intent-lost span {
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(238,58,57,0.32);
-  background: rgba(238,58,57,0.1);
+  border: 1px solid rgba(224, 47, 46,0.32);
+  background: rgba(224, 47, 46,0.1);
   color: rgba(255,150,146,0.95);
   font: 700 0.58rem/1 var(--m-mono);
   letter-spacing: 0.08em;
@@ -3160,7 +3160,7 @@
 
 .m-old-form-card {
   padding: 16px;
-  border: 1px solid rgba(238,58,57,0.28);
+  border: 1px solid rgba(224, 47, 46,0.28);
   border-radius: 16px;
   background: var(--m-panel);
   box-shadow: 0 24px 70px rgba(0,0,0,0.55);
@@ -3168,8 +3168,8 @@
 }
 
 .m-old-form-card.is-reject {
-  border-color: rgba(238,58,57,0.5);
-  box-shadow: 0 0 0 1px rgba(238,58,57,0.22), 0 24px 70px rgba(0,0,0,0.55);
+  border-color: rgba(224, 47, 46,0.5);
+  box-shadow: 0 0 0 1px rgba(224, 47, 46,0.22), 0 24px 70px rgba(0,0,0,0.55);
 }
 
 .m-old-form-head {
@@ -3221,8 +3221,8 @@
 }
 
 .m-old-form-field.is-error {
-  border-color: rgba(238,58,57,0.45);
-  background: rgba(238,58,57,0.08);
+  border-color: rgba(224, 47, 46,0.45);
+  background: rgba(224, 47, 46,0.08);
 }
 
 .m-old-form-field b {
@@ -3252,7 +3252,7 @@
 
 .m-old-form-submit.is-shake {
   animation: m-old-form-shake 0.42s ease-in-out;
-  background: rgba(238,58,57,0.35);
+  background: rgba(224, 47, 46,0.35);
 }
 
 @keyframes m-old-form-shake {
@@ -3291,8 +3291,8 @@
   gap: 8px;
   padding: 8px 11px;
   border-radius: 9px;
-  border: 1px solid rgba(238,58,57,0.22);
-  background: rgba(238,58,57,0.07);
+  border: 1px solid rgba(224, 47, 46,0.22);
+  background: rgba(224, 47, 46,0.07);
   color: var(--m-mid);
   font: 600 0.72rem/1.15 var(--m-font);
   transition: opacity 0.5s ease, transform 0.5s ease, filter 0.5s ease;
@@ -3485,7 +3485,7 @@
   gap: 12px;
   padding: 18px;
   border: 1px solid var(--m-line-strong);
-  border-left: 2px solid rgba(238,58,57,0.32);
+  border-left: 2px solid rgba(224, 47, 46,0.32);
   border-radius: 16px;
   background: var(--m-panel);
   box-shadow: 0 30px 90px rgba(0,0,0,0.55);
@@ -3784,8 +3784,8 @@
 }
 
 .m-old-sleep-milestone.is-night.is-active {
-  border-color: rgba(238,58,57,0.38);
-  background: rgba(238,58,57,0.1);
+  border-color: rgba(224, 47, 46,0.38);
+  background: rgba(224, 47, 46,0.1);
   color: rgba(255,170,166,0.98);
 }
 
@@ -3872,8 +3872,8 @@
   white-space: nowrap;
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(238,58,57,0.28);
-  background: rgba(238,58,57,0.08);
+  border: 1px solid rgba(224, 47, 46,0.28);
+  background: rgba(224, 47, 46,0.08);
 }
 
 .m-old-search-scene {
@@ -3950,9 +3950,9 @@
 }
 
 .m-old-search-result.is-picked {
-  border-color: rgba(238,58,57,0.45);
-  background: rgba(238,58,57,0.12);
-  box-shadow: 0 0 0 1px rgba(238,58,57,0.2), 0 0 24px rgba(238,58,57,0.15);
+  border-color: rgba(224, 47, 46,0.45);
+  background: rgba(224, 47, 46,0.12);
+  box-shadow: 0 0 0 1px rgba(224, 47, 46,0.2), 0 0 24px rgba(224, 47, 46,0.15);
 }
 
 .m-old-search-result.is-hesitate {
@@ -4000,7 +4000,7 @@
   border-radius: 50%;
   background: var(--m-bad);
   opacity: 0;
-  box-shadow: 0 0 12px rgba(238,58,57,0.5);
+  box-shadow: 0 0 12px rgba(224, 47, 46,0.5);
   transition: opacity 0.4s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -4058,8 +4058,8 @@
   position: absolute;
   padding: 7px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(238,58,57,0.38);
-  background: rgba(238,58,57,0.1);
+  border: 1px solid rgba(224, 47, 46,0.38);
+  background: rgba(224, 47, 46,0.1);
   color: rgba(255,150,146,0.95);
   font: 700 0.58rem/1 var(--m-mono);
   letter-spacing: 0.1em;
@@ -4277,7 +4277,7 @@
 .m-bars span {
   width: 100%;
   border-radius: 10px 10px 4px 4px;
-  background: linear-gradient(180deg, rgba(238,58,57,0.9), rgba(238,58,57,0.22));
+  background: linear-gradient(180deg, rgba(224, 47, 46,0.9), rgba(224, 47, 46,0.22));
   transform-origin: bottom;
   transform: scaleY(0);
   transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
@@ -4721,15 +4721,15 @@
 @keyframes mProblemCardWake {
   0% {
     box-shadow: 0 14px 32px rgba(0,0,0,0.34);
-    border-color: rgba(238,58,57,0.28);
+    border-color: rgba(224, 47, 46,0.28);
   }
   18%, 40% {
-    box-shadow: 0 14px 34px rgba(0,0,0,0.34), 0 0 24px rgba(238,58,57,0.18);
-    border-color: rgba(238,58,57,0.62);
+    box-shadow: 0 14px 34px rgba(0,0,0,0.34), 0 0 24px rgba(224, 47, 46,0.18);
+    border-color: rgba(224, 47, 46,0.62);
   }
   100% {
     box-shadow: 0 14px 32px rgba(0,0,0,0.34);
-    border-color: rgba(238,58,57,0.34);
+    border-color: rgba(224, 47, 46,0.34);
   }
 }
 
@@ -6766,9 +6766,9 @@
 .m-roster-grid span {
   padding: 11px 10px;
   text-align: center;
-  border: 1px solid rgba(238,58,57,0.28);
+  border: 1px solid rgba(224, 47, 46,0.28);
   border-radius: 10px;
-  background: rgba(238,58,57,0.06);
+  background: rgba(224, 47, 46,0.06);
   color: var(--m-mid);
   font: 700 0.72rem/1.15 var(--m-font);
   opacity: 0;
@@ -7051,7 +7051,7 @@
   gap: 16px;
   width: 100%;
   padding: 16px;
-  border: 1px solid rgba(238,58,57,0.32);
+  border: 1px solid rgba(224, 47, 46,0.32);
   border-radius: 16px;
   background: var(--m-panel);
   box-shadow: 0 24px 70px rgba(0,0,0,0.55);
@@ -7089,8 +7089,8 @@
 .m-thin-missing span {
   padding: 6px 9px;
   border-radius: 999px;
-  border: 1px solid rgba(238,58,57,0.3);
-  background: rgba(238,58,57,0.08);
+  border: 1px solid rgba(224, 47, 46,0.3);
+  background: rgba(224, 47, 46,0.08);
   color: rgba(255,150,146,0.95);
   font: 700 0.56rem/1 var(--m-mono);
   letter-spacing: 0.06em;
@@ -7105,8 +7105,8 @@
 .m-thin-bounce {
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(238,58,57,0.38);
-  background: rgba(238,58,57,0.08);
+  border: 1px solid rgba(224, 47, 46,0.38);
+  background: rgba(224, 47, 46,0.08);
   color: rgba(255,150,146,0.95);
   font: 700 0.6rem/1 var(--m-mono);
   letter-spacing: 0.08em;
@@ -7125,10 +7125,10 @@
 }
 
 /* ===== Content Beat 5 — the GEO miss (red mirror of the Beat 6 answer) ===== */
-.m-geo--miss .m-geo-a { border-color: rgba(238,58,57,0.32); background: rgba(238,58,57,0.05); }
+.m-geo--miss .m-geo-a { border-color: rgba(224, 47, 46,0.32); background: rgba(224, 47, 46,0.05); }
 .m-geo--miss .m-geo-a-head { color: rgba(255,150,146,0.95); }
 .m-geo--miss .m-geo-ai { background: var(--m-bad); color: #2a0606; }
-.m-geo--miss .m-geo-a p[data-geo-answer] b { background: rgba(238,58,57,0.2); color: #fff; }
+.m-geo--miss .m-geo-a p[data-geo-answer] b { background: rgba(224, 47, 46,0.2); color: #fff; }
 .m-geo--miss .m-geo-a p[data-geo-answer].is-typing::after { background: var(--m-bad); }
 .m-geo--miss .m-geo-cite i { color: rgba(255,150,146,0.95); }
 

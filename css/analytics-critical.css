@@ -25,8 +25,8 @@
   --a2-dim: rgba(255, 255, 255, 0.44);
   --a2-good: #4ade80;
   --a2-good-dim: rgba(74, 222, 128, 0.12);
-  --a2-bad: #ee3a39;
-  --a2-bad-dim: rgba(238, 58, 57, 0.12);
+  --a2-bad: #e02f2e;
+  --a2-bad-dim: rgba(224, 47, 46, 0.12);
   --a2-font: 'Inter', sans-serif;
   --a2-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 }
@@ -171,7 +171,7 @@
   max-width: calc(100% - 8px);
   padding: 10px 14px;
   border-radius: 11px;
-  border: 1px dashed rgba(238, 58, 57, 0.4);
+  border: 1px dashed rgba(224, 47, 46, 0.4);
   background: rgba(14, 8, 8, 0.92);
   transform: rotate(-1.6deg);
   transform-origin: left bottom;
@@ -183,7 +183,7 @@
   padding: 6px 8px;
   border-radius: 6px;
   background: var(--a2-bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.4);
+  border: 1px solid rgba(224, 47, 46, 0.4);
   color: #ff9692;
   font: 800 0.56rem/1 var(--a2-mono);
   letter-spacing: 0.14em;
@@ -217,7 +217,7 @@
   padding: 5px 9px;
   border-radius: 6px;
   background: var(--a2-bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.4);
+  border: 1px solid rgba(224, 47, 46, 0.4);
   color: #ff9692;
   font: 700 0.58rem/1 var(--a2-mono);
   font-style: normal;

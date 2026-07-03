@@ -433,7 +433,7 @@ window.DE = (() => {
     if (!target) return;
 
     const src = options.src || 'js/section-video-boat.min.js?v=20260630a';
-    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260702b';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260703b';
     const rootMargin = options.rootMargin || '1400px 0px';
     let requested = false;
     let observer = null;
@@ -507,7 +507,7 @@ window.DE = (() => {
   let demoModalPromise = null;
   function loadDemoModalScript() {
     if (typeof window.initDemoModal === 'function') return Promise.resolve();
-    const src = 'js/demo-modal.min.js?v=20260702f';
+    const src = 'js/demo-modal.min.js?v=20260703b';
     if (!demoModalPromise) {
       demoModalPromise = new Promise((resolve) => {
         const existing = document.querySelector(`script[src="${src}"]`);

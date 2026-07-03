@@ -105,7 +105,7 @@ function initDemoModal(lenis) {
     const W = canvas.width;
     const H = canvas.height;
 
-    const COLORS = ['#ee3a39', '#ff6b6a', '#cc2222', '#ff9999', '#ff4444', '#ffffff', '#ffcccc'];
+    const COLORS = ['#e02f2e', '#ff6b6a', '#cc2222', '#ff9999', '#ff4444', '#ffffff', '#ffcccc'];
     const particles = Array.from({ length: 140 }, () => {
       const angle = Math.random() * Math.PI * 2;
       const speed = 6 + Math.random() * 14;

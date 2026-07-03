@@ -78,7 +78,7 @@ DE.pages.sales = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260702b';
+    const href = 'css/de-act.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -97,7 +97,7 @@ DE.pages.sales = { boot() {
   let salesLateContentPromise = null;
   let salesLateContentReady = false;
   function loadSalesLateCss() {
-    const href = 'css/sales-late.min.css?v=20260703a';
+    const href = 'css/sales-late.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) {
       return salesLateCssPromise || Promise.resolve();
     }

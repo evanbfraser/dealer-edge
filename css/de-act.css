@@ -28,12 +28,12 @@
 :root {
   --de-good: #4ade80;
   --de-good-dim: rgba(74, 222, 128, 0.12);
-  --de-bad: #ee3a39;
-  --de-bad-dim: rgba(238, 58, 57, 0.12);
+  --de-bad: #e02f2e;
+  --de-bad-dim: rgba(224, 47, 46, 0.12);
   --de-line: rgba(255, 255, 255, 0.08);
   --de-line-strong: rgba(255, 255, 255, 0.16);
   --de-mid: rgba(255, 255, 255, 0.75);
-  --de-dim: rgba(255, 255, 255, 0.45);
+  --de-dim: rgba(255, 255, 255, 0.48);
   --de-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 }
 
@@ -88,9 +88,9 @@
   text-transform: uppercase;
   z-index: 10;
   padding: 8px 18px;
-  border: 1px solid rgba(238, 58, 57, 0.48);
+  border: 1px solid rgba(224, 47, 46, 0.48);
   border-radius: 100px;
-  background: rgba(238, 58, 57, 0.14);
+  background: rgba(224, 47, 46, 0.14);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   white-space: nowrap;
@@ -137,7 +137,7 @@
 .de-act-tag--bad {
   color: var(--de-bad);
   background: var(--de-bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.3);
+  border: 1px solid rgba(224, 47, 46, 0.3);
 }
 .de-act-tag--good {
   color: var(--de-good);
@@ -338,8 +338,8 @@
 }
 .de-beat-cap--bad {
   color: #fff;
-  border-color: rgba(238, 58, 57, 0.4);
-  background: rgba(238, 58, 57, 0.08);
+  border-color: rgba(224, 47, 46, 0.4);
+  background: rgba(224, 47, 46, 0.08);
 }
 .de-beat-cap--bad i {
   background: var(--de-bad);
@@ -717,7 +717,7 @@
 /* old-way cell: red accent + faint tint */
 .de-compare-old {
   border-left: 2px solid var(--de-bad);
-  background: linear-gradient(180deg, var(--de-bad-dim), rgba(238, 58, 57, 0.04));
+  background: linear-gradient(180deg, var(--de-bad-dim), rgba(224, 47, 46, 0.04));
   color: rgba(255, 255, 255, 0.78);
 }
 

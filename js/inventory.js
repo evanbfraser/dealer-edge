@@ -20,7 +20,7 @@ DE.pages.inventory = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260702b';
+    const href = 'css/de-act.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -159,7 +159,7 @@ DE.pages.inventory = { boot() {
   }
 
   function loadInventoryLateCss() {
-    const href = 'css/inventory-late.min.css?v=20260630a';
+    const href = 'css/inventory-late.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) return inventoryLateCssPromise || Promise.resolve();
     if (!inventoryLateCssPromise) {
       inventoryLateCssPromise = new Promise((resolve) => {

@@ -20,7 +20,7 @@ DE.pages.analytics = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260702b';
+    const href = 'css/de-act.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -154,7 +154,7 @@ DE.pages.analytics = { boot() {
   }
 
   function loadAnalyticsLateCss() {
-    const href = 'css/analytics-late.min.css?v=20260630a';
+    const href = 'css/analytics-late.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) return analyticsLateCssPromise || Promise.resolve();
     if (!analyticsLateCssPromise) {
       analyticsLateCssPromise = new Promise((resolve) => {

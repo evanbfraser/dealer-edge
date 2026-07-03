@@ -102,7 +102,7 @@
     const triggers = [...document.querySelectorAll('.js-modal')];
     if (!triggers.length) return;
 
-    const src = 'js/demo-modal.min.js?v=20260702f';
+    const src = 'js/demo-modal.min.js?v=20260703b';
     let loading = null;
     let initialized = false;
 
@@ -153,7 +153,7 @@
     let observer = null;
     let cssPromise = null;
     const loadCss = () => {
-      const href = 'css/video-boat.min.css?v=20260630a';
+      const href = 'css/video-boat.min.css?v=20260703b';
       const existing = document.querySelector(`link[href="${href}"]`);
       if (existing) return cssPromise || Promise.resolve();
       cssPromise = new Promise((resolve) => {

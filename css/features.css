@@ -9,7 +9,7 @@
 .features-page {
   --f-good: #4ade80;
   --f-good-dim: rgba(74, 222, 128, 0.14);
-  --f-bad: #ee3a39;
+  --f-bad: #e02f2e;
   --f-line: rgba(255, 255, 255, 0.1);
 }
 
@@ -186,7 +186,7 @@
   font-size: 0.6rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-dim, rgba(255, 255, 255, 0.45));
+  color: var(--text-dim, rgba(255, 255, 255, 0.48));
   white-space: nowrap;
   transition: color 0.5s ease;
 }
@@ -259,7 +259,7 @@
   font-size: 0.5rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-dim, rgba(255, 255, 255, 0.45));
+  color: var(--text-dim, rgba(255, 255, 255, 0.48));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -305,10 +305,10 @@
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  border: 1px solid rgba(238, 58, 57, 0.5);
-  background: rgba(238, 58, 57, 0.1);
+  border: 1px solid rgba(224, 47, 46, 0.5);
+  background: rgba(224, 47, 46, 0.1);
   color: rgba(255, 120, 119, 0.95);
-  box-shadow: 0 0 18px rgba(238, 58, 57, 0.22);
+  box-shadow: 0 0 18px rgba(224, 47, 46, 0.22);
   opacity: 0;
   transform: translateX(-12px) scale(0.92);
   transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
@@ -461,7 +461,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-dim, rgba(255, 255, 255, 0.45));
+  color: var(--text-dim, rgba(255, 255, 255, 0.48));
 }
 
 @media (max-width: 960px) {
@@ -811,7 +811,7 @@
   padding: 2px 7px;
   border-radius: 100px;
 }
-.f-ba-tag--before { background: rgba(238, 58, 57, 0.85); color: #fff; animation: f-ba-rev 4.4s ease-in-out infinite; }
+.f-ba-tag--before { background: rgba(224, 47, 46, 0.85); color: #fff; animation: f-ba-rev 4.4s ease-in-out infinite; }
 .f-ba-tag--after { background: rgba(74, 222, 128, 0.92); color: #04140b; opacity: 0; animation: f-ba-fwd 4.4s ease-in-out infinite; }
 
 /* ─── SMS bubbles type in (Sales node + its mobile detail card) ─── */

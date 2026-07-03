@@ -22,8 +22,8 @@
   --i-dim: rgba(255, 255, 255, 0.44);
   --i-good: #4ade80;
   --i-good-dim: rgba(74, 222, 128, 0.12);
-  --i-bad: #ee3a39;
-  --i-bad-dim: rgba(238, 58, 57, 0.12);
+  --i-bad: #e02f2e;
+  --i-bad-dim: rgba(224, 47, 46, 0.12);
   --i-font: 'Inter', sans-serif;
   --i-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 }
@@ -236,7 +236,7 @@
 .i-wipe-tag--before {
   left: 14px;
   background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(238, 58, 57, 0.45);
+  border: 1px solid rgba(224, 47, 46, 0.45);
   color: #ff9692;
 }
 

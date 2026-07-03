@@ -51,7 +51,7 @@ DE.pages.index = (function () {
 
     let homeLateCssPromise = null;
     function loadHomeLateCss() {
-      const href = 'css/home-late.min.css?v=20260630a';
+      const href = 'css/home-late.min.css?v=20260703b';
       if (document.querySelector(`link[href="${href}"]`)) {
         return homeLateCssPromise || Promise.resolve();
       }

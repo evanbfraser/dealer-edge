@@ -15,7 +15,7 @@ DE.pages.marketing = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260702b';
+    const href = 'css/de-act.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -34,7 +34,7 @@ DE.pages.marketing = { boot() {
   let marketingLateContentPromise = null;
   let marketingLateContentReady = false;
   function loadMarketingLateCss() {
-    const href = 'css/marketing-late.min.css?v=20260630b';
+    const href = 'css/marketing-late.min.css?v=20260703b';
     if (document.querySelector(`link[href="${href}"]`)) {
       return marketingLateCssPromise || Promise.resolve();
     }

@@ -21,8 +21,8 @@
   --a2-dim: rgba(255, 255, 255, 0.44);
   --a2-good: #4ade80;
   --a2-good-dim: rgba(74, 222, 128, 0.12);
-  --a2-bad: #ee3a39;
-  --a2-bad-dim: rgba(238, 58, 57, 0.12);
+  --a2-bad: #e02f2e;
+  --a2-bad-dim: rgba(224, 47, 46, 0.12);
   --a2-font: 'Inter', sans-serif;
   --a2-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 }
@@ -167,7 +167,7 @@
   max-width: calc(100% - 8px);
   padding: 10px 14px;
   border-radius: 11px;
-  border: 1px dashed rgba(238, 58, 57, 0.4);
+  border: 1px dashed rgba(224, 47, 46, 0.4);
   background: rgba(14, 8, 8, 0.92);
   transform: rotate(-1.6deg);
   transform-origin: left bottom;
@@ -179,7 +179,7 @@
   padding: 6px 8px;
   border-radius: 6px;
   background: var(--a2-bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.4);
+  border: 1px solid rgba(224, 47, 46, 0.4);
   color: #ff9692;
   font: 800 0.56rem/1 var(--a2-mono);
   letter-spacing: 0.14em;
@@ -213,7 +213,7 @@
   padding: 5px 9px;
   border-radius: 6px;
   background: var(--a2-bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.4);
+  border: 1px solid rgba(224, 47, 46, 0.4);
   color: #ff9692;
   font: 700 0.58rem/1 var(--a2-mono);
   font-style: normal;
@@ -546,7 +546,7 @@
   padding: 7px 9px;
   border-radius: 7px;
   background: var(--a2-bad-dim);
-  border: 1px solid rgba(238, 58, 57, 0.4);
+  border: 1px solid rgba(224, 47, 46, 0.4);
   color: #ff9692;
   font: 800 0.62rem/1 var(--a2-mono);
   letter-spacing: 0.14em;
@@ -578,7 +578,7 @@
   display: inline-block;
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(238, 58, 57, 0.55);
+  border: 1px solid rgba(224, 47, 46, 0.55);
   background: var(--a2-bad-dim);
   color: #ff9692;
   font: 800 0.66rem/1 var(--a2-mono);
@@ -639,7 +639,7 @@
   width: 0;
   height: 100%;
   border-radius: 99px;
-  background: linear-gradient(90deg, rgba(238, 58, 57, 0.5), var(--a2-bad));
+  background: linear-gradient(90deg, rgba(224, 47, 46, 0.5), var(--a2-bad));
   transition: width 1.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -702,7 +702,7 @@
 }
 
 .a2-tab.is-in { opacity: 1; transform: none; }
-.a2-tab.is-flagged { border-color: rgba(238, 58, 57, 0.45); }
+.a2-tab.is-flagged { border-color: rgba(224, 47, 46, 0.45); }
 
 .a2-tab b { font-size: 0.76rem; font-weight: 700; }
 
@@ -727,7 +727,7 @@
   align-self: center;
   padding: 10px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(238, 58, 57, 0.5);
+  border: 1px solid rgba(224, 47, 46, 0.5);
   background: var(--a2-bad-dim);
   color: var(--a2-mid);
   font: 600 0.78rem/1.4 var(--a2-font);
@@ -1106,7 +1106,7 @@
 
 .a2-click-path {
   background:
-    radial-gradient(circle at 18% 16%, rgba(238, 58, 57, 0.13), transparent 36%),
+    radial-gradient(circle at 18% 16%, rgba(224, 47, 46, 0.13), transparent 36%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
 }
 
@@ -1133,8 +1133,8 @@
 }
 
 .a2-click-path .a2-path-node {
-  border-color: rgba(238, 58, 57, 0.3);
-  background: rgba(238, 58, 57, 0.08);
+  border-color: rgba(224, 47, 46, 0.3);
+  background: rgba(224, 47, 46, 0.08);
 }
 
 .a2-path-node span {
@@ -1148,7 +1148,7 @@
 
 .a2-path-node b { color: #fff; }
 
-.a2-path-node--unknown b { color: #ee3a39; font-size: 2.2rem; }
+.a2-path-node--unknown b { color: #e02f2e; font-size: 2.2rem; }
 
 .a2-path-node--won {
   border-color: rgba(74, 222, 128, 0.44);
@@ -1164,7 +1164,7 @@
 }
 
 .a2-path-line--broken {
-  background: repeating-linear-gradient(90deg, rgba(238, 58, 57, 0.8) 0 8px, transparent 8px 14px);
+  background: repeating-linear-gradient(90deg, rgba(224, 47, 46, 0.8) 0 8px, transparent 8px 14px);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1242,7 +1242,7 @@
 }
 
 .a2-brief-item--good b { color: var(--a2-good); }
-.a2-brief-item--bad b { color: #ee3a39; }
+.a2-brief-item--bad b { color: #e02f2e; }
 .a2-brief-item--fix b { color: #fff; }
 
 .a2-brief-item--fix {
@@ -1297,7 +1297,7 @@
 }
 
 .a2-clarity-col--good { border-color: rgba(74, 222, 128, 0.3); }
-.a2-clarity-col--bad { border-color: rgba(238, 58, 57, 0.3); }
+.a2-clarity-col--bad { border-color: rgba(224, 47, 46, 0.3); }
 
 .a2-clarity-head {
   font: 800 0.62rem/1 var(--a2-mono);
@@ -1496,7 +1496,7 @@
   gap: 12px;
   padding: 12px 14px;
   border-radius: 11px;
-  border: 1px dashed rgba(238, 58, 57, 0.5);
+  border: 1px dashed rgba(224, 47, 46, 0.5);
   background: var(--a2-bad-dim);
   opacity: 0;
   transform: translateY(8px);
@@ -1545,7 +1545,7 @@
   width: 0;
   height: 100%;
   border-radius: 99px;
-  background: linear-gradient(90deg, rgba(238, 58, 57, 0.4), var(--a2-bad));
+  background: linear-gradient(90deg, rgba(224, 47, 46, 0.4), var(--a2-bad));
   transition: width 2.4s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -1584,13 +1584,13 @@
   color: var(--a2-mid);
 }
 
-.a2-lag-stop--end { border-color: rgba(238, 58, 57, 0.45); background: var(--a2-bad-dim); }
+.a2-lag-stop--end { border-color: rgba(224, 47, 46, 0.45); background: var(--a2-bad-dim); }
 
 .a2-lag-cost {
   align-self: center;
   padding: 10px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(238, 58, 57, 0.5);
+  border: 1px solid rgba(224, 47, 46, 0.5);
   background: var(--a2-bad-dim);
   color: #ff9692;
   font: 600 0.72rem/1.4 var(--a2-mono);
