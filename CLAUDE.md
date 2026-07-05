@@ -431,7 +431,9 @@ npm run benchmark     # serves the repo on :4173, 3 runs/page, desktop + mobile,
 ```powershell
 npm run minify                       # 1. rebuild the .min.* artifacts (REQUIRED — pages load .min.*)
 node scripts/export-platform.mjs     # 2. package pages → dealerEdge-demo-generator
-# 3. commit + push the platform repo (staging-first) — Vercel deploys it
+# 3. in the platform repo: feature branch → PR into staging (gh pr create --base staging),
+#    CI + Greptile, merge — the staging merge deploys live. NEVER push staging directly
+#    (emergencies only, "EMERGENCY direct push:" commit prefix) — 2026-07-05 rule.
 ```
 
 Full detail (what the export emits, repo routing, tenant IDs) is in [Cross-repo: static site → platform tenant](#cross-repo-static-site--platform-tenant) below. Bump the `?v=` token in a page `<head>` for any changed `.min.*`/partial so caches refetch.
@@ -464,7 +466,7 @@ node scripts/export-platform.mjs     # 2. package pages → dealerEdge-demo-gene
 ```
 
 `export-platform.mjs` emits, per page in `PAGES` (`sales, marketing, inventory, analytics, features, index, roi`):
-`lib/de-site/fragments/<page>.html` (body, nav/footer/`<script>` stripped, asset paths → `/de-site/...`) + `<page>.meta.json` (title/description/OG + ordered css/js lists), and copies `css/ js/ assets/ vendor/` into `public/de-site/`. It also extracts the **DE chrome CSS** from `style.css`'s `/* ─── NAME ─── */` sections (`CHROME_SECTIONS`) into `de-chrome.css` — so a chrome **style** change is authored here in `style.css`, but the chrome **markup/behavior** (`DeHeader`/`DeFooter`) is React in the platform repo. After exporting, **commit + push the platform repo** (staging-first, platform discipline — see below) to deploy.
+`lib/de-site/fragments/<page>.html` (body, nav/footer/`<script>` stripped, asset paths → `/de-site/...`) + `<page>.meta.json` (title/description/OG + ordered css/js lists), and copies `css/ js/ assets/ vendor/` into `public/de-site/`. It also extracts the **DE chrome CSS** from `style.css`'s `/* ─── NAME ─── */` sections (`CHROME_SECTIONS`) into `de-chrome.css` — so a chrome **style** change is authored here in `style.css`, but the chrome **markup/behavior** (`DeHeader`/`DeFooter`) is React in the platform repo. After exporting, land the change in the platform repo via **feature branch → PR into staging** (never a direct staging push — see Platform discipline below) to deploy.
 
 ### Which repo does a fix belong in?
 
@@ -476,7 +478,7 @@ node scripts/export-platform.mjs     # 2. package pages → dealerEdge-demo-gene
 
 - **DE tenant id:** `36304ab1-6682-4dbc-8854-d101c6964483`. Env var on the platform is **`DE_SITE_TENANT_ID`** (renamed from `DEALEREDGE_TENANT_ID` to dodge a collision — PR #724).
 - **Staging:** https://dealeredge.dealeredge.ai (live, smoke-tested 2026-06-12; PRs #721 + #724 merged).
-- **Platform discipline:** land changes as a spec'd branch → staging → PR; never hand-edit prod. Lead routing skips reps whose `user_id` is NULL — Bob/Mike/Sarah must be linked in the dashboard for routing to work.
+- **Platform discipline (tightened 2026-07-05):** land ALL platform changes as a feature branch → **PR into staging** (`gh pr create --base staging`) → CI + Greptile review → merge. Never push staging directly — staging IS the live deploy; direct push is for declared production-down emergencies only (`EMERGENCY direct push:` commit prefix). Never hand-edit prod. Lead routing skips reps whose `user_id` is NULL — Bob/Mike/Sarah must be linked in the dashboard for routing to work.
 - Full runbook (architecture, IDs, Vercel scope, gotchas): memory `project_de-site-platform-migration.md`.
 
 ---
