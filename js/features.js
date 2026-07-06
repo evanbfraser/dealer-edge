@@ -19,7 +19,7 @@ DE.pages.features = { boot() {
     if (!root) return Promise.resolve();
     if (featuresLateContentReady || root.dataset.loaded === 'true') return featuresLateContentPromise || Promise.resolve();
     if (!featuresLateContentPromise) {
-      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20260630a')
+      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20260706a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -27,6 +27,7 @@ DE.pages.features = { boot() {
           root.dataset.loaded = 'true';
           featuresLateContentReady = true;
           DE.initFade();
+          DE.initSectionViews();
           DE.initLazyVideoBoatSections();
           document.querySelectorAll('.js-modal, .js-dept-modal').forEach((trigger) => {
             trigger.addEventListener('pointerenter', () => loadFeaturesLate(), { once: true, passive: true });

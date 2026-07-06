@@ -75,6 +75,25 @@
     faders.forEach((el) => obs.observe(el));
   }
 
+  /* [data-section] → dataLayer `section_view` push on first scroll-into-view.
+     ROI is a standalone island (no de-core.js), so this mirrors DE.initSectionViews
+     locally. GTM's `CE - section_view` trigger + `section_name` DLV read it;
+     data_source is stamped GTM-side. All roi sections are in the static HTML. */
+  function initSectionViews() {
+    const sections = document.querySelectorAll('[data-section]');
+    if (!sections.length || !('IntersectionObserver' in window)) return;
+    window.dataLayer = window.dataLayer || [];
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        obs.unobserve(entry.target);
+        const name = entry.target.getAttribute('data-section');
+        if (name) window.dataLayer.push({ event: 'section_view', section_name: name });
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -30% 0px' });
+    sections.forEach((el) => obs.observe(el));
+  }
+
   function initScrollHint() {
     if (document.querySelector('.de-scroll-hint')) return;
     const el = document.createElement('div');
@@ -210,6 +229,7 @@
   initNavScroll();
   initScrollHint();
   initFade();
+  initSectionViews();
   initLazyVideoBoatSections();
 
   /* ─────────────────────────────────────────────────────────────

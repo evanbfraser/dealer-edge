@@ -42,7 +42,7 @@ DE.pages.analytics = { boot() {
     if (!root) return Promise.resolve();
     if (analyticsLateContentReady || root.dataset.loaded === 'true') return analyticsLateContentPromise || Promise.resolve();
     if (!analyticsLateContentPromise) {
-      analyticsLateContentPromise = fetch('partials/analytics-late-content.html?v=20260630a')
+      analyticsLateContentPromise = fetch('partials/analytics-late-content.html?v=20260706a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -50,6 +50,7 @@ DE.pages.analytics = { boot() {
           root.dataset.loaded = 'true';
           analyticsLateContentReady = true;
           DE.initFade();
+          DE.initSectionViews();
           DE.initLazyVideoBoatSections();
         })
         .catch(() => {});

@@ -135,7 +135,7 @@ DE.pages.sales = { boot() {
     if (!root) return Promise.resolve();
     if (salesLateContentReady || root.dataset.loaded === 'true') return salesLateContentPromise || Promise.resolve();
     if (!salesLateContentPromise) {
-      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20260702f')
+      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20260706a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -144,6 +144,7 @@ DE.pages.sales = { boot() {
           salesLateContentReady = true;
           initMarineModal();
           DE.initFade();
+          DE.initSectionViews();
           DE.initLazyVideoBoatSections();
           if (typeof window.initDemoModal === 'function') window.initDemoModal(lenis);
         })

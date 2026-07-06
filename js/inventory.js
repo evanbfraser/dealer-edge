@@ -42,7 +42,7 @@ DE.pages.inventory = { boot() {
     if (!root) return Promise.resolve();
     if (inventoryLateContentReady || root.dataset.loaded === 'true') return inventoryLateContentPromise || Promise.resolve();
     if (!inventoryLateContentPromise) {
-      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20260630a')
+      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20260706a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -50,6 +50,7 @@ DE.pages.inventory = { boot() {
           root.dataset.loaded = 'true';
           inventoryLateContentReady = true;
           DE.initFade();
+          DE.initSectionViews();
           initDeferredInventoryImages();
           initImageCompareCursorRelief();
           DE.initLazyVideoBoatSections();
