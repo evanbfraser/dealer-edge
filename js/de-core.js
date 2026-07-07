@@ -108,6 +108,9 @@ window.DE = (() => {
     lifecycle();
     currentPage = key;
     page.boot();
+    // Above-the-fold sections are in the static HTML at boot; below-the-fold
+    // sections arrive with the late partial, which re-calls initSectionViews().
+    initSectionViews();
   }
   function destroy() {
     if (!lc) return;
@@ -337,6 +340,36 @@ window.DE = (() => {
       { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
     );
     faders.forEach((el) => obs.observe(el));
+    addDisposer(() => obs.disconnect());
+  }
+
+  /* [data-section] → dataLayer `section_view` push the first time a major
+     page section scrolls into view. GTM's `CE - section_view` trigger +
+     `section_name` DLV (dataLayerVersion 2) consume it; `data_source` is
+     stamped GTM-side, not here — the site only pushes event + section_name.
+     Height-independent trigger (threshold 0 + bottom rootMargin) so it fires
+     the same on a short hero and a 560vh pinned act. Re-callable after late
+     partials inject (mirrors initFade); the `data-sv-seen` flag stops a
+     section being observed twice. Observer is torn down on DE.destroy(). */
+  function initSectionViews() {
+    const sections = document.querySelectorAll('[data-section]:not([data-sv-seen])');
+    if (!sections.length) return;
+    window.dataLayer = window.dataLayer || [];
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          obs.unobserve(entry.target);
+          const name = entry.target.getAttribute('data-section');
+          if (name) window.dataLayer.push({ event: 'section_view', section_name: name });
+        });
+      },
+      { threshold: 0, rootMargin: '0px 0px -30% 0px' }
+    );
+    sections.forEach((el) => {
+      el.setAttribute('data-sv-seen', '');
+      obs.observe(el);
+    });
     addDisposer(() => obs.disconnect());
   }
 
@@ -1018,7 +1051,7 @@ window.DE = (() => {
 
   return {
     reduceMotion, isSafari,
-    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
+    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
     usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput,
     pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };

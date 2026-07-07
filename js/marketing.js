@@ -56,7 +56,7 @@ DE.pages.marketing = { boot() {
     if (!root) return Promise.resolve();
     if (marketingLateContentReady || root.dataset.loaded === 'true') return marketingLateContentPromise || Promise.resolve();
     if (!marketingLateContentPromise) {
-      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20260630b')
+      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20260706a')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -64,6 +64,7 @@ DE.pages.marketing = { boot() {
           root.dataset.loaded = 'true';
           marketingLateContentReady = true;
           DE.initFade();
+          DE.initSectionViews();
           initDeferredShowcaseMedia();
           initShowcase();
           DE.initLazyVideoBoatSections();
