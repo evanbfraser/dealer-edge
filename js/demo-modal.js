@@ -169,6 +169,13 @@ function initDemoModal(lenis) {
       }
       showStep(2);
       setTimeout(launchConfetti, 80);
+      // GTM: demo_request_submit → GA4 (key event). inquiry_type is derived from
+      // the page the demo was requested on (GTM reads {{DLV - inquiry_type}});
+      // data_source is stamped GTM-side. Mirrors the section_view dataLayer idiom.
+      const seg = (window.location.pathname || '/').replace(/^\/+|\/+$/g, '').split('/')[0].toLowerCase();
+      const inquiryType = ['sales', 'marketing', 'inventory', 'analytics', 'features', 'roi'].includes(seg) ? seg : 'general';
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'demo_request_submit', inquiry_type: inquiryType });
     };
 
     // Platform bridge: when hosted as an island, the route shell wraps the
