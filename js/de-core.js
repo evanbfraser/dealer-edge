@@ -540,7 +540,7 @@ window.DE = (() => {
   let demoModalPromise = null;
   function loadDemoModalScript() {
     if (typeof window.initDemoModal === 'function') return Promise.resolve();
-    const src = 'js/demo-modal.min.js?v=20260703b';
+    const src = 'js/demo-modal.min.js?v=20260707a';
     if (!demoModalPromise) {
       demoModalPromise = new Promise((resolve) => {
         const existing = document.querySelector(`script[src="${src}"]`);

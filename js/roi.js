@@ -121,7 +121,7 @@
     const triggers = [...document.querySelectorAll('.js-modal')];
     if (!triggers.length) return;
 
-    const src = 'js/demo-modal.min.js?v=20260703b';
+    const src = 'js/demo-modal.min.js?v=20260707a';
     let loading = null;
     let initialized = false;
 
@@ -460,6 +460,20 @@
 
   function recalc() { cascade(); update(); renderStatus(); }
 
+  // GTM: roi_calculate → GA4. Fires ONCE per page load, on the first genuine
+  // user interaction with the calculator (funnel edit, slider drag, or the
+  // "estimate it for me" button) — never on the initial auto-paint and never
+  // per keystroke, so the event isn't inflated. GTM stamps data_source; no
+  // payload needed. Standalone island, so this mirrors the local section_view
+  // dataLayer idiom.
+  let roiCalcPushed = false;
+  function pushRoiCalculate() {
+    if (roiCalcPushed) return;
+    roiCalcPushed = true;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'roi_calculate' });
+  }
+
   // "Don't know? Estimate it for me" — back-calc visitors from the most
   // reliable number the dealer has (boats sold), else from leads.
   function estimateTraffic() {
@@ -473,6 +487,7 @@
   const estimateBtn = document.querySelector('[data-roi-estimate]');
   if (estimateBtn) {
     estimateBtn.addEventListener('click', () => {
+      pushRoiCalculate();
       els.traffic.value = estimateTraffic();
       state.traffic = 'est';
       if (out.estNote) out.estNote.hidden = false;
@@ -486,6 +501,7 @@
   STAGE.forEach((s) => {
     if (!s.el) return;
     s.el.addEventListener('input', () => {
+      pushRoiCalculate();
       state[s.key] = 'manual';
       if (s.key === 'traffic' && out.estNote) out.estNote.hidden = true;
       recalc();
@@ -503,7 +519,7 @@
   });
 
   // sliders only affect the dollar math, not the funnel counts
-  [els.price, els.margin].forEach((el) => { if (el) el.addEventListener('input', update); });
+  [els.price, els.margin].forEach((el) => { if (el) el.addEventListener('input', () => { pushRoiCalculate(); update(); }); });
 
   recalc();
   }
