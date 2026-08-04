@@ -237,14 +237,17 @@ function animateCounters() {
     el.dataset.counted = 'true';
     const end = parseInt(el.getAttribute('data-count'), 10);
     if (!Number.isFinite(end)) return;
+    // optional data-count-prefix="+" — without it the tween would drop the sign
+    // and "+65" would land as a bare "65", which reads as a total, not a gain
+    const prefix = el.getAttribute('data-count-prefix') || '';
     const duration = 1800;
     const start = performance.now();
     const tick = (now) => {
       const t = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = Math.floor(end * eased);
+      el.textContent = prefix + Math.floor(end * eased);
       if (t < 1) requestAnimationFrame(tick);
-      else el.textContent = end;
+      else el.textContent = prefix + end;
     };
     requestAnimationFrame(tick);
   };
