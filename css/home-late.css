@@ -292,6 +292,10 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
+  /* grid items default to min-width:auto, which lets a long stat value push its
+     track wider than the container — that is what shoved the detail panel off
+     the right edge on phones. */
+  min-width: 0;
 }
 
 .cs-headline {
@@ -374,6 +378,7 @@
   gap: 28px;
   pointer-events: auto;
   transition: opacity 0.25s, transform 0.25s;
+  min-width: 0;
 }
 
 .cs-detail.is-switching {
@@ -399,7 +404,9 @@
 
 .cs-detail-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0,1fr), not 1fr: plain 1fr floors at min-content, so "13.8→2.3s"
+     stole width from the other two (they measured 128/155/59px). */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -407,18 +414,23 @@
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
-  padding: 18px 14px;
+  padding: 16px 13px;
   display: flex;
   flex-direction: column;
   gap: 5px;
+  min-width: 0;
 }
 
 .cs-detail-stat-value {
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  /* Sized so the longest value ("13.8→2.3s", 9 glyphs) still fits one of three
+     equal columns. .cs-inner caps at --max-w, so the column stops growing past
+     ~1300px and the size has to stop with it — hence the low clamp ceiling. */
+  font-size: clamp(1.25rem, 1.5vw, 1.55rem);
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.04em;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .cs-detail-stat-label {
@@ -447,6 +459,87 @@
   font-weight: 600;
   color: rgba(255,255,255,0.48);
   letter-spacing: 0.02em;
+}
+
+/* ── Responsive ──
+   The ripple canvas takes its height from the source image's aspect ratio, so
+   it gets SHORTER as the viewport narrows while the overlay content gets
+   TALLER. Since .cs-overlay is absolutely positioned, the section can't grow to
+   fit it and overflow:hidden simply cut the panel off (it did, from ~900px
+   down). Below 1100px that relationship inverts: the overlay goes back in flow
+   and defines the height, and the canvas becomes a cover-fitted backdrop.
+   1100px, not 900: the two-column split leaves the panel ~370px of usable
+   width at 1024, which is too narrow for three stats to read. */
+@media (max-width: 1100px) {
+  .case-studies-section { min-height: 0; }
+
+  #ripple-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    /* the ripple script writes an inline px height from the image ratio */
+    height: 100% !important;
+    object-fit: cover;
+  }
+
+  .cs-overlay {
+    position: relative;
+    inset: auto;
+  }
+
+  .cs-inner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  /* Promote .cs-left's children to grid items so Premier's numbers can sit
+     between the pitch and the buttons, instead of below the buttons. */
+  .cs-left { display: contents; }
+  .cs-headline { order: 1; }
+  .cs-intro { order: 2; max-width: 46ch; }
+  .cs-detail { order: 3; }
+  .cs-cta-row { order: 4; }
+  .cs-view-btn { margin-top: 0; }
+
+  .cs-detail {
+    /* backdrop-filter is a real cost on mobile GPUs and the backdrop here is a
+       dark photo, so a flat translucent fill reads the same for far less. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(14, 14, 16, 0.72);
+  }
+}
+
+@media (max-width: 560px) {
+  .cs-detail {
+    padding: 22px 20px;
+    gap: 20px;
+    border-radius: 20px;
+  }
+
+  /* Three columns can't hold "13.8→2.3s" at this width without shrinking the
+     value to noise. One row per stat: number leads, label closes. */
+  .cs-detail-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cs-detail-stat {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 16px;
+  }
+
+  .cs-detail-stat-value { font-size: 1.65rem; }
+
+  .cs-detail-stat-label {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .cs-detail-quote { padding-left: 16px; }
 }
 
 /* ─── CTA ─── */
@@ -1588,6 +1681,10 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
+  /* grid items default to min-width:auto, which lets a long stat value push its
+     track wider than the container — that is what shoved the detail panel off
+     the right edge on phones. */
+  min-width: 0;
 }
 
 .cs-headline {
@@ -1670,6 +1767,7 @@
   gap: 28px;
   pointer-events: auto;
   transition: opacity 0.25s, transform 0.25s;
+  min-width: 0;
 }
 
 .cs-detail.is-switching {
@@ -1695,7 +1793,9 @@
 
 .cs-detail-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0,1fr), not 1fr: plain 1fr floors at min-content, so "13.8→2.3s"
+     stole width from the other two (they measured 128/155/59px). */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -1703,18 +1803,23 @@
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
-  padding: 18px 14px;
+  padding: 16px 13px;
   display: flex;
   flex-direction: column;
   gap: 5px;
+  min-width: 0;
 }
 
 .cs-detail-stat-value {
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  /* Sized so the longest value ("13.8→2.3s", 9 glyphs) still fits one of three
+     equal columns. .cs-inner caps at --max-w, so the column stops growing past
+     ~1300px and the size has to stop with it — hence the low clamp ceiling. */
+  font-size: clamp(1.25rem, 1.5vw, 1.55rem);
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.04em;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .cs-detail-stat-label {
@@ -1743,6 +1848,87 @@
   font-weight: 600;
   color: rgba(255,255,255,0.48);
   letter-spacing: 0.02em;
+}
+
+/* ── Responsive ──
+   The ripple canvas takes its height from the source image's aspect ratio, so
+   it gets SHORTER as the viewport narrows while the overlay content gets
+   TALLER. Since .cs-overlay is absolutely positioned, the section can't grow to
+   fit it and overflow:hidden simply cut the panel off (it did, from ~900px
+   down). Below 1100px that relationship inverts: the overlay goes back in flow
+   and defines the height, and the canvas becomes a cover-fitted backdrop.
+   1100px, not 900: the two-column split leaves the panel ~370px of usable
+   width at 1024, which is too narrow for three stats to read. */
+@media (max-width: 1100px) {
+  .case-studies-section { min-height: 0; }
+
+  #ripple-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    /* the ripple script writes an inline px height from the image ratio */
+    height: 100% !important;
+    object-fit: cover;
+  }
+
+  .cs-overlay {
+    position: relative;
+    inset: auto;
+  }
+
+  .cs-inner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  /* Promote .cs-left's children to grid items so Premier's numbers can sit
+     between the pitch and the buttons, instead of below the buttons. */
+  .cs-left { display: contents; }
+  .cs-headline { order: 1; }
+  .cs-intro { order: 2; max-width: 46ch; }
+  .cs-detail { order: 3; }
+  .cs-cta-row { order: 4; }
+  .cs-view-btn { margin-top: 0; }
+
+  .cs-detail {
+    /* backdrop-filter is a real cost on mobile GPUs and the backdrop here is a
+       dark photo, so a flat translucent fill reads the same for far less. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(14, 14, 16, 0.72);
+  }
+}
+
+@media (max-width: 560px) {
+  .cs-detail {
+    padding: 22px 20px;
+    gap: 20px;
+    border-radius: 20px;
+  }
+
+  /* Three columns can't hold "13.8→2.3s" at this width without shrinking the
+     value to noise. One row per stat: number leads, label closes. */
+  .cs-detail-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cs-detail-stat {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 16px;
+  }
+
+  .cs-detail-stat-value { font-size: 1.65rem; }
+
+  .cs-detail-stat-label {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .cs-detail-quote { padding-left: 16px; }
 }
 
 /* ─── CTA ─── */
