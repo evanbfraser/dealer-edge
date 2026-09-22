@@ -249,8 +249,10 @@ function initDemoModal(lenis) {
         } catch (e) { /* non-JSON error body — keep the generic message */ }
         showError(message, field || undefined);
       }).catch(() => {
+        // Network-level failure (offline, blocked): no lead was recorded, so
+        // saying "you're all set" would lose it silently. Let them retry.
         settle();
-        confirmSuccess();
+        showError('We couldn’t send your request — please check your connection and try again.');
       });
     });
   }
