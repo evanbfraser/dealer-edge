@@ -619,6 +619,78 @@ window.DE = (() => {
   function isFullName(value) {
     return String(value || '').trim().split(/\s+/).filter(Boolean).length >= 2;
   }
+  /* ─────────────────────────────────────────────────────────────
+     TURNSTILE — on the platform, POST /api/leads fails CLOSED
+     without a turnstile_token (403 since 2026-07-23). Every island
+     lead form (demo-modal, pricing, features, sales text_us) awaits
+     DE.turnstileToken() before it POSTs. Each call mints ONE fresh
+     token (they are single-use): lazy-loads Cloudflare's explicit-
+     render api.js once, renders an interaction-only widget into a
+     fixed bottom-right host (empty / zero-size unless Cloudflare
+     decides a visible challenge is needed), resolves the token — or
+     null on timeout/error — then removes the widget. Calls are
+     queued so two submits never race for one widget. Sitekey is the
+     production key; the island wrapper may override it with
+     data-turnstile-sitekey (e.g. Cloudflare's always-pass test key).
+     ───────────────────────────────────────────────────────────── */
+  const TURNSTILE_SITEKEY = '0x4AAAAAACk-wUxhWaRPNmkt';
+  let turnstileApi = null;
+  let turnstileQueue = Promise.resolve();
+  function loadTurnstileApi() {
+    if (window.turnstile) return Promise.resolve(window.turnstile);
+    if (!turnstileApi) {
+      turnstileApi = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.onload = () => (window.turnstile ? resolve(window.turnstile) : reject(new Error('turnstile')));
+        script.onerror = reject;
+        document.head.appendChild(script);
+      }).catch((err) => {
+        turnstileApi = null; // let the next submit retry the load
+        throw err;
+      });
+    }
+    return turnstileApi;
+  }
+  function mintTurnstileToken(timeoutMs) {
+    return new Promise((resolve) => {
+      let host = null;
+      let widgetId = null;
+      let settled = false;
+      const finish = (token) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        try { if (widgetId != null) window.turnstile.remove(widgetId); } catch (e) { /* best effort */ }
+        if (host) host.remove();
+        resolve(token || null);
+      };
+      const timer = setTimeout(() => finish(null), timeoutMs);
+      loadTurnstileApi().then((ts) => {
+        if (settled) return;
+        host = document.createElement('div');
+        host.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:2147483647;';
+        document.body.appendChild(host);
+        const bridge = document.querySelector('[data-de-page]');
+        widgetId = ts.render(host, {
+          sitekey: (bridge && bridge.dataset.turnstileSitekey) || TURNSTILE_SITEKEY,
+          appearance: 'interaction-only',
+          callback: finish,
+          'error-callback': () => finish(null),
+          'expired-callback': () => finish(null),
+          'timeout-callback': () => finish(null),
+        });
+      }).catch(() => finish(null));
+    });
+  }
+  /* Promise<string|null> — null means "don't POST, show the form's error" */
+  function turnstileToken(timeoutMs = 8000) {
+    const next = turnstileQueue.then(() => mintTurnstileToken(timeoutMs));
+    turnstileQueue = next; // mint never rejects, so the queue can't wedge
+    return next;
+  }
+
   /* wire an <input> to live-format as a US phone number + phone keypad */
   function attachUsPhoneInput(input) {
     if (!input || input.dataset.dePhoneWired === '1') return;
@@ -1052,7 +1124,7 @@ window.DE = (() => {
   return {
     reduceMotion, isSafari,
     createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
-    usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput,
+    usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput, turnstileToken,
     pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };
 })();

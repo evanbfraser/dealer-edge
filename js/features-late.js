@@ -47,15 +47,21 @@ window.DE.initFeaturesLate = function initFeaturesLate(lenis) {
   function submitFeaturesLead(formType, formData) {
     const bridge = document.querySelector('[data-de-page]');
     if (!bridge) return;
-    fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        visitor_id: bridge.dataset.visitorId || undefined,
-        form_type: formType,
-        form_data: formData,
-        page_url: window.location.pathname,
-      }),
+    // The platform 403s a lead without a Turnstile token (DE.turnstileToken in
+    // de-core.js); no token → skip the doomed POST (fire-and-forget as before).
+    (window.DE?.turnstileToken ? DE.turnstileToken() : Promise.resolve(null)).then((token) => {
+      if (!token) return undefined;
+      return fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitor_id: bridge.dataset.visitorId || undefined,
+          form_type: formType,
+          form_data: formData,
+          page_url: window.location.pathname,
+          turnstile_token: token,
+        }),
+      });
     }).catch(() => {});
   }
 

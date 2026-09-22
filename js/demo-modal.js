@@ -151,6 +151,7 @@ function initDemoModal(lenis) {
   }
 
   function submitForm() {
+    if (submitBtn.disabled) return; // in flight — Enter must not queue a 2nd lead
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
     const phone = phoneInput.value.trim();
@@ -196,42 +197,53 @@ function initDemoModal(lenis) {
     }
 
     submitBtn.disabled = true;
-    fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        visitor_id: bridge.dataset.visitorId || undefined,
-        form_type: 'request_demo',
-        form_data: { name, email, phone },
-        page_url: window.location.pathname,
-      }),
-    }).then(async (res) => {
-      submitBtn.disabled = false;
-      if (res.ok) {
-        confirmSuccess();
+    // The platform 403s a lead without a Turnstile token (DE.turnstileToken in
+    // de-core.js). No token → show the error and don't POST a doomed request.
+    const tokenPromise = window.DE?.turnstileToken ? DE.turnstileToken() : Promise.resolve(null);
+    tokenPromise.then((token) => {
+      if (!token) {
+        submitBtn.disabled = false;
+        showError('We couldn’t verify your request — please try again.');
         return;
       }
-      let message = 'Something went wrong — please check your details and try again.';
-      let field = null;
-      try {
-        const body = await res.json();
-        const first = body && body.errors && body.errors[0];
-        if (first && first.field === 'phone') {
-          message = 'Please enter a valid phone number, e.g. (425) 555-0123.';
-          field = phoneInput;
-        } else if (first && first.field === 'email') {
-          message = 'Please enter a valid email address.';
-          field = emailInput;
-        } else if (first && first.message) {
-          message = first.message;
-        } else if (body && body.error && body.error !== 'Validation failed') {
-          message = body.error;
+      fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitor_id: bridge.dataset.visitorId || undefined,
+          form_type: 'request_demo',
+          form_data: { name, email, phone },
+          page_url: window.location.pathname,
+          turnstile_token: token,
+        }),
+      }).then(async (res) => {
+        submitBtn.disabled = false;
+        if (res.ok) {
+          confirmSuccess();
+          return;
         }
-      } catch (e) { /* non-JSON error body — keep the generic message */ }
-      showError(message, field || undefined);
-    }).catch(() => {
-      submitBtn.disabled = false;
-      confirmSuccess();
+        let message = 'Something went wrong — please check your details and try again.';
+        let field = null;
+        try {
+          const body = await res.json();
+          const first = body && body.errors && body.errors[0];
+          if (first && first.field === 'phone') {
+            message = 'Please enter a valid phone number, e.g. (425) 555-0123.';
+            field = phoneInput;
+          } else if (first && first.field === 'email') {
+            message = 'Please enter a valid email address.';
+            field = emailInput;
+          } else if (first && first.message) {
+            message = first.message;
+          } else if (body && body.error && body.error !== 'Validation failed') {
+            message = body.error;
+          }
+        } catch (e) { /* non-JSON error body — keep the generic message */ }
+        showError(message, field || undefined);
+      }).catch(() => {
+        submitBtn.disabled = false;
+        confirmSuccess();
+      });
     });
   }
 
