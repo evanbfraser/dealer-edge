@@ -169,7 +169,8 @@ function initDemoModal(lenis) {
         confirmText.textContent = `Thanks, ${name}! We'll reach out at ${email} or ${phone} within one business day to schedule your demo.`;
       }
       showStep(2);
-      setTimeout(launchConfetti, 80);
+      // closed mid-submit → no confetti over the page; the success step waits
+      if (backdrop.classList.contains('is-open')) setTimeout(launchConfetti, 80);
       // GTM: demo_request_submit → GA4 (key event). inquiry_type is derived from
       // the page the demo was requested on (GTM reads {{DLV - inquiry_type}});
       // data_source is stamped GTM-side. Mirrors the section_view dataLayer idiom.
@@ -196,16 +197,23 @@ function initDemoModal(lenis) {
       return;
     }
 
+    const idleLabel = submitBtn.textContent;
+    const settle = () => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = idleLabel;
+    };
     submitBtn.disabled = true;
+    submitBtn.textContent = 'Verifying…';
     // The platform 403s a lead without a Turnstile token (DE.turnstileToken in
     // de-core.js). No token → show the error and don't POST a doomed request.
     const tokenPromise = window.DE?.turnstileToken ? DE.turnstileToken() : Promise.resolve(null);
     tokenPromise.then((token) => {
       if (!token) {
-        submitBtn.disabled = false;
+        settle();
         showError('We couldn’t verify your request — please try again.');
         return;
       }
+      submitBtn.textContent = 'Sending…';
       fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -217,7 +225,7 @@ function initDemoModal(lenis) {
           turnstile_token: token,
         }),
       }).then(async (res) => {
-        submitBtn.disabled = false;
+        settle();
         if (res.ok) {
           confirmSuccess();
           return;
@@ -241,7 +249,7 @@ function initDemoModal(lenis) {
         } catch (e) { /* non-JSON error body — keep the generic message */ }
         showError(message, field || undefined);
       }).catch(() => {
-        submitBtn.disabled = false;
+        settle();
         confirmSuccess();
       });
     });
@@ -261,11 +269,16 @@ function initDemoModal(lenis) {
 
   function openModal(e) {
     e?.preventDefault();
-    nameInput.value = '';
-    emailInput.value = '';
-    phoneInput.value = '';
-    clearError();
-    showStep(1);
+    window.DE?.prewarmTurnstile?.();
+    // A submit still in flight (Turnstile / POST) keeps its form as-is: it
+    // posts what's shown and flips to the success step when it lands.
+    if (!submitBtn.disabled) {
+      nameInput.value = '';
+      emailInput.value = '';
+      phoneInput.value = '';
+      clearError();
+      showStep(1);
+    }
     backdrop.classList.add('is-open');
     backdrop.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -280,16 +293,21 @@ function initDemoModal(lenis) {
     lenis?.start?.();
   }
 
-  (window.DE?.on || ((t, e, f) => t.addEventListener(e, f)))(document, 'click', (e) => {
-    if (e.target.closest('.js-modal')) openModal(e);
-  });
+  // Document listeners: exactly one pair per window, replaced on every init.
+  // NOT on the DE lifecycle: a host's DE.destroy() would detach them, and
+  // pages that init the modal once from their own script (support, roi,
+  // getting-started) are never re-inited on a soft-nav back, so their CTA
+  // went dead. Both handlers are inert when no .js-modal / open modal.
+  window.__deDemoModalAC?.abort();
+  const docSignal = (window.__deDemoModalAC = new AbortController()).signal;
+  document.addEventListener('click', (e) => {
+    if (e.target.closest?.('.js-modal')) openModal(e);
+  }, { signal: docSignal });
   closeBtn?.addEventListener('click', closeModal);
   backdrop.addEventListener('click', (e) => {
     if (e.target === backdrop) closeModal();
   });
-  // long-lived document listener: route through the DE lifecycle when present
-  // so an SPA host's DE.destroy() detaches it (fallback = plain listener)
-  (window.DE?.on || ((t, e, f) => t.addEventListener(e, f)))(document, 'keydown', (e) => {
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal();
-  });
+  }, { signal: docSignal });
 }

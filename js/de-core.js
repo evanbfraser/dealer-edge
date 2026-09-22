@@ -666,7 +666,7 @@ window.DE = (() => {
         if (host) host.remove();
         resolve(token || null);
       };
-      const timer = setTimeout(() => finish(null), timeoutMs);
+      let timer = setTimeout(() => finish(null), timeoutMs);
       loadTurnstileApi().then((ts) => {
         if (settled) return;
         host = document.createElement('div');
@@ -680,9 +680,20 @@ window.DE = (() => {
           'error-callback': () => finish(null),
           'expired-callback': () => finish(null),
           'timeout-callback': () => finish(null),
+          // A visible challenge is about to show — the 8 s budget was for the
+          // invisible path; give a human real time to solve it.
+          'before-interactive-callback': () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => finish(null), 60000);
+          },
         });
       }).catch(() => finish(null));
     });
+  }
+  /* start the api.js download early (e.g. when a lead form opens) so the
+     submit-time budget isn't spent on the network */
+  function prewarmTurnstile() {
+    loadTurnstileApi().catch(() => { /* the submit retries */ });
   }
   /* Promise<string|null> — null means "don't POST, show the form's error" */
   function turnstileToken(timeoutMs = 8000) {
@@ -1124,7 +1135,7 @@ window.DE = (() => {
   return {
     reduceMotion, isSafari,
     createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
-    usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput, turnstileToken,
+    usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput, turnstileToken, prewarmTurnstile,
     pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };
 })();
