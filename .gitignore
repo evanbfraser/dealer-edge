@@ -16,3 +16,4 @@ node_modules/
 # Machine-specific local MCP wiring (absolute path to the generator's mcp-server;
 # default tenant scoped to DealerEdge 36304ab1-… for safe cross-repo QA). Not shared.
 .mcp.json
+config.bat

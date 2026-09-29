@@ -68,15 +68,21 @@
       const phone = phoneInput.value.trim();
       const bridge = document.querySelector('[data-de-page]');
       if (bridge) {
-        fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            visitor_id: bridge.dataset.visitorId || undefined,
-            form_type: 'pricing_request',
-            form_data: { name, email, phone, wantsCalendar, selectedDate, selectedTime },
-            page_url: window.location.pathname,
-          }),
+        // The platform 403s a lead without a Turnstile token (DE.turnstileToken in
+        // de-core.js); no token → skip the doomed POST (fire-and-forget as before).
+        (window.DE?.turnstileToken ? DE.turnstileToken() : Promise.resolve(null)).then((token) => {
+          if (!token) return undefined;
+          return fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              visitor_id: bridge.dataset.visitorId || undefined,
+              form_type: 'pricing_request',
+              form_data: { name, email, phone, wantsCalendar, selectedDate, selectedTime },
+              page_url: window.location.pathname,
+              turnstile_token: token,
+            }),
+          });
         }).catch(() => {});
       }
       if (confirmText) {

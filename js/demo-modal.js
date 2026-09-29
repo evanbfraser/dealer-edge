@@ -151,6 +151,7 @@ function initDemoModal(lenis) {
   }
 
   function submitForm() {
+    if (submitBtn.disabled) return; // in flight — Enter must not queue a 2nd lead
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
     const phone = phoneInput.value.trim();
@@ -168,7 +169,8 @@ function initDemoModal(lenis) {
         confirmText.textContent = `Thanks, ${name}! We'll reach out at ${email} or ${phone} within one business day to schedule your demo.`;
       }
       showStep(2);
-      setTimeout(launchConfetti, 80);
+      // closed mid-submit → no confetti over the page; the success step waits
+      if (backdrop.classList.contains('is-open')) setTimeout(launchConfetti, 80);
       // GTM: demo_request_submit → GA4 (key event). inquiry_type is derived from
       // the page the demo was requested on (GTM reads {{DLV - inquiry_type}});
       // data_source is stamped GTM-side. Mirrors the section_view dataLayer idiom.
@@ -195,43 +197,63 @@ function initDemoModal(lenis) {
       return;
     }
 
-    submitBtn.disabled = true;
-    fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        visitor_id: bridge.dataset.visitorId || undefined,
-        form_type: 'request_demo',
-        form_data: { name, email, phone },
-        page_url: window.location.pathname,
-      }),
-    }).then(async (res) => {
+    const idleLabel = submitBtn.textContent;
+    const settle = () => {
       submitBtn.disabled = false;
-      if (res.ok) {
-        confirmSuccess();
+      submitBtn.textContent = idleLabel;
+    };
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verifying…';
+    // The platform 403s a lead without a Turnstile token (DE.turnstileToken in
+    // de-core.js). No token → show the error and don't POST a doomed request.
+    const tokenPromise = window.DE?.turnstileToken ? DE.turnstileToken() : Promise.resolve(null);
+    tokenPromise.then((token) => {
+      if (!token) {
+        settle();
+        showError('We couldn’t verify your request — please try again.');
         return;
       }
-      let message = 'Something went wrong — please check your details and try again.';
-      let field = null;
-      try {
-        const body = await res.json();
-        const first = body && body.errors && body.errors[0];
-        if (first && first.field === 'phone') {
-          message = 'Please enter a valid phone number, e.g. (425) 555-0123.';
-          field = phoneInput;
-        } else if (first && first.field === 'email') {
-          message = 'Please enter a valid email address.';
-          field = emailInput;
-        } else if (first && first.message) {
-          message = first.message;
-        } else if (body && body.error && body.error !== 'Validation failed') {
-          message = body.error;
+      submitBtn.textContent = 'Sending…';
+      fetch(bridge.dataset.leadsEndpoint || '/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitor_id: bridge.dataset.visitorId || undefined,
+          form_type: 'request_demo',
+          form_data: { name, email, phone },
+          page_url: window.location.pathname,
+          turnstile_token: token,
+        }),
+      }).then(async (res) => {
+        settle();
+        if (res.ok) {
+          confirmSuccess();
+          return;
         }
-      } catch (e) { /* non-JSON error body — keep the generic message */ }
-      showError(message, field || undefined);
-    }).catch(() => {
-      submitBtn.disabled = false;
-      confirmSuccess();
+        let message = 'Something went wrong — please check your details and try again.';
+        let field = null;
+        try {
+          const body = await res.json();
+          const first = body && body.errors && body.errors[0];
+          if (first && first.field === 'phone') {
+            message = 'Please enter a valid phone number, e.g. (425) 555-0123.';
+            field = phoneInput;
+          } else if (first && first.field === 'email') {
+            message = 'Please enter a valid email address.';
+            field = emailInput;
+          } else if (first && first.message) {
+            message = first.message;
+          } else if (body && body.error && body.error !== 'Validation failed') {
+            message = body.error;
+          }
+        } catch (e) { /* non-JSON error body — keep the generic message */ }
+        showError(message, field || undefined);
+      }).catch(() => {
+        // Network-level failure (offline, blocked): no lead was recorded, so
+        // saying "you're all set" would lose it silently. Let them retry.
+        settle();
+        showError('We couldn’t send your request — please check your connection and try again.');
+      });
     });
   }
 
@@ -249,11 +271,16 @@ function initDemoModal(lenis) {
 
   function openModal(e) {
     e?.preventDefault();
-    nameInput.value = '';
-    emailInput.value = '';
-    phoneInput.value = '';
-    clearError();
-    showStep(1);
+    window.DE?.prewarmTurnstile?.();
+    // A submit still in flight (Turnstile / POST) keeps its form as-is: it
+    // posts what's shown and flips to the success step when it lands.
+    if (!submitBtn.disabled) {
+      nameInput.value = '';
+      emailInput.value = '';
+      phoneInput.value = '';
+      clearError();
+      showStep(1);
+    }
     backdrop.classList.add('is-open');
     backdrop.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -268,16 +295,21 @@ function initDemoModal(lenis) {
     lenis?.start?.();
   }
 
-  (window.DE?.on || ((t, e, f) => t.addEventListener(e, f)))(document, 'click', (e) => {
-    if (e.target.closest('.js-modal')) openModal(e);
-  });
+  // Document listeners: exactly one pair per window, replaced on every init.
+  // NOT on the DE lifecycle: a host's DE.destroy() would detach them, and
+  // pages that init the modal once from their own script (support, roi,
+  // getting-started) are never re-inited on a soft-nav back, so their CTA
+  // went dead. Both handlers are inert when no .js-modal / open modal.
+  window.__deDemoModalAC?.abort();
+  const docSignal = (window.__deDemoModalAC = new AbortController()).signal;
+  document.addEventListener('click', (e) => {
+    if (e.target.closest?.('.js-modal')) openModal(e);
+  }, { signal: docSignal });
   closeBtn?.addEventListener('click', closeModal);
   backdrop.addEventListener('click', (e) => {
     if (e.target === backdrop) closeModal();
   });
-  // long-lived document listener: route through the DE lifecycle when present
-  // so an SPA host's DE.destroy() detaches it (fallback = plain listener)
-  (window.DE?.on || ((t, e, f) => t.addEventListener(e, f)))(document, 'keydown', (e) => {
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal();
-  });
+  }, { signal: docSignal });
 }
