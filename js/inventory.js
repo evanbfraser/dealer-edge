@@ -20,7 +20,7 @@ DE.pages.inventory = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20260703b';
+    const href = 'css/de-act.min.css?v=20261112f';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {

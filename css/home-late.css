@@ -130,12 +130,13 @@
   pointer-events: none;
   /* "large and in charge" demo button — promoted from the marketing page so
      index/sales/marketing all render the same closing CTA */
-  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
-  padding: 1em 2.6em;
-  box-shadow: 0 0 40px rgba(224, 47, 46, 0.35), 0 6px 28px rgba(224, 47, 46, 0.28);
+  font-size: var(--btn-fs-lg);
+  padding: 0 var(--btn-px-lg);
+  box-shadow: none;
+  min-height: var(--btn-h-lg);
 }
 .boat-cta:hover {
-  box-shadow: 0 0 60px rgba(224, 47, 46, 0.5), 0 8px 34px rgba(224, 47, 46, 0.36);
+  box-shadow: none;
 }
 
 /* Video — right, 65% wide, overlaps text by ~17% */
@@ -291,7 +292,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: 0;
   /* grid items default to min-width:auto, which lets a long stat value push its
      track wider than the container — that is what shoved the detail panel off
      the right edge on phones. */
@@ -299,20 +300,22 @@
 }
 
 .cs-headline {
-  font-size: clamp(2rem, 3.8vw, 3.2rem);
-  font-weight: 800;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
   color: #fff;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  letter-spacing: var(--section-ls);
+  line-height: var(--section-lh);
   margin: 0;
 }
 
 .cs-intro {
-  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-  color: rgba(255,255,255,0.6);
-  line-height: 1.7;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   margin: 0;
   max-width: 380px;
+  margin-bottom: 0;
+  margin-top: var(--gap-sub);
 }
 
 .cs-logo-grid {
@@ -363,7 +366,7 @@
 
 .cs-logo-btn--active img { opacity: 1 !important; }
 
-.cs-view-btn { margin-top: 20px; }
+.cs-view-btn { margin-top: 0; }
 
 /* ── Right column: detail panel ── */
 .cs-detail {
@@ -548,6 +551,8 @@
   background: #000;
   position: relative;
   overflow: hidden;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
 /* Big red ambient glow behind CTA */
@@ -570,29 +575,34 @@
 
 .cta-tag {
   display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--gap-eyebrow);
+  font-family: var(--eyebrow-font);
+  line-height: 1.3;
 }
 
 .cta-title {
-  font-size: clamp(2.2rem, 5.5vw, 4.2rem);
-  font-weight: 800;
-  letter-spacing: -0.032em;
-  line-height: 1.08;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--section-ls);
+  line-height: var(--section-lh);
   color: var(--text);
-  margin-bottom: 1.3rem;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .cta-sub {
-  font-size: clamp(0.92rem, 1.5vw, 1.12rem);
-  color: var(--text-dim);
-  line-height: 1.75;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   max-width: 500px;
   margin: 0 auto 2.8rem;
+  margin-top: var(--gap-sub);
+  margin-bottom: var(--gap-actions);
 }
 
 .cta-sub--offer {
@@ -637,12 +647,13 @@
 }
 
 .footer-col-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: #fff;
   margin: 0 0 20px;
+  font-family: var(--eyebrow-font);
 }
 
 .footer-nav {
@@ -725,6 +736,8 @@
 .features-section {
   padding: clamp(90px, 13vh, 150px) 0 clamp(80px, 12vh, 130px);
   background: #000;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
 .features-bento {
@@ -810,15 +823,16 @@
 
 .feature-tag {
   display: inline-block;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid rgba(224, 47, 46, 0.15);
   padding: 0.32em 0.85em;
   border-radius: 100px;
+  font-family: var(--eyebrow-font);
 }
 
 /* Card footer: tag (left) + clickable "Explore →" affordance (right) */
@@ -868,7 +882,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.4rem;
+  gap: var(--gap-actions);
   margin-top: clamp(44px, 6.5vh, 72px);
   text-align: center;
 }
@@ -888,7 +902,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 14px;
+  gap: var(--btn-gap);
 }
 
 /* ─── JOURNEY / TOUCHPOINTS ─── */
@@ -899,18 +913,21 @@
      past the viewport on mobile). clip is sticky-safe — this isn't an
      ancestor of the position:sticky hero. */
   overflow-x: clip;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
 .journey-title {
-  margin-bottom: 1.2rem;
+  margin-bottom: 0;
 }
 
 .journey-intro {
-  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-  color: var(--text-dim);
-  line-height: 1.8;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   max-width: 700px;
   margin-bottom: clamp(60px, 9vh, 100px);
+  margin-top: var(--gap-sub);
 }
 
 /* The whole timeline wrapper — line is centered here */
@@ -1519,12 +1536,13 @@
   pointer-events: none;
   /* "large and in charge" demo button — promoted from the marketing page so
      index/sales/marketing all render the same closing CTA */
-  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
-  padding: 1em 2.6em;
-  box-shadow: 0 0 40px rgba(224, 47, 46, 0.35), 0 6px 28px rgba(224, 47, 46, 0.28);
+  font-size: var(--btn-fs-lg);
+  padding: 0 var(--btn-px-lg);
+  box-shadow: none;
+  min-height: var(--btn-h-lg);
 }
 .boat-cta:hover {
-  box-shadow: 0 0 60px rgba(224, 47, 46, 0.5), 0 8px 34px rgba(224, 47, 46, 0.36);
+  box-shadow: none;
 }
 
 /* Video — right, 65% wide, overlaps text by ~17% */
@@ -1680,7 +1698,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: 0;
   /* grid items default to min-width:auto, which lets a long stat value push its
      track wider than the container — that is what shoved the detail panel off
      the right edge on phones. */
@@ -1688,20 +1706,22 @@
 }
 
 .cs-headline {
-  font-size: clamp(2rem, 3.8vw, 3.2rem);
-  font-weight: 800;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
   color: #fff;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  letter-spacing: var(--section-ls);
+  line-height: var(--section-lh);
   margin: 0;
 }
 
 .cs-intro {
-  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-  color: rgba(255,255,255,0.6);
-  line-height: 1.7;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   margin: 0;
   max-width: 380px;
+  margin-bottom: 0;
+  margin-top: var(--gap-sub);
 }
 
 .cs-logo-grid {
@@ -1752,7 +1772,7 @@
 
 .cs-logo-btn--active img { opacity: 1 !important; }
 
-.cs-view-btn { margin-top: 20px; }
+.cs-view-btn { margin-top: 0; }
 
 /* ── Right column: detail panel ── */
 .cs-detail {
@@ -1937,6 +1957,8 @@
   background: #000;
   position: relative;
   overflow: hidden;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
 /* Big red ambient glow behind CTA */
@@ -1959,29 +1981,34 @@
 
 .cta-tag {
   display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--gap-eyebrow);
+  font-family: var(--eyebrow-font);
+  line-height: 1.3;
 }
 
 .cta-title {
-  font-size: clamp(2.2rem, 5.5vw, 4.2rem);
-  font-weight: 800;
-  letter-spacing: -0.032em;
-  line-height: 1.08;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--section-ls);
+  line-height: var(--section-lh);
   color: var(--text);
-  margin-bottom: 1.3rem;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .cta-sub {
-  font-size: clamp(0.92rem, 1.5vw, 1.12rem);
-  color: var(--text-dim);
-  line-height: 1.75;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   max-width: 500px;
   margin: 0 auto 2.8rem;
+  margin-top: var(--gap-sub);
+  margin-bottom: var(--gap-actions);
 }
 
 .cta-sub--offer {
@@ -2026,12 +2053,13 @@
 }
 
 .footer-col-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: #fff;
   margin: 0 0 20px;
+  font-family: var(--eyebrow-font);
 }
 
 .footer-nav {

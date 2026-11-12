@@ -370,14 +370,18 @@ body {
   background: var(--accent);
   color: #fff;
   font-family: var(--font);
-  font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.55em 1.35em;
+  font-weight: var(--btn-fw);
+  font-size: var(--btn-fs-sm);
+  padding: 0 var(--btn-px-sm);
   border-radius: 100px;
   text-decoration: none;
-  letter-spacing: 0.01em;
-  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+  letter-spacing: var(--btn-ls);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-h-sm);
 }
 
 /* white focus ring — global ring is brand-red and disappears on the red pill */
@@ -388,8 +392,8 @@ body {
 
 .btn-nav:hover {
   background: #ff4a49;
-  box-shadow: 0 0 28px var(--accent-glow);
-  transform: translateY(-1px);
+  box-shadow: none;
+  transform: none;
 }
 
 /* nav CTA pair: the ghost "Get Free Website Score" sits left of the red "Get Started" pill */
@@ -479,12 +483,13 @@ body {
   pointer-events: none;
   /* "large and in charge" demo button — promoted from the marketing page so
      index/sales/marketing all render the same closing CTA */
-  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
-  padding: 1em 2.6em;
-  box-shadow: 0 0 40px rgba(224, 47, 46, 0.35), 0 6px 28px rgba(224, 47, 46, 0.28);
+  font-size: var(--btn-fs-lg);
+  padding: 0 var(--btn-px-lg);
+  box-shadow: none;
+  min-height: var(--btn-h-lg);
 }
 .boat-cta:hover {
-  box-shadow: 0 0 60px rgba(224, 47, 46, 0.5), 0 8px 34px rgba(224, 47, 46, 0.36);
+  box-shadow: none;
 }
 
 /* Video — right, 65% wide, overlaps text by ~17% */

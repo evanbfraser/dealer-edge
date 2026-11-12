@@ -466,7 +466,7 @@ window.DE = (() => {
     if (!target) return;
 
     const src = options.src || 'js/section-video-boat.min.js?v=20260630a';
-    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20260703b';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20261112f';
     const rootMargin = options.rootMargin || '1400px 0px';
     let requested = false;
     let observer = null;

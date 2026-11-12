@@ -372,6 +372,27 @@ For "particles flowing" elsewhere (e.g., Act 4 Beat 1 funnel dots), use simple `
 --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 ```
 
+### Design tokens — buttons, type, spacing (2026-11-12, use these, don't hand-size)
+
+Defined once in `css/style.css` `:root` (VARIABLES section, so every core bundle has them). Page CSS points at them; new components must too.
+
+| Token | Value | Used for |
+|---|---|---|
+| `--btn-h` / `--btn-h-lg` / `--btn-h-sm` | 48 / 56 / 40px | standard buttons / large (final CTAs, deep-page closes, `--large` variants) / nav |
+| `--btn-px` / `-lg` / `-sm` | 24 / 32 / 18px | horizontal padding (height comes from `min-height`, never vertical padding) |
+| `--btn-fs` / `-lg` / `-sm`, `--btn-fw` | 0.95 / 1.05 / 0.875rem, 700 | every button label |
+| `--btn-gap` | 12px | between buttons in a group |
+| `--eyebrow-*` | JetBrains Mono, 0.72rem, 700, 0.16em, uppercase | every small label above a headline (`.section-label`, `.de-section-label`, `.cta-tag`, chips…); colour stays semantic |
+| `--type-display` | clamp(2.6rem, 5.2vw, 4.75rem) | centred page heroes (pricing, results, ROI, sales hook) |
+| `--type-hero` | clamp(2.4rem, 4.4vw, 4rem) | split heroes (copy beside a visual: index, inventory, analytics, marketing) |
+| `--type-section` | clamp(2rem, 3.4vw, 3rem) | section headlines |
+| `--head-weight` 800, `--head-lh` 1.05, `--head-ls` -0.03em; `--section-lh` 1.08, `--section-ls` -0.025em | | |
+| `--type-lede`, `--lede-lh`, `--lede-color` | clamp(1.05rem, 1.25vw, 1.15rem), 1.6, rgba(255,255,255,.75) | the paragraph under a headline |
+| `--gap-eyebrow` / `--gap-sub` / `--gap-actions` | 16 / 18 / 32px | label→headline / headline→lede / lede→buttons |
+| `--section-pad` | clamp(88px, 12vh, 128px) | vertical padding of standalone sections |
+
+Rules: the headline has no bottom margin when a lede follows (the lede's `margin-top: var(--gap-sub)` owns the gap); in flex columns use `gap: 0` + these margins rather than a flex gap. Hover is one quiet step (background or ring), no glow or lift; every button gets the white `:focus-visible` ring. On phones (≤480px) every button group stacks full width, demo first. Scene typography inside `.de-act` acts, the sales cohort stats and the boat close headline is tuned to its animation and is deliberately outside this scale.
+
 ### Color narrative (important)
 
 **Red = "the old way," "without DealerEdge," "pain."** Green = "the new way," "with DealerEdge," "win." Use them as semantic signals, not decoration. If a stat is bad news, it's red. If it's a benefit, it's green. The Act 1 vs Act 2 watermarks, vrow tags, bubble strokes, and beat caps all follow this — keep it consistent.

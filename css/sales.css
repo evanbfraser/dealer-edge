@@ -37,13 +37,15 @@
 .s-prehero-inner { position: relative; z-index: 2; max-width: 900px; }
 .s-prehero-eyebrow {
   display: inline-block;
-  font-family: var(--mono);
-  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 22px;
+  font-family: var(--eyebrow-font);
+  font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls); text-transform: uppercase;
+  color: var(--accent); margin-bottom: var(--gap-eyebrow);
+  font-weight: var(--eyebrow-weight);
+  line-height: 1.3;
 }
 .s-prehero-q {
-  font-size: clamp(2.2rem, 6vw, 4.6rem); font-weight: 800; line-height: 1.05;
-  letter-spacing: -0.025em; color: #fff; margin: 0;
+  font-size: var(--type-display); font-weight: var(--head-weight); line-height: var(--head-lh);
+  letter-spacing: var(--head-ls); color: #fff; margin: 0;
 }
 .s-prehero-cue {
   display: inline-flex; flex-direction: column; align-items: center; gap: 10px;
@@ -1070,6 +1072,8 @@
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 .s-marine-proof::before {
   content: '';
@@ -1103,16 +1107,20 @@
 }
 .s-marine-proof-copy h2 {
   margin: 10px 0 12px;
-  font-size: clamp(2rem, 4vw, 3.3rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-size: var(--type-section);
+  line-height: var(--section-lh);
+  letter-spacing: var(--section-ls);
   color: #fff;
+  font-weight: var(--head-weight);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .s-marine-proof-copy p {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--text-mid);
+  font-size: var(--type-lede);
+  line-height: var(--lede-lh);
+  color: var(--lede-color);
+  margin-top: var(--gap-sub);
 }
 .s-marine-proof-card {
   appearance: none;
@@ -2665,20 +2673,22 @@
 }
 
 .s-pivot-headline {
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
+  line-height: var(--section-lh);
+  letter-spacing: var(--section-ls);
   color: #fff;
   margin: 0 0 24px;
+  margin-bottom: 0;
 }
 
 .s-pivot-sub {
-  font-size: 1.05rem;
-  color: var(--text-mid);
-  line-height: 1.6;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   max-width: 560px;
   margin: 0 auto;
+  margin-top: var(--gap-sub);
 }
 
 /* ─── ACT 3 — TRY IT YOURSELF ──────────────────────────────── */
@@ -2686,6 +2696,8 @@
   padding: 120px 24px;
   background: radial-gradient(ellipse at 50% 0%, rgba(224, 47, 46, 0.06), transparent 60%), #000;
   border-top: 1px solid var(--line);
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
 .s-try-inner {
@@ -2695,20 +2707,23 @@
 }
 
 .s-try-headline {
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
+  line-height: var(--section-lh);
+  letter-spacing: var(--section-ls);
   color: #fff;
   margin: 24px 0 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .s-try-sub {
-  font-size: 1.02rem;
-  line-height: 1.6;
-  color: var(--text-mid);
+  font-size: var(--type-lede);
+  line-height: var(--lede-lh);
+  color: var(--lede-color);
   max-width: 680px;
   margin: 0 auto 64px;
+  margin-top: var(--gap-sub);
 }
 
 .s-try-stage {

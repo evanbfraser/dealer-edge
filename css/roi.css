@@ -71,12 +71,14 @@
 .roi-vertical button:focus-visible { outline: 2px solid var(--good); outline-offset: 2px; }
 .roi-head .de-section-label { justify-content: center; }
 .roi-head h1 {
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
-  font-weight: 800; line-height: 1.04; letter-spacing: -0.025em;
+  font-size: var(--type-display);
+  font-weight: var(--head-weight); line-height: var(--head-lh); letter-spacing: var(--head-ls);
   margin: 14px 0 16px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .roi-accent { color: var(--good); }
-.roi-lede { color: var(--text-mid); font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.55; max-width: 620px; margin: 0 auto; }
+.roi-lede { color: var(--lede-color); font-size: var(--type-lede); line-height: var(--lede-lh); max-width: 620px; margin: var(--gap-sub) auto 0; }
 
 /* ───────────────────────── CALCULATOR GRID ────────────────────── */
 .roi-calc {
@@ -368,8 +370,8 @@ input[type="range"]::-moz-range-thumb {
 .roi-explore { max-width: 1180px; margin: 0 auto; padding: clamp(64px, 10vh, 112px) 24px clamp(40px, 7vh, 80px); }
 .roi-explore-head { text-align: center; max-width: 680px; margin: 0 auto clamp(32px, 5vh, 50px); }
 .roi-explore-head .de-section-label { justify-content: center; }
-.roi-explore-head h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; margin: 12px 0; }
-.roi-explore-head p { color: var(--text-mid); font-size: 1rem; line-height: 1.55; max-width: 600px; margin: 0 auto; }
+.roi-explore-head h2 { font-size: var(--type-section); font-weight: var(--head-weight); letter-spacing: var(--section-ls); margin: 0; line-height: var(--section-lh); }
+.roi-explore-head p { color: var(--lede-color); font-size: var(--type-lede); line-height: var(--lede-lh); max-width: 600px; margin: var(--gap-sub) auto 0; }
 .roi-explore-head b { color: var(--good); font-weight: 600; }
 
 .roi-explore-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }

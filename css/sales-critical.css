@@ -49,13 +49,15 @@
 .s-prehero-inner { position: relative; z-index: 2; max-width: 900px; }
 .s-prehero-eyebrow {
   display: inline-block;
-  font-family: var(--mono);
-  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 22px;
+  font-family: var(--eyebrow-font);
+  font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls); text-transform: uppercase;
+  color: var(--accent); margin-bottom: var(--gap-eyebrow);
+  font-weight: var(--eyebrow-weight);
+  line-height: 1.3;
 }
 .s-prehero-q {
-  font-size: clamp(2.2rem, 6vw, 4.6rem); font-weight: 800; line-height: 1.05;
-  letter-spacing: -0.025em; color: #fff; margin: 0;
+  font-size: var(--type-display); font-weight: var(--head-weight); line-height: var(--head-lh);
+  letter-spacing: var(--head-ls); color: #fff; margin: 0;
 }
 .s-prehero-cue {
   display: inline-flex; flex-direction: column; align-items: center; gap: 10px;

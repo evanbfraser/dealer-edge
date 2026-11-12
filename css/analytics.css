@@ -118,19 +118,19 @@
 }
 
 .a2-hero-copy h1 {
-  margin: 0 0 20px;
-  font-size: clamp(2.3rem, 4.4vw, 3.9rem);
-  font-weight: 850;
-  letter-spacing: -0.035em;
-  line-height: 1.06;
+  margin: 0 0 var(--gap-sub);
+  font-size: var(--type-hero);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--head-ls);
+  line-height: var(--head-lh);
 }
 
 .a2-hero-copy p {
-  margin: 0 0 30px;
+  margin: 0 0 var(--gap-actions);
   max-width: 34rem;
-  font-size: 1.06rem;
-  line-height: 1.6;
-  color: var(--a2-mid);
+  font-size: var(--type-lede);
+  line-height: var(--lede-lh);
+  color: var(--lede-color);
 }
 
 .a2-hero-ctas {

@@ -172,7 +172,7 @@
     let observer = null;
     let cssPromise = null;
     const loadCss = () => {
-      const href = 'css/video-boat.min.css?v=20260703b';
+      const href = 'css/video-boat.min.css?v=20261112f';
       const existing = document.querySelector(`link[href="${href}"]`);
       if (existing) return cssPromise || Promise.resolve();
       cssPromise = new Promise((resolve) => {

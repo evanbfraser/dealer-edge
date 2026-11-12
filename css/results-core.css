@@ -4,6 +4,24 @@
 
 /* ─── VARIABLES ─── */
 :root {
+  /* ─ Design tokens (consistency pass 2026-11-12). Every button, eyebrow, headline and lede points here. ─ */
+  --btn-h: 48px;          --btn-h-lg: 56px;          --btn-h-sm: 40px;
+  --btn-px: 24px;         --btn-px-lg: 32px;         --btn-px-sm: 18px;
+  --btn-fs: 0.95rem;      --btn-fs-lg: 1.05rem;      --btn-fs-sm: 0.875rem;
+  --btn-fw: 700;          --btn-ls: 0.01em;          --btn-gap: 12px;
+  --eyebrow-font: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  --eyebrow-size: 0.72rem; --eyebrow-weight: 700;    --eyebrow-ls: 0.16em;
+  --head-weight: 800;
+  --type-display: clamp(2.6rem, 5.2vw, 4.75rem);  /* centred page heroes */
+  --type-hero: clamp(2.4rem, 4.4vw, 4rem);         /* split heroes: copy beside a visual */
+  --type-section: clamp(2rem, 3.4vw, 3rem);       /* section headlines */
+  --head-lh: 1.05;        --head-ls: -0.03em;
+  --section-lh: 1.08;     --section-ls: -0.025em;
+  --type-lede: clamp(1.05rem, 1.25vw, 1.15rem);
+  --lede-lh: 1.6;         --lede-color: rgba(255, 255, 255, 0.75);
+  --gap-eyebrow: 16px;    --gap-sub: 18px;           --gap-actions: 32px;
+  --section-pad: clamp(88px, 12vh, 128px);
+
   --bg: #000;
   --accent: #e02f2e;
   --accent-dim: rgba(224, 47, 46, 0.12);
@@ -517,14 +535,18 @@ body {
   background: var(--accent);
   color: #fff;
   font-family: var(--font);
-  font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.55em 1.35em;
+  font-weight: var(--btn-fw);
+  font-size: var(--btn-fs-sm);
+  padding: 0 var(--btn-px-sm);
   border-radius: 100px;
   text-decoration: none;
-  letter-spacing: 0.01em;
-  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+  letter-spacing: var(--btn-ls);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-h-sm);
 }
 
 /* white focus ring — global ring is brand-red and disappears on the red pill */
@@ -535,8 +557,8 @@ body {
 
 .btn-nav:hover {
   background: #ff4a49;
-  box-shadow: 0 0 28px var(--accent-glow);
-  transform: translateY(-1px);
+  box-shadow: none;
+  transform: none;
 }
 
 /* nav CTA pair: the ghost "Get Free Website Score" sits left of the red "Get Started" pill */
@@ -564,26 +586,30 @@ body {
   background: var(--accent);
   color: #fff;
   font-family: var(--font);
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 0.82em 2em;
+  font-weight: var(--btn-fw);
+  font-size: var(--btn-fs);
+  padding: 0 var(--btn-px);
   border-radius: 100px;
   border: none;
   text-decoration: none;
-  letter-spacing: 0.01em;
-  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+  letter-spacing: var(--btn-ls);
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
+  min-height: var(--btn-h);
+  justify-content: center;
+  line-height: 1.2;
 }
 
 .btn-primary:hover {
   background: #ff4a49;
-  box-shadow: 0 0 48px var(--accent-glow), 0 4px 24px rgba(224, 47, 46, 0.4);
-  transform: translateY(-2px);
+  box-shadow: none;
+  transform: none;
 }
 
 .btn-primary--large {
-  font-size: 1.05rem;
-  padding: 0.95em 2.4em;
+  font-size: var(--btn-fs-lg);
+  padding: 0 var(--btn-px-lg);
+  min-height: var(--btn-h-lg);
 }
 
 /* green "win" variant of the primary button (intentional second equal-weight
@@ -594,35 +620,42 @@ body {
 }
 .btn-good:hover {
   background: #6ee79b;
-  box-shadow: 0 0 48px rgba(74, 222, 128, 0.45), 0 4px 24px rgba(74, 222, 128, 0.4);
-  transform: translateY(-2px);
+  box-shadow: none;
+  transform: none;
 }
 
 .btn-ghost {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-mid);
+  color: #fff;
   font-family: var(--font);
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: var(--btn-fw);
+  font-size: var(--btn-fs);
   text-decoration: none;
-  padding: 0.82em 1.5em;
+  padding: 0 var(--btn-px);
   border-radius: 100px;
-  border: 1px solid var(--border);
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  border: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
+  min-height: var(--btn-h);
+  letter-spacing: var(--btn-ls);
+  justify-content: center;
+  line-height: 1.2;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.22);
 }
 
 .btn-ghost:hover {
-  color: var(--text);
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.5);
 }
 
 /* green "win" ghost — secondary ROI CTAs across the site (sits over .btn-ghost) */
-.btn-ghost--good { color: #4ade80; border-color: rgba(74, 222, 128, 0.28); }
-.btn-ghost--good:hover { color: #6ee79b; border-color: rgba(74, 222, 128, 0.5); background: rgba(74, 222, 128, 0.08); }
+.btn-ghost--good { color: #4ade80; box-shadow: inset 0 0 0 1.5px rgba(74, 222, 128, 0.35); }
+.btn-ghost--good:hover { color: #6ee79b; background: rgba(74, 222, 128, 0.08); box-shadow: inset 0 0 0 1.5px rgba(74, 222, 128, 0.6); }
+.btn-ghost--large { min-height: var(--btn-h-lg); padding: 0 var(--btn-px-lg); font-size: var(--btn-fs-lg); }
 
 /* ─── CTA system (2026-11-12): every demo button says "Book a Demo" (.btn-primary.js-modal) and pairs with
    "Get Free Website Score" (.btn-score → dealeredge.ai/edge-score). Same size as .btn-primary, white ghost pill. */
@@ -633,31 +666,48 @@ body {
   gap: 8px;
   color: #fff;
   font-family: var(--font);
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 0.82em 2em;
+  font-weight: var(--btn-fw);
+  font-size: var(--btn-fs);
+  padding: 0 var(--btn-px);
   border-radius: 100px;
   text-decoration: none;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--btn-ls);
   background: transparent;
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
-  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
+  min-height: var(--btn-h);
+  line-height: 1.2;
 }
 .btn-score:hover {
   background: rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
-  transform: translateY(-2px);
+  transform: none;
 }
-.btn-score:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-.btn-score--large { font-size: 1.05rem; padding: 0.95em 2.4em; }
+/* one focus ring for every button: white, so it shows on the red and green fills too */
+.btn-primary:focus-visible, .btn-ghost:focus-visible, .btn-score:focus-visible, .m-showcase-cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.btn-score--large { font-size: var(--btn-fs-lg); padding: 0 var(--btn-px-lg); min-height: var(--btn-h-lg); }
+
+/* green mono section label used by the deep pages (full rule in de-act.css). Here too so a hero label is styled
+   on first paint, before the late de-act stylesheet arrives. */
+.de-section-label { display: inline-flex; color: #4ade80; font-family: var(--eyebrow-font); font-size: var(--eyebrow-size); font-weight: var(--eyebrow-weight); letter-spacing: var(--eyebrow-ls); text-transform: uppercase; line-height: 1.3; margin-bottom: var(--gap-eyebrow); }
 
 /* the pair: demo first, score second */
 .cta-pair { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .cta-pair--center { justify-content: center; }
 @media (max-width: 960px) { .cta-pair--center-mobile { justify-content: center; } }
 .cta-pair > .btn-primary { justify-content: center; }
-@media (max-width: 480px) { .cta-pair > .btn-primary, .cta-pair > .btn-score { flex: 1 1 100%; } }
+/* phones: every button group stacks full width, demo on top, one 12px gap */
+@media (max-width: 480px) {
+  .cta-pair > .btn-primary, .cta-pair > .btn-score { flex: 1 1 100%; }
+  .hero-actions, .i-hero-ctas, .a2-hero-ctas, .pricing-hero-cta, .features-cta-actions, .cs-cta-row {
+    display: flex; flex-direction: column; align-items: stretch; gap: var(--btn-gap);
+  }
+  .hero-actions > .btn-primary, .hero-actions > .btn-score,
+  .i-hero-ctas > .btn-primary, .i-hero-ctas > .btn-score,
+  .a2-hero-ctas > .btn-primary, .a2-hero-ctas > .btn-score,
+  .pricing-hero-cta > a, .features-cta-actions > *, .cs-cta-row > a { width: 100%; justify-content: center; }
+}
 /* pinned full-screen heroes (marketing, sales) have no room on phones; the nav menu carries both buttons there */
 @media (max-width: 1100px) { .cta-pair--desktop-only { display: none; } }
 
@@ -682,14 +732,14 @@ body {
 
 /* "Why DealerEdge": comparison vs the typical dealer website vendor (homepage + pricing). Self-contained so it
    works in every core bundle. No competitor is named; every DealerEdge claim is the locked copy or the Edge Score. */
-.why-de { padding: clamp(72px, 11vh, 128px) clamp(20px, 4vw, 44px); background: #000; position: relative; }
+.why-de { padding: clamp(72px, 11vh, 128px) clamp(20px, 4vw, 44px); background: #000; position: relative; padding-top: var(--section-pad); padding-bottom: var(--section-pad); }
 .why-de-inner { max-width: 1080px; margin: 0 auto; }
 .why-de .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .why-de-head { text-align: center; max-width: 760px; margin: 0 auto clamp(32px, 5vh, 52px); }
-.why-de-eyebrow { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-.why-de-title { font-family: var(--font); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.028em; line-height: 1.1; color: #fff; margin: 0 0 14px; }
+.why-de-eyebrow { display: inline-block; font-size: var(--eyebrow-size); font-weight: var(--eyebrow-weight); letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--accent); margin-bottom: var(--gap-eyebrow); font-family: var(--eyebrow-font); line-height: 1.3; }
+.why-de-title { font-family: var(--font); font-size: var(--type-section); font-weight: var(--head-weight); letter-spacing: var(--section-ls); line-height: var(--section-lh); color: #fff; margin: 0; }
 .why-de-title span { color: #4ade80; }
-.why-de-sub { font-size: 1.05rem; line-height: 1.55; color: var(--text-mid); margin: 0; }
+.why-de-sub { font-size: var(--type-lede); line-height: var(--lede-lh); color: var(--lede-color); margin: var(--gap-sub) 0 0; }
 .why-de-table { border: 1px solid rgba(255, 255, 255, 0.09); border-radius: var(--radius); overflow: hidden; }
 .why-de-row { display: grid; grid-template-columns: 0.7fr 1fr 1.25fr; }
 .why-de-row + .why-de-row { border-top: 1px solid rgba(255, 255, 255, 0.07); }
@@ -730,13 +780,13 @@ body {
 
 /* secondary ROI link in the deep-dive boat-section close — revealed by the
    GSAP timeline alongside #boat-cta (section-video-boat.js) */
-.boat-roi-link { opacity: 0; transform: translateY(18px); pointer-events: none; margin-top: 4px; }
+.boat-roi-link { opacity: 0; transform: translateY(18px); pointer-events: none; margin-top: var(--btn-gap); min-height: var(--btn-h-lg); padding: 0 var(--btn-px-lg); font-size: var(--btn-fs-lg); }
 
 /* ROI CTA in the pricing hero */
-.pricing-hero-cta { margin-top: clamp(24px, 4vh, 40px); }
+.pricing-hero-cta { margin-top: var(--gap-actions); }
 
 /* homepage Results: View Results + secondary ROI CTA row */
-.cs-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.cs-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--btn-gap); margin-top: var(--gap-actions); }
 
 /* deep-dive prev/next "continue the tour" nav (inventory → marketing →
    sales → analytics). Framed with a header; the NEXT card is the primary
@@ -965,19 +1015,22 @@ body {
 }
 
 .section-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 1.2rem;
+  margin-bottom: var(--gap-eyebrow);
+  font-family: var(--eyebrow-font);
+  line-height: 1.3;
+  display: block;
 }
 
 .section-title {
-  font-size: clamp(2rem, 4.2vw, 3.2rem);
-  font-weight: 800;
-  letter-spacing: -0.028em;
-  line-height: 1.13;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--section-ls);
+  line-height: var(--section-lh);
   color: var(--text);
   margin-bottom: 3.5rem;
 }
@@ -990,7 +1043,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 14px;
+  gap: var(--btn-gap);
 }
 
 /* ─── CTA ─── */
@@ -999,6 +1052,8 @@ body {
   background: #000;
   position: relative;
   overflow: hidden;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
 /* Big red ambient glow behind CTA */
@@ -1021,29 +1076,34 @@ body {
 
 .cta-tag {
   display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--gap-eyebrow);
+  font-family: var(--eyebrow-font);
+  line-height: 1.3;
 }
 
 .cta-title {
-  font-size: clamp(2.2rem, 5.5vw, 4.2rem);
-  font-weight: 800;
-  letter-spacing: -0.032em;
-  line-height: 1.08;
+  font-size: var(--type-section);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--section-ls);
+  line-height: var(--section-lh);
   color: var(--text);
-  margin-bottom: 1.3rem;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .cta-sub {
-  font-size: clamp(0.92rem, 1.5vw, 1.12rem);
-  color: var(--text-dim);
-  line-height: 1.75;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   max-width: 500px;
   margin: 0 auto 2.8rem;
+  margin-top: var(--gap-sub);
+  margin-bottom: var(--gap-actions);
 }
 
 .cta-sub--offer {
@@ -1088,12 +1148,13 @@ body {
 }
 
 .footer-col-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls);
   text-transform: uppercase;
   color: #fff;
   margin: 0 0 20px;
+  font-family: var(--eyebrow-font);
 }
 
 .footer-nav {
@@ -1661,6 +1722,7 @@ body {
   align-items: flex-end;
   overflow: hidden;
   padding-bottom: clamp(56px, 8vh, 96px);
+  padding-top: calc(var(--nav-height) + 48px);
 }
 
 .csp-hero-bg {
@@ -1686,7 +1748,7 @@ body {
   padding: 0 clamp(20px, 4vw, 44px);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 0;
 }
 
 .csp-hero-meta {
@@ -1703,20 +1765,24 @@ body {
 }
 
 .csp-hero-headline {
-  font-size: clamp(2.8rem, 6vw, 5.2rem);
-  font-weight: 800;
+  font-size: var(--type-display);
+  font-weight: var(--head-weight);
   color: #fff;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
+  letter-spacing: var(--head-ls);
+  line-height: var(--head-lh);
   margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .csp-hero-sub {
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-  color: rgba(255,255,255,0.6);
-  line-height: 1.7;
+  font-size: var(--type-lede);
+  color: var(--lede-color);
+  line-height: var(--lede-lh);
   max-width: 520px;
   margin: 0;
+  margin-top: var(--gap-sub);
+  margin-bottom: 0;
 }
 
 .csp-hero-stats {
@@ -1725,6 +1791,7 @@ body {
   gap: 28px;
   padding-top: 8px;
   flex-wrap: wrap;
+  margin-top: var(--gap-actions);
 }
 
 .csp-hero-stat-value {
@@ -1909,7 +1976,7 @@ body {
 /* Excerpt */
 .csp-card-excerpt {
   font-size: 0.88rem;
-  color: rgba(255,255,255,0.48);
+  color: rgba(255, 255, 255, 0.65);
   line-height: 1.65;
   margin: 0;
   flex: 1;
@@ -1977,9 +2044,10 @@ body {
 .csp-grid + .csp-tier { margin-top: clamp(44px, 6vh, 68px); }
 .csp-tier-label {
   display: inline-block;
-  font-size: 0.7rem; font-weight: 700;
-  letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: var(--eyebrow-size); font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase;
   color: rgba(255,255,255,0.85); margin: 0 0 8px;
+  font-family: var(--eyebrow-font);
 }
 .csp-tier-note {
   font-size: 0.95rem; color: rgba(255,255,255,0.52);
