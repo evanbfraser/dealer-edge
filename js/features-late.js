@@ -27,7 +27,7 @@ window.DE.initFeaturesLate = function initFeaturesLate(lenis) {
 
   function loadFeatureModalPartials() {
     return Promise.all([
-      loadPartialOnce('modal-backdrop', 'partials/features-contact-modal.html?v=20260702f'),
+      loadPartialOnce('modal-backdrop', 'partials/features-contact-modal.html?v=20261112b'),
       loadPartialOnce('dm-backdrop', 'partials/features-dept-modal.html?v=20260702f'),
     ]);
   }

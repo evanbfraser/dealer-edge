@@ -237,7 +237,8 @@
     initPricingReveals();
     initPricingToggle();
 
-    if (!initPricingModal() && typeof initDemoModal === 'function') initDemoModal(null);
+    // The page's own multi-step form is gone (2026-11-12): every page uses the shared demo form.
+    if (!initPricingModal()) window.DE?.initLazyDemoModal?.(null);
     if (typeof initMobileNav === 'function') initMobileNav();
     initPricingScrollHint();
   }

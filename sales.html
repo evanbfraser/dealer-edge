@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sales | DealerEdge — The AI sales platform that never sleeps</title>
   <meta name="description" content="Every lead answered in under 90 seconds, every call captured, every follow-up sent — 24/7. See how dealers turn 19 bookings per 1,000 buyers into 60.">
-  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112a">
+  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112b">
   <link rel="stylesheet" href="css/sales-critical.min.css?v=20260703b">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jetbrains-mono-var-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -45,8 +45,8 @@
         <a href="case-studies.html">Results</a>
       </div>
       <div class="nav-cta">
-        <a href="https://dealeredge.ai/edge-score" class="btn-nav btn-nav--ghost">Get Free Website Score</a>
-        <a href="#" class="btn-nav js-modal">Get Started</a>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=sales-nav" class="btn-nav btn-nav--ghost" data-cta="sales-nav-score">Get Free Website Score</a>
+        <a href="#" class="btn-nav js-modal">Book a Demo</a>
       </div>
       <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
         <span></span><span></span><span></span>
@@ -65,8 +65,8 @@
       </div>
       <a href="roi.html">ROI</a>
       <a href="case-studies.html">Results</a>
-      <a href="https://dealeredge.ai/edge-score" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta">Get Free Website Score</a>
-      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
+      <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=sales-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="sales-nav-mobile-score">Get Free Website Score</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
   </nav>
 
@@ -173,10 +173,24 @@
     </div>
   </section>
 
+  <!-- CTA break -->
+  <section data-section="cta_break" class="cta-break" aria-label="Book a demo or get your free website score">
+    <div class="cta-break-inner">
+      <div class="cta-break-copy">
+        <p class="cta-break-title">How many of your 1,000 buyers are slipping away?</p>
+        <p class="cta-break-sub">Your free website score shows how fast your site loads on a phone and how easily buyers find you. Or book a demo and we’ll walk through the fix with you.</p>
+      </div>
+      <div class="cta-pair">
+        <button type="button" class="btn-primary js-modal" data-cta="sales-break-hero-demo">Book a Demo</button>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=sales-break-hero" class="btn-score" data-cta="sales-break-hero-score">Get Free Website Score</a>
+      </div>
+    </div>
+  </section>
+
   <div id="sales-late-root" data-sales-late-root></div>
 
   <!-- Demo request modal -->
-  <script src="js/de-core.min.js?v=20260707a" defer></script>
-  <script src="js/sales.min.js?v=20260706a" defer></script>
+  <script src="js/de-core.min.js?v=20261112b" defer></script>
+  <script src="js/sales.min.js?v=20261112b" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROI Calculator | DealerEdge — See what you're leaving on the lot.</title>
   <meta name="description" content="See what slow sites and slow follow-up cost your dealership — and the gross margin DealerEdge recovers. Enter your funnel, tune the sliders, and watch the math.">
-  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112a">
+  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112b">
   <link rel="stylesheet" href="css/roi.min.css?v=20260703b">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
@@ -42,8 +42,8 @@
         <a href="case-studies.html">Results</a>
       </div>
       <div class="nav-cta">
-        <a href="https://dealeredge.ai/edge-score" class="btn-nav btn-nav--ghost">Get Free Website Score</a>
-        <a href="#" class="btn-nav js-modal">Get Started</a>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=roi-nav" class="btn-nav btn-nav--ghost" data-cta="roi-nav-score">Get Free Website Score</a>
+        <a href="#" class="btn-nav js-modal">Book a Demo</a>
       </div>
       <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
         <span></span><span></span><span></span>
@@ -62,8 +62,8 @@
       </div>
       <a href="roi.html" class="nav-link--active">ROI Calculator</a>
       <a href="case-studies.html">Results</a>
-      <a href="https://dealeredge.ai/edge-score" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta">Get Free Website Score</a>
-      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Schedule your Demo</a>
+      <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=roi-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="roi-nav-mobile-score">Get Free Website Score</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
   </nav>
 
@@ -226,7 +226,8 @@
           <div class="roi-offer">
             <p class="roi-offer-line">This is an <b>estimate</b> &mdash; built from your numbers and the response gains we see at real dealers. The only number we <b>guarantee:</b></p>
             <p class="roi-offer-quote">&ldquo;If we don't <b>beat your current results by 20% in 3 months,</b> you don't pay anything &mdash; until we do.&rdquo;</p>
-            <button type="button" class="btn-primary roi-cta js-modal">Show me my real numbers</button>
+            <button type="button" class="btn-primary roi-cta js-modal">Book a Demo</button>
+            <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=roi-results" class="btn-score" data-cta="roi-results-score">Get Free Website Score</a>
           </div>
 
           <details class="roi-how">
@@ -298,7 +299,7 @@
           <h2 class="boat-headline boat-headline--in">Put Them On Your<br>Customer's Dock</h2>
         </div>
         <p class="boat-sub" id="boat-sub">That number isn't hypothetical &mdash; it's the gap between what you sell now and what the same buyers would buy with faster follow-up. Let's pull your real figures.</p>
-        <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Schedule your demo today</button>
+        <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Book a Demo</button>
       </div>
       <video id="boat-video" data-src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="none"></video>
     </div>
@@ -307,6 +308,15 @@
 
   <!-- Footer -->
   <footer class="footer">
+    <div class="footer-cta">
+      <div class="footer-cta-inner">
+        <p class="footer-cta-title">See how your dealership stacks up.</p>
+        <div class="cta-pair">
+          <button type="button" class="btn-primary js-modal" data-cta="roi-footer-demo">Book a Demo</button>
+          <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=roi-footer" class="btn-score" data-cta="roi-footer-score">Get Free Website Score</a>
+        </div>
+      </div>
+    </div>
     <div class="footer-body">
       <div class="footer-inner">
         <div class="footer-col footer-col--brand">
@@ -344,7 +354,7 @@
   </footer>
 
   <script src="js/mobile-nav.min.js?v=20260630a" defer></script>
-  <script src="js/de-core.min.js?v=20260922a" defer></script>
-  <script src="js/roi.min.js?v=20260707a" defer></script>
+  <script src="js/de-core.min.js?v=20261112b" defer></script>
+  <script src="js/roi.min.js?v=20261112b" defer></script>
 </body>
 </html>

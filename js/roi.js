@@ -121,7 +121,7 @@
     const triggers = [...document.querySelectorAll('.js-modal')];
     if (!triggers.length) return;
 
-    const src = 'js/demo-modal.min.js?v=20260707a';
+    const src = 'js/demo-modal.min.js?v=20261112b';
     let loading = null;
     let initialized = false;
 

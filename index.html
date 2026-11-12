@@ -8,7 +8,7 @@
   <meta property="og:title" content="DealerEdge | The AI Growth Platform Built for Dealers">
   <meta property="og:description" content="More leads in, faster response out, nothing lost in between. One AI platform across marketing, sales, and operations.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="css/home-core.min.css?v=20261112a">
+  <link rel="stylesheet" href="css/home-core.min.css?v=20261112b">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js" defer></script>
@@ -48,8 +48,8 @@
         <a href="case-studies.html">Results</a>
       </div>
       <div class="nav-cta">
-        <a href="https://dealeredge.ai/edge-score" class="btn-nav btn-nav--ghost">Get Free Website Score</a>
-        <a href="#" class="btn-nav js-modal">Get Started</a>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=index-nav" class="btn-nav btn-nav--ghost" data-cta="index-nav-score">Get Free Website Score</a>
+        <a href="#" class="btn-nav js-modal">Book a Demo</a>
       </div>
       <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-panel">
         <span></span><span></span><span></span>
@@ -68,8 +68,8 @@
       </div>
       <a href="roi.html">ROI</a>
       <a href="case-studies.html">Results</a>
-      <a href="https://dealeredge.ai/edge-score" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta">Get Free Website Score</a>
-      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Get Started</a>
+      <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=index-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="index-nav-mobile-score">Get Free Website Score</a>
+      <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
   </nav>
 
@@ -84,11 +84,8 @@
         </h1>
         <p class="hero-sub">Marketing. Listings. Lead Response. Sales Automation. One intelligent system that works while you do.</p>
         <div class="hero-actions">
-          <a href="#contact" class="btn-primary js-modal">Get Started Today</a>
-          <a href="features.html" class="btn-ghost">
-            See How It Works
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
+          <button type="button" class="btn-primary js-modal" data-cta="index-hero-demo">Book a Demo</button>
+          <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=index-hero" class="btn-score" data-cta="index-hero-score">Get Free Website Score</a>
         </div>
       </div>
     </div>
@@ -249,6 +246,20 @@
   </section>
 
   <!-- Video Section -->
+  <!-- CTA break -->
+  <section data-section="cta_break" class="cta-break" aria-label="Book a demo or get your free website score">
+    <div class="cta-break-inner">
+      <div class="cta-break-copy">
+        <p class="cta-break-title">Ready to see it on your dealership?</p>
+        <p class="cta-break-sub">Book a demo, or start with a free website score: how easily buyers find you on Google and in AI answers, scored out of 100.</p>
+      </div>
+      <div class="cta-pair">
+        <button type="button" class="btn-primary js-modal" data-cta="index-break-journey-demo">Book a Demo</button>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=index-break-journey" class="btn-score" data-cta="index-break-journey-score">Get Free Website Score</a>
+      </div>
+    </div>
+  </section>
+
   <section data-section="video" class="video-section" id="video-section">
     <div class="video-wrapper">
       <div class="video-inner" id="video-inner">
@@ -274,7 +285,7 @@
           <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
         </div>
         <p class="boat-sub" id="boat-sub">Why wait on improving your sales? We can have this platform up and running for your dealership quickly.</p>
-        <button class="btn-primary boat-cta js-modal" id="boat-cta" type="button">Get Started Today</button>
+        <button class="btn-primary boat-cta js-modal" id="boat-cta" type="button">Book a Demo</button>
       </div>
       <video id="boat-video" data-src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="none"></video>
     </div>
@@ -385,14 +396,24 @@
       <div class="cta-tag" data-animation="fade-up">Ready to grow?</div>
       <h2 class="cta-title" data-animation="fade-up" data-delay="0.1">Give your dealership<br>the edge it deserves.</h2>
       <p class="cta-sub" data-animation="fade-up" data-delay="0.2">One platform for marketing, sales, and operations &mdash; proven for the brands on your lot, and guaranteed for yours.</p>
-      <div data-animation="fade-up" data-delay="0.3">
-        <a href="#contact" class="btn-primary btn-primary--large js-modal">Get Started Today</a>
+      <div class="cta-pair cta-pair--center" data-animation="fade-up" data-delay="0.3">
+        <a href="#contact" class="btn-primary btn-primary--large js-modal">Book a Demo</a>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=index-final" class="btn-score btn-score--large" data-cta="index-final-score">Get Free Website Score</a>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
+    <div class="footer-cta">
+      <div class="footer-cta-inner">
+        <p class="footer-cta-title">See how your dealership stacks up.</p>
+        <div class="cta-pair">
+          <button type="button" class="btn-primary js-modal" data-cta="index-footer-demo">Book a Demo</button>
+          <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=index-footer" class="btn-score" data-cta="index-footer-score">Get Free Website Score</a>
+        </div>
+      </div>
+    </div>
 
     <!-- Main footer body -->
     <div class="footer-body">
@@ -463,7 +484,7 @@
     </button>
   </div>
 
-  <script src="js/de-core.min.js?v=20260707a" defer></script>
-  <script src="js/app.min.js?v=20260630a" defer></script>
+  <script src="js/de-core.min.js?v=20261112b" defer></script>
+  <script src="js/app.min.js?v=20261112b" defer></script>
 </body>
 </html>

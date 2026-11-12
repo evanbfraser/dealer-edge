@@ -709,6 +709,12 @@ body {
   gap: 14px;
   flex-wrap: wrap;
 }
+/* Book a Demo + Get Free Website Score side by side in the 392px hero column */
+.hero-actions > .btn-primary,
+.hero-actions > .btn-score {
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
 
 /* ─── BUTTONS ─── */
 .btn-primary {
@@ -777,6 +783,76 @@ body {
 /* green "win" ghost — secondary ROI CTAs across the site (sits over .btn-ghost) */
 .btn-ghost--good { color: #4ade80; border-color: rgba(74, 222, 128, 0.28); }
 .btn-ghost--good:hover { color: #6ee79b; border-color: rgba(74, 222, 128, 0.5); background: rgba(74, 222, 128, 0.08); }
+
+/* ─── CTA system (2026-11-12): every demo button says "Book a Demo" (.btn-primary.js-modal) and pairs with
+   "Get Free Website Score" (.btn-score → dealeredge.ai/edge-score). Same size as .btn-primary, white ghost pill. */
+.btn-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.82em 2em;
+  border-radius: 100px;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-score:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+.btn-score:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.btn-score--large { font-size: 1.05rem; padding: 0.95em 2.4em; }
+
+/* the pair: demo first, score second */
+.cta-pair { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.cta-pair--center { justify-content: center; }
+@media (max-width: 960px) { .cta-pair--center-mobile { justify-content: center; } }
+.cta-pair > .btn-primary { justify-content: center; }
+@media (max-width: 480px) { .cta-pair > .btn-primary, .cta-pair > .btn-score { flex: 1 1 100%; } }
+/* pinned full-screen heroes (marketing, sales) have no room on phones; the nav menu carries both buttons there */
+@media (max-width: 1100px) { .cta-pair--desktop-only { display: none; } }
+
+/* slim CTA strip between acts / sections on the long pages */
+.cta-break { padding: clamp(40px, 7vh, 80px) clamp(20px, 4vw, 44px); background: #000; position: relative; z-index: 1; }
+.cta-break-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px 40px;
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(224, 47, 46, 0.12), rgba(255, 255, 255, 0.02) 60%);
+}
+.cta-break-copy { flex: 1 1 22rem; }
+.cta-break-title { font-family: var(--font); font-size: clamp(1.35rem, 2.4vw, 1.9rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; color: #fff; margin: 0 0 8px; }
+.cta-break-sub { font-size: 1rem; line-height: 1.5; color: var(--text-mid); margin: 0; max-width: 40rem; }
+
+/* footer CTA row (static site; the platform footer is DeFooter in the platform repo) */
+.footer-cta { border-bottom: 1px solid var(--border); }
+.footer-cta-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 36px clamp(20px, 4vw, 44px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-cta-title { font-family: var(--font); font-size: 1.25rem; font-weight: 700; color: #fff; margin: 0; }
 
 /* secondary ROI link in the deep-dive boat-section close — revealed by the
    GSAP timeline alongside #boat-cta (section-video-boat.js) */

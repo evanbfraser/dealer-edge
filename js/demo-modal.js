@@ -11,14 +11,14 @@ function initDemoModal(lenis) {
           </button>
 
           <div class="ms-step" id="ms-step-1">
-            <span class="modal-eyebrow">Schedule a Demo</span>
+            <span class="modal-eyebrow">Book a Demo</span>
             <h2 class="ms-headline" id="demo-modal-title">Tell us how to reach you.</h2>
             <p class="ms-sub">We'll follow up within one business day to get your demo on the calendar.</p>
             <div class="form-group"><input type="text" id="ms-name" placeholder="First and last name" aria-label="First and last name" autocomplete="name"></div>
             <div class="form-group"><input type="email" id="ms-email" placeholder="Email address" aria-label="Email address" autocomplete="email"></div>
             <div class="form-group"><input type="tel" id="ms-phone" inputmode="tel" placeholder="(555) 000-0000" aria-label="Phone number" autocomplete="tel"></div>
             <p class="ms-error" id="ms-error" role="alert" hidden></p>
-            <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Schedule My Demo</button>
+            <button class="btn-primary ms-next-btn" id="ms-submit" type="button">Book My Demo</button>
             <p class="ms-legal">By submitting, you agree to our <a href="/legal/privacy">Privacy Policy</a>.</p>
           </div>
 
