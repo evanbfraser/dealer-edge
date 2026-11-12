@@ -212,6 +212,8 @@ body {
 
 .nav-logo img {
   height: clamp(36px, 4.8vw, 51px);
+  /* width follows the height: the HTML width="172" alone squeezed the logo at desktop heights */
+  width: auto;
   display: block;
 }
 
@@ -388,6 +390,23 @@ body {
   background: #ff4a49;
   box-shadow: 0 0 28px var(--accent-glow);
   transform: translateY(-1px);
+}
+
+/* nav CTA pair: the ghost "Get Free Website Score" sits left of the red "Get Started" pill */
+.nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-nav--ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+}
+
+.btn-nav--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7);
 }
 
 /* ─── BOAT SECTION ─── */
