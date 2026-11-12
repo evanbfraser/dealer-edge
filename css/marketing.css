@@ -7198,3 +7198,6 @@
 /* "Everything included" checklist (#includes) and the before/after
    comparison table (#compare) are shared chassis components now —
    see .de-includes / .de-compare in css/de-act.css. */
+
+/* content engine: the RV article written the same week as the boat one */
+.m-rank-article-twin { margin: 6px 0 0; font-size: 0.82rem; color: var(--m-mid); }

@@ -34,7 +34,7 @@ DE.pages.marketing = { boot() {
   let marketingLateContentPromise = null;
   let marketingLateContentReady = false;
   function loadMarketingLateCss() {
-    const href = 'css/marketing-late.min.css?v=20261112f';
+    const href = 'css/marketing-late.min.css?v=20261112i';
     if (document.querySelector(`link[href="${href}"]`)) {
       return marketingLateCssPromise || Promise.resolve();
     }
@@ -56,7 +56,7 @@ DE.pages.marketing = { boot() {
     if (!root) return Promise.resolve();
     if (marketingLateContentReady || root.dataset.loaded === 'true') return marketingLateContentPromise || Promise.resolve();
     if (!marketingLateContentPromise) {
-      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20261112h')
+      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20261112i')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
