@@ -48,8 +48,9 @@ const placeholders = `/* Initial geometry placeholders for the lazy video/boat s
 @media (max-width: 960px) { .boat-section { height: 200vh; } }
 @media (max-width: 640px) { .boat-section { height: 200vh; } }
 `;
-const deepBody = slices.map(([start, end]) => readSlice(start, end)).join('\n\n')
-  .replace(/\n@font-face \{\s*font-family: 'JetBrains Mono';[\s\S]*?font-display: swap;\s*\}\n/, '\n');
+const deepBody = slices.map(([start, end]) => readSlice(start, end)).join('\n\n');
+// Keep the JetBrains Mono @font-face: features, roi, inventory, analytics and marketing get the mono face only from
+// deep-core (sales-critical declares its own). Stripping it here made a rebuild drop the font on those pages.
 const deepWithPlaceholders = `${header}\n${deepBody}\n\n${placeholders}\n`;
 fs.writeFileSync(OUT_PATH, deepWithPlaceholders, 'utf8');
 console.log(`deep-core.css: ${Buffer.byteLength(deepWithPlaceholders)} bytes`);

@@ -4,7 +4,8 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const CSS_DIR = path.join(ROOT, 'css');
 const SOURCE_PATH = path.join(CSS_DIR, 'sales.css');
-const css = fs.readFileSync(SOURCE_PATH, 'utf8');
+// Normalize line endings: the markers below use \n, and a Windows (autocrlf) checkout has \r\n.
+const css = fs.readFileSync(SOURCE_PATH, 'utf8').replace(/\r\n/g, '\n');
 
 function readSlice(startMarker, endMarker) {
   const start = css.indexOf(startMarker);
@@ -44,7 +45,7 @@ function write(file, body, purpose) {
 
 let heroBase = readSlice(
   '/* ═══════════════════════════════════════════════════════════════',
-  '/* ═══════════════════════════════════════════════════════════════\r\n   MARINE REALITY'
+  '/* ═══════════════════════════════════════════════════════════════\n   MARINE REALITY'
 );
 
 // Keep the current prehero + pinned cohort styles critical. Exclude legacy
@@ -109,6 +110,6 @@ write(
 
 write(
   'sales-late.css',
-  readSlice('/* ═══════════════════════════════════════════════════════════════\r\n   MARINE REALITY', null),
+  readSlice('/* ═══════════════════════════════════════════════════════════════\n   MARINE REALITY', null),
   'below-fold sales proof, act visuals, SMS demo, pivots, and lower sections'
 );
