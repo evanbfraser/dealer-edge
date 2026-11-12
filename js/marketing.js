@@ -56,7 +56,7 @@ DE.pages.marketing = { boot() {
     if (!root) return Promise.resolve();
     if (marketingLateContentReady || root.dataset.loaded === 'true') return marketingLateContentPromise || Promise.resolve();
     if (!marketingLateContentPromise) {
-      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20261112c')
+      marketingLateContentPromise = fetch('partials/marketing-late-content.html?v=20261112h')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;

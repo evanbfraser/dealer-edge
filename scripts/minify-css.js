@@ -72,7 +72,10 @@ function stripComments(css) {
 function minify(css) {
   return stripComments(css)
     .replace(/\s+/g, ' ')
-    .replace(/\s*([{}:;,])\s*/g, '$1')
+    // Never strip the space BEFORE a colon: in a selector it is the descendant combinator
+    // (".theme-light :is(h2)" is not ".theme-light:is(h2)"). After a colon it is always safe.
+    .replace(/\s*([{};,])\s*/g, '$1')
+    .replace(/:\s+/g, ':')
     .replace(/;}/g, '}')
     .trim();
 }

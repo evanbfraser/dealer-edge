@@ -1139,6 +1139,9 @@
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
   transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
 }
+/* the marine stat and the RV stat stack in the card column */
+.s-marine-proof-cards { display: grid; gap: 12px; }
+a.s-marine-proof-card { text-decoration: none; }
 .s-marine-proof-card:hover {
   transform: translateY(-2px);
   border-color: rgba(224, 47, 46, 0.62);
@@ -3582,7 +3585,7 @@
 
 .s-routing-reps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   width: 100%;
 }

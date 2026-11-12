@@ -199,11 +199,33 @@
   height: auto;
   display: block;
 }
+video.video-thumb { aspect-ratio: 16 / 9; object-fit: cover; background: #000; }
+/* explainer spot: title + play button sit bottom-left over a scrim so the preview stays visible behind them */
+.video-inner:has(video.video-thumb) .video-overlay-text {
+  justify-content: flex-end; align-items: flex-start; gap: 18px;
+  padding: clamp(22px, 4vw, 56px);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.05) 75%);
+}
+.video-inner:has(video.video-thumb) .video-overlay-text h2 { text-align: left; padding: 0; margin: 0; }
+.video-inner.is-playing .video-overlay-text { opacity: 0; pointer-events: none; }
+.video-inner.is-playing { cursor: auto; }
+.video-play {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: var(--btn-h-lg); padding: 0 var(--btn-px-lg);
+  font-family: var(--font); font-size: var(--btn-fs-lg); font-weight: var(--btn-fw); letter-spacing: var(--btn-ls);
+  color: #111; background: #fff; border: 0; border-radius: 100px; cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.video-play:hover { background: #ececec; }
+.video-play:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.video-play[hidden] { display: none; }
 
 .video-overlay-text {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
+  gap: 22px;
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
@@ -763,6 +785,91 @@ body {
   .why-de-new::before { content: 'DealerEdge'; color: #4ade80; }
   .why-de-new { padding-bottom: 18px !important; }
 }
+
+/* ─── Light sections (2026-11-12). Add .theme-light to a static content section to flip it to an off-white
+   ground; heroes, scroll acts, videos and closes stay dark. Every colour token the shared and page CSS use is
+   re-pointed here, so most components flip without their own rules. Accents that are TEXT on light use the
+   darker accessible variants (green #15803d, red #c4211f); red/green FILLS keep the brand colours. ─── */
+.theme-light {
+  --lt-bg: #f5f5f7; --lt-card: #ffffff; --lt-text: #1d1d1f; --lt-mid: #424245; --lt-dim: #6e6e73;
+  --lt-line: rgba(0, 0, 0, 0.09); --lt-line-strong: rgba(0, 0, 0, 0.16); --lt-good: #15803d; --lt-bad: #c4211f;
+  --text: var(--lt-text); --text-mid: var(--lt-mid); --text-dim: var(--lt-dim); --border: var(--lt-line);
+  --border-hover: rgba(196, 33, 31, 0.35); --card-bg: var(--lt-card); --lede-color: var(--lt-mid);
+  --de-good: var(--lt-good); --de-good-dim: rgba(21, 128, 61, 0.1); --de-bad: var(--lt-bad); --de-bad-dim: rgba(196, 33, 31, 0.08);
+  --de-line: var(--lt-line); --de-line-strong: var(--lt-line-strong); --de-mid: var(--lt-mid); --de-dim: var(--lt-dim);
+  --f-good: var(--lt-good); --f-good-dim: rgba(21, 128, 61, 0.1); --f-bad: var(--lt-bad); --f-line: var(--lt-line);
+  --m-text: var(--lt-text); --m-mid: var(--lt-mid); --m-dim: var(--lt-dim); --m-good: var(--lt-good); --m-good-dim: rgba(21, 128, 61, 0.1);
+  --m-bad: var(--lt-bad); --m-bad-dim: rgba(196, 33, 31, 0.08); --m-line: var(--lt-line); --m-line-strong: var(--lt-line-strong);
+  --m-bg: var(--lt-bg); --m-panel: var(--lt-card); --m-panel-2: #fafafa;
+  --i-text: var(--lt-text); --i-mid: var(--lt-mid); --i-dim: var(--lt-dim); --i-good: var(--lt-good); --i-good-dim: rgba(21, 128, 61, 0.1);
+  --i-bad: var(--lt-bad); --i-line: var(--lt-line); --i-line-strong: var(--lt-line-strong); --i-bg: var(--lt-bg); --i-panel: var(--lt-card); --i-panel-2: #fafafa;
+  --a2-text: var(--lt-text); --a2-mid: var(--lt-mid); --a2-dim: var(--lt-dim); --a2-good: var(--lt-good); --a2-good-dim: rgba(21, 128, 61, 0.1);
+  --a2-bad: var(--lt-bad); --a2-line: var(--lt-line); --a2-line-strong: var(--lt-line-strong); --a2-bg: var(--lt-bg); --a2-panel: var(--lt-card); --a2-panel-2: #fafafa;
+  --good: var(--lt-good); --line: var(--lt-line); --line-strong: var(--lt-line-strong); --panel: var(--lt-card); --panel-2: #fafafa;
+  background: var(--lt-bg) !important;
+  color: var(--lt-text);
+}
+/* body-prefixed: page stylesheets load after this one and would win specificity ties */
+body .theme-light h1, body .theme-light h2, body .theme-light h3, body .theme-light h4, body .theme-light b, body .theme-light strong, body .theme-light li { color: var(--lt-text); }
+.theme-light .section-label, .theme-light .cta-tag, .theme-light .why-de-eyebrow { color: var(--lt-bad); }
+.theme-light .de-section-label { color: var(--lt-good); }
+/* buttons on light: the red fill stays; ghost/score outlines turn dark */
+.theme-light .btn-score, .theme-light .btn-ghost { color: var(--lt-text); box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.28); }
+.theme-light .btn-score:hover, .theme-light .btn-ghost:hover { background: rgba(0, 0, 0, 0.05); box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.55); }
+.theme-light .btn-ghost--good { color: var(--lt-good); box-shadow: inset 0 0 0 1.5px rgba(21, 128, 61, 0.45); }
+.theme-light .btn-primary:focus-visible, .theme-light .btn-ghost:focus-visible, .theme-light .btn-score:focus-visible { outline-color: var(--lt-text); }
+
+/* dark islands: device mock-ups and stat cards inside a light section keep the dark palette */
+.theme-light .s-phone, .theme-light .s-marine-proof-card {
+  --text: #fff; --text-mid: rgba(255, 255, 255, 0.75); --text-dim: rgba(255, 255, 255, 0.5); --lede-color: rgba(255, 255, 255, 0.75);
+  --border: rgba(255, 255, 255, 0.08); --card-bg: rgba(255, 255, 255, 0.025);
+  color: #fff;
+}
+.theme-light .s-phone :is(b, strong, li), .theme-light .s-marine-proof-card :is(b, strong, li) { color: inherit; }
+
+/* component colours that were hard-coded for the dark ground */
+body .theme-light .why-de-table { background: var(--lt-card); border-color: var(--lt-line); }
+body .theme-light .why-de-row + .why-de-row { border-top-color: var(--lt-line); }
+body .theme-light .why-de-title, body .theme-light .why-de-topic, body .theme-light .why-de-new { color: var(--lt-text); }
+body .theme-light .why-de-title span, body .theme-light .why-de-new b, body .theme-light .why-de-row--head .why-de-new { color: var(--lt-good); }
+body .theme-light .why-de-old { color: var(--lt-mid); background: rgba(196, 33, 31, 0.04); }
+body .theme-light .why-de-new { background: rgba(21, 128, 61, 0.06); }
+body .theme-light .why-de-row--head .why-de-old { color: var(--lt-bad); }
+body .theme-light .why-de-old::before { color: var(--lt-bad); }
+body .theme-light .why-de-new::before { color: var(--lt-good); }
+body .theme-light .feature-tag { color: var(--lt-bad); border-color: rgba(196, 33, 31, 0.3); background: rgba(196, 33, 31, 0.06); }
+body .theme-light .pillar-nav-recap, body .theme-light .pillar-nav-name { color: var(--lt-text); }
+body .theme-light .pillar-nav-dir, body .theme-light .pillar-nav-arrow { color: var(--lt-dim); }
+body .theme-light .csp-tier-label, body .theme-light .csp-cta-label { color: var(--lt-text); }
+body .theme-light .csp-tier-note, body .theme-light .csp-cta-sub { color: var(--lt-mid); }
+body .theme-light .csp-card-stat-label { color: var(--lt-dim); }
+body .theme-light .s-try-headline, body .theme-light .s-headline-accent { color: var(--lt-text); }
+body .theme-light .pillar-nav-next .pillar-nav-dir, body .theme-light .pillar-nav-next .pillar-nav-arrow { color: var(--lt-bad); }
+body .theme-light .de-includes-pillar b { color: var(--lt-text); }
+body .theme-light .de-includes-col:nth-child(1) .de-includes-pillar span { color: var(--lt-bad); }
+/* sections with a max-width still read full-bleed: paint the light ground out to the viewport edges */
+.pillar-nav-section.theme-light { box-shadow: 0 0 0 100vmax var(--lt-bg); clip-path: inset(0 -100vmax); }
+/* form fields on light */
+body .theme-light .s-try-input-card input { background: #fff; color: var(--lt-text); border-color: var(--lt-line-strong); }
+body .theme-light .s-try-input-card input::placeholder { color: var(--lt-dim); }
+body .theme-light .s-marine-proof-copy h2 { color: var(--lt-text); }
+/* the marine stat card is a dark island on the light ground */
+body .theme-light .s-marine-proof-card { background: #0b0b0e; border-color: rgba(255, 255, 255, 0.08); }
+/* results cards: white on the light ground */
+body .theme-light .csp-card { background: var(--lt-card); border-color: var(--lt-line); }
+body .theme-light .csp-card-headline, body .theme-light .csp-card-stat-value { color: var(--lt-text); }
+body .theme-light .csp-card-excerpt { color: var(--lt-mid); }
+body .theme-light .csp-card-stat-label { color: var(--lt-mid); }
+
+/* Red CTA band: full-bleed, no inner card. #c8201f keeps white text above 4.5:1. */
+.cta-break.cta-break { background: #c8201f; padding: clamp(36px, 6vh, 64px) clamp(20px, 4vw, 44px); }
+.cta-break .cta-break-inner { border: 0; background: none; padding: 0; border-radius: 0; }
+.cta-break .cta-break-title { color: #fff; }
+.cta-break .cta-break-sub { color: rgba(255, 255, 255, 0.92); }
+.cta-break .btn-primary { background: #fff; color: #b0191a; }
+.cta-break .btn-primary:hover { background: #ffe9e9; }
+.cta-break .btn-score { color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.75); }
+.cta-break .btn-score:hover { background: rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 0 1.5px #fff; }
 
 /* footer CTA row (static site; the platform footer is DeFooter in the platform repo) */
 .footer-cta { border-bottom: 1px solid var(--border); }

@@ -42,7 +42,7 @@ DE.pages.inventory = { boot() {
     if (!root) return Promise.resolve();
     if (inventoryLateContentReady || root.dataset.loaded === 'true') return inventoryLateContentPromise || Promise.resolve();
     if (!inventoryLateContentPromise) {
-      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20261112e')
+      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20261112h')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;
@@ -160,7 +160,7 @@ DE.pages.inventory = { boot() {
   }
 
   function loadInventoryLateCss() {
-    const href = 'css/inventory-late.min.css?v=20260703b';
+    const href = 'css/inventory-late.min.css?v=20261112g';
     if (document.querySelector(`link[href="${href}"]`)) return inventoryLateCssPromise || Promise.resolve();
     if (!inventoryLateCssPromise) {
       inventoryLateCssPromise = new Promise((resolve) => {

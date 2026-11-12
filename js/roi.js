@@ -172,7 +172,7 @@
     let observer = null;
     let cssPromise = null;
     const loadCss = () => {
-      const href = 'css/video-boat.min.css?v=20261112f';
+      const href = 'css/video-boat.min.css?v=20261112g';
       const existing = document.querySelector(`link[href="${href}"]`);
       if (existing) return cssPromise || Promise.resolve();
       cssPromise = new Promise((resolve) => {
@@ -195,7 +195,7 @@
         return;
       }
       const script = document.createElement('script');
-      script.src = 'js/section-video-boat.min.js?v=20260630a';
+      script.src = 'js/section-video-boat.min.js?v=20261112g';
       script.defer = true;
       script.onload = () => {
         if (typeof initVideoBoatSections === 'function') readyForLayout.then(initVideoBoatSections);
@@ -316,11 +316,12 @@
     input.style.background = `linear-gradient(90deg, var(--good) 0%, var(--good) ${pct}%, var(--line) ${pct}%, var(--line) 100%)`;
   }
 
-  // Boat | RV switch. The funnel benchmarks (BENCH) are marine numbers, so RV mode shows the dealer's own rates
-  // without an above/below-average verdict until there are real RV benchmarks. ?type=rv opens in RV mode.
-  let vertical = new URLSearchParams(location.search).get('type') === 'rv' ? 'rv' : 'boat';
+  // Both | Boats | RVs switch (default Both). The funnel benchmarks (BENCH) are marine numbers, so only Boats mode
+  // shows the above/below-average verdict; Both and RVs show the dealer's own rates. ?type=boat|rv opens in that mode.
+  const typeParam = new URLSearchParams(location.search).get('type');
+  let vertical = typeParam === 'rv' || typeParam === 'boat' ? typeParam : 'both';
   function applyVertical() {
-    const i = vertical === 'rv' ? 1 : 0;
+    const i = { both: 0, boat: 1, rv: 2 }[vertical];
     document.querySelectorAll('[data-roi-v]').forEach((el) => { el.textContent = el.dataset.roiV.split('|')[i]; });
     document.querySelectorAll('[data-roi-vertical]').forEach((b) => {
       const on = b.dataset.roiVertical === vertical;
@@ -350,7 +351,7 @@
       const up = v[c.up];
       const down = v[c.down];
       const benchPct = Math.round(BENCH[c.key] * 100);
-      const benchmarked = vertical !== 'rv';
+      const benchmarked = vertical === 'boat';
       if (verdEl) verdEl.textContent = benchmarked ? `vs ~${benchPct}% avg` : '';  // desktop rail (color carries the verdict)
       if (up <= 0) {
         rateEl.textContent = '—';
@@ -481,7 +482,7 @@
       const txt = wrap.querySelector('.roi-status-text');
       const manual = state[s.key] === 'manual';
       wrap.className = 'roi-status ' + (manual ? 'is-you' : 'is-est');
-      if (txt) txt.textContent = manual ? 'your number' : (vertical === 'rv' ? 'estimate' : EST_LABEL[s.key]);
+      if (txt) txt.textContent = manual ? 'your number' : (vertical === 'boat' ? EST_LABEL[s.key] : 'estimate');
     });
   }
 

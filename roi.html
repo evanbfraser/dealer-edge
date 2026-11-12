@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROI Calculator | DealerEdge — See what you're leaving on the lot.</title>
-  <meta name="description" content="See what slow sites and slow follow-up cost your dealership — and the gross margin DealerEdge recovers. Enter your funnel, tune the sliders, and watch the math.">
-  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112f">
+  <meta name="description" content="See what slow sites and slow follow-up cost your boat or RV dealership — and the gross margin DealerEdge recovers. Enter your funnel, tune the sliders, and watch the math.">
+  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112g">
   <link rel="stylesheet" href="css/roi.min.css?v=20261112f">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
@@ -86,10 +86,11 @@
       <header class="roi-head" data-fade>
         <span class="de-section-label">ROI Calculator</span>
         <h1>See what you're leaving <span class="roi-accent">on the lot.</span></h1>
-        <p class="roi-lede">Punch in your numbers. We'll show you the <span data-roi-v="boats|RVs">boats</span> &mdash; and the gross margin &mdash; that slow sites and slow follow-up cost you every month. Change anything; the math updates live.</p>
+        <p class="roi-lede">Punch in your numbers. We'll show you the <span data-roi-v="boats and RVs|boats|RVs">boats and RVs</span> &mdash; and the gross margin &mdash; that slow sites and slow follow-up cost you every month. Change anything; the math updates live.</p>
         <div class="roi-vertical" role="radiogroup" aria-label="What do you sell?">
           <span class="roi-vertical-label">I sell</span>
-          <button type="button" role="radio" aria-checked="true" class="is-on" data-roi-vertical="boat">Boats</button>
+          <button type="button" role="radio" aria-checked="true" class="is-on" data-roi-vertical="both">Both</button>
+          <button type="button" role="radio" aria-checked="false" data-roi-vertical="boat">Boats</button>
           <button type="button" role="radio" aria-checked="false" data-roi-vertical="rv">RVs</button>
         </div>
       </header>
@@ -113,7 +114,7 @@
                 <input type="number" id="roi-traffic" inputmode="numeric" min="0" step="50" value="3000">
               </div>
               <button type="button" class="roi-estimate" data-roi-estimate>Don't know? Estimate it for me</button>
-              <span class="roi-est-note" data-roi-est-note hidden>Estimated from your <span data-roi-v="boats|RVs">boats</span> sold &amp; <span data-roi-v="typical marine funnel ratios|typical funnel ratios (benchmarked on marine dealers)">typical marine funnel ratios</span>.</span>
+              <span class="roi-est-note" data-roi-est-note hidden>Estimated from your <span data-roi-v="boats and RVs|boats|RVs">boats and RVs</span> sold &amp; <span data-roi-v="typical funnel ratios (benchmarked on marine dealers)|typical marine funnel ratios|typical funnel ratios (benchmarked on marine dealers)">typical funnel ratios (benchmarked on marine dealers)</span>.</span>
             </div>
 
             <div class="roi-field">
@@ -153,7 +154,7 @@
                 <span class="roi-conv-note" data-roi-note="close">buy · on par with the ~30% marine avg</span>
               </div>
               <div class="roi-field-top">
-                <label for="roi-sold"><span data-roi-v="Boats|RVs">Boats</span> sold <span class="roi-field-unit">/ month</span></label>
+                <label for="roi-sold"><span data-roi-v="Units|Boats|RVs">Units</span> sold <span class="roi-field-unit">/ month</span></label>
                 <span class="roi-status is-est" data-roi-status="sold"><span class="roi-status-text">industry avg</span><button type="button" class="roi-status-reset" data-roi-reset="sold">use avg</button></span>
               </div>
               <div class="roi-num">
@@ -164,7 +165,7 @@
 
           <div class="roi-slider-field">
             <div class="roi-slider-top">
-              <label for="roi-price">Avg. <span data-roi-v="boat|RV">boat</span> sale price</label>
+              <label for="roi-price">Avg. <span data-roi-v="unit|boat|RV">unit</span> sale price</label>
               <span class="roi-slider-val">$<span id="roi-price-val">75,000</span></span>
             </div>
             <input type="range" id="roi-price" min="0" max="1000" step="1" value="150">
@@ -173,7 +174,7 @@
           <div class="roi-slider-field">
             <div class="roi-slider-top">
               <label for="roi-margin">Avg. gross margin</label>
-              <span class="roi-slider-val"><span id="roi-margin-val">18</span>% &middot; $<span id="roi-margin-dollars">13,500</span>/<span data-roi-v="boat|RV">boat</span></span>
+              <span class="roi-slider-val"><span id="roi-margin-val">18</span>% &middot; $<span id="roi-margin-dollars">13,500</span>/<span data-roi-v="unit|boat|RV">unit</span></span>
             </div>
             <input type="range" id="roi-margin" min="5" max="40" step="1" value="18">
           </div>
@@ -212,7 +213,7 @@
               <span class="roi-row-badge" data-roi-badge-showings>×3.2</span>
             </div>
             <div class="roi-row roi-row--sold" data-roi-row="sold">
-              <span class="roi-row-label"><span data-roi-v="Boats|RVs">Boats</span> sold</span>
+              <span class="roi-row-label"><span data-roi-v="Units|Boats|RVs">Units</span> sold</span>
               <span class="roi-row-now" data-roi-now-sold>5</span>
               <span class="roi-row-arrow">→</span>
               <span class="roi-row-with" data-roi-with-sold>7.5</span>
@@ -225,7 +226,7 @@
           <div class="roi-headline">
             <span class="roi-headline-label">Gross margin you're leaving on the lot</span>
             <div class="roi-headline-num">+$<span data-roi-annual>405,000</span><span class="roi-headline-per">/ year</span></div>
-            <div class="roi-headline-sub"><span data-roi-monthly>$33,750</span>/month &middot; <span data-roi-extra-sold>+2.5</span> more <span data-roi-v="boats|RVs">boats</span> sold every month</div>
+            <div class="roi-headline-sub"><span data-roi-monthly>$33,750</span>/month &middot; <span data-roi-extra-sold>+2.5</span> more <span data-roi-v="boats and RVs|boats|RVs">boats and RVs</span> sold every month</div>
           </div>
 
           <div class="roi-offer">
@@ -245,7 +246,7 @@
                 <li><b>Showings ×3.2</b> &mdash; only 19 of 1,000 buyers ever book a showing today; fixing response (57% never reply in 24h) and voicemail (80% of voicemail callers call a competitor) recovers that to ~60. Same buyers.</li>
                 <li><b>Boats sold +50%</b> &mdash; the dollar figure rests on this one alone. Pied Piper ILE Study: dealers who raise their response score (&lt;40 → &gt;80) sell <b>50% more units from the same leads.</b> Independently verified, and the conservative floor of what we see.</li>
               </ul>
-              <p class="roi-how-foot">Dollars = (<span data-roi-v="boats|RVs">boats</span> sold &times; 50%) &times; your gross margin &times; 12 months. We deliberately put the money on the proven number, not the dramatic one.</p>
+              <p class="roi-how-foot">Dollars = (<span data-roi-v="boats and RVs|boats|RVs">boats and RVs</span> sold &times; 50%) &times; your gross margin &times; 12 months. We deliberately put the money on the proven number, not the dramatic one.</p>
             </div>
           </details>
         </div>
@@ -255,7 +256,7 @@
   </section>
 
   <!-- How we get there — explore the overview + the 4 pillars -->
-  <section data-section="methodology" class="roi-explore" id="how">
+  <section data-section="methodology" class="roi-explore theme-light" id="how">
     <header class="roi-explore-head" data-fade>
       <span class="de-section-label">How we get there</span>
       <h2>These numbers aren't magic.</h2>
@@ -303,7 +304,7 @@
           <h2 class="boat-headline boat-headline--out">Stop Leaving Boats<br>On The Lot</h2>
           <h2 class="boat-headline boat-headline--in">Put Them On Your<br>Customer's Dock</h2>
         </div>
-        <p class="boat-sub" id="boat-sub">That number isn't hypothetical &mdash; it's the gap between what you sell now and what the same buyers would buy with faster follow-up. Let's pull your real figures.</p>
+        <p class="boat-sub" id="boat-sub">That number isn't hypothetical &mdash; it's the gap between the boats or RVs you sell now and what the same buyers would buy with faster follow-up. Let's pull your real figures.</p>
         <button type="button" class="btn-primary boat-cta js-modal" id="boat-cta">Book a Demo</button>
       </div>
       <video id="boat-video" data-src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="none"></video>
@@ -359,7 +360,7 @@
   </footer>
 
   <script src="js/mobile-nav.min.js?v=20260630a" defer></script>
-  <script src="js/de-core.min.js?v=20261112f" defer></script>
-  <script src="js/roi.min.js?v=20261112f" defer></script>
+  <script src="js/de-core.min.js?v=20261112g" defer></script>
+  <script src="js/roi.min.js?v=20261112g" defer></script>
 </body>
 </html>

@@ -132,16 +132,8 @@ function animateVideoSection() {
   const overlay = document.getElementById('video-overlay-text');
   const section = document.getElementById('video-section');
   if (!inner || !section) return;
+  window.DE?.initExplainerVideo?.(section);
 
-  const picture = inner.querySelector('[data-video-thumb]');
-  if (picture && !picture.dataset.loaded) {
-    picture.querySelectorAll('source[data-srcset]').forEach((source) => {
-      source.srcset = source.dataset.srcset;
-    });
-    const img = picture.querySelector('img[data-src]');
-    if (img) img.src = img.dataset.src;
-    picture.dataset.loaded = 'true';
-  }
 
   // Expand from 800px to full viewport width on scroll
   gsap.to(inner, {

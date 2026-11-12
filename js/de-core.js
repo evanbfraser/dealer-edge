@@ -465,8 +465,8 @@ window.DE = (() => {
     const target = document.getElementById('video-section') || document.getElementById('boat-section');
     if (!target) return;
 
-    const src = options.src || 'js/section-video-boat.min.js?v=20260630a';
-    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20261112f';
+    const src = options.src || 'js/section-video-boat.min.js?v=20261112g';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20261112g';
     const rootMargin = options.rootMargin || '1400px 0px';
     let requested = false;
     let observer = null;
@@ -535,6 +535,67 @@ window.DE = (() => {
       if (requested && typeof window.initVideoBoatSections === 'function') window.initVideoBoatSections();
     });
     checkNear();
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     EXPLAINER VIDEO (homepage + sales video spot). A silent preview
+     loops while the spot is on screen; "Watch the 90-second video"
+     swaps in the full film with sound, controls and captions. The
+     button only appears once the full film is actually on the server.
+     Reduced motion: the poster stays, no autoplay.
+     ───────────────────────────────────────────────────────────── */
+  function initExplainerVideo(root) {
+    const scope = root || document;
+    const video = scope.querySelector('[data-video-preview]');
+    const btn = scope.querySelector('[data-video-play]');
+    if (!video || video.dataset.explainerInit) return;
+    video.dataset.explainerInit = '1';
+    const inner = video.closest('.video-inner');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let mode = 'preview';
+
+    if (btn && video.dataset.fullSrc) {
+      fetch(video.dataset.fullSrc, { method: 'HEAD' })
+        .then((r) => { if (r.ok) btn.hidden = false; })
+        .catch(() => {});
+    }
+
+    if (!reduce && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (mode !== 'preview') {
+            if (!e.isIntersecting && !video.paused) video.pause();
+            return;
+          }
+          if (e.isIntersecting) {
+            if (!video.getAttribute('src')) video.src = video.dataset.previewSrc;
+            video.play().catch(() => {});
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.35 });
+      io.observe(video);
+    }
+
+    if (btn) {
+      btn.addEventListener('click', () => {
+        mode = 'full';
+        const track = video.querySelector('track[data-src]');
+        if (track && !track.getAttribute('src')) track.src = track.dataset.src;
+        video.pause();
+        video.loop = false;
+        video.muted = false;
+        video.controls = true;
+        video.src = video.dataset.fullSrc;
+        if (video.textTracks && video.textTracks[0]) video.textTracks[0].mode = 'showing';
+        if (inner) inner.classList.add('is-playing');
+        video.play().catch(() => {});
+        video.focus({ preventScroll: true });
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'video_play', video_name: 'dealeredge_explainer', page_path: location.pathname });
+      });
+    }
   }
 
   let demoModalPromise = null;
@@ -1134,7 +1195,7 @@ window.DE = (() => {
 
   return {
     reduceMotion, isSafari,
-    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, attachSceneSnap, initActs,
+    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, initExplainerVideo, attachSceneSnap, initActs,
     usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput, turnstileToken, prewarmTurnstile,
     pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };

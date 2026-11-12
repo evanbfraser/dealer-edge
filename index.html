@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DealerEdge | The AI Growth Platform Built for Dealers</title>
+  <title>DealerEdge | The AI Growth Platform Built for Boat &amp; RV Dealers</title>
   <meta name="description" content="The AI growth platform for boat and RV dealers: more leads in, faster response out, nothing lost in between — marketing, sales, and operations in one system.">
   <meta property="og:title" content="DealerEdge | The AI Growth Platform Built for Dealers">
   <meta property="og:description" content="More leads in, faster response out, nothing lost in between. One AI platform across marketing, sales, and operations.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="css/home-core.min.css?v=20261112f">
+  <link rel="stylesheet" href="css/home-core.min.css?v=20261112g">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js" defer></script>
@@ -98,7 +98,7 @@
   </section>
 
   <!-- Features -->
-  <section data-section="platform_features" class="features-section" id="features">
+  <section data-section="platform_features" class="features-section theme-light" id="features">
     <div class="section-container">
       <div class="section-label">Platform Features</div>
       <h2 class="section-title">Everything your dealership needs.<br><span class="dim">All in one place.</span></h2>
@@ -263,13 +263,17 @@
   <section data-section="video" class="video-section" id="video-section">
     <div class="video-wrapper">
       <div class="video-inner" id="video-inner">
-        <picture data-video-thumb>
-          <source data-srcset="assets/dealer-edge-video-homepage-2.avif" type="image/avif">
-          <source data-srcset="assets/dealer-edge-video-homepage-2.webp" type="image/webp">
-          <img data-src="assets/dealer-edge-video-homepage-2.jpg" alt="DealerEdge Video" class="video-thumb" width="1600" height="896" loading="lazy" decoding="async">
-        </picture>
+        <video class="video-thumb" data-video-preview muted loop playsinline preload="none" poster="assets/video/dealeredge-explainer-poster.jpg"
+               data-preview-src="assets/video/dealeredge-explainer-preview.mp4" data-full-src="assets/video/dealeredge-explainer.mp4"
+               aria-label="DealerEdge in 90 seconds" style="width:100%;height:auto;aspect-ratio:16/9;display:block">
+          <track kind="captions" srclang="en" label="English" data-src="assets/video/dealeredge-explainer.vtt">
+        </video>
         <div class="video-overlay-text" id="video-overlay-text">
-          <h2>This Is How Dealerships Sell Smarter</h2>
+          <h2>See DealerEdge in 90 seconds.</h2>
+          <button type="button" class="video-play" data-video-play hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+            Watch the 90-second video
+          </button>
         </div>
       </div>
     </div>
@@ -284,7 +288,7 @@
           <h2 class="boat-headline boat-headline--out">Get The Boat<br>Off Your Lot</h2>
           <h2 class="boat-headline boat-headline--in">And Onto Your<br>Customer's Dock</h2>
         </div>
-        <p class="boat-sub" id="boat-sub">Why wait on improving your sales? We can have this platform up and running for your dealership quickly.</p>
+        <p class="boat-sub" id="boat-sub">Why wait on improving your sales? We can have this platform up and running for your boat or RV dealership quickly.</p>
         <button class="btn-primary boat-cta js-modal" id="boat-cta" type="button">Book a Demo</button>
       </div>
       <video id="boat-video" data-src="assets/boat-trailer-dock-2.mp4" muted playsinline preload="none"></video>
@@ -292,7 +296,7 @@
   </section>
 
   <!-- Stats -->
-  <section data-section="proof_stats" class="stats-section" id="stats">
+  <section data-section="proof_stats" class="stats-section theme-light" id="stats">
     <div class="section-container">
       <div class="stats-grid">
         <div class="stat-item" data-animation="fade-up">
@@ -327,7 +331,7 @@
   </section>
 
   <!-- Marquee -->
-  <section data-section="brand_marquee" class="marquee-section">
+  <section data-section="brand_marquee" class="marquee-section theme-light">
     <div class="marquee-track">
       <div class="marquee-content" aria-hidden="true">
         <span>Instant Lead Response</span><span class="marquee-dot">·</span>
@@ -390,7 +394,7 @@
   </section>
 
   <!-- Why DealerEdge (vs the typical dealer website vendor; no competitor named) -->
-  <section data-section="why_dealeredge" class="why-de" id="why-dealeredge">
+  <section data-section="why_dealeredge" class="why-de theme-light" id="why-dealeredge">
     <div class="why-de-inner">
       <header class="why-de-head">
         <span class="why-de-eyebrow">Why DealerEdge</span>
@@ -477,7 +481,7 @@
         <!-- Col 1: brand -->
         <div class="footer-col footer-col--brand">
           <img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" class="footer-logo" width="162" height="34" loading="lazy" decoding="async">
-          <p class="footer-tagline">Built for dealers who move fast.</p>
+          <p class="footer-tagline">Built for boat and RV dealers who move fast.</p>
         </div>
 
         <!-- Col 2: nav -->
@@ -539,7 +543,7 @@
     </button>
   </div>
 
-  <script src="js/de-core.min.js?v=20261112f" defer></script>
-  <script src="js/app.min.js?v=20261112f" defer></script>
+  <script src="js/de-core.min.js?v=20261112g" defer></script>
+  <script src="js/app.min.js?v=20261112g" defer></script>
 </body>
 </html>

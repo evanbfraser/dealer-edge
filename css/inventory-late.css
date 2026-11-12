@@ -1004,6 +1004,10 @@
 }
 
 .i-serp-you.is-in { opacity: 1; transform: none; }
+/* the RV twin search under the boat search: compact, its "you" line always shown */
+.i-serp--twin { margin-top: 12px; }
+.i-serp--twin .i-serp-result { padding-top: 8px; padding-bottom: 8px; }
+.i-serp-you--static { opacity: 1; transform: none; }
 
 /* beat 2 composite: compact SERP + AI answer panel side by side */
 .i-found {

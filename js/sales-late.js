@@ -522,8 +522,8 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
 
     const isMobileBeat = window.matchMedia('(max-width: 1100px)').matches;
     const timing = isMobileBeat
-      ? { lead: 160, drop: 520, pulse: 760, tag: 980, bob: 1240, mike: 1500, sarah: 1760, settle: 2040, result: 2380 }
-      : { lead: 200, drop: 900, pulse: 1300, tag: 1600, bob: 2000, mike: 2500, sarah: 3000, settle: 3500, result: 4100 };
+      ? { lead: 160, drop: 520, pulse: 760, tag: 980, bob: 1240, mike: 1500, sarah: 1760, dana: 2020, settle: 2300, result: 2640 }
+      : { lead: 200, drop: 900, pulse: 1300, tag: 1600, bob: 2000, mike: 2500, sarah: 3000, dana: 3500, settle: 4000, result: 4600 };
 
     // 1. lead card fades in
     setTimeout(() => tick(stillCurrent, () => lead.classList.add('is-in')), timing.lead);
@@ -576,6 +576,11 @@ window.DE.initSalesLate = function initSalesLate(lenis) {
       tag.classList.remove('is-match');
       reps[2].classList.add('is-considered-skip');
     }), timing.sarah);
+    // Dana (towables / RV) — checked and skipped too: the lead wants a wake boat
+    if (reps[3]) setTimeout(() => tick(stillCurrent, () => {
+      showTagOver(reps[3], false);
+      reps[3].classList.add('is-considered-skip');
+    }), timing.dana);
     // Back to Mike (settle)
     setTimeout(() => tick(stillCurrent, () => {
       showTagOver(reps[1], true);

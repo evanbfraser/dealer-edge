@@ -11,6 +11,7 @@ function animateVideoSection() {
   const overlay = document.getElementById('video-overlay-text');
   const section = document.getElementById('video-section');
   if (!inner || !section || !overlay) return;
+  window.DE?.initExplainerVideo?.(section);
   if (!window.gsap || !window.ScrollTrigger) {
     inner.style.width = '100%';
     inner.style.borderRadius = '0';

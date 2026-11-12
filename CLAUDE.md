@@ -101,6 +101,10 @@ The 4-stat cascade that opens any cold pitch:
 - RV proof is the **Jayco family** card (Entegra −74%, Highland Ridge −86% cost per lead). It sits beside Supra on case-studies and in the homepage stats strip / results hero.
 - No invented RV stats. The ROI calculator's **Boat | RV switch** (`roi.html` `[data-roi-vertical]`, `js/roi.js` `vertical`, `?type=rv`) relabels nouns via `data-roi-v="boat|RV"` and, in RV mode, drops the "vs ~x% marine avg" verdicts because `BENCH` is marine data. Add RV benchmarks there when Jason has sourced numbers.
 
+**RV around the locked story (2026-11-12, approved by Evan):** the sales story stays the boat canon word-for-word, framed by "He wants a boat; the same night plays out for RV buyers." The AI inbox mixes RV units (travel trailer, Class C), and a fourth rep **Dana (Towables · Jayco)** joins Bob/Mike/Sarah in the routing scene (checked and skipped: the lead wants a wake boat). "Marine & RV reality" pairs the NMMA 70% with **85% of RV shoppers want to research the RV online** (Rollick, Future of Buying study, 2024 — linked on the card). Every hero and every close names boats and RVs; the ROI calculator defaults to **Both** (Boats/RVs modes still there; marine verdicts only in Boats).
+
+**Explainer video:** the homepage and sales video spot plays `assets/video/dealeredge-explainer-preview.mp4` (silent loop, only while on screen; poster under reduced motion) with "Watch the 90-second video" → `assets/video/dealeredge-explainer.mp4` + `.vtt` captions (`DE.initExplainerVideo`, de-core.js). The button only shows once the full film exists on the server. Source film: the Remotion project in `~/Desktop/Dealer Edge explainer video/dealer-edge-explainer` (proof = the site's 16→636 / +65; CTA "Book a Demo").
+
 **Proposed RV demo story (NOT locked — pending Jason):** a twin of the John Castillo story for RV pages. Draft: buyer inquires about a Jayco-family travel trailer (model + price: Jason to set) at **Sunday 9:42 PM**; AI reply within **47 seconds**; showing booked **Wednesday 4 PM** with rep **Dana (Towables · Jayco)**. Don't ship it in copy until approved; then add it to the canon table.
 
 **RV close video.** `assets/rv/rv-campsite.mp4` is the RV twin of `boat-trailer-dock-2.mp4` for the deep-dive close ("Get The RV / Off Your Lot" → "And Off To / The Campground"): used on inventory, analytics and features; index, sales, marketing and roi keep the boat. Generated with Higgsfield (Soul V2 studio still → lettering removed with Qwen Image 3 edit → Kling 2.6 Pro image-to-video, 10 s), then ffmpeg: a generated wordmark on the front cap removed with `delogo` from 3 s on, edges feathered to black (it plays inside a black, letterboxed 65%-wide box), H.264 CRF 25 with a keyframe every 12 frames for smooth scroll scrubbing. Generic and unbranded on purpose: never depict a real RV brand's product.
@@ -396,6 +400,16 @@ Rules: the headline has no bottom margin when a lede follows (the lede's `margin
 ### Color narrative (important)
 
 **Red = "the old way," "without DealerEdge," "pain."** Green = "the new way," "with DealerEdge," "win." Use them as semantic signals, not decoration. If a stat is bad news, it's red. If it's a benefit, it's green. The Act 1 vs Act 2 watermarks, vrow tags, bubble strokes, and beat caps all follow this — keep it consistent.
+
+### Light sections, red bands (2026-11-12)
+
+Long pages alternate **dark** (heroes, scroll acts, videos, closes) with **light** static content sections, and the mid-page CTA strips are **full-bleed red bands**, so each colour change reads as "new topic".
+- Add `theme-light` to a static section (`.de-includes`, `.pillar-nav-section`, `.why-de`, features bento, stats + marquee, `.s-marine-proof`, `.s-try`, `.f-engines`, pricing includes, `main.csp-main`, `.roi-explore`). It re-points every colour token (`--text*`, `--de-*`, `--m-*`, `--i-*`, `--a2-*`, `--f-*`, `--good`, `--line`…) to the light palette: ground `#f5f5f7`, cards `#fff`, text `#1d1d1f` / `#424245` / `#6e6e73`.
+- On light, accents that are **text** use `#15803d` (green) and `#c4211f` (red), both ≥4.5:1; red/green **fills** keep the brand colours. Hard-coded whites get a `body .theme-light …` override in style.css (body-prefixed because page CSS loads later and wins ties).
+- Device mock-ups and stat cards inside a light section stay **dark islands** (`.s-phone`, `.s-marine-proof-card`).
+- Never put two light sections next to each other; never light a scroll act.
+- `.cta-break` = red band `#c8201f` (white text ≥4.5:1), buttons white-fill "Book a Demo" + white-outline score.
+- The CSS minifier used to strip the space before `:` (turning `.a :is(b)` into `.a:is(b)`); fixed in `scripts/minify-css.js`, output for existing CSS unchanged.
 
 ### Type
 
