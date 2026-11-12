@@ -62,6 +62,13 @@
 }
 
 .roi-head { text-align: center; max-width: 760px; margin: 0 auto clamp(36px, 5vh, 56px); }
+/* Boat | RV switch (relabels the calculator; RV mode shows rates without the marine benchmark verdicts) */
+.roi-vertical { display: inline-flex; align-items: center; gap: 4px; margin-top: 22px; padding: 4px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--panel); }
+.roi-vertical-label { font: 600 0.7rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); padding: 0 10px 0 12px; }
+.roi-vertical button { font: 700 0.92rem/1 var(--font, 'Inter', sans-serif); color: var(--text-mid); background: transparent; border: 0; border-radius: 999px; padding: 10px 20px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.roi-vertical button:hover { color: var(--text); }
+.roi-vertical button.is-on { background: var(--good); color: #04130a; }
+.roi-vertical button:focus-visible { outline: 2px solid var(--good); outline-offset: 2px; }
 .roi-head .de-section-label { justify-content: center; }
 .roi-head h1 {
   font-size: clamp(2.2rem, 5vw, 3.6rem);

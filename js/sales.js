@@ -135,7 +135,7 @@ DE.pages.sales = { boot() {
     if (!root) return Promise.resolve();
     if (salesLateContentReady || root.dataset.loaded === 'true') return salesLateContentPromise || Promise.resolve();
     if (!salesLateContentPromise) {
-      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20261112b')
+      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20261112c')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;

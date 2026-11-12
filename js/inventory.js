@@ -42,7 +42,7 @@ DE.pages.inventory = { boot() {
     if (!root) return Promise.resolve();
     if (inventoryLateContentReady || root.dataset.loaded === 'true') return inventoryLateContentPromise || Promise.resolve();
     if (!inventoryLateContentPromise) {
-      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20261112b')
+      inventoryLateContentPromise = fetch('partials/inventory-late-content.html?v=20261112c')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;

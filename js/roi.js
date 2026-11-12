@@ -316,6 +316,26 @@
     input.style.background = `linear-gradient(90deg, var(--good) 0%, var(--good) ${pct}%, var(--line) ${pct}%, var(--line) 100%)`;
   }
 
+  // Boat | RV switch. The funnel benchmarks (BENCH) are marine numbers, so RV mode shows the dealer's own rates
+  // without an above/below-average verdict until there are real RV benchmarks. ?type=rv opens in RV mode.
+  let vertical = new URLSearchParams(location.search).get('type') === 'rv' ? 'rv' : 'boat';
+  function applyVertical() {
+    const i = vertical === 'rv' ? 1 : 0;
+    document.querySelectorAll('[data-roi-v]').forEach((el) => { el.textContent = el.dataset.roiV.split('|')[i]; });
+    document.querySelectorAll('[data-roi-vertical]').forEach((b) => {
+      const on = b.dataset.roiVertical === vertical;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-checked', String(on));
+    });
+  }
+  document.querySelectorAll('[data-roi-vertical]').forEach((b) => b.addEventListener('click', () => {
+    vertical = b.dataset.roiVertical;
+    applyVertical();
+    update();
+    renderStatus();
+  }));
+  applyVertical();
+
   function fmtPct(r) { const p = r * 100; return (p < 10 ? Math.round(p * 10) / 10 : Math.round(p)) + '%'; }
 
   // For each gap, compute the dealer's actual conversion rate and compare it
@@ -330,7 +350,8 @@
       const up = v[c.up];
       const down = v[c.down];
       const benchPct = Math.round(BENCH[c.key] * 100);
-      if (verdEl) verdEl.textContent = `vs ~${benchPct}% avg`;  // desktop rail (color carries the verdict)
+      const benchmarked = vertical !== 'rv';
+      if (verdEl) verdEl.textContent = benchmarked ? `vs ~${benchPct}% avg` : '';  // desktop rail (color carries the verdict)
       if (up <= 0) {
         rateEl.textContent = '—';
         if (noteEl) noteEl.textContent = c.verb;
@@ -338,6 +359,12 @@
         return;
       }
       const rate = down / up;
+      if (!benchmarked) {
+        rateEl.textContent = fmtPct(rate);
+        if (noteEl) noteEl.textContent = c.verb;
+        if (box) box.className = 'roi-conv is-par';
+        return;
+      }
       const ratio = rate / BENCH[c.key];
       let verdict, cls;
       if (ratio >= 1.12) { verdict = `above the ~${benchPct}% marine avg`; cls = 'is-above'; }
@@ -454,7 +481,7 @@
       const txt = wrap.querySelector('.roi-status-text');
       const manual = state[s.key] === 'manual';
       wrap.className = 'roi-status ' + (manual ? 'is-you' : 'is-est');
-      if (txt) txt.textContent = manual ? 'your number' : EST_LABEL[s.key];
+      if (txt) txt.textContent = manual ? 'your number' : (vertical === 'rv' ? 'estimate' : EST_LABEL[s.key]);
     });
   }
 

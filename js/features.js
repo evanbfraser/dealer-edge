@@ -19,7 +19,7 @@ DE.pages.features = { boot() {
     if (!root) return Promise.resolve();
     if (featuresLateContentReady || root.dataset.loaded === 'true') return featuresLateContentPromise || Promise.resolve();
     if (!featuresLateContentPromise) {
-      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20261112b')
+      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20261112c')
         .then((response) => response.ok ? response.text() : '')
         .then((html) => {
           if (!html || root.dataset.loaded === 'true') return;

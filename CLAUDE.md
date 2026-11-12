@@ -92,6 +92,27 @@ The 4-stat cascade that opens any cold pitch:
 
 ---
 
+## Boat + RV, CTAs and positioning — added 2026-11-12 (Claude Code, Opus 5.5)
+
+**Audience is boat AND RV dealers.** The site used to read as boat-only (7 RV mentions across 10 pages). Rules now:
+- The LOCKED marine canon above (John Castillo / Malibu Wakesetter, "19% of boat dealers", "50% more boats sold") stays word-for-word. Balance comes from *adding* RV, not rewriting it.
+- Generic copy says **"unit(s)"** or **"boats and RVs"**, not "boats": "optimize to sold units", "Every boat and RV, online…", "Built for Boat & RV Dealers" (homepage hero accent). Real proof stays specific (Premier, Supra, Moomba, Regulator, Jayco family).
+- Marketplaces list **Boat Trader, RV Trader, YachtWorld, Facebook Marketplace** (pricing already listed RVTrader).
+- RV proof is the **Jayco family** card (Entegra −74%, Highland Ridge −86% cost per lead). It sits beside Supra on case-studies and in the homepage stats strip / results hero.
+- No invented RV stats. The ROI calculator's **Boat | RV switch** (`roi.html` `[data-roi-vertical]`, `js/roi.js` `vertical`, `?type=rv`) relabels nouns via `data-roi-v="boat|RV"` and, in RV mode, drops the "vs ~x% marine avg" verdicts because `BENCH` is marine data. Add RV benchmarks there when Jason has sourced numbers.
+
+**Proposed RV demo story (NOT locked — pending Jason):** a twin of the John Castillo story for RV pages. Draft: buyer inquires about a Jayco-family travel trailer (model + price: Jason to set) at **Sunday 9:42 PM**; AI reply within **47 seconds**; showing booked **Wednesday 4 PM** with rep **Dana (Towables · Jayco)**. Don't ship it in copy until approved; then add it to the canon table.
+
+**CTA system.** Two actions everywhere, always as a pair, demo first:
+- **Book a Demo**: any `.btn-primary.js-modal` (opens `js/demo-modal.js`; label is always exactly "Book a Demo", the form button "Book My Demo"). pricing / case-studies / case-study use the shared form via `DE.initLazyDemoModal`; features keeps its own multi-step form (`partials/features-contact-modal.html`, it posts platform leads) relabelled "Book a Demo".
+- **Get Free Website Score**: `.btn-score` (white ghost pill; `.btn-nav--ghost` in the nav) → `https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=<page>-<placement>`, with `data-cta="<page>-<placement>-score"`.
+- Components (style.css, BUTTONS section so every core bundle gets them): `.cta-pair`, `.cta-break` (strip between sections/acts — never inside a beat), `.footer-cta`. Pinned heroes (marketing, sales) can't fit a pair on phones: `.cta-pair--desktop-only`; sales' first CTA is a `.cta-break` right after the hero instead.
+- On the platform, the nav and footer are `DeHeader`/`DeFooter` in the platform repo: the nav score button and footer CTA row must be added there too.
+
+**Positioning.** `.why-de` "Why DealerEdge" table on index + pricing: *typical dealer website vendor* vs DealerEdge. **Never name a competitor.** DealerEdge cells use only locked claims (20%/3-month offer, one AI platform, <90s 24/7 response) or the Edge Score. Don't claim "no lock-in / month-to-month" or "faster than competitors" until confirmed (contract terms; a PageSpeed sample of competitor dealer sites). Research notes: the head-to-head website rival covers ~8 dealer industries and doesn't list RV as a focus vertical; its "guaranteed more leads" has no stated terms. WakeWorks is a marine-only DMS — position as "works alongside your DMS", not as a rival.
+
+**Pricing page** now states the locked offer (it said "30-day results guarantee or your money back", which the offer rules forbid). Its $1,497/mo tiers and "month-to-month, cancel anytime" still need Jason to confirm against the Phase 2 tiers.
+
 ## The shared layer (`.de-` = DealerEdge chassis) — added 2026-06-04
 
 The deep-dive pages (marketing + sales) share one component system so CMS integration gets one act component, not two:
