@@ -103,6 +103,10 @@ The 4-stat cascade that opens any cold pitch:
 
 **Proposed RV demo story (NOT locked — pending Jason):** a twin of the John Castillo story for RV pages. Draft: buyer inquires about a Jayco-family travel trailer (model + price: Jason to set) at **Sunday 9:42 PM**; AI reply within **47 seconds**; showing booked **Wednesday 4 PM** with rep **Dana (Towables · Jayco)**. Don't ship it in copy until approved; then add it to the canon table.
 
+**RV close video.** `assets/rv/rv-campsite.mp4` is the RV twin of `boat-trailer-dock-2.mp4` for the deep-dive close ("Get The RV / Off Your Lot" → "And Off To / The Campground"): used on inventory, analytics and features; index, sales, marketing and roi keep the boat. Generated with Higgsfield (Soul V2 studio still → lettering removed with Qwen Image 3 edit → Kling 2.6 Pro image-to-video, 10 s), then ffmpeg: a generated wordmark on the front cap removed with `delogo` from 3 s on, edges feathered to black (it plays inside a black, letterboxed 65%-wide box), H.264 CRF 25 with a keyframe every 12 frames for smooth scroll scrubbing. Generic and unbranded on purpose: never depict a real RV brand's product.
+
+**Local preview must support HTTP range requests** or scroll-scrubbed videos (boat and RV) never seek: Python's `http.server` (also used by `npm run benchmark`) doesn't. Use `npx http-server . -p 4173 -c-1` for manual previews.
+
 **CTA system.** Two actions everywhere, always as a pair, demo first:
 - **Book a Demo**: any `.btn-primary.js-modal` (opens `js/demo-modal.js`; label is always exactly "Book a Demo", the form button "Book My Demo"). pricing / case-studies / case-study use the shared form via `DE.initLazyDemoModal`; features keeps its own multi-step form (`partials/features-contact-modal.html`, it posts platform leads) relabelled "Book a Demo".
 - **Get Free Website Score**: `.btn-score` (white ghost pill; `.btn-nav--ghost` in the nav) → `https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=<page>-<placement>`, with `data-cta="<page>-<placement>-score"`.
