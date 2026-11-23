@@ -51,7 +51,7 @@ DE.pages.index = (function () {
 
     let homeLateCssPromise = null;
     function loadHomeLateCss() {
-      const href = 'css/home-late.min.css?v=20261112g';
+      const href = 'css/home-late.min.css?v=20261119c';
       if (document.querySelector(`link[href="${href}"]`)) {
         return homeLateCssPromise || Promise.resolve();
       }
@@ -88,7 +88,7 @@ DE.pages.index = (function () {
     let homeLateJsPromise = null;
     let homeLateInitialized = false;
     function loadHomeLateJs() {
-      const src = 'js/app-late.min.js?v=20261112g';
+      const src = 'js/app-late.min.js?v=20261119c';
       if (!homeLateJsPromise) {
         homeLateJsPromise = DE.loadScrollLibs(lenis).then(() => new Promise((resolve) => {
           const existing = document.querySelector('script[src="' + src + '"]');
@@ -274,6 +274,8 @@ const canvas = document.getElementById('hero-canvas');
 const ctx = canvas ? canvas.getContext('2d') : null;
 const FRAME_COUNT = 192;
 const IMAGE_SCALE = 1.32;
+// Bump when the frames are rebuilt (scripts/build-hero-frames.sh): same filenames, new pixels.
+const HERO_FRAMES_V = '20261119b'; // boat + RV hero
 const images = [];
 const frameLoadPromises = [];
 const loadedFrames = new Set();
@@ -284,7 +286,7 @@ function loadFrame(i) {
   if (images[i - 1]) return frameLoadPromises[i - 1] || Promise.resolve(images[i - 1]);
   const promise = new Promise((resolve) => {
     const img = new Image();
-    img.src = `assets/frames/frame_${String(i).padStart(4, '0')}.webp`;
+    img.src = `assets/frames/frame_${String(i).padStart(4, '0')}.webp?v=${HERO_FRAMES_V}`;
     img.onload = () => {
       loaded++;
       loadedFrames.add(i);
@@ -352,10 +354,21 @@ function drawFrame(idx) {
   const img = images[frameIdx - 1];
   if (!img || !img.complete || img.naturalWidth === 0) return;
 
-  // Size canvas to its container (the right panel), not the full window
+  // Size canvas to its container (the right panel), not the full window.
+  // The backing store is CSS size × devicePixelRatio (capped at 2) so the
+  // 1920px frames stay sharp on Retina; at 1× the browser upscaled the whole
+  // canvas and the hero looked pixelated. CSS keeps it at 100% × 100%.
   const container = canvas.parentElement;
-  const w = (canvas.width = container ? container.offsetWidth : window.innerWidth);
-  const h = (canvas.height = container ? container.offsetHeight : window.innerHeight);
+  const w = container ? container.offsetWidth : window.innerWidth;
+  const h = container ? container.offsetHeight : window.innerHeight;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const bw = Math.round(w * dpr);
+  const bh = Math.round(h * dpr);
+  if (canvas.width !== bw) canvas.width = bw;
+  if (canvas.height !== bh) canvas.height = bh;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   const scale = Math.min(w / img.width, h / img.height) * IMAGE_SCALE;
   const iw = img.width * scale;
   const ih = img.height * scale;
@@ -427,13 +440,45 @@ function bindScrollToFrames() {
   }, { passive: true });
 }
 
+// ─── JOURNEY TABS (one tile, one stage at a time; WAI-ARIA tabs pattern) ───
+function initJourneyTabs() {
+  const root = document.querySelector('[data-journey-tabs]');
+  if (!root) return;
+  const tabs = [...root.querySelectorAll('[role="tab"]')];
+  const select = (i, focus) => {
+    tabs.forEach((tab, n) => {
+      const on = n === i;
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(tab.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !on;
+    });
+    root.style.setProperty('--journey-step', i + 1);
+    if (focus) tabs[i].focus();
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(i));
+    tab.addEventListener('keydown', (e) => {
+      const last = tabs.length - 1;
+      const next = { ArrowRight: i === last ? 0 : i + 1, ArrowLeft: i === 0 ? last : i - 1, Home: 0, End: last }[e.key];
+      if (next === undefined) return;
+      e.preventDefault();
+      select(next, true);
+    });
+  });
+}
+
     // ─── INIT ───
     initHomeLateCss();
     animateHero();
     animateSections();
     animateCounters();
+    initJourneyTabs();
     initHomeLateJs();
     DE.initLazyDemoModal(lenis);
+    // wire the explainer video up front so its play button works even if the
+    // visitor jumps past the lazy-load trigger (idempotent; app-late calls it too)
+    DE.initExplainerVideo && DE.initExplainerVideo(document.getElementById('video-section'));
     DE.initMobileNav(); // not shipped to the platform (DeHeader owns nav)
     preloadFrames();
     bindScrollToFrames();

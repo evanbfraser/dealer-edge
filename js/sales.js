@@ -78,7 +78,7 @@ DE.pages.sales = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20261112f';
+    const href = 'css/de-act.min.css?v=20261118a';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -97,7 +97,7 @@ DE.pages.sales = { boot() {
   let salesLateContentPromise = null;
   let salesLateContentReady = false;
   function loadSalesLateCss() {
-    const href = 'css/sales-late.min.css?v=20261112g';
+    const href = 'css/sales-late.min.css?v=20261119c';
     if (document.querySelector(`link[href="${href}"]`)) {
       return salesLateCssPromise || Promise.resolve();
     }
@@ -135,11 +135,12 @@ DE.pages.sales = { boot() {
     if (!root) return Promise.resolve();
     if (salesLateContentReady || root.dataset.loaded === 'true') return salesLateContentPromise || Promise.resolve();
     if (!salesLateContentPromise) {
-      salesLateContentPromise = fetch('partials/sales-late-content.html?v=20261112h')
-        .then((response) => response.ok ? response.text() : '')
-        .then((html) => {
-          if (!html || root.dataset.loaded === 'true') return;
-          root.innerHTML = html;
+      // The late content is in the page itself since 2026-11-17 (it was fetched
+      // from partials/, which failed when a page was opened from disk). This
+      // still wires it up on scroll-approach, exactly as before.
+      salesLateContentPromise = Promise.resolve()
+        .then(() => {
+          if (root.dataset.loaded === 'true') return;
           root.dataset.loaded = 'true';
           salesLateContentReady = true;
           initMarineModal();
@@ -213,11 +214,21 @@ DE.pages.sales = { boot() {
      DeHeader owns the nav; guard so the island boot doesn't throw)
      ───────────────────────────────────────────────────────────── */
   DE.initMobileNav();
+  // The lower sections are in the page from the start (2026-11-17), so their
+  // CSS loads at idle right after load instead of on scroll, or a fast scroll
+  // would show them unstyled. The heavy act JS stays lazy.
+  const preloadLateCss = () => Promise.all([loadDeActCss(), loadSalesLateCss()]);
+  if ('requestIdleCallback' in window) requestIdleCallback(preloadLateCss, { timeout: 1500 });
+  else setTimeout(preloadLateCss, 600);
 
   /* ─────────────────────────────────────────────────────────────
      DEMO REQUEST MODAL
      ───────────────────────────────────────────────────────────── */
   DE.initLazyDemoModal(lenis);
+  // Keep-exploring cards: "Watch the video" opens that pillar's explainer
+  document.querySelectorAll('.de-explore [data-series]').forEach((el) => {
+    el.addEventListener('click', () => DE.openSeries(el.dataset.series, el));
+  });
   initLateCssAndJsLoader();
 
   /* [data-fade] reveal — shared observer in js/de-core.js */

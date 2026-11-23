@@ -59,24 +59,6 @@
   font-size: var(--type-display); font-weight: var(--head-weight); line-height: var(--head-lh);
   letter-spacing: var(--head-ls); color: #fff; margin: 0;
 }
-.s-prehero-cue {
-  display: inline-flex; flex-direction: column; align-items: center; gap: 10px;
-  margin-top: clamp(40px, 7vh, 72px);
-  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--text-mid); text-decoration: none;
-  transition: color 0.2s ease;
-}
-.s-prehero-cue:hover { color: #fff; }
-.s-prehero-cue-chevron {
-  width: 12px; height: 12px;
-  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
-  transform: rotate(45deg); animation: sPreheroBob 1.8s ease-in-out infinite;
-}
-@keyframes sPreheroBob {
-  0%, 100% { transform: rotate(45deg) translate(0, 0); }
-  50% { transform: rotate(45deg) translate(4px, 4px); }
-}
-@media (prefers-reduced-motion: reduce) { .s-prehero-cue-chevron { animation: none; } }
 
 .s-hero.s-stats-section {
   position: relative;
@@ -793,7 +775,7 @@
   .s-chapter-divider { padding: 100px 24px; }
   .s-chapter-title { font-size: 2rem; }
   .s-marine-card { padding: 20px 22px; }
-  .s-marine-proof { padding: 72px 20px; }
+  .s-marine-proof { padding: var(--section-pad) 20px; }
   .s-marine-proof-card { padding: 18px; }
   .s-marine-modal-grid { padding: 28px 20px 22px; }
 }

@@ -20,7 +20,7 @@ DE.pages.analytics = { boot() {
 
   let deActCssPromise = null;
   function loadDeActCss() {
-    const href = 'css/de-act.min.css?v=20261112f';
+    const href = 'css/de-act.min.css?v=20261118a';
     if (document.querySelector(`link[href="${href}"]`)) return deActCssPromise || Promise.resolve();
     if (!deActCssPromise) {
       deActCssPromise = new Promise((resolve) => {
@@ -42,11 +42,12 @@ DE.pages.analytics = { boot() {
     if (!root) return Promise.resolve();
     if (analyticsLateContentReady || root.dataset.loaded === 'true') return analyticsLateContentPromise || Promise.resolve();
     if (!analyticsLateContentPromise) {
-      analyticsLateContentPromise = fetch('partials/analytics-late-content.html?v=20261112h')
-        .then((response) => response.ok ? response.text() : '')
-        .then((html) => {
-          if (!html || root.dataset.loaded === 'true') return;
-          root.innerHTML = html;
+      // The late content is in the page itself since 2026-11-17 (it was fetched
+      // from partials/, which failed when a page was opened from disk). This
+      // still wires it up on scroll-approach, exactly as before.
+      analyticsLateContentPromise = Promise.resolve()
+        .then(() => {
+          if (root.dataset.loaded === 'true') return;
           root.dataset.loaded = 'true';
           analyticsLateContentReady = true;
           DE.initFade();
@@ -67,8 +68,18 @@ DE.pages.analytics = { boot() {
   }
 
   DE.initMobileNav(); // not shipped to the platform (DeHeader owns nav)
+  // The lower sections are in the page from the start (2026-11-17), so their
+  // CSS loads at idle right after load instead of on scroll, or a fast scroll
+  // would show them unstyled. The heavy act JS stays lazy.
+  const preloadLateCss = () => Promise.all([loadDeActCss(), loadAnalyticsLateCss()]);
+  if ('requestIdleCallback' in window) requestIdleCallback(preloadLateCss, { timeout: 1500 });
+  else setTimeout(preloadLateCss, 600);
   DE.initLazyDemoModal(lenis);
   DE.initCursorGlow();
+  // Keep-exploring cards: "Watch the video" opens that pillar's explainer
+  document.querySelectorAll('.de-explore [data-series]').forEach((el) => {
+    el.addEventListener('click', () => DE.openSeries(el.dataset.series, el));
+  });
   DE.initNavScroll();
   DE.initScrollHint();
   DE.initEntryCue();
@@ -122,8 +133,8 @@ DE.pages.analytics = { boot() {
           const target = document.getElementById('includes');
           if (!target) return;
           const y = target.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top: Math.max(0, y), behavior: 'auto' });
           lenis.resize?.();
+          lenis.scrollTo(Math.max(0, y), { duration: 1.1 }); // glide, not jump (2026-11-18)
         });
       });
     });
@@ -155,7 +166,7 @@ DE.pages.analytics = { boot() {
   }
 
   function loadAnalyticsLateCss() {
-    const href = 'css/analytics-late.min.css?v=20260703b';
+    const href = 'css/analytics-late.min.css?v=20261117c';
     if (document.querySelector(`link[href="${href}"]`)) return analyticsLateCssPromise || Promise.resolve();
     if (!analyticsLateCssPromise) {
       analyticsLateCssPromise = new Promise((resolve) => {

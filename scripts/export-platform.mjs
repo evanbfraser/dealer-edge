@@ -381,7 +381,7 @@ async function main() {
   }
 
   // ── js (copy + scan string-literal asset refs the HTML scan can't see:
-  //    app.js loads the hero frame sequence + case-study logos + ripple bg
+  //    app.js loads the hero frame sequence + case-study logos
   //    via JS, not markup) ──
   let copyFramesDir = false;
   for (const j of jsToCopy) {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Results | DealerEdge</title>
-  <link rel="stylesheet" href="css/results-core.min.css?v=20261112g">
+  <link rel="stylesheet" href="css/results-core.min.css?v=20261119c">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
@@ -19,6 +19,15 @@
 
   <!-- Navigation -->
   <nav class="navbar" id="navbar">
+    <div class="nav-utility">
+      <div class="nav-utility-inner">
+        <a href="https://www.dealeredge.ai/events">Events</a>
+        <a href="https://www.dealeredge.ai/specials">Offers</a>
+        <a href="https://www.dealeredge.ai/resources">Resources</a>
+        <a href="https://www.dealeredge.ai/blog">Blog</a>
+        <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
+      </div>
+    </div>
     <div class="nav-inner">
       <div class="nav-logo">
         <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
@@ -36,6 +45,7 @@
             <a href="analytics.html" role="menuitem">Analytics <i class="nav-dot"></i></a>
           </div>
         </div>
+        <a href="how-it-works.html">How It Works</a>
         <a href="roi.html">ROI</a>
         <a href="case-studies.html" class="nav-link--active">Results</a>
       </div>
@@ -58,17 +68,21 @@
         <a href="sales.html">Sales</a>
         <a href="analytics.html">Analytics</a>
       </div>
+      <a href="how-it-works.html">How It Works</a>
       <a href="roi.html">ROI</a>
       <a href="case-studies.html" class="nav-link--active">Results</a>
+      <a href="https://www.dealeredge.ai/events">Events</a>
+      <a href="https://www.dealeredge.ai/specials">Offers</a>
+      <a href="https://www.dealeredge.ai/resources">Resources</a>
+      <a href="https://www.dealeredge.ai/blog">Blog</a>
+      <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
       <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=case-studies-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="case-studies-nav-mobile-score">Get Free Website Score</a>
       <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
   </nav>
 
   <!-- Hero -->
-  <header class="csp-hero">
-    <div class="csp-hero-bg" style="background-image: image-set(url('assets/dealer-edge-case-studies-background-1280.avif') type('image/avif'), url('assets/dealer-edge-case-studies-background-1280.webp') type('image/webp'))"></div>
-    <div class="csp-hero-overlay"></div>
+  <header class="csp-hero" data-scroll-entry>
     <div class="csp-hero-inner">
 
       <h1 class="csp-hero-headline" data-fade data-delay="0.1">
@@ -81,18 +95,16 @@
         <button type="button" class="btn-primary js-modal" data-cta="case-studies-hero-demo">Book a Demo</button>
         <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=case-studies-hero" class="btn-score" data-cta="case-studies-hero-score">Get Free Website Score</a>
       </div>
-      <div class="csp-hero-stats" data-fade data-delay="0.26">
-        <div class="csp-hero-stat">
+      <div class="csp-hero-stats">
+        <div class="csp-hero-stat" data-fade data-delay="0.26">
           <span class="csp-hero-stat-value">40&times;</span>
           <span class="csp-hero-stat-label">Premier &middot; monthly leads</span>
         </div>
-        <div class="csp-hero-stat-divider"></div>
-        <div class="csp-hero-stat">
+        <div class="csp-hero-stat" data-fade data-delay="0.32">
           <span class="csp-hero-stat-value">&minus;86%</span>
           <span class="csp-hero-stat-label">Highland Ridge RV &middot; cost per lead</span>
         </div>
-        <div class="csp-hero-stat-divider"></div>
-        <div class="csp-hero-stat">
+        <div class="csp-hero-stat" data-fade data-delay="0.38">
           <span class="csp-hero-stat-value">+809%</span>
           <span class="csp-hero-stat-label">Moomba &middot; lead volume</span>
         </div>
@@ -129,6 +141,18 @@
             </div>
             <h2 class="csp-card-headline">Premier Watersports &mdash; 16 to 636 monthly leads on the same traffic</h2>
             <p class="csp-card-excerpt">A Tennessee Supra / Moomba / Yamaha / Sylvan dealer. We rebuilt their site (13.8s &rarr; 2.3s) and the same visitors finally converted &mdash; a 40&times; jump in captured intent. GM Zach Hommerding: &ldquo;AI works leads our sales team would have given up on, and books showings on our calendar.&rdquo;</p>
+            <div class="csp-compare">
+              <div class="csp-compare-metric">
+                <p class="csp-compare-title">Monthly leads, same traffic</p>
+                <div class="csp-bar csp-bar--before"><span class="csp-bar-label">Before</span><span class="csp-bar-track"><span class="csp-bar-fill" style="--w:2.5%"></span></span><span class="csp-bar-value">16</span></div>
+                <div class="csp-bar csp-bar--after"><span class="csp-bar-label">After</span><span class="csp-bar-track"><span class="csp-bar-fill" style="--w:100%"></span></span><span class="csp-bar-value">636</span></div>
+              </div>
+              <div class="csp-compare-metric">
+                <p class="csp-compare-title">Mobile load time</p>
+                <div class="csp-bar csp-bar--before"><span class="csp-bar-label">Before</span><span class="csp-bar-track"><span class="csp-bar-fill" style="--w:100%"></span></span><span class="csp-bar-value">13.8s</span></div>
+                <div class="csp-bar csp-bar--after"><span class="csp-bar-label">After</span><span class="csp-bar-track"><span class="csp-bar-fill" style="--w:16.7%"></span></span><span class="csp-bar-value">2.3s</span></div>
+              </div>
+            </div>
           </div>
         </article>
 
@@ -275,6 +299,7 @@
             <a href="marketing.html">Marketing</a>
             <a href="inventory.html">Inventory</a>
             <a href="analytics.html">Analytics</a>
+            <a href="how-it-works.html">How It Works</a>
             <a href="roi.html">ROI Calculator</a>
             <a href="case-studies.html">Results</a>
           </nav>
@@ -302,9 +327,9 @@
   <!-- Contact Modal -->
 
   <script src="js/mobile-nav.min.js?v=20260630a" defer></script>
-  <script src="js/de-core.min.js?v=20261112g" defer></script>
+  <script src="js/de-core.min.js?v=20261119c" defer></script>
   <!-- shared demo form (js/demo-modal.js), lazy-loaded on the first Book a Demo click -->
   <script>document.addEventListener('DOMContentLoaded',function(){window.DE&&DE.initLazyDemoModal&&DE.initLazyDemoModal(null);});</script>
-  <script src="js/case-studies.min.js?v=20260630a" defer></script>
+  <script src="js/case-studies.min.js?v=20261118e" defer></script>
 </body>
 </html>

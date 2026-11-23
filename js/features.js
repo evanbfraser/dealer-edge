@@ -19,11 +19,12 @@ DE.pages.features = { boot() {
     if (!root) return Promise.resolve();
     if (featuresLateContentReady || root.dataset.loaded === 'true') return featuresLateContentPromise || Promise.resolve();
     if (!featuresLateContentPromise) {
-      featuresLateContentPromise = fetch('partials/features-late-content.html?v=20261112h')
-        .then((response) => response.ok ? response.text() : '')
-        .then((html) => {
-          if (!html || root.dataset.loaded === 'true') return;
-          root.innerHTML = html;
+      // The late content is in the page itself since 2026-11-17 (it was fetched
+      // from partials/, which failed when a page was opened from disk). This
+      // still wires it up on scroll-approach, exactly as before.
+      featuresLateContentPromise = Promise.resolve()
+        .then(() => {
+          if (root.dataset.loaded === 'true') return;
           root.dataset.loaded = 'true';
           featuresLateContentReady = true;
           DE.initFade();
@@ -60,6 +61,11 @@ DE.pages.features = { boot() {
   DE.initFade();
   DE.initLazyVideoBoatSections();
   initFeaturesLateContentLoader();
+  // Explore cards: "Watch the video" opens that pillar's explainer in the
+  // shared series player (Next/Previous run the whole series)
+  document.querySelectorAll('.de-explore [data-series]').forEach((el) => {
+    el.addEventListener('click', () => DE.openSeries(el.dataset.series, el));
+  });
 
   // ─── SYSTEM LOOP ───────────────────────────────────────────────────
   // The scene persists; setLoopStage(n) is idempotent + absolute (lights

@@ -9,9 +9,6 @@
    restyle it from here. Everything below is .a2- prefixed page
    content: the hero, and the stage visuals inside each beat.
    Load order: style.css → de-act.css → analytics.css.
-   NOTE (comparison round): the includes flow treatment is a
-   knowing copy of inventory's — post-winner it gets promoted to
-   de-act.css as .de-includes--flow and de-duped.
    ─────────────────────────────────────────────────────────────── */
 
 :root {

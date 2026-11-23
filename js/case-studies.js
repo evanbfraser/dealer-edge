@@ -26,6 +26,7 @@ window.addEventListener('scroll', () => {
 
 // ─── INIT ───
 window.addEventListener('DOMContentLoaded', () => {
+  window.DE?.initEntryCue?.();   // the shared hero scroll cue
   function hydrateDeferredCardMedia(card) {
     if (!card || card.dataset.mediaHydrated === 'true') return;
     card.dataset.mediaHydrated = 'true';
@@ -73,7 +74,8 @@ window.addEventListener('DOMContentLoaded', () => {
       cursor.style.top  = e.clientY + 'px';
     }, { passive: true });
 
-    document.querySelectorAll('.csp-card').forEach(card => {
+    // only cards that open a detail page get the custom cursor + zoom transition
+    document.querySelectorAll('.csp-card[data-cs-id]').forEach(card => {
       card.addEventListener('mouseenter', () => cursor.classList.add('journey-active'));
       card.addEventListener('mouseleave', () => cursor.classList.remove('journey-active'));
       card.addEventListener('click', (e) => {
@@ -101,6 +103,85 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // ─── NUMBERS COUNT UP + BEFORE/AFTER BARS GROW (2026-11-14) ───
+  // Final values stay in the HTML (no-JS / reduced motion see them as-is).
+  // "16→636" and "13.8→2.3s" tween from the before value to the after value,
+  // so the motion shows the change; everything else counts up from zero.
+  (function initResultMotion() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) return;
+    document.documentElement.classList.add('csp-motion');
+
+    const NUM = /\d+(?:\.\d+)?/g;
+    const ease = t => 1 - Math.pow(1 - t, 3);
+
+    function prepare(el) {
+      const finalText = el.textContent.trim();
+      const nums = finalText.match(NUM);
+      if (!nums) return null;
+      const parts = finalText.split(NUM);
+      const isChange = finalText.includes('\u2192') && nums.length === 2;
+      const tweens = nums.map((n, i) => ({
+        from: isChange ? (i === 1 ? parseFloat(nums[0]) : parseFloat(n)) : 0,
+        to: parseFloat(n),
+        dp: (n.split('.')[1] || '').length,
+      }));
+      const render = t => parts.reduce((out, part, i) => {
+        if (i === 0) return part;
+        const tw = tweens[i - 1];
+        return out + (tw.from + (tw.to - tw.from) * t).toFixed(tw.dp) + part;
+      }, '');
+      // screen readers get the final value once; the ticking copy is hidden
+      const sr = document.createElement('span');
+      sr.className = 'csp-sr';
+      sr.textContent = finalText;
+      const vis = document.createElement('span');
+      vis.setAttribute('aria-hidden', 'true');
+      vis.textContent = render(0);
+      el.textContent = '';
+      el.append(sr, vis);
+      return { vis, render, finalText };
+    }
+
+    function run(item, delay) {
+      const dur = 1300;
+      setTimeout(() => {
+        const start = performance.now();
+        const step = now => {
+          const t = Math.min(1, (now - start) / dur);
+          item.vis.textContent = t < 1 ? item.render(ease(t)) : item.finalText;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }, delay);
+    }
+
+    // group values by their row so each row counts with a short stagger
+    const rows = document.querySelectorAll('.csp-hero-stats, .csp-card-stats');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        const base = entry.target.classList.contains('csp-hero-stats') ? 350 : 150;
+        (entry.target._items || []).forEach((item, i) => run(item, base + i * 110));
+      });
+    }, { threshold: 0.35 });
+    rows.forEach(row => {
+      row._items = Array.from(row.querySelectorAll('.csp-hero-stat-value, .csp-card-stat-value'))
+        .map(prepare).filter(Boolean);
+      io.observe(row);
+    });
+
+    const bars = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        bars.unobserve(entry.target);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.csp-compare').forEach(el => bars.observe(el));
+  }());
 
   // Scroll fade-in for [data-fade] elements
   const fadeEls = Array.from(document.querySelectorAll('[data-fade]'));

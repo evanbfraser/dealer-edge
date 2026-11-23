@@ -14,7 +14,7 @@ This repo is a **self-contained standalone site** — open the HTML locally or `
 
 Pages:
 
-- `index.html` — Homepage. **Rebuilt 2026-06-20 for performance**: the 192-frame canvas hero sequence + 18 MB dock video ("the fishing game") were removed and media optimized — **6.8 MB / 211 requests → ~337 KB / 13 requests, LCP ~224 ms, CLS ~0**. Now on the `DE.boot/DE.destroy` lifecycle, uses the shared `js/demo-modal.js` for lead capture, and ships in the platform export (`app.js`/`app-late.js`).
+- `index.html` — Homepage. **Rebuilt 2026-06-20 for performance**: the 18 MB dock video ("the fishing game") was removed (the 192-frame canvas hero stayed; see "Homepage hero (boat + RV)" below) and media optimized — **6.8 MB / 211 requests → ~337 KB / 13 requests, LCP ~224 ms, CLS ~0**. Now on the `DE.boot/DE.destroy` lifecycle, uses the shared `js/demo-modal.js` for lead capture, and ships in the platform export (`app.js`/`app-late.js`).
 - `features.html` — Features explorer (data-driven side-nav, populated by `js/features.js`)
 - `pricing.html`, `case-studies.html`, `case-study.html` — Lighter pages, less iteration
 - **`sales.html`** — The Sales pillar deep-dive prototype. This is the file we've been actively iterating on. Most of the conventions in this guide were established here. **Read [`sales.html`](sales.html), [`css/sales.css`](css/sales.css), and [`js/sales.js`](js/sales.js) before making changes to ANY page.** The pattern is meant to spread.
@@ -103,11 +103,57 @@ The 4-stat cascade that opens any cold pitch:
 
 **RV around the locked story (2026-11-12, approved by Evan):** the sales story stays the boat canon word-for-word, framed by "He wants a boat; the same night plays out for RV buyers." The AI inbox mixes RV units (travel trailer, Class C), and a fourth rep **Dana (Towables · Jayco)** joins Bob/Mike/Sarah in the routing scene (checked and skipped: the lead wants a wake boat). "Marine & RV reality" pairs the NMMA 70% with **85% of RV shoppers want to research the RV online** (Rollick, Future of Buying study, 2024 — linked on the card). Every hero and every close names boats and RVs; the ROI calculator defaults to **Both** (Boats/RVs modes still there; marine verdicts only in Boats).
 
-**Explainer video:** the homepage and sales video spot plays `assets/video/dealeredge-explainer-preview.mp4` (silent loop, only while on screen; poster under reduced motion) with "Watch the 90-second video" → `assets/video/dealeredge-explainer.mp4` + `.vtt` captions (`DE.initExplainerVideo`, de-core.js). The button only shows once the full film exists on the server. Source film: the Remotion project in `~/Desktop/Dealer Edge explainer video/dealer-edge-explainer` (proof = the site's 16→636 / +65; CTA "Book a Demo").
+**Explainer video:** this entry replaces the 2026-11-12 one about the 90-second film, as of 2026-11-17.
+- **What it is:** a series of text-and-graphics explainer videos in the light "paper" style: 00 overview + 12 tool episodes (01–12). Each is about 35–55 s, with music and no voiceover.
+- **Where the videos are made:** in the Remotion project `~/Desktop/Dealer Edge explainer video/dealer-edge-explainer`.
+  - Scripts: `src/series/paper/episodes.ts`, built on the scene kit `kit.tsx`. Episode 07 is hand-built in `E07Paper.tsx`.
+  - Render: `node scripts/render-series.mjs` (add `--posters` for posters only, `--square` for 1:1 cuts).
+  - Every number in them comes from site copy and the demo canon.
+- **Web files:** `assets/video/series/eNN.mp4` (H.264, crf 25, faststart) and `eNN-poster.webp`. The poster is each video's first frame: the headline and the red dot, with the play button placed over the dot.
+- **Series manifest:** `assets/video/series/series.json` lists the episodes, overview first.
+- **Player:** `DE.openSeries(id, opener)` in de-core.js, a full-screen `<dialog>`.
+  - It shows the episode label and title, Previous and Next buttons, and an "Up next" card when a video ends. Esc, the close button or a click outside closes it.
+  - Its CSS (`css/video-lightbox.css`) loads on first open.
+- **Homepage:** the video tile (`data-video-series="e00"`) opens the overview, and Next runs through the series. The tile links to How It Works.
+- **`how-it-works.html`:** a new page and main-nav item, added right after Platform on every page, in the mobile menu and in the footer.
+  - Layout: a dark hero, then the overview, a 4×3 grid of episode cards, and one section per episode grouped by pillar.
+  - **Card thumbnails:** `eNN-thumb.webp` is the episode's main graphic, rendered with the words switched off (`render-series.mjs --thumbs`) and cropped to 4:3.
+  - **It is generated, so don't hand-edit it.** Run `python3 scripts/build-how-it-works.py`, which also writes series.json.
+  - Page files: `css/how-it-works.css` and `js/how-it-works.js`. A link to `#play-e03` opens that episode on arrival.
+  - **Not on the platform yet:** the platform needs a route for it and a "How It Works" item in DeHeader/DeFooter.
+- **Voiceover (2026-11-17):** all 13 episodes are voiced with ElevenLabs voice `1SM7GgM6IMuvQlz2BwM3` (switched from `c6SfcYrb2t09NHXiT80T` on 2026-11-17). Episode wording says "model" (a specific product) or "unit" (inventory counts), never "boat"/"RV"/"marine"; proper names (Boat Trader, RV Trader, Supra Boats, North Lake Marine, Malibu Wakesetter) stay. Mike is "the rep who knows that model".
+  - In the Remotion project: the lines are in `scripts/series-vo-lines.mjs`, generated by `node scripts/build-series-vo.mjs [NN]`. Reads are cached, so only changed lines spend credits.
+  - The measured reads set the scene lengths. Episode 07 is hand-built, so its lines sit on its fixed beats and must fit; the build warns if one doesn't.
+  - Every episode ships `eNN.vtt` captions, and the player turns them on by default.
+  - The 16:9 site cuts are voiced, with the on-screen sublines dropped where the voice says them. The 1:1 social cuts stay text-only.
+  - Runtimes are now 0:35–0:53 per episode, and 1:11 for the overview.
+- **Sales page:** still uses the old explainer spot and the old preview.
+- **Cursor:** every page must carry both `#cursor-glow` and `#custom-cursor` and call `DE.initCursorGlow()`.
+  - The native cursor is hidden sitewide on fine pointers, so a page that's missing either one has no visible cursor at all. That happened on Pricing and on the first How It Works build (fixed 2026-11-17).
+  - The dot has a thin dark ring so it shows over light sections.
+  - **Exception, the video player:** a modal `<dialog>` sits in the browser's top layer, above the dot, so `css/video-lightbox.css` restores the native cursor inside the player and for the browser's own fullscreen video. Any future modal `<dialog>` needs the same.
+
+**Apple-style platform pages (2026-11-17, Inventory = pilot, Evan's request).** Rhythm: dark hero → light break → dark scroll act (chapter) → red band → light break → dark act → light "Before you talk to us" → dark boat/RV close → light "Keep exploring" cards. Never two light sections touching.
+- Inventory: centred hero with the before/after below the headline (product-shot style).
+- **Keep exploring, all four pillar pages (2026-11-18, Evan's request):** the last section before the footer, after the boat/RV close, is a `.de-explore` with `.de-explore-grid--3`: three cards for the *other* three pillars in pillar order (Inventory → Marketing → Sales → Analytics, current page left out), each with "Learn more" (`data-cta="<page>-explore-<pillar>"`) and "Watch the video" (series e01 / e04 / e07 / e12, wired in each page's main JS). Same markup on all four; only the recap line differs. It replaces the old two-tile `.pillar-nav` (prev/next) on these pages; Analytics no longer links to ROI from here.
+- **Section spacing (2026-11-18):** every standalone section on these pages uses `--section-pad` (108px at a 900px-tall desktop window; **72px on phones ≤880px**, set once in style.css `:root`). Don't add per-section padding or mobile overrides (the old 64px includes/compare, 120/130px showcase, 140/110px sales pivots are gone). Exceptions by design: heroes, scroll acts, `.cta-break` bands, the boat close, and Sales' full-screen phone video.
+- **Act engage (2026-11-18):** on desktop (≥1101px) `.de-act[data-act-intro] .de-act-head` is held at its docked height, so the shrinking intro headline overflows over the hidden copy/stage instead of re-laying out the grid (it used to slide copy + stage ~110px and step on each re-wrap; CLS 0.4–0.9 → ~0.1). If the docked tag or headline size changes, update that `calc()` in de-act.css.
+- **Hero scroll cue (2026-11-18, Evan: one cue, every page):** a hero opts in with `data-scroll-entry` (optional `data-scroll-entry-label`, e.g. Sales "Scroll to find out"); `DE.initEntryCue()` injects `.de-entry-cue` (label → hairline track with a red comet that lands → chevron tick; drains away on first scroll). It parks bottom-centre of the hero or the first screen, whichever ends first, and **stands down by itself when hero content sits under it** (hit-tested at reveal) — so ROI, Case Studies, Case Study, Inventory, and phone Analytics/Marketing show none. Don't hand-build page-specific cues (Sales' `.s-prehero-cue` is gone). The idle `.de-scroll-hint` is the same anatomy, scaled down.
+- **In-page `#` links** glide through Lenis (`initAnchorScroll` in `DE.createLenis`); page handlers that scroll should call `lenis.scrollTo`, never `window.scrollTo` with behavior auto.
+- **Section separation, all pillar pages (2026-11-17, matches the homepage):** light breaks use plain `theme-light` (#f5f5f7 ground, white tiles); a white-ground variant was tried and dropped. The comparison table is light on every pillar page, with the page's first red band moved to sit just before it (includes → red → compare → first act), so two lights never touch. Marketing: the proof showcase is light, and "Everything included" switched to dark tiles to keep the alternation.
+- Shared components in `style.css` (BUTTONS section): `.de-explore` / `.de-card` / `.de-pill` (Apple product cards: name, one-line promise, "Learn more" + "Watch the video" pills, an explainer graphic on a `#f4f1ec` paper tile that matches the image ground; images in `assets/features/explore/`) and `.de-prep` (buyer-prep checklist + next-demo CTA).
+- **Platform caveat:** `.de-prep` reproduces the platform's `DeBuyerNextStep` (`components/de-site/de-buyer-next-step.tsx`, copy verbatim). When these pages are exported, the platform must stop rendering `DeBuyerNextStep` for them or the live page shows it twice.
+- Overview (`features.html`): hero is its own centred section (no longer the act's pinned intro scene); the act is `de-act--6`. Order (Evan, 2026-11-17): hero → act → comparison (light) → includes (dark tiles) → "Tell us about your dealership" (dark, also carries the dept-chat link, last). The "Explore the platform" cards were removed 2026-11-18 at Evan's request (the `.de-explore` CSS stays: the pillar pages' "Keep exploring" uses it). No boat/RV close on this page.
+- Pages that open the series player carry the episode list inline (`#de-series`, written by `build-how-it-works.py`), so "Watch the video" works from disk too.
 
 **Proposed RV demo story (NOT locked — pending Jason):** a twin of the John Castillo story for RV pages. Draft: buyer inquires about a Jayco-family travel trailer (model + price: Jason to set) at **Sunday 9:42 PM**; AI reply within **47 seconds**; showing booked **Wednesday 4 PM** with rep **Dana (Towables · Jayco)**. Don't ship it in copy until approved; then add it to the canon table.
 
 **RV close video.** `assets/rv/rv-campsite.mp4` is the RV twin of `boat-trailer-dock-2.mp4` for the deep-dive close ("Get The RV / Off Your Lot" → "And Off To / The Campground"): used on inventory, analytics and features; index, sales, marketing and roi keep the boat. Generated with Higgsfield (Soul V2 studio still → lettering removed with Qwen Image 3 edit → Kling 2.6 Pro image-to-video, 10 s), then ffmpeg: a generated wordmark on the front cap removed with `delogo` from 3 s on, edges feathered to black (it plays inside a black, letterboxed 65%-wide box), H.264 CRF 25 with a keyframe every 12 frames for smooth scroll scrubbing. Generic and unbranded on purpose: never depict a real RV brand's product.
+
+**Homepage hero (boat + RV), 2026-11-19.** The hero canvas (`js/app.js` CANVAS FRAME SCRUBBING) scrubs `assets/frames/frame_0001..0192.webp` (1920×1080, q85, ~8.9 MB) on the `#000` hero. The canvas backing store is CSS size × devicePixelRatio (capped at 2); before that, Retina screens upscaled a 1× canvas and the hero looked pixelated. The frames now show boats AND RVs: same floating-UI-cards-around-the-mesh look, with a yacht card, a travel-trailer card, boat + RV store thumbnails and a "Lakeside Boat & RV" call/SMS.
+- Made with Higgsfield: the old first frame edited with Qwen Image 3 edit (`aspect_ratio: "16:9"`) → `assets/hero-src/key-still-boat-rv.png`, then Kling 2.6 Pro image-to-video 10 s → `assets/hero-src/kling-take2-raw.mp4`. Kling garbles the cards after ~4 s, so only source frames 0–96 are used, played forward then back (flat → 3D → flat, 192 frames).
+- `scripts/build-hero-frames.sh <raw.mp4> [pivot]` rebuilds everything: crushes the generator's 1–12 black haze to pure #000, feathers the edges, writes the WebP frames (via cwebp; this ffmpeg has no libwebp) and the master `assets/hero-video-boat-rv.mp4`. Then bump `HERO_FRAMES_V` in app.js (frames keep their filenames, so the token is what busts caches) and `npm run minify`.
+- The old boat-only frames are kept in `assets/frames-boat-v1/` (not exported). To make a true start=end loop with a cleaner middle, use a first/last-frame model (`kling-video/o3/first-last-frame` or `bytedance/seedance-2.0/image-to-video` with `end_image_url`).
 
 **Local preview must support HTTP range requests** or scroll-scrubbed videos (boat and RV) never seek: Python's `http.server` (also used by `npm run benchmark`) doesn't. Use `npx http-server . -p 4173 -c-1` for manual previews.
 
@@ -119,7 +165,38 @@ The 4-stat cascade that opens any cold pitch:
 
 **Positioning.** `.why-de` "Why DealerEdge" table on index + pricing: *typical dealer website vendor* vs DealerEdge. **Never name a competitor.** DealerEdge cells use only locked claims (20%/3-month offer, one AI platform, <90s 24/7 response) or the Edge Score. Don't claim "no lock-in / month-to-month" or "faster than competitors" until confirmed (contract terms; a PageSpeed sample of competitor dealer sites). Research notes: the head-to-head website rival covers ~8 dealer industries and doesn't list RV as a focus vertical; its "guaranteed more leads" has no stated terms. WakeWorks is a marine-only DMS — position as "works alongside your DMS", not as a rival.
 
-**Pricing page** now states the locked offer (it said "30-day results guarantee or your money back", which the offer rules forbid). Its $1,497/mo tiers and "month-to-month, cancel anytime" still need Jason to confirm against the Phase 2 tiers.
+**Pricing page** states the locked offer (it once said "30-day results guarantee or your money back", which the offer rules forbid).
+
+**"One Connected System v2" alignment (2026-11-19, Evan).** The sales one-pager `../DealerEdge-One-Connected-System-v2.pdf` (Nov 2026) is now a messaging source. What the site took from it:
+- **Pricing = four standard tiers** (PDF p.8, "Standard tier details: dealeredge.ai/pricing"): Base $1,500 · Edge Core $3,495 · Edge Growth $4,995 · Edge Dominance $7,500 per month.
+  - `pricing.html #packages` holds tier tiles and the full comparison `<table class="pt-table">` (cells verbatim from the PDF), plus footnotes and a "Custom packages available" strip.
+  - The old $1,497 single plan, the monthly/quarterly/yearly toggle, "no setup fee" and "cancel anytime" are gone.
+  - The locked 20%/3-month offer sits under the tiers ("pricing activates at the package you chose").
+  - Pricing isn't in `export-platform.mjs` PAGES, so the live /pricing is platform-owned and must be updated there.
+- **Sales-only, never on the site:** the seasonal offer ($1,500/mo until March + $5,000 setup, Dominance capabilities) and its **90-day satisfaction guarantee**. The PDF says it's "rather than standard public pricing". The site's only guarantee stays the locked 20% one.
+- **Positioning:** the homepage hero sub now carries the locked "seven vendors" line ("Seven vendors each own a piece of your buyer's journey. DealerEdge connects…"). Use "one connected platform", never the PDF's "connected system": the identity noun stays "platform".
+- **Capabilities now named on the site:**
+  - AI phone answering (overflow + after-hours, sales and service, transfers to your team)
+  - the platform's own AI-enabled CRM (validate/enrich, OEM leads)
+  - one conversation across SMS, email, chat, phone and DMs
+  - post-purchase review requests + service reminders
+  - Newsletter Studio
+  - inventory ads + retargeting
+  - compare up to three units, favorites, financing calculator
+  - sold-unit propagation ("the listing, ads and AI all know")
+  - GEO naming ChatGPT, Gemini and Google AI search (search engines buyers use, not our stack)
+- **Proof:**
+  - Premier's mobile PageSpeed is **97 Performance / 100 SEO / 100 Accessibility / 100 Best Practices**. "99-score site" claims became "97+ on mobile PageSpeed". The marketing showcase's desktop counter still counts to 99; check it against a desktop run.
+  - The competitor-calling stat is sourced: **82% would call a competitor if a business doesn't answer (CallRail, 2025 survey of 1,000 U.S. consumers)**. It's cited beside the locked 80% in ROI's "How we got this". The sales cohort's 80% is unchanged.
+- **Attribution claims carry "wherever tracking is available"** (analytics includes, features engines), matching the PDF.
+- **Not adopted:**
+  - the PDF's Automotive/Commercial audience and AutoTrader (site stays boat + RV)
+  - the Supra "Saturday at 10 with Jordan" SMS (the canon is Tuesday 10 AM)
+- **Open for Jason:**
+  - the demo phone line (865.855.4561, "ask for demo mode"): add it as a third CTA?
+  - the "$1k if you find a faster dealer site" challenge
+  - whether "Dedicated account manager" (kept on pricing) is still offered
+  - setup-fee wording for standard tiers
 
 ## The shared layer (`.de-` = DealerEdge chassis) — added 2026-06-04
 
@@ -394,6 +471,7 @@ Defined once in `css/style.css` `:root` (VARIABLES section, so every core bundle
 | `--type-lede`, `--lede-lh`, `--lede-color` | clamp(1.05rem, 1.25vw, 1.15rem), 1.6, rgba(255,255,255,.75) | the paragraph under a headline |
 | `--gap-eyebrow` / `--gap-sub` / `--gap-actions` | 16 / 18 / 32px | label→headline / headline→lede / lede→buttons |
 | `--section-pad` | clamp(88px, 12vh, 128px) | vertical padding of standalone sections |
+| `--tile-radius` / `--tile-gap` / `--tile-pad` / `--tile-bg` | 24px / 12px / clamp(28px, 3.6vw, 52px) / #161617 (white under `.theme-light`) | **Tiles** (2026-11-13, apple.com-inspired): dense content sits in rounded panels with tight gutters. Homepage pilot: feature tiles (eyebrow → headline → one line → "Learn more"), the customer journey as ONE tile with a 5-step ARIA tab rail (`[data-journey-tabs]`, `initJourneyTabs` in app.js; "See how it works" opens the journey modal), and 4 stat tiles. **Rolled out sitewide 2026-11-14:** `.de-includes` (one tile per column; pillar = plain-text headline or `<span>eyebrow</span><b>headline</b>`; the old inventory/analytics flow arrows + tints are gone), `.de-compare` and `.why-de` (one tile, hairline row dividers, no red/green cell tints — old/new meaning rides on the column heads + green emphasis; on phones each row is its own tile), `.pillar-nav` (two tiles, red "Next" eyebrow), features `.f-engine`, marketing `.m-showcase-stat`, sales `.s-marine-proof-card` / `.s-try-*-card`, pricing feature/plan/breakdown/FAQ tiles, ROI `.roi-explore-card`, results `.csp-card` / `.csp-cta-strip`. Rules: no border, no shadow, no glow, no lift; a linked tile's hover underlines its link; scroll acts, heroes and device mock-ups stay outside the tile system. |
 
 Rules: the headline has no bottom margin when a lede follows (the lede's `margin-top: var(--gap-sub)` owns the gap); in flex columns use `gap: 0` + these margins rather than a flex gap. Hover is one quiet step (background or ring), no glow or lift; every button gets the white `:focus-visible` ring. On phones (≤480px) every button group stacks full width, demo first. Scene typography inside `.de-act` acts, the sales cohort stats and the boat close headline is tuned to its animation and is deliberately outside this scale.
 
@@ -406,7 +484,7 @@ Rules: the headline has no bottom margin when a lede follows (the lede's `margin
 Long pages alternate **dark** (heroes, scroll acts, videos, closes) with **light** static content sections, and the mid-page CTA strips are **full-bleed red bands**, so each colour change reads as "new topic".
 - Add `theme-light` to a static section (`.de-includes`, `.pillar-nav-section`, `.why-de`, features bento, stats + marquee, `.s-marine-proof`, `.s-try`, `.f-engines`, pricing includes, `main.csp-main`, `.roi-explore`). It re-points every colour token (`--text*`, `--de-*`, `--m-*`, `--i-*`, `--a2-*`, `--f-*`, `--good`, `--line`…) to the light palette: ground `#f5f5f7`, cards `#fff`, text `#1d1d1f` / `#424245` / `#6e6e73`.
 - On light, accents that are **text** use `#15803d` (green) and `#c4211f` (red), both ≥4.5:1; red/green **fills** keep the brand colours. Hard-coded whites get a `body .theme-light …` override in style.css (body-prefixed because page CSS loads later and wins ties).
-- Device mock-ups and stat cards inside a light section stay **dark islands** (`.s-phone`, `.s-marine-proof-card`).
+- Device mock-ups inside a light section stay **dark islands** (`.s-phone`). Stat cards on light are white tiles (`.s-marine-proof-card`, since 2026-11-14), matching the homepage stat tiles.
 - Never put two light sections next to each other; never light a scroll act.
 - `.cta-break` = red band `#c8201f` (white text ≥4.5:1), buttons white-fill "Book a Demo" + white-outline score.
 - The CSS minifier used to strip the space before `:` (turning `.a :is(b)` into `.a:is(b)`); fixed in `scripts/minify-css.js`, output for existing CSS unchanged.
@@ -455,9 +533,9 @@ Added 2026-06-20. The deep-dive pages got a major CWV pass; this is the machiner
 
 ### What ships per page
 
-- **CSS is split critical / core / late.** Each deep-dive `<head>` loads only `deep-core.min.css` + `<page>-critical.min.css`. The below-the-fold CSS (`<page>-late.min.css`) is appended by JS as the user scrolls toward the late section. The homepage uses `home-core` + `home-late`; chrome lives in `style.css`.
+- **CSS is split critical / core / late.** Each deep-dive `<head>` loads only `deep-core.min.css` + `<page>-critical.min.css`. The below-the-fold CSS (`de-act.min.css` + `<page>-late.min.css`) is appended by JS at idle right after load (since 2026-11-17; it was on scroll-approach, but the lower sections are now in the page from the start and would flash unstyled). The homepage uses `home-core` + `home-late`; chrome lives in `style.css`.
 - **JS is split main / late.** `<page>.min.js` (hero, cohort, snap, core init) loads `defer` up front; `<page>-late.min.js` (the later acts/animations + GSAP/ScrollTrigger) is injected on scroll-approach.
-- **Below-fold HTML is a lazy partial.** Content past the hero lives in `partials/<page>-late-content.html`, `fetch`ed into `<div data-<page>-late-root>` on scroll-approach, then wired (`DE.initFade()`, lazy video/boat sections, demo modal). Cuts initial DOM/parse/transfer. The lazy-load orchestration lives in each page's `js/<page>.js` (see `loadSalesLateExperience()` / `loadSalesLateContent()` / `loadSalesLateJs()` in `js/sales.js` as the canonical example).
+- **Below-fold HTML is in the page (since 2026-11-17).** It used to live in `partials/<page>-late-content.html` and was `fetch`ed on scroll-approach, which failed whenever a page was opened from disk (Evan reviews that way), so everything below the hero vanished. The partials are deleted; the content sits inside `<div data-<page>-late-root>` in each page, and `load<Page>LateContent()` now only wires it (`DE.initFade()`, lazy images, video/boat sections) on scroll-approach. Images and the act JS stay lazy. Don't reintroduce fetched HTML partials for page content (modals in `partials/` are fine: they load on demand).
 - **Cache-busting:** every local `.min.css`/`.min.js`/partial reference carries a `?v=YYYYMMDDx` token. **Bump it on any changed asset** or browsers/CDN serve stale — see the `de-deploy-cache-versioning` memory.
 
 ### The generators (CSS only)

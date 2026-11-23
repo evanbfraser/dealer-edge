@@ -21,7 +21,10 @@ const slices = [
 ];
 
 const videoBoatSlices = [
-  ['/* ─── VIDEO SECTION ─── */', '/* ─── HERO ─── */'],
+  // ends at RESET: RESET + NAVBAR follow the video section in style.css, and
+  // re-declaring the nav here (lazy, so it loads last) brought the desktop
+  // links back on phones once the boat close loaded (fixed 2026-11-17)
+  ['/* ─── VIDEO SECTION ─── */', '/* ─── RESET ─── */'],
   ['/* ─── BOAT SECTION ─── */', '/* ─── STATS ─── */'],
   ['/* ─── VIDEO + BOAT RESPONSIVE ─── */', '/* ─── MODAL MOBILE ─── */'],
 ];

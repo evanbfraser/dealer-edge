@@ -99,7 +99,7 @@
     const el = document.createElement('div');
     el.className = 'de-scroll-hint';
     el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<span class="de-scroll-hint__label">Scroll</span><span class="de-scroll-hint__chevron"></span>';
+    el.innerHTML = '<span class="de-scroll-hint__label">Scroll</span><span class="de-scroll-hint__track"><span class="de-scroll-hint__comet"></span></span><span class="de-scroll-hint__chevron"></span>';
     document.body.appendChild(el);
     let idleMs = 0;
     const hide = () => el.classList.remove('is-visible');
@@ -107,6 +107,7 @@
       const vh = window.innerHeight;
       const atBottom = (vh + window.scrollY) >= (document.documentElement.scrollHeight - vh);
       return atBottom
+        || !!document.querySelector('.de-entry-cue:not(.is-gone)')   // the hero cue owns the bottom
         || document.getElementById('modal-backdrop')?.classList.contains('is-open');
     };
     window.addEventListener('scroll', () => { idleMs = 0; hide(); }, { passive: true });
@@ -172,7 +173,7 @@
     let observer = null;
     let cssPromise = null;
     const loadCss = () => {
-      const href = 'css/video-boat.min.css?v=20261112g';
+      const href = 'css/video-boat.min.css?v=20261119c';
       const existing = document.querySelector(`link[href="${href}"]`);
       if (existing) return cssPromise || Promise.resolve();
       cssPromise = new Promise((resolve) => {
@@ -228,6 +229,7 @@
   initCursorGlow();
   initNavScroll();
   initScrollHint();
+  window.DE?.initEntryCue?.();
   initFade();
   initSectionViews();
   initLazyVideoBoatSections();

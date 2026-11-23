@@ -1,0 +1,17 @@
+# Preview deploy: publishes only the site files, never internal docs or scripts.
+[build]
+  command = "rm -rf dist && mkdir dist && cp *.html dealer-edge-video-homepage.jpg dist/ && cp -R assets css js partials vendor dist/ && rm -rf dist/case-study.html dist/js/case-study.js dist/js/case-study.min.js dist/assets/hero-src dist/assets/frames-boat-v1"
+  publish = "dist"
+
+# The case study detail page is held back, so its links return to the list.
+[[redirects]]
+  from = "/case-study.html"
+  to = "/case-studies.html"
+  status = 302
+  force = true
+
+# Keep the preview out of search results.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

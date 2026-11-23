@@ -107,20 +107,25 @@
   filter: blur(40px);
 }
 
+/* Apple-style hero (2026-11-17): one centred column, the headline first and
+   the before/after below it like a product shot, instead of a split hero. */
 .i-hero-inner {
   position: relative;
   width: min(1200px, 100%);
   margin: 0 auto;
-  min-height: 568px;
-  display: grid;
-  grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.05fr);
-  gap: 56px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: clamp(36px, 5vh, 56px);
+  text-align: center;
 }
+.i-hero-copy { display: flex; flex-direction: column; align-items: center; max-width: 980px; }
+.i-hero-visual { width: min(880px, 100%); }
 
 .i-hero-copy h1 {
-  margin: 0 0 var(--gap-sub);
-  font-size: var(--type-hero);
+  margin: var(--gap-eyebrow) 0 var(--gap-sub);
+  font-size: clamp(2.6rem, 5.4vw, 4.75rem);
+  text-wrap: balance;
   font-weight: var(--head-weight);
   letter-spacing: var(--head-ls);
   line-height: var(--head-lh);
@@ -128,7 +133,8 @@
 
 .i-hero-copy p {
   margin: 0 0 var(--gap-actions);
-  max-width: 34rem;
+  max-width: 44rem;
+  text-wrap: pretty;
   font-size: var(--type-lede);
   line-height: var(--lede-lh);
   color: var(--lede-color);
@@ -137,6 +143,7 @@
 .i-hero-ctas {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 22px;
   flex-wrap: wrap;
 }
@@ -249,6 +256,7 @@
 
 .i-hero-visual-note {
   margin: 14px 4px 0;
+  text-align: center;
   font: 500 0.78rem/1.5 var(--i-mono);
   letter-spacing: 0.04em;
   color: var(--i-dim);
@@ -260,14 +268,14 @@
   .i-wipe-before { animation: none; clip-path: inset(0 0 0 100%); }
 }
 
+/* Light sections use the homepage's theme-light as-is (#f5f5f7 ground,
+   white tiles); a white-ground variant was tried in the 2026-11-17 pilot and
+   dropped so every page separates sections the same way. */
+
 @media (max-width: 1100px) {
   .i-hero { padding: calc(var(--nav-height, 72px) + 28px) 16px 56px; }
 
-  .i-hero-inner {
-    min-height: 0;
-    grid-template-columns: 1fr;
-    gap: 34px;
-  }
+  .i-hero-inner { gap: 34px; }
 
   .i-hero-copy h1 { font-size: clamp(2rem, 8vw, 2.7rem); }
 }

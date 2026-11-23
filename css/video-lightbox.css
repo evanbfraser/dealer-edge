@@ -1,0 +1,107 @@
+/* ═══════════════════════════════════════════════════════════════
+   VIDEO LIGHTBOX + SERIES PLAYER (2026-11-17)
+   A native <dialog> built by DE.openSeries (js/de-core.js) and the legacy
+   single-video path in DE.initExplainerVideo. Loaded on first open, so no
+   page pays for it until someone presses play. Used by the homepage video
+   tile and the How It Works page.
+   ═══════════════════════════════════════════════════════════════ */
+
+.video-lightbox {
+  --vlb-pad: clamp(56px, 7vh, 88px);
+  --vlb-chrome: 0px;
+  position: fixed; inset: 0;
+  width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  margin: 0; padding: var(--vlb-pad) clamp(16px, 4vw, 64px);
+  border: 0; background: #000; color: #fff;
+  display: none; place-items: center;
+  overscroll-behavior: contain;
+  font-family: var(--font, system-ui, sans-serif);
+}
+.video-lightbox[open] { display: grid; animation: video-lightbox-in 0.3s ease; }
+.video-lightbox::backdrop { background: #000; }
+
+/* the frame is as big as the screen allows at 16:9, minus the title above
+   it and the next/previous bar below it */
+.video-lightbox-frame {
+  position: relative;
+  width: min(100%, calc((100dvh - 2 * var(--vlb-pad) - var(--vlb-chrome)) * 16 / 9));
+  aspect-ratio: 16 / 9;
+}
+.video-lightbox-frame video { width: 100%; height: 100%; display: block; background: #000; border-radius: 12px; }
+
+.video-lightbox-close {
+  position: absolute; top: clamp(12px, 2vh, 24px); right: clamp(12px, 2vw, 24px);
+  width: 48px; height: 48px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(255, 255, 255, 0.14); color: #fff;
+  transition: background-color 0.2s ease;
+  z-index: 2;
+}
+.video-lightbox-close:hover { background: rgba(255, 255, 255, 0.26); }
+.video-lightbox-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+html.video-lightbox-open, html.video-lightbox-open body { overflow: hidden; }
+html.video-lightbox-open .custom-cursor, html.video-lightbox-open .cursor-glow { display: none; }
+/* The pointer, inside the player. The site hides the native cursor on fine
+   pointers (style.css, `html * { cursor: none !important }`) and draws its own
+   dot, but a modal <dialog> sits in the browser's top layer ABOVE that dot, so
+   the player would have no cursor at all. Restore the native one here; it also
+   suits the video controls, which want a precise pointer. !important is needed
+   to beat the sitewide rule; the class selector outranks its `html *`. */
+.video-lightbox, .video-lightbox *, .video-lightbox video { cursor: auto !important; }
+.video-lightbox button { cursor: pointer !important; }
+/* the browser's own fullscreen (the button in the video controls) */
+video:fullscreen { cursor: auto !important; }
+@keyframes video-lightbox-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .video-lightbox[open] { animation: none; } }
+
+/* ─── the series player ─── */
+.video-lightbox--series { --vlb-chrome: 168px; }
+.vlb-stage { display: grid; gap: 18px; justify-items: stretch; }
+.vlb-head { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.vlb-ep {
+  font-family: var(--eyebrow-font, ui-monospace, monospace);
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+.vlb-title { margin: 0; font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: #fff; }
+
+.vlb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.vlb-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 0 22px; border-radius: 999px;
+  border: 0; background: rgba(255, 255, 255, 0.12); color: #fff;
+  font: 600 0.95rem/1.2 var(--font, system-ui, sans-serif);
+  transition: background-color 0.2s ease;
+  max-width: 48%;
+}
+.vlb-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vlb-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.vlb-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.vlb-btn svg { flex: none; }
+.vlb-btn[hidden] { display: none; }
+/* the way forward is the red button */
+.vlb-btn--primary { background: var(--accent, #e02f2e); margin-left: auto; }
+.vlb-btn--primary:hover { background: #c92826; }
+
+/* end card, laid over the last frame */
+.vlb-end {
+  position: absolute; inset: 0; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: rgba(10, 10, 10, 0.95); text-align: center; padding: 24px;
+}
+.vlb-end[hidden] { display: none; }
+.vlb-end-label {
+  font-family: var(--eyebrow-font, ui-monospace, monospace);
+  font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7);
+}
+.vlb-end-title { margin: 0; font-size: clamp(1.4rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.vlb-end-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
+.vlb-end-actions .vlb-btn { max-width: none; margin-left: 0; }
+
+@media (max-width: 640px) {
+  .video-lightbox--series { --vlb-chrome: 200px; }
+  .vlb-bar { flex-direction: column-reverse; align-items: stretch; }
+  .vlb-btn { max-width: none; justify-content: center; }
+  .vlb-btn--primary { margin-left: 0; }
+}

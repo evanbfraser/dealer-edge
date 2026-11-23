@@ -181,6 +181,24 @@ window.DE = (() => {
       .then(() => { attachScrollTrigger(lenis); });
   }
 
+  /* In-page "#id" links glide through Lenis (or native smooth scroll on the
+     touch shim) instead of jumping (2026-11-18). Delegated, so it covers links
+     added later; a handler that already called preventDefault (modals, "#"
+     placeholders) wins. */
+  function initAnchorScroll(lenis) {
+    on(document, 'click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = decodeURIComponent(a.getAttribute('href').slice(1));
+      const target = id && document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(Math.round(target.getBoundingClientRect().top + window.scrollY), { duration: 1.1 });
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+    });
+  }
+
   /* Lenis smooth scroll + optional GSAP/ScrollTrigger wiring (canonical options).
 
      TOUCH-PRIMARY DEVICES GET A NATIVE-SCROLL SHIM INSTEAD OF LENIS.
@@ -217,6 +235,7 @@ window.DE = (() => {
       on(window, 'scroll', () => { handlers.forEach((fn) => fn(shim)); }, { passive: true });
       lifecycle().lenis = shim;
       attachScrollTrigger(shim);
+      initAnchorScroll(shim);
       return shim;
     }
     const lenis = new Lenis({
@@ -229,6 +248,7 @@ window.DE = (() => {
     lifecycle().lenis = lenis;
     rafLoop((time) => lenis.raf(time));
     attachScrollTrigger(lenis);
+    initAnchorScroll(lenis);
     return lenis;
   }
 
@@ -390,16 +410,18 @@ window.DE = (() => {
     const el = document.createElement('div');
     el.className = 'de-scroll-hint';
     el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<span class="de-scroll-hint__label">Scroll</span><span class="de-scroll-hint__chevron"></span>';
+    el.innerHTML = '<span class="de-scroll-hint__label">Scroll</span><span class="de-scroll-hint__track"><span class="de-scroll-hint__comet"></span></span><span class="de-scroll-hint__chevron"></span>';
     document.body.appendChild(el);
     addDisposer(() => el.remove());
 
     const hide = () => el.classList.remove('is-visible');
     const heroCueShown = () => {
       // suppress while a page's OWN hero scroll-cue is on screen — the homepage
-      // .hero-scroll-hint OR the prominent .de-entry-cue (Item 7) — so the faint
+      // .hero-scroll-hint OR the .de-entry-cue — so the faint
       // progress hint never doubles a louder hero cue.
-      const cue = document.querySelector('.hero-scroll-hint, .de-entry-cue, .s-prehero-cue');
+      // (.de-entry-cue's box spans the hero's first screen, so judge it by state, not opacity)
+      if (document.querySelector('.de-entry-cue:not(.is-gone)')) return true;
+      const cue = document.querySelector('.hero-scroll-hint');
       if (!cue) return false;
       const cs = getComputedStyle(cue);
       const r = cue.getBoundingClientRect();
@@ -425,32 +447,72 @@ window.DE = (() => {
   }
 
   /* ─────────────────────────────────────────────────────────────
-     ENTRY CUE (Tier 1) — a prominent, per-hero "Scroll to explore"
-     that lives INSIDE the hero, so it can sit in the empty vertical
-     space some heroes leave (e.g. the features void). Opt-in + sized
-     via the hero's data-scroll-entry="prominent|compact" attribute;
-     heroes that already fill the viewport simply omit it (and pages
-     with their own cue — homepage, sales, marketing — don't opt in,
-     so nothing doubles). Reveals on arrival (after the hero copy
-     settles), retires the instant the visitor scrolls (its only job
-     is "you've arrived — there's more"). Shows on touch too;
-     reduced-motion keeps it static. Removed on DE.destroy().
+     ENTRY CUE (Tier 1) — the ONE hero scroll cue, identical on every
+     page (2026-11-18). Opt-in: the hero carries data-scroll-entry
+     (optional data-scroll-entry-label overrides "Scroll to explore",
+     e.g. Sales' "Scroll to find out"). CSS parks it bottom-centre of
+     the hero or the first screen, whichever ends first. Reveals after
+     the hero copy settles, retires (track drains away) the instant the
+     visitor scrolls. Shows on touch too; reduced-motion keeps it
+     static. Removed on DE.destroy(). Styles: style.css ENTRY CUE.
      ───────────────────────────────────────────────────────────── */
   function initEntryCue() {
     const host = document.querySelector('[data-scroll-entry]');
     if (!host || host.querySelector(':scope > .de-entry-cue')) return;   // none / already injected
-    const variant = host.dataset.scrollEntry === 'compact' ? 'compact' : 'prominent';
+    const label = host.dataset.scrollEntryLabel || 'Scroll to explore';
     const cue = document.createElement('div');
-    cue.className = 'de-entry-cue de-entry-cue--' + variant;
+    cue.className = 'de-entry-cue';
     cue.setAttribute('aria-hidden', 'true');
-    cue.innerHTML = '<span class="de-entry-cue__label">Scroll to explore</span><span class="de-entry-cue__chevron"></span>';
+    cue.innerHTML = '<div class="de-entry-cue__inner"><span class="de-entry-cue__label"></span>'
+      + '<span class="de-entry-cue__track"><span class="de-entry-cue__comet"></span></span>'
+      + '<span class="de-entry-cue__chevron"></span></div>';
+    cue.querySelector('.de-entry-cue__label').textContent = label;
     host.appendChild(cue);
 
+    let gone = window.scrollY > 8;   // landed mid-page (reload / #hash): never show it
+    // Only where there's clear space: if hero content (copy, buttons, media)
+    // sits under the cue — ROI's calculator, a phone-stacked dashboard — the
+    // content running off the fold is its own cue, so this one stands down.
+    // Hit-test a grid of points over the cue (respects clipping + stacking):
+    // blocked when the topmost hero element there is real content (text,
+    // media, a control), not a background layer (grid, glow, gradient).
+    const CONTENT = 'img, picture, video, canvas, svg, button, input, select, textarea, a, label';
+    const isContent = (el) => {
+      if (el.closest('[aria-hidden="true"]') && !el.closest(CONTENT)) return false;
+      const media = el.closest(CONTENT);
+      if (media) {
+        // a full-bleed backdrop (homepage frame canvas, a bg video) is decor
+        return !(/^(CANVAS|VIDEO)$/.test(media.tagName) && getComputedStyle(media).position === 'absolute');
+      }
+      if ([...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) return true;
+      // an in-flow panel or tile (own background) counts too; absolute layers are decor
+      for (let n = el; n && n !== host; n = n.parentElement) {
+        const cs = getComputedStyle(n);
+        if (cs.position === 'absolute' || cs.position === 'fixed') return false;
+        if (cs.backgroundImage !== 'none' || !/rgba\(.*,\s*0\)|transparent/.test(cs.backgroundColor)) return true;
+      }
+      return false;
+    };
+    const blocked = () => {
+      const r = cue.querySelector('.de-entry-cue__inner').getBoundingClientRect();
+      for (const fx of [-0.6, -0.3, 0, 0.3, 0.6]) {
+        for (const fy of [0, 0.35, 0.7, 1]) {
+          const x = r.left + r.width * (0.5 + fx);
+          const y = r.top + r.height * fy;
+          const top = document.elementsFromPoint(x, y).find((el) => host.contains(el) && el !== host && !cue.contains(el));
+          if (top && isContent(top)) return true;
+        }
+      }
+      return false;
+    };
     // reveal after the hero copy has settled
-    const reveal = setTimeout(() => cue.classList.add('is-in'), 1300);
+    const reveal = gone ? 0 : setTimeout(() => {
+      if (window.scrollY > 8) return;
+      if (blocked()) { gone = true; cue.classList.add('is-gone'); return; }
+      cue.classList.add('is-in');
+    }, 1100);
     addDisposer(() => { clearTimeout(reveal); cue.remove(); });
 
-    let gone = false;
     const retire = () => {
       if (gone) return;
       gone = true;
@@ -466,7 +528,7 @@ window.DE = (() => {
     if (!target) return;
 
     const src = options.src || 'js/section-video-boat.min.js?v=20261112g';
-    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20261112g';
+    const cssHref = options.cssHref || 'css/video-boat.min.css?v=20261119c';
     const rootMargin = options.rootMargin || '1400px 0px';
     let requested = false;
     let observer = null;
@@ -544,6 +606,150 @@ window.DE = (() => {
      button only appears once the full film is actually on the server.
      Reduced motion: the poster stays, no autoplay.
      ───────────────────────────────────────────────────────────── */
+  /* ─────────────────────────────────────────────────────────────
+     THE SERIES PLAYER (2026-11-17). One full-screen <dialog> for the
+     explainer series, shared by the homepage video tile and the How It
+     Works page. The episode list is assets/video/series/series.json
+     (overview first). Each video gets its title above the frame, and
+     Previous / Next buttons below it; when a video ends, an "Up next"
+     card offers the next episode or a replay. Esc, the close button or
+     a click outside closes it, and focus returns to whatever opened it.
+     Its CSS (css/video-lightbox.min.css) loads the first time it opens.
+     ───────────────────────────────────────────────────────────── */
+  const SERIES_URL = 'assets/video/series/series.json?v=20261117g';
+  const PLAYER_CSS = 'css/video-lightbox.min.css?v=20261119c';
+  let seriesPromise = null;
+  function loadSeries() {
+    if (!seriesPromise) {
+      // a page can carry the list inline (how-it-works.html does): no fetch,
+      // so the player also works when the page is opened straight from disk
+      const inline = document.getElementById('de-series');
+      if (inline) {
+        try { seriesPromise = Promise.resolve(JSON.parse(inline.textContent)); return seriesPromise; } catch (e) { /* fall through to fetch */ }
+      }
+      seriesPromise = fetch(SERIES_URL).then((r) => (r.ok ? r.json() : [])).catch(() => []);
+    }
+    return seriesPromise;
+  }
+  let playerCssPromise = null;
+  function loadPlayerCss() {
+    if (!playerCssPromise) {
+      playerCssPromise = new Promise((resolve) => {
+        if (document.querySelector(`link[href="${PLAYER_CSS}"]`)) return resolve();
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = PLAYER_CSS;
+        link.onload = resolve;
+        link.onerror = resolve;
+        document.head.appendChild(link);
+      });
+    }
+    return playerCssPromise;
+  }
+
+  let sp = null;
+  function buildSeriesPlayer() {
+    const dlg = document.createElement('dialog');
+    dlg.className = 'video-lightbox video-lightbox--series';
+    dlg.setAttribute('data-lenis-prevent', '');
+    dlg.setAttribute('aria-labelledby', 'vlb-title');
+    const arrowL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
+    const arrowR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    dlg.innerHTML =
+      '<button type="button" class="video-lightbox-close" aria-label="Close video">' +
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+      '<div class="vlb-stage">' +
+        '<div class="vlb-head"><span class="vlb-ep"></span><h2 class="vlb-title" id="vlb-title"></h2></div>' +
+        '<div class="video-lightbox-frame">' +
+          '<video controls playsinline preload="metadata"></video>' +
+          '<div class="vlb-end" hidden>' +
+            '<span class="vlb-end-label">Up next</span>' +
+            '<p class="vlb-end-title"></p>' +
+            '<div class="vlb-end-actions">' +
+              '<button type="button" class="vlb-btn vlb-btn--primary vlb-end-next">Play next ' + arrowR + '</button>' +
+              '<button type="button" class="vlb-btn vlb-end-replay">Replay</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="vlb-bar">' +
+          '<button type="button" class="vlb-btn vlb-prev">' + arrowL + '<span></span></button>' +
+          '<button type="button" class="vlb-btn vlb-btn--primary vlb-next"><span></span>' + arrowR + '</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(dlg);
+    const q = (sel) => dlg.querySelector(sel);
+    sp = {dlg, video: q('video'), ep: q('.vlb-ep'), title: q('.vlb-title'), prev: q('.vlb-prev'), next: q('.vlb-next'),
+      end: q('.vlb-end'), endTitle: q('.vlb-end-title'), endNext: q('.vlb-end-next'), endReplay: q('.vlb-end-replay'),
+      list: [], index: 0, opener: null};
+    q('.video-lightbox-close').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    sp.prev.addEventListener('click', () => playIndex(sp.index - 1));
+    sp.next.addEventListener('click', () => playIndex(sp.index + 1));
+    sp.endNext.addEventListener('click', () => playIndex(sp.index + 1));
+    sp.endReplay.addEventListener('click', () => { sp.end.hidden = true; sp.video.currentTime = 0; sp.video.play().catch(() => {}); });
+    sp.video.addEventListener('ended', () => {
+      const nxt = sp.list[sp.index + 1];
+      if (!nxt) return;
+      sp.endTitle.textContent = `${nxt.n} · ${nxt.title}`;
+      sp.end.hidden = false;
+      sp.endNext.focus({ preventScroll: true });
+    });
+    sp.video.addEventListener('play', () => { sp.end.hidden = true; });
+    dlg.addEventListener('close', () => {
+      sp.video.pause();
+      sp.video.removeAttribute('src');
+      sp.video.load();
+      document.documentElement.classList.remove('video-lightbox-open');
+      if (sp.opener && sp.opener.focus) sp.opener.focus({ preventScroll: true });
+    });
+  }
+
+  function playIndex(i) {
+    const item = sp.list[i];
+    if (!item) return;
+    sp.index = i;
+    sp.end.hidden = true;
+    sp.ep.textContent = item.n === '00' ? 'Overview' : `Episode ${item.n} of ${String(sp.list.length - 1).padStart(2, '0')}`;
+    sp.title.textContent = item.title;
+    sp.video.poster = item.poster;
+    // captions: voiced episodes carry a WebVTT track (series.json `captions`),
+    // on by default so the series still reads with the sound off
+    sp.video.querySelectorAll('track').forEach((t) => t.remove());
+    if (item.captions) {
+      const tr = document.createElement('track');
+      tr.kind = 'captions'; tr.srclang = 'en'; tr.label = 'English'; tr.src = item.captions; tr.default = true;
+      sp.video.appendChild(tr);
+    }
+    sp.video.src = item.src;
+    if (item.captions && sp.video.textTracks[0]) sp.video.textTracks[0].mode = 'showing';
+    const prev = sp.list[i - 1];
+    const next = sp.list[i + 1];
+    sp.prev.hidden = !prev;
+    sp.next.hidden = !next;
+    if (prev) sp.prev.querySelector('span').textContent = `${prev.n} · ${prev.title}`;
+    if (next) sp.next.querySelector('span').textContent = `Next: ${next.n} · ${next.title}`;
+    sp.video.play().catch(() => {});
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'video_play', video_name: `explainer_${item.id}`, page_path: location.pathname });
+  }
+
+  /** Open the series player on episode `id` (e.g. 'e00'). */
+  function openSeries(id, opener) {
+    return Promise.all([loadSeries(), loadPlayerCss()]).then(([list]) => {
+      if (!list.length) return;
+      if (!sp) buildSeriesPlayer();
+      sp.list = list;
+      sp.opener = opener || document.activeElement;
+      const i = Math.max(0, list.findIndex((e) => e.id === id));
+      document.documentElement.classList.add('video-lightbox-open');
+      if (!sp.dlg.open) {
+        if (typeof sp.dlg.showModal === 'function') sp.dlg.showModal(); else sp.dlg.setAttribute('open', '');
+      }
+      playIndex(i);
+      sp.dlg.querySelector('.video-lightbox-close').focus({ preventScroll: true });
+    });
+  }
+
   function initExplainerVideo(root) {
     const scope = root || document;
     const video = scope.querySelector('[data-video-preview]');
@@ -553,14 +759,84 @@ window.DE = (() => {
     const inner = video.closest('.video-inner');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let mode = 'preview';
+    let fullAvailable = false;
 
-    if (btn && video.dataset.fullSrc) {
+    if (btn && video.dataset.fullSrc && !(inner && inner.dataset.videoSeries)) {
       fetch(video.dataset.fullSrc, { method: 'HEAD' })
-        .then((r) => { if (r.ok) btn.hidden = false; })
+        .then((r) => { if (r.ok) { fullAvailable = true; btn.hidden = false; } })
         .catch(() => {});
     }
 
-    if (!reduce && 'IntersectionObserver' in window) {
+    // Lightbox mode (homepage, [data-video-lightbox]): a click on the tile, its
+    // play button or "Watch the 90-second video" opens the film full screen in a
+    // native <dialog> with browser controls + a close button. Esc, the close
+    // button or a click outside the video closes it. Plays the full film when
+    // it's on the server, else the preview cut. (2026-11-17)
+    // Series mode (homepage, [data-video-series="e00"]): the tile opens the
+    // shared series player on that episode, with Next running through the rest.
+    if (inner && inner.dataset.videoSeries) {
+      const go = (trigger) => openSeries(inner.dataset.videoSeries, trigger);
+      inner.addEventListener('click', (e) => go(e.target.closest('button') || inner.querySelector('.video-tile-play')));
+      if (btn) {
+        btn.hidden = false;
+        btn.addEventListener('click', () => go(btn));
+      }
+      return;
+    }
+
+    if (inner && inner.hasAttribute('data-video-lightbox')) {
+      let dlg = null, lbVideo = null, opener = null;
+      const build = () => {
+        loadPlayerCss();
+        dlg = document.createElement('dialog');
+        dlg.className = 'video-lightbox';
+        dlg.setAttribute('aria-label', video.getAttribute('aria-label') || 'Video');
+        dlg.setAttribute('data-lenis-prevent', '');
+        dlg.innerHTML =
+          '<button type="button" class="video-lightbox-close" aria-label="Close video">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+          '<div class="video-lightbox-frame"><video controls playsinline preload="none"></video></div>';
+        lbVideo = dlg.querySelector('video');
+        lbVideo.poster = video.poster;
+        dlg.querySelector('.video-lightbox-close').addEventListener('click', () => dlg.close());
+        dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+        dlg.addEventListener('close', () => {
+          lbVideo.pause();
+          lbVideo.removeAttribute('src');
+          lbVideo.querySelectorAll('track').forEach((t) => t.remove());
+          lbVideo.load();
+          document.documentElement.classList.remove('video-lightbox-open');
+          if (opener && opener.focus) opener.focus({ preventScroll: true });
+        });
+        document.body.appendChild(dlg);
+      };
+      const open = (trigger) => {
+        if (!dlg) build();
+        opener = trigger || inner.querySelector('.video-tile-play');
+        lbVideo.muted = false;
+        lbVideo.src = fullAvailable ? video.dataset.fullSrc : video.dataset.previewSrc;
+        const srcTrack = video.querySelector('track[data-src]');
+        if (fullAvailable && srcTrack) {
+          const t = document.createElement('track');
+          t.kind = 'captions'; t.srclang = srcTrack.srclang || 'en'; t.label = srcTrack.label || 'English';
+          t.src = srcTrack.dataset.src; t.default = true;
+          lbVideo.appendChild(t);
+        }
+        document.documentElement.classList.add('video-lightbox-open');
+        if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+        dlg.querySelector('.video-lightbox-close').focus({ preventScroll: true });
+        lbVideo.play().catch(() => {});
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'video_play', video_name: fullAvailable ? 'dealeredge_explainer' : 'dealeredge_explainer_preview', page_path: location.pathname });
+      };
+      inner.addEventListener('click', (e) => open(e.target.closest('button') || inner.querySelector('.video-tile-play')));
+      if (btn) btn.addEventListener('click', () => open(btn));
+      return;
+    }
+
+    // data-autoplay="off" (homepage) keeps the poster until the visitor clicks play.
+    const autoplay = video.dataset.autoplay !== 'off';
+    if (autoplay && !reduce && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((e) => {
           if (mode !== 'preview') {
@@ -576,6 +852,20 @@ window.DE = (() => {
         });
       }, { threshold: 0.35 });
       io.observe(video);
+    }
+
+    // clicking the video tile itself (or its play button): the full film when
+    // it's on the server, otherwise toggle the silent preview loop.
+    // .is-previewing hides the tile's play button while the loop runs.
+    if (inner) {
+      video.addEventListener('play', () => inner.classList.add('is-previewing'));
+      video.addEventListener('pause', () => inner.classList.remove('is-previewing'));
+      inner.addEventListener('click', (e) => {
+        if (mode !== 'preview' || (btn && btn.contains(e.target))) return;
+        if (btn && !btn.hidden) { btn.click(); return; }
+        if (!video.getAttribute('src')) video.src = video.dataset.previewSrc;
+        if (video.paused) video.play().catch(() => {}); else video.pause();
+      });
     }
 
     if (btn) {
@@ -1195,7 +1485,7 @@ window.DE = (() => {
 
   return {
     reduceMotion, isSafari,
-    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, initExplainerVideo, attachSceneSnap, initActs,
+    createLenis, loadScrollLibs, prewarm, initCursorGlow, initNavScroll, initMobileNav, initFade, initSectionViews, initScrollHint, initEntryCue, initLazyVideoBoatSections, initLazyDemoModal, initExplainerVideo, openSeries, attachSceneSnap, initActs,
     usPhoneDigits, formatUsPhone, usPhoneComplete, isFullName, attachUsPhoneInput, turnstileToken, prewarmTurnstile,
     pages, boot, destroy, on, addDisposer, interval, rafLoop, ready,
   };

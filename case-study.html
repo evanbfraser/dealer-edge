@@ -7,7 +7,7 @@
   <script>if(sessionStorage.getItem('csd-from-transition'))document.documentElement.classList.add('csd-from-transition');</script>
   <link rel="preload" href="assets/case-study-image-1-hero-1120-q42.avif" as="image" type="image/avif">
   <link rel="preload" href="assets/dealer-logo-1.svg" as="image">
-  <link rel="stylesheet" href="css/results-core.min.css?v=20261112g">
+  <link rel="stylesheet" href="css/results-core.min.css?v=20261119c">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
@@ -20,6 +20,15 @@
   </div>
 
   <nav class="navbar" id="navbar">
+    <div class="nav-utility">
+      <div class="nav-utility-inner">
+        <a href="https://www.dealeredge.ai/events">Events</a>
+        <a href="https://www.dealeredge.ai/specials">Offers</a>
+        <a href="https://www.dealeredge.ai/resources">Resources</a>
+        <a href="https://www.dealeredge.ai/blog">Blog</a>
+        <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
+      </div>
+    </div>
     <div class="nav-inner">
       <div class="nav-logo">
         <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
@@ -37,6 +46,7 @@
             <a href="analytics.html" role="menuitem">Analytics <i class="nav-dot"></i></a>
           </div>
         </div>
+        <a href="how-it-works.html">How It Works</a>
         <a href="roi.html">ROI</a>
         <a href="case-studies.html" class="nav-link--active">Results</a>
       </div>
@@ -59,8 +69,14 @@
         <a href="sales.html">Sales</a>
         <a href="analytics.html">Analytics</a>
       </div>
+      <a href="how-it-works.html">How It Works</a>
       <a href="roi.html">ROI</a>
       <a href="case-studies.html" class="nav-link--active">Results</a>
+      <a href="https://www.dealeredge.ai/events">Events</a>
+      <a href="https://www.dealeredge.ai/specials">Offers</a>
+      <a href="https://www.dealeredge.ai/resources">Resources</a>
+      <a href="https://www.dealeredge.ai/blog">Blog</a>
+      <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
       <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=case-study-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="case-study-nav-mobile-score">Get Free Website Score</a>
       <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
@@ -68,7 +84,7 @@
   <div id="csd-progress-bar"></div>
 
   <!-- Hero -->
-  <section class="csd-hero" id="csd-section-hero">
+  <section class="csd-hero" id="csd-section-hero" data-scroll-entry>
     <div class="csd-hero-img" id="csd-hero-img" style="background-image: image-set(url('assets/case-study-image-1-hero-1120-q42.avif') type('image/avif'), url('assets/case-study-image-1-hero-1280-lite.webp') type('image/webp'))"></div>
     <div class="csd-hero-overlay"></div>
     <a href="case-studies.html" class="csd-back-link">
@@ -174,6 +190,7 @@
             <a href="marketing.html">Marketing</a>
             <a href="inventory.html">Inventory</a>
             <a href="analytics.html">Analytics</a>
+            <a href="how-it-works.html">How It Works</a>
             <a href="roi.html">ROI Calculator</a>
             <a href="case-studies.html">Results</a>
           </nav>
@@ -199,10 +216,10 @@
   <!-- Contact Modal -->
 
   <script src="js/mobile-nav.min.js?v=20260630a" defer></script>
-  <script src="js/de-core.min.js?v=20261112g" defer></script>
+  <script src="js/de-core.min.js?v=20261119c" defer></script>
   <!-- shared demo form (js/demo-modal.js), lazy-loaded on the first Book a Demo click -->
   <script>document.addEventListener('DOMContentLoaded',function(){window.DE&&DE.initLazyDemoModal&&DE.initLazyDemoModal(null);});</script>
-  <script src="js/case-study.min.js?v=20260630a" defer></script>
+  <script src="js/case-study.min.js?v=20261118c" defer></script>
   <script>
     // Modal (inline, native body scroll lock)
     (function () {

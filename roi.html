@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROI Calculator | DealerEdge — See what you're leaving on the lot.</title>
   <meta name="description" content="See what slow sites and slow follow-up cost your boat or RV dealership — and the gross margin DealerEdge recovers. Enter your funnel, tune the sliders, and watch the math.">
-  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112g">
-  <link rel="stylesheet" href="css/roi.min.css?v=20261112f">
+  <link rel="stylesheet" href="css/deep-core.min.css?v=20261119c">
+  <link rel="stylesheet" href="css/roi.min.css?v=20261119c">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body class="roi-page">
@@ -21,6 +21,15 @@
 
   <!-- Navigation -->
   <nav class="navbar" id="navbar">
+    <div class="nav-utility">
+      <div class="nav-utility-inner">
+        <a href="https://www.dealeredge.ai/events">Events</a>
+        <a href="https://www.dealeredge.ai/specials">Offers</a>
+        <a href="https://www.dealeredge.ai/resources">Resources</a>
+        <a href="https://www.dealeredge.ai/blog">Blog</a>
+        <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
+      </div>
+    </div>
     <div class="nav-inner">
       <div class="nav-logo">
         <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
@@ -38,6 +47,7 @@
             <a href="analytics.html" role="menuitem">Analytics <i class="nav-dot"></i></a>
           </div>
         </div>
+        <a href="how-it-works.html">How It Works</a>
         <a href="roi.html" class="nav-link--active">ROI</a>
         <a href="case-studies.html">Results</a>
       </div>
@@ -60,8 +70,14 @@
         <a href="sales.html">Sales</a>
         <a href="analytics.html">Analytics</a>
       </div>
+      <a href="how-it-works.html">How It Works</a>
       <a href="roi.html" class="nav-link--active">ROI Calculator</a>
       <a href="case-studies.html">Results</a>
+      <a href="https://www.dealeredge.ai/events">Events</a>
+      <a href="https://www.dealeredge.ai/specials">Offers</a>
+      <a href="https://www.dealeredge.ai/resources">Resources</a>
+      <a href="https://www.dealeredge.ai/blog">Blog</a>
+      <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
       <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=roi-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="roi-nav-mobile-score">Get Free Website Score</a>
       <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
@@ -76,7 +92,7 @@
        costing you. Lifts are grounded in the Killer Proof Chain and
        the Pied Piper ILE study (the +50% drives the dollar figure).
        ────────────────────────────────────────────────────────────── -->
-  <section data-section="roi_calculator" class="roi-hero" id="calc">
+  <section data-section="roi_calculator" class="roi-hero" id="calc" data-scroll-entry>
     <div class="roi-hero-bg" aria-hidden="true">
       <div class="roi-hero-grid"></div>
       <div class="roi-hero-glow"></div>
@@ -241,9 +257,9 @@
             <div class="roi-how-body">
               <p>The lifts come from the same chain we show across the platform &mdash; not invented multipliers:</p>
               <ul>
-                <li><b>Visitors ×1.25</b> &mdash; a 99-score site, AI content, AI ads and SEO bring more qualified buyers (DealerEdge Marketing).</li>
+                <li><b>Visitors ×1.25</b> &mdash; a site scoring 97+ on mobile PageSpeed, AI content, AI ads and SEO bring more qualified buyers (DealerEdge Marketing).</li>
                 <li><b>Leads ×1.75</b> &mdash; 78% of dealer sites fail Core Web Vitals (avg. mobile load 17.3s, 200-site audit). A fast site plus 24/7 capture stops the bounce.</li>
-                <li><b>Showings ×3.2</b> &mdash; only 19 of 1,000 buyers ever book a showing today; fixing response (57% never reply in 24h) and voicemail (80% of voicemail callers call a competitor) recovers that to ~60. Same buyers.</li>
+                <li><b>Showings ×3.2</b> &mdash; only 19 of 1,000 buyers ever book a showing today; fixing response (57% never reply in 24h) and voicemail (80% of voicemail callers call a competitor; in CallRail&rsquo;s 2025 survey of 1,000 U.S. consumers, 82% said they&rsquo;d call a competitor if a business doesn&rsquo;t answer) recovers that to ~60. Same buyers.</li>
                 <li><b>Boats sold +50%</b> &mdash; the dollar figure rests on this one alone. Pied Piper ILE Study: dealers who raise their response score (&lt;40 → &gt;80) sell <b>50% more units from the same leads.</b> Independently verified, and the conservative floor of what we see.</li>
               </ul>
               <p class="roi-how-foot">Dollars = (<span data-roi-v="boats and RVs|boats|RVs">boats and RVs</span> sold &times; 50%) &times; your gross margin &times; 12 months. We deliberately put the money on the proven number, not the dramatic one.</p>
@@ -267,7 +283,7 @@
       <a href="marketing.html" class="roi-explore-card" data-fade>
         <span class="roi-explore-tag">Marketing</span>
         <h3>More qualified buyers find you</h3>
-        <p>99-score sites, AI content, AI ads and SEO drive the traffic at the top of your funnel.</p>
+        <p>Sites scoring 97+ on mobile PageSpeed, AI content, AI ads and SEO drive the traffic at the top of your funnel.</p>
         <span class="roi-explore-more">See how &rarr;</span>
       </a>
       <a href="inventory.html" class="roi-explore-card" data-fade>
@@ -337,6 +353,7 @@
             <a href="marketing.html">Marketing</a>
             <a href="inventory.html">Inventory</a>
             <a href="analytics.html">Analytics</a>
+            <a href="how-it-works.html">How It Works</a>
             <a href="roi.html">ROI Calculator</a>
             <a href="case-studies.html">Results</a>
           </nav>
@@ -360,7 +377,7 @@
   </footer>
 
   <script src="js/mobile-nav.min.js?v=20260630a" defer></script>
-  <script src="js/de-core.min.js?v=20261112g" defer></script>
-  <script src="js/roi.min.js?v=20261112g" defer></script>
+  <script src="js/de-core.min.js?v=20261119c" defer></script>
+  <script src="js/roi.min.js?v=20261119c" defer></script>
 </body>
 </html>

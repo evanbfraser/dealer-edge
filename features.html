@@ -11,9 +11,9 @@
   <meta property="og:image" content="https://dealeredge.ai/de-site/assets/features/system-loop-og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://dealeredge.ai/de-site/assets/features/system-loop-og.png">
-  <link rel="stylesheet" href="css/deep-core.min.css?v=20261112g">
-  <link rel="stylesheet" href="css/de-act.min.css?v=20261112f">
-  <link rel="stylesheet" href="css/features.min.css?v=20261112f">
+  <link rel="stylesheet" href="css/deep-core.min.css?v=20261119c">
+  <link rel="stylesheet" href="css/de-act.min.css?v=20261118a">
+  <link rel="stylesheet" href="css/features.min.css?v=20261119c">
   <link rel="preload" href="assets/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js" defer></script>
@@ -30,6 +30,15 @@
 
   <!-- Navigation -->
   <nav class="navbar" id="navbar">
+    <div class="nav-utility">
+      <div class="nav-utility-inner">
+        <a href="https://www.dealeredge.ai/events">Events</a>
+        <a href="https://www.dealeredge.ai/specials">Offers</a>
+        <a href="https://www.dealeredge.ai/resources">Resources</a>
+        <a href="https://www.dealeredge.ai/blog">Blog</a>
+        <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
+      </div>
+    </div>
     <div class="nav-inner">
       <div class="nav-logo">
         <a href="index.html"><img src="assets/dealer-edge-logo-horiz.webp" alt="DealerEdge" width="172" height="36"></a>
@@ -47,6 +56,7 @@
             <a href="analytics.html" role="menuitem">Analytics <i class="nav-dot"></i></a>
           </div>
         </div>
+        <a href="how-it-works.html">How It Works</a>
         <a href="roi.html">ROI</a>
         <a href="case-studies.html">Results</a>
       </div>
@@ -69,8 +79,14 @@
         <a href="sales.html">Sales</a>
         <a href="analytics.html">Analytics</a>
       </div>
+      <a href="how-it-works.html">How It Works</a>
       <a href="roi.html">ROI</a>
       <a href="case-studies.html">Results</a>
+      <a href="https://www.dealeredge.ai/events">Events</a>
+      <a href="https://www.dealeredge.ai/specials">Offers</a>
+      <a href="https://www.dealeredge.ai/resources">Resources</a>
+      <a href="https://www.dealeredge.ai/blog">Blog</a>
+      <a href="https://www.dealeredge.ai/search-seasonality">Traffic benchmark</a>
       <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=features-nav-mobile" class="btn-primary btn-nav btn-nav--ghost nav-mobile-cta" data-cta="features-nav-mobile-score">Get Free Website Score</a>
       <a href="#" class="btn-primary btn-nav js-modal nav-mobile-cta">Book a Demo</a>
     </div>
@@ -78,27 +94,33 @@
 
   <main>
 
+  <!-- ─── HERO (2026-11-17): its own full-height section, centred both ways,
+       scrolls away normally (no longer the act's pinned intro scene) ─── -->
+  <section data-section="hero" class="f-hero" id="top" data-scroll-entry>
+    <div class="f-hero-inner">
+      <span class="de-act-tag de-act-tag--good">The connected platform</span>
+      <h1 class="f-hero-title">One platform,<br><span class="f-hero-faded">from DMS record</span> <span class="f-hero-accent">to sold unit.</span></h1>
+      <p class="f-hero-sub">DealerEdge connects inventory, marketing, sales, and analytics for boat and RV dealers, so every listing, lead, conversation, and campaign improves the next one.</p>
+      <div class="cta-pair f-hero-ctas">
+        <button type="button" class="btn-primary js-modal" data-cta="features-hero-demo">Book a Demo</button>
+        <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=features-hero" class="btn-score" data-cta="features-hero-score">Get Free Website Score</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ──────────────────────────────────────────────────────────────
        ACT — THE SYSTEM LOOP. One persistent scene (the flywheel) that
        builds as you scroll: disconnected red vendors → DMS → Inventory
        → Marketing → Sales → Analytics → AI core → loop closes.
        The scene is a persistent base layer; the .de-beat placeholders
-       just advance setLoopStage(N). de-act--7 = 6 beats + intro.
+       just advance setLoopStage(N). de-act--6 = 6 beats (no intro scene:
+       the hero above is its own section since 2026-11-17).
        ────────────────────────────────────────────────────────────── -->
-  <section data-section="system_loop" class="de-act de-act--7" id="system-loop" data-act data-act-intro>
-    <div class="de-act-inner" data-scroll-entry="prominent">
-      <div class="de-act-watermark de-act-watermark--bad">DISCONNECTED VENDORS</div>
+  <section data-section="system_loop" class="de-act de-act--6" id="system-loop" data-act aria-labelledby="system-loop-title">
+    <div class="de-act-inner">
       <div class="de-act-watermark de-act-watermark--good">ONE CONNECTED PLATFORM</div>
 
-      <header class="de-act-head">
-        <span class="de-act-tag de-act-tag--good">The connected platform</span>
-        <h1 class="de-act-headline">One platform,<br><span class="de-act-headline-faded" style="white-space:nowrap">from DMS record</span> <span style="white-space:nowrap;color:#4ade80">to sold unit.</span></h1>
-        <p class="f-hero-sub">DealerEdge connects inventory, marketing, sales, and analytics for boat and RV dealers, so every listing, lead, conversation, and campaign improves the next one. Scroll to see how it works together.</p>
-        <div style="margin-top:var(--gap-actions)" class="cta-pair cta-pair--center-mobile">
-          <button type="button" class="btn-primary js-modal" data-cta="features-hero-demo">Book a Demo</button>
-          <a href="https://dealeredge.ai/edge-score?utm_source=dealeredge-site&utm_medium=cta&utm_content=features-hero" class="btn-score" data-cta="features-hero-score">Get Free Website Score</a>
-        </div>
-      </header>
+      <h2 class="f-sr-only" id="system-loop-title">How the platform works together</h2>
 
       <div class="de-act-copy">
         <div class="de-act-lines">
@@ -259,7 +281,111 @@
     </div>
   </section>
 
-  <div id="features-late-root" data-features-late-root></div>
+
+  <div id="features-late-root" data-features-late-root>
+  <!-- ─── WHY CONNECTED BEATS SEPARATE VENDORS ─── -->
+  <section data-section="comparison" class="de-compare theme-light" id="compare" data-fade style="--de-compare-label-old: 'SEPARATE VENDORS'; --de-compare-label-new: 'DEALEREDGE';">
+    <div class="de-compare-inner">
+      <header class="de-compare-head">
+        <span class="de-section-label">Why connected wins</span>
+        <h2>Same departments. <span>A completely different result.</span></h2>
+        <p>A pile of vendors can each do their one job. Only a connected platform lets each job make the next one better.</p>
+      </header>
+      <div class="de-compare-grid">
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-service">What it means</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-old">Separate vendors</div>
+        <div class="de-compare-cell de-compare-cell--head de-compare-col-new">DealerEdge</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:0"><b>Your data</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:1">Scattered across logins that never agree — handoffs, exports, stale copies.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:2">One data layer. Every source feeds the same platform, automatically.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:3"><b>The buyer</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:4">A fragment in each tool — the ad vendor, the CRM, and the phone log never meet.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:5">One buyer record, from first impression to the boat or RV they drive home.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:6"><b>Accountability</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:7">Finger-pointing. Everyone hit their metric; the unit still didn't sell.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:8">One platform, one number that matters — units sold.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:9"><b>What improves what</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:10">Nothing. Each vendor optimizes its silo, blind to the rest.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:11">Each pillar makes the next better — inventory → marketing → sales → analytics.</div>
+
+        <div class="de-compare-cell de-compare-service" style="--i:12"><b>The feedback loop</b></div>
+        <div class="de-compare-cell de-compare-old" style="--i:13">There isn't one. You find out what worked next month, after the budget is gone.</div>
+        <div class="de-compare-cell de-compare-new" style="--i:14">The AI optimizes the whole loop continuously, on real data.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CAPABILITY MAP (pieces & parts, grouped by engine) ─── -->
+  <section data-section="whats_included" class="de-includes" id="includes" data-fade>
+    <div class="de-includes-inner">
+      <header class="de-includes-head">
+        <span class="de-section-label">Everything in the platform</span>
+        <h2>All the pieces and parts — <span>grouped under the four engines they power.</span></h2>
+        <p>One platform replaces the stack. Here's what lives inside each engine.</p>
+      </header>
+      <div class="de-includes-grid">
+        <a class="de-includes-col f-col-link" href="inventory.html">
+          <div class="de-includes-pillar"><span>Inventory</span><b>Every unit, sales-ready</b></div>
+          <ul>
+            <li style="--i:0">Synced from your DMS — specs auto-populated per unit</li>
+            <li style="--i:1">AI-written listing descriptions for every unit</li>
+            <li style="--i:2">Studio-grade photo enhancement from real lot shots</li>
+            <li style="--i:3">Syndicated to Boat Trader, RV Trader, YachtWorld, Facebook Marketplace &amp; more</li>
+            <li style="--i:4">MAP compliance held by brand on new units before publish</li>
+          </ul>
+          <span class="f-col-go">Explore Inventory <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </a>
+        <a class="de-includes-col f-col-link" href="marketing.html">
+          <div class="de-includes-pillar"><span>Marketing</span><b>More qualified demand in</b></div>
+          <ul>
+            <li style="--i:0">AI ad creative for Google, Meta &amp; YouTube, tested continuously</li>
+            <li style="--i:1">SEO &amp; AI-overview content that ranks for what buyers search</li>
+            <li style="--i:2">Email &amp; SMS nurture that brings cold leads back</li>
+            <li style="--i:3">Campaigns built on your real, in-stock inventory</li>
+          </ul>
+          <span class="f-col-go">Explore Marketing <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </a>
+        <a class="de-includes-col f-col-link" href="sales.html">
+          <div class="de-includes-pillar"><span>Sales</span><b>Faster response out</b></div>
+          <ul>
+            <li style="--i:0">Every inquiry answered in seconds — 24/7, including weekends</li>
+            <li style="--i:1">AI that knows your inventory, pricing &amp; availability</li>
+            <li style="--i:2">Smart follow-up that adapts to each buyer</li>
+            <li style="--i:3">Appointments booked straight into your team's calendar</li>
+          </ul>
+          <span class="f-col-go">Explore Sales <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </a>
+        <a class="de-includes-col f-col-link" href="analytics.html">
+          <div class="de-includes-pillar"><span>Analytics</span><b>Optimize to sold units</b></div>
+          <ul>
+            <li style="--i:0">One live dashboard — leads, response time, conversion, revenue</li>
+            <li style="--i:1">Attribution from campaign to recorded sale, wherever tracking is available</li>
+            <li style="--i:2">Speed-to-lead, show rate &amp; conversations, measured</li>
+            <li style="--i:3">The AI acts on it continuously, on real data</li>
+          </ul>
+          <span class="f-col-go">Explore Analytics <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── NOT SURE WHERE TO START? ─── -->
+  <section data-section="help" class="f-help" data-fade>
+    <span class="de-section-label">Not sure where to start?</span>
+    <h2 class="f-help-title">Tell us about your dealership.</h2>
+    <p class="f-help-sub">See the gross margin you're leaving on the table, or talk it through with us &mdash; we'll point you to the fastest win.</p>
+    <div class="features-cta-actions">
+      <button type="button" class="btn-primary btn-primary--large js-modal" data-cta="features-help-demo">Book a Demo</button>
+      <a href="roi.html" class="btn-primary btn-primary--large btn-good">Calculate your ROI<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <p class="f-help-chat"><a href="#" class="js-dept-modal">Or chat with us about your dealership &rarr;</a></p>
+  </section>
+
+  </div>
   </main>
 
   <!-- Footer -->
@@ -287,6 +413,7 @@
             <a href="marketing.html">Marketing</a>
             <a href="inventory.html">Inventory</a>
             <a href="analytics.html">Analytics</a>
+            <a href="how-it-works.html">How It Works</a>
             <a href="roi.html">ROI Calculator</a>
             <a href="case-studies.html">Results</a>
           </nav>
@@ -309,7 +436,8 @@
     </div>
   </footer>
 
-  <script src="js/de-core.min.js?v=20261112g" defer></script>
-  <script src="js/features.min.js?v=20261112g" defer></script>
+  <script src="js/de-core.min.js?v=20261119c" defer></script>
+  <script src="js/features.min.js?v=20261117d" defer></script>
+  <script type="application/json" id="de-series">[{"id":"e00","n":"00","title":"The AI Growth Platform","pillar":"Overview","src":"assets/video/series/e00.mp4?v=20261117g","poster":"assets/video/series/e00-poster.webp?v=20261117g","duration":67.0,"captions":"assets/video/series/e00.vtt?v=20261117g"},{"id":"e01","n":"01","title":"Intelligent Listing Management","pillar":"Inventory","src":"assets/video/series/e01.mp4?v=20261117g","poster":"assets/video/series/e01-poster.webp?v=20261117g","duration":53.4,"captions":"assets/video/series/e01.vtt?v=20261117g"},{"id":"e02","n":"02","title":"Websites","pillar":"Marketing","src":"assets/video/series/e02.mp4?v=20261117g","poster":"assets/video/series/e02-poster.webp?v=20261117g","duration":49.2,"captions":"assets/video/series/e02.vtt?v=20261117g"},{"id":"e03","n":"03","title":"SEO & AIO Content","pillar":"Marketing","src":"assets/video/series/e03.mp4?v=20261117g","poster":"assets/video/series/e03-poster.webp?v=20261117g","duration":40.6,"captions":"assets/video/series/e03.vtt?v=20261117g"},{"id":"e04","n":"04","title":"AI Ad Creative","pillar":"Marketing","src":"assets/video/series/e04.mp4?v=20261117g","poster":"assets/video/series/e04-poster.webp?v=20261117g","duration":42.6,"captions":"assets/video/series/e04.vtt?v=20261117g"},{"id":"e05","n":"05","title":"Social Media Management","pillar":"Marketing","src":"assets/video/series/e05.mp4?v=20261117g","poster":"assets/video/series/e05-poster.webp?v=20261117g","duration":35.6,"captions":"assets/video/series/e05.vtt?v=20261117g"},{"id":"e06","n":"06","title":"Email & SMS Campaigns","pillar":"Marketing","src":"assets/video/series/e06.mp4?v=20261117g","poster":"assets/video/series/e06-poster.webp?v=20261117g","duration":34.3,"captions":"assets/video/series/e06.vtt?v=20261117g"},{"id":"e07","n":"07","title":"AI Lead Response","pillar":"Sales","src":"assets/video/series/e07.mp4?v=20261117g","poster":"assets/video/series/e07-poster.webp?v=20261117g","duration":45.5,"captions":"assets/video/series/e07.vtt?v=20261117g"},{"id":"e08","n":"08","title":"AI Sales Captain","pillar":"Sales","src":"assets/video/series/e08.mp4?v=20261117g","poster":"assets/video/series/e08-poster.webp?v=20261117g","duration":41.6,"captions":"assets/video/series/e08.vtt?v=20261117g"},{"id":"e09","n":"09","title":"Appointment Scheduling","pillar":"Sales","src":"assets/video/series/e09.mp4?v=20261117g","poster":"assets/video/series/e09-poster.webp?v=20261117g","duration":45.4,"captions":"assets/video/series/e09.vtt?v=20261117g"},{"id":"e10","n":"10","title":"Customer Journey Automation","pillar":"Sales","src":"assets/video/series/e10.mp4?v=20261117g","poster":"assets/video/series/e10-poster.webp?v=20261117g","duration":41.3,"captions":"assets/video/series/e10.vtt?v=20261117g"},{"id":"e11","n":"11","title":"CRM Integration","pillar":"Sales","src":"assets/video/series/e11.mp4?v=20261117g","poster":"assets/video/series/e11-poster.webp?v=20261117g","duration":39.3,"captions":"assets/video/series/e11.vtt?v=20261117g"},{"id":"e12","n":"12","title":"Performance Analytics","pillar":"Analytics","src":"assets/video/series/e12.mp4?v=20261117g","poster":"assets/video/series/e12-poster.webp?v=20261117g","duration":50.6,"captions":"assets/video/series/e12.vtt?v=20261117g"}]</script>
 </body>
 </html>

@@ -47,24 +47,6 @@
   font-size: var(--type-display); font-weight: var(--head-weight); line-height: var(--head-lh);
   letter-spacing: var(--head-ls); color: #fff; margin: 0;
 }
-.s-prehero-cue {
-  display: inline-flex; flex-direction: column; align-items: center; gap: 10px;
-  margin-top: clamp(40px, 7vh, 72px);
-  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--text-mid); text-decoration: none;
-  transition: color 0.2s ease;
-}
-.s-prehero-cue:hover { color: #fff; }
-.s-prehero-cue-chevron {
-  width: 12px; height: 12px;
-  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
-  transform: rotate(45deg); animation: sPreheroBob 1.8s ease-in-out infinite;
-}
-@keyframes sPreheroBob {
-  0%, 100% { transform: rotate(45deg) translate(0, 0); }
-  50% { transform: rotate(45deg) translate(4px, 4px); }
-}
-@media (prefers-reduced-motion: reduce) { .s-prehero-cue-chevron { animation: none; } }
 
 .s-hero.s-stats-section {
   position: relative;
@@ -1125,30 +1107,23 @@
 .s-marine-proof-card {
   appearance: none;
   font: inherit; /* it's a <button> — UA default is Times, not the page font */
-  border: 1px solid rgba(224, 47, 46, 0.36);
-  border-radius: 14px;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(224, 47, 46, 0.12), transparent 70%),
-    rgba(10, 10, 10, 0.92);
+  border: 0;
+  border-radius: var(--tile-radius);
+  background: var(--tile-bg);
   color: inherit;
-  padding: 22px;
+  padding: clamp(24px, 2.6vw, 34px);
   text-align: left;
   cursor: pointer;
   display: grid;
   gap: 10px;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
-  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
 }
-/* the marine stat and the RV stat stack in the card column */
-.s-marine-proof-cards { display: grid; gap: 12px; }
+/* the marine stat and the RV stat stack in the card column: two stat tiles */
+.s-marine-proof-cards { display: grid; gap: var(--tile-gap); }
 a.s-marine-proof-card { text-decoration: none; }
-.s-marine-proof-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(224, 47, 46, 0.62);
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(224, 47, 46, 0.16), transparent 72%),
-    rgba(14, 14, 14, 0.96);
-}
+/* hover: the source line underlines (one quiet step) */
+.s-marine-proof-card:hover .s-marine-proof-source,
+.s-marine-proof-card:focus-visible .s-marine-proof-source { text-decoration: underline; text-underline-offset: 4px; }
+.s-marine-proof-card:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
 .s-marine-proof-stat {
   font-size: clamp(3rem, 5vw, 4.2rem);
   font-weight: 900;
@@ -1171,7 +1146,7 @@ a.s-marine-proof-card { text-decoration: none; }
   font-size: 0.62rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--text);
 }
 
 /* Phones/small tablets: the desktop rule|copy|card 3-column grid never
@@ -1333,7 +1308,7 @@ a.s-marine-proof-card { text-decoration: none; }
   .s-chapter-divider { padding: 100px 24px; }
   .s-chapter-title { font-size: 2rem; }
   .s-marine-card { padding: 20px 22px; }
-  .s-marine-proof { padding: 72px 20px; }
+  .s-marine-proof { padding: var(--section-pad) 20px; }
   .s-marine-proof-card { padding: 18px; }
   .s-marine-modal-grid { padding: 28px 20px 22px; }
 }
@@ -2656,7 +2631,7 @@ a.s-marine-proof-card { text-decoration: none; }
 
 /* ─── PIVOT BAND ───────────────────────────────────────────── */
 .s-pivot {
-  padding: 140px 24px;
+  padding: var(--section-pad) 24px;
   background: #000;
   text-align: center;
   position: relative;
@@ -2868,10 +2843,9 @@ a.s-marine-proof-card { text-decoration: none; }
 }
 
 .s-try-input-card {
-  padding: 22px;
-  background: var(--panel);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
+  padding: var(--tile-pad);
+  background: var(--tile-bg);
+  border-radius: var(--tile-radius);
 }
 
 .s-try-label {
@@ -2972,10 +2946,9 @@ a.s-marine-proof-card { text-decoration: none; }
 }
 
 .s-try-script-card {
-  padding: 18px 22px;
-  background: rgba(255,255,255,0.015);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  padding: var(--tile-pad);
+  background: var(--tile-bg);
+  border-radius: var(--tile-radius);
   min-height: 200px;
 }
 
@@ -3177,7 +3150,6 @@ a.s-marine-proof-card { text-decoration: none; }
    Validation → Sources → Enrichment → Routing → ROI → Philosophy
    ═══════════════════════════════════════════════════════════════ */
 
-.s-pivot--alt { padding: 110px 24px; }
 
 /* height + tint come from the shared chassis (de-act--7 de-act--good);
    .s-act--team remains as the page hook for Act-4-specific overrides */

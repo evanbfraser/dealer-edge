@@ -127,6 +127,7 @@ const CASE_STUDIES = [
 
 // ─── RENDER PAGE ───
   window.addEventListener('DOMContentLoaded', () => {
+    window.DE?.initEntryCue?.();   // the shared hero scroll cue
   const params = new URLSearchParams(window.location.search);
   const id     = parseInt(params.get('id'), 10) || 1;
   const cs     = CASE_STUDIES.find(c => c.id === id) || CASE_STUDIES[0];

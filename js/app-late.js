@@ -10,122 +10,6 @@ window.DE.initHomeLate = function initHomeLate(context) {
   if (window.DE.__homeLateInitialized) return;
   window.DE.__homeLateInitialized = true;
 
-// ─── RIPPLE EFFECT ───
-function initRippleEffect() {
-  const canvas = document.getElementById('ripple-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  const section = canvas.parentElement;
-  if (!section) return;
-
-  const SCALE = 0.5, DAMPING = 0.985, STRENGTH = 220, BRUSH = 6;
-  let w = 0, h = 0, buf1, buf2, srcData, outImg;
-  let mouseX = 0, mouseY = 0, hovering = false, lastAuto = 0;
-  let rippleImg = null;
-
-  function setup(img) {
-    const cssW = canvas.parentElement ? canvas.parentElement.offsetWidth : 0;
-    if (!cssW || !img.naturalWidth) return false;
-    const cssH = Math.round(cssW * img.naturalHeight / img.naturalWidth);
-    w = Math.round(cssW * SCALE);
-    h = Math.round(cssH * SCALE);
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.height = cssH + 'px';
-    buf1 = new Float32Array(w * h);
-    buf2 = new Float32Array(w * h);
-    outImg = ctx.createImageData(w, h);
-    // Draw image to an offscreen canvas we own, then read pixels.
-    // getImageData on an owned canvas is permitted on localhost (same-origin).
-    const off = document.createElement('canvas');
-    off.width = w; off.height = h;
-    const offCtx = off.getContext('2d');
-    offCtx.drawImage(img, 0, 0, w, h);
-    try {
-      srcData = offCtx.getImageData(0, 0, w, h).data;
-    } catch (e) {
-      return false; // file:// strict security — graceful fallback to CSS bg
-    }
-    return true;
-  }
-
-  function disturb(ix, iy) {
-    ix = Math.round(ix); iy = Math.round(iy);
-    for (let dy = -BRUSH; dy <= BRUSH; dy++) {
-      for (let dx = -BRUSH; dx <= BRUSH; dx++) {
-        const nx = ix + dx, ny = iy + dy;
-        if (nx > 0 && nx < w - 1 && ny > 0 && ny < h - 1) buf1[ny * w + nx] = STRENGTH;
-      }
-    }
-  }
-
-  function tick(ts) {
-    if (!w || !srcData) return;
-
-    // Auto-disturb every 2s so ripples are visible without hovering
-    if (ts - lastAuto > 2000) {
-      disturb(
-        w * 0.25 + Math.random() * w * 0.5,
-        h * 0.25 + Math.random() * h * 0.5
-      );
-      lastAuto = ts;
-    }
-
-    // Wave physics
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const i = y * w + x;
-        buf2[i] = (buf1[i - 1] + buf1[i + 1] + buf1[i - w] + buf1[i + w]) * 0.5 - buf2[i];
-        buf2[i] *= DAMPING;
-      }
-    }
-    const tmp = buf1; buf1 = buf2; buf2 = tmp;
-
-    // Render: displace each pixel by the local wave gradient
-    const dst = outImg.data;
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const i = y * w + x;
-        let sx = x, sy = y;
-        if (x > 0 && x < w - 1 && y > 0 && y < h - 1) {
-          sx = Math.max(0, Math.min(w - 1, Math.round(x + (buf1[i - 1] - buf1[i + 1]) * 0.025)));
-          sy = Math.max(0, Math.min(h - 1, Math.round(y + (buf1[i - w] - buf1[i + w]) * 0.025)));
-        }
-        const si = (sy * w + sx) << 2;
-        const di = i << 2;
-        dst[di]     = srcData[si];
-        dst[di + 1] = srcData[si + 1];
-        dst[di + 2] = srcData[si + 2];
-        dst[di + 3] = 255;
-      }
-    }
-    ctx.putImageData(outImg, 0, 0);
-  }
-
-  section.addEventListener('mousemove', e => {
-    const r = canvas.getBoundingClientRect();
-    if (r.width > 0) {
-      mouseX = (e.clientX - r.left) * (w / r.width);
-      mouseY = (e.clientY - r.top)  * (h / r.height);
-    }
-    if (hovering) disturb(mouseX, mouseY);
-  }, { passive: true });
-  section.addEventListener('mouseenter', () => { hovering = true; });
-  section.addEventListener('mouseleave', () => { hovering = false; });
-  DE.on(window, 'resize', () => {
-    if (rippleImg && rippleImg.complete && rippleImg.naturalWidth) setup(rippleImg);
-  }, { passive: true });
-
-  const img = new Image();
-  rippleImg = img;
-  img.onload = () => {
-    section.style.backgroundImage = "url('assets/dealer-edge-case-studies-background.webp')";
-    setTimeout(() => { if (setup(img)) DE.rafLoop(tick); }, 100);
-  };
-  img.src = 'assets/dealer-edge-case-studies-background.webp';
-}
-
 // ─── VIDEO SECTION ───
 function animateVideoSection() {
   const inner   = document.getElementById('video-inner');
@@ -133,6 +17,8 @@ function animateVideoSection() {
   const section = document.getElementById('video-section');
   if (!inner || !section) return;
   window.DE?.initExplainerVideo?.(section);
+  // split layout (homepage): the tile stays in its column, no full-bleed expansion
+  if (section.classList.contains('video-section--split') || !overlay) return;
 
 
   // Expand from 800px to full viewport width on scroll
@@ -158,52 +44,10 @@ function animateVideoSection() {
   });
 }
 
-// ─── JOURNEY TIMELINE ───
-function animateJourney() {
-  const lineFill = document.querySelector('.journey-line-fill');
-  const timeline = document.querySelector('.journey-timeline');
-  if (!lineFill || !timeline) return;
-
-  // Line grows downward as user scrolls through the section
-  gsap.to(lineFill, {
-    height: '100%',
-    ease: 'none',
-    scrollTrigger: {
-      trigger: timeline,
-      start: 'top 70%',
-      end: 'bottom 65%',
-      scrub: 0.8,
-    },
-  });
-
-  // Each point: card slides in + dot activates
-  document.querySelectorAll('.journey-point').forEach((point) => {
-    const card = point.querySelector('.journey-card');
-    const isLeft = point.classList.contains('journey-point--left');
-
-    gsap.fromTo(
-      card,
-      { opacity: 0, x: isLeft ? -36 : 36 },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.85,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: point,
-          start: 'top 72%',
-          toggleActions: 'play none none none',
-          onEnter: () => point.classList.add('active'),
-        },
-      }
-    );
-  });
-}
-
 // ─── CUSTOM CURSOR + JOURNEY MODAL ───
 function initCustomCursor() {
   const cursor   = document.getElementById('custom-cursor');
-  const cards = document.querySelectorAll('.journey-card[data-journey]');
+  const cards = document.querySelectorAll('.journey-more[data-journey]');
   if (!cursor) return;
   let journeyModalPromise = null;
 
@@ -213,7 +57,7 @@ function initCustomCursor() {
     if (!journeyModalPromise) {
       journeyModalPromise = Promise.all([
         loadHomeLateCss ? loadHomeLateCss() : Promise.resolve(),
-        fetch('partials/journey-modal.html?v=20260630a')
+        fetch('partials/journey-modal.html?v=20261119c')
           .then((response) => response.ok ? response.text() : '')
       ]).then(([, html]) => {
         if (!html) return null;
@@ -234,12 +78,8 @@ function initCustomCursor() {
     cursor.style.top  = e.clientY + 'px';
   }, { passive: true });
 
-  // Video section hover, dot grows into play circle
-  const videoInner = document.getElementById('video-inner');
-  if (videoInner) {
-    videoInner.addEventListener('mouseenter', () => cursor.classList.add('video-active'));
-    videoInner.addEventListener('mouseleave', () => cursor.classList.remove('video-active'));
-  }
+  // (2026-11-15) no custom play-circle cursor over the video any more: the
+  // tile carries a visible play button and a normal pointer instead.
 
   // Case study card hover, same "Learn More" cursor
   document.querySelectorAll('.cs-card').forEach((card) => {
@@ -514,7 +354,6 @@ function initChatbot() {
 
 
 
-  runWhenNear('.case-studies-section', initRippleEffect, '0px 0px');
   runWhenNear('#video-section', () => {
     loadHomeLateCss().then(() => {
       animateVideoSection();
@@ -522,7 +361,6 @@ function initChatbot() {
       if (window.ScrollTrigger) ScrollTrigger.refresh();
     });
   }, '0px 0px');
-  animateJourney();
   initCustomCursor();
   runWhenNear('.case-studies-section', initCaseStudyCarousel, '0px 0px');
   initChatbot();

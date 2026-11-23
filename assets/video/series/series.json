@@ -1,0 +1,132 @@
+[
+ {
+  "id": "e00",
+  "n": "00",
+  "title": "The AI Growth Platform",
+  "pillar": "Overview",
+  "src": "assets/video/series/e00.mp4?v=20261117g",
+  "poster": "assets/video/series/e00-poster.webp?v=20261117g",
+  "duration": 67.0,
+  "captions": "assets/video/series/e00.vtt?v=20261117g"
+ },
+ {
+  "id": "e01",
+  "n": "01",
+  "title": "Intelligent Listing Management",
+  "pillar": "Inventory",
+  "src": "assets/video/series/e01.mp4?v=20261117g",
+  "poster": "assets/video/series/e01-poster.webp?v=20261117g",
+  "duration": 53.4,
+  "captions": "assets/video/series/e01.vtt?v=20261117g"
+ },
+ {
+  "id": "e02",
+  "n": "02",
+  "title": "Websites",
+  "pillar": "Marketing",
+  "src": "assets/video/series/e02.mp4?v=20261117g",
+  "poster": "assets/video/series/e02-poster.webp?v=20261117g",
+  "duration": 49.2,
+  "captions": "assets/video/series/e02.vtt?v=20261117g"
+ },
+ {
+  "id": "e03",
+  "n": "03",
+  "title": "SEO & AIO Content",
+  "pillar": "Marketing",
+  "src": "assets/video/series/e03.mp4?v=20261117g",
+  "poster": "assets/video/series/e03-poster.webp?v=20261117g",
+  "duration": 40.6,
+  "captions": "assets/video/series/e03.vtt?v=20261117g"
+ },
+ {
+  "id": "e04",
+  "n": "04",
+  "title": "AI Ad Creative",
+  "pillar": "Marketing",
+  "src": "assets/video/series/e04.mp4?v=20261117g",
+  "poster": "assets/video/series/e04-poster.webp?v=20261117g",
+  "duration": 42.6,
+  "captions": "assets/video/series/e04.vtt?v=20261117g"
+ },
+ {
+  "id": "e05",
+  "n": "05",
+  "title": "Social Media Management",
+  "pillar": "Marketing",
+  "src": "assets/video/series/e05.mp4?v=20261117g",
+  "poster": "assets/video/series/e05-poster.webp?v=20261117g",
+  "duration": 35.6,
+  "captions": "assets/video/series/e05.vtt?v=20261117g"
+ },
+ {
+  "id": "e06",
+  "n": "06",
+  "title": "Email & SMS Campaigns",
+  "pillar": "Marketing",
+  "src": "assets/video/series/e06.mp4?v=20261117g",
+  "poster": "assets/video/series/e06-poster.webp?v=20261117g",
+  "duration": 34.3,
+  "captions": "assets/video/series/e06.vtt?v=20261117g"
+ },
+ {
+  "id": "e07",
+  "n": "07",
+  "title": "AI Lead Response",
+  "pillar": "Sales",
+  "src": "assets/video/series/e07.mp4?v=20261117g",
+  "poster": "assets/video/series/e07-poster.webp?v=20261117g",
+  "duration": 45.5,
+  "captions": "assets/video/series/e07.vtt?v=20261117g"
+ },
+ {
+  "id": "e08",
+  "n": "08",
+  "title": "AI Sales Captain",
+  "pillar": "Sales",
+  "src": "assets/video/series/e08.mp4?v=20261117g",
+  "poster": "assets/video/series/e08-poster.webp?v=20261117g",
+  "duration": 41.6,
+  "captions": "assets/video/series/e08.vtt?v=20261117g"
+ },
+ {
+  "id": "e09",
+  "n": "09",
+  "title": "Appointment Scheduling",
+  "pillar": "Sales",
+  "src": "assets/video/series/e09.mp4?v=20261117g",
+  "poster": "assets/video/series/e09-poster.webp?v=20261117g",
+  "duration": 45.4,
+  "captions": "assets/video/series/e09.vtt?v=20261117g"
+ },
+ {
+  "id": "e10",
+  "n": "10",
+  "title": "Customer Journey Automation",
+  "pillar": "Sales",
+  "src": "assets/video/series/e10.mp4?v=20261117g",
+  "poster": "assets/video/series/e10-poster.webp?v=20261117g",
+  "duration": 41.3,
+  "captions": "assets/video/series/e10.vtt?v=20261117g"
+ },
+ {
+  "id": "e11",
+  "n": "11",
+  "title": "CRM Integration",
+  "pillar": "Sales",
+  "src": "assets/video/series/e11.mp4?v=20261117g",
+  "poster": "assets/video/series/e11-poster.webp?v=20261117g",
+  "duration": 39.3,
+  "captions": "assets/video/series/e11.vtt?v=20261117g"
+ },
+ {
+  "id": "e12",
+  "n": "12",
+  "title": "Performance Analytics",
+  "pillar": "Analytics",
+  "src": "assets/video/series/e12.mp4?v=20261117g",
+  "poster": "assets/video/series/e12-poster.webp?v=20261117g",
+  "duration": 50.6,
+  "captions": "assets/video/series/e12.vtt?v=20261117g"
+ }
+]
