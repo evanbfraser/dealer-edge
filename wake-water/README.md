@@ -13,3 +13,8 @@ Regenerate: start the local site (see `wake-water-seed/README.md`), run
 `npm run build && npx next start -p 3001` in `dealeredge-demo-generator`, then
 `python3 _tools/snapshot.py http://localhost:3001 <out>` and copy
 `.next/static/` into `<out>/_next/static/`.
+
+The site name contains `-demo.`, which the platform treats as "demo mode" and opens
+the theme switcher. The snapshot's JS has that hostname check replaced
+(`hostname.includes("-demo.")` → `hostname.includes("#nomo#")`); redo it after a
+regenerate. `?demo=true` still opens the switcher on purpose.
