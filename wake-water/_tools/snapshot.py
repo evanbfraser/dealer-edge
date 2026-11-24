@@ -3,6 +3,7 @@
 
 usage: snapshot.py BASE_URL OUT_DIR
 """
+import utils.session
 import os, re, sys, hashlib, urllib.request, urllib.parse, collections
 
 BASE = sys.argv[1].rstrip('/')
