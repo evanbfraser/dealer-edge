@@ -1,0 +1,4 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="1ac001ad-4f0d-6751-a00c-2d2b04d35984")}catch(e){}}();
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,18246,t=>{"use strict";var s=t.i(843476),n=t.i(448430);t.s(["default",0,function({data:t,onSaved:e,mode:a}){return"focus"===a?(0,s.jsx)(n.TrackingTestsClient,{data:t,onSaved:e,layout:"focus"}):(0,s.jsxs)("div",{className:"space-y-3",children:[t.canEdit?null:(0,s.jsx)("p",{className:"text-sm text-muted-foreground",children:"Only Bonsai staff can change or run tracking tests."}),(0,s.jsx)(n.TrackingTestsClient,{data:t,onSaved:e})]})}])},79235,function(t){t.n(t.i(18246))}]);
+
+//# debugId=1ac001ad-4f0d-6751-a00c-2d2b04d35984

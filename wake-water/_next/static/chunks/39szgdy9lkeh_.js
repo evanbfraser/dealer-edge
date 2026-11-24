@@ -1,0 +1,4 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="2bbc0698-8fa4-7e4e-236b-a8dc836a891f")}catch(e){}}();
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,517087,e=>{"use strict";var a=e.i(843476),i=e.i(334085),t=e.i(95187);let r=(0,t.createServerReference)("40e859d7a4be5ab52f2ddbd31f49401a4e08526937",t.callServer,void 0,t.findSourceMapURL,"createCampaign");e.s(["default",0,function(){let e=async e=>r(e);return(0,a.jsx)(i.CampaignForm,{formId:"campaign-new",onSubmit:e,submitLabel:"Create Campaign",title:"New Campaign",description:"Create a new communications campaign for AI-driven outreach"})}],517087)}]);
+
+//# debugId=2bbc0698-8fa4-7e4e-236b-a8dc836a891f

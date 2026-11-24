@@ -1,0 +1,4 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="305bdea3-a3b3-4bb3-b10b-fcbe042386d1")}catch(e){}}();
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,812293,e=>{"use strict";var r=e.i(843476),t=e.i(587489),a=e.i(95187);let n=(0,a.createServerReference)("4069833822e20e5b98869547425e7232e6dc392d8e",a.callServer,void 0,a.findSourceMapURL,"createBrandAction");e.s(["default",0,function(){let e=async e=>n(e);return(0,r.jsx)(t.BrandForm,{formId:"brand-new",onSubmit:e,submitLabel:"Create Brand",title:"New Brand",description:"Add a new boat brand to your dealership"})}],812293)}]);
+
+//# debugId=305bdea3-a3b3-4bb3-b10b-fcbe042386d1
